@@ -14,6 +14,73 @@ docs-lint.yaml  — linter configuration
 redirects.yaml  — URL redirects
 ```
 
+## Source code (agent reference only — DO NOT link from docs)
+
+Payerbox ships as three components. Read these repos to verify implementation behavior, parameter names, error codes, and supported flags. **Never link to them in published documentation** — they are private.
+
+| Component | Source repo (private) | Public Docker image (OK to link) |
+|---|---|---|
+| FHIR App Portal + Developer Portal | https://github.com/HealthSamurai/smartbox | https://hub.docker.com/r/healthsamurai/fhir-app-portal |
+| Interop APIs (Patient / Provider / Payer-to-Payer / Directory) | https://github.com/HealthSamurai/interop | https://hub.docker.com/r/healthsamurai/interop |
+| Prior Auth (CRD / DTR / PAS) | https://github.com/HealthSamurai/prior-auth | https://hub.docker.com/r/healthsamurai/prior-auth |
+
+If a doc needs to point users at the running software, link the Docker Hub image — never the GitHub repo.
+
+## Aidbox documentation (style and platform reference)
+
+Payerbox runs on Aidbox. The Aidbox docs repo is public: https://github.com/HealthSamurai/aidbox-docs (rendered at `docs.aidbox.app`).
+
+Read it when you need:
+- Style/structure patterns for a topic Aidbox already documents (auth, FHIR storage, SearchParameters, SMART on FHIR, etc.)
+- Source-of-truth for Aidbox features Payerbox inherits
+
+Do not hyperlink to `docs.aidbox.app` — the `absolute-links` lint blocks it. If you must reference Aidbox docs, mention them in plain text ("see Aidbox docs on …") rather than as a markdown link.
+
+## Page types: Pillar vs Reference
+
+Docs split into two page types — keep them distinct.
+
+**Reference** — `docs/api-reference/operations/*`. For integrators writing code against an endpoint.
+
+Must include:
+- H1 = operation name, plain text, no backticks (e.g. `# $op-name`)
+- Intro: IG name, pinned STU version, what the operation does
+- Endpoints (URL paths)
+- Auth: 1–3 lines + cross-link to `api-reference/authentication.md`
+- Input/Output Parameters — full tables (cardinality, types, descriptions)
+- Examples — all Request/Response variants including errors and edge cases (JSON payloads)
+- Errors table
+- Current Limitations — full
+- At least one outgoing link (usually cross-link to the pillar)
+
+Must not include:
+- Marketing language ("powerful", "seamless", "in action")
+- Regulatory framing (lives in `compliance/*`)
+- Authentication onboarding flow (lives in `authentication.md`)
+- Path-choice comparisons ("X vs Y")
+
+**Pillar** — `docs/interop-apis/*`, `docs/prior-auth/*`. For architects/PMs/devs choosing and understanding an API before integration.
+
+Must include:
+- H1 = human name of the API (no backticks, no `$op-name`)
+- Overview: what it is, who uses it, how it fits the stack (e.g. CRD → DTR → PAS)
+- Architectural / sequence diagram if helpful
+- Path-choice table when alternatives exist (e.g. DTR SMART App vs `$questionnaire-package`)
+- Lifecycle / flow overview
+- For each key flow step: one Request+Response pair in `{% tabs %}`, JSON payloads, ≤30 lines each — to convey shape, not depth
+- Current Limitations — short, only what affects path choice (full version stays in reference)
+- Cross-links to every reference page for the API + to `compliance/*`
+
+Must not include:
+- Backticked operation name in H1
+- Full Parameters tables (lives in reference)
+- All Response variants or error codes (lives in reference)
+- Authentication onboarding flow (lives in `authentication.md`)
+
+External systems referenced from a pillar (e.g. CRD's Decision Service via `CDS_DECISION_SERVICE_URL`) stay in the pillar — they explain architecture, not the endpoint contract.
+
+`docs/compliance/*` is neither pillar nor reference — regulatory citation only, with CFR/CMS anchors and links to relevant pillar/reference pages.
+
 ## Writing Documentation
 
 ### Setup
@@ -119,7 +186,16 @@ redirects:
 
 ## Supported Widgets
 
-Widgets can be nested inside each other (e.g. hints inside tabs, code blocks inside steps).
+Widgets fall into two shapes:
+
+- **Block widgets** — require an opening and closing tag (`{% hint %} … {% endhint %}`). All widgets below are block widgets except `embed` and `file`.
+- **Self-closing widgets** — one tag with a trailing slash: `{% embed url="…" / %}`, `{% file src="…" / %}`. `file` also supports a block form when you need custom link text.
+
+Nesting:
+- `{% tab %}` must be inside `{% tabs %}`
+- `{% step %}` must be inside `{% stepper %}`
+- `{% swagger-description %}`, `{% swagger-parameter %}`, `{% swagger-response %}` must be inside `{% swagger %}`
+- Other widgets nest freely (e.g. hints inside tabs, code blocks inside steps).
 
 ### Hint (callout box)
 
@@ -214,6 +290,26 @@ Quote text here.
 {% endquote %}
 ```
 
+### Swagger (API endpoint block)
+
+For inline endpoint documentation outside the main `api-reference/operations/*` reference pages (e.g. small ad-hoc examples on a pillar page). Reference pages use full Parameters tables instead.
+
+```markdown
+{% swagger method="post" path="/Claim/$submit" baseUrl="https://payerbox.example.com" summary="Submit PAS request" %}
+{% swagger-description %}
+Submits a Claim Bundle for prior authorization review.
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="Authorization" type="string" required="true" %}
+Bearer token (SMART Backend Services).
+{% endswagger-parameter %}
+
+{% swagger-response status="200" description="Successful submission" %}
+ClaimResponse Bundle with disposition.
+{% endswagger-response %}
+{% endswagger %}
+```
+
 ## Available Commands
 
 ```
@@ -251,6 +347,7 @@ Common lint errors and how to fix them:
 - **broken-references** — leftover GitBook `broken-reference` placeholder. Replace with real link.
 - **image-alt** (warning) — image without alt text. Add `![description](image.png)`.
 - **deprecated-links** — link points to a page in a deprecated directory. Update to current page.
-- **absolute-links** — hardcoded absolute URL to own docs domain. Use relative markdown links instead.
+- **absolute-links** — hardcoded absolute URL to our own docs (`docs.aidbox.app` or `www.health-samurai.io/docs`). Replace with a relative path (`../section/page.md`).
+- **dead-end-pages** (warning) — page has no outgoing links to other docs. Add at least one cross-link to a related page. Exempt: `SUMMARY.md`, `README.md` files, and pages under `deprecated/`.
 
 CI automatically optimizes images on push.
