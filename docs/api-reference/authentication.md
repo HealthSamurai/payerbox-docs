@@ -75,7 +75,7 @@ Used by Provider Access, Payer-to-Payer, and PAS. The client signs a JWT with it
 Before a client can request tokens, the payer admin registers it.
 
 1. **Partner** provides its JWKS to the payer — either by reference (a `jwks_uri` URL the payer fetches) or by value (inline JWKS supplied at registration). Per [SMART Backend Services — Registering a SMART Backend Service](https://hl7.org/fhir/smart-app-launch/STU2.2/backend-services.html#registering-a-smart-backend-service).
-2. **Payer admin** creates a Client resource in Aidbox referencing the partner's JWKS (`jwks_uri` or inline `jwks`), the allowed scopes (e.g. `system/Claim.cu system/ClaimResponse.r` for PAS, `system/*.read` for Provider Access), and access policies. See [Aidbox Application/Client Management](https://www.health-samurai.io/docs/aidbox/access-control/identity-management/application-client-management).
+2. **Payer admin** creates a Client resource in Aidbox referencing the partner's JWKS (`jwks_uri` or inline `jwks`), the allowed scopes (e.g. `system/Claim.cu system/ClaimResponse.r` for PAS, `system/*.read` for Provider Access), and access policies. See Aidbox docs on Application/Client Management for the Client resource shape.
 3. **Payer admin** returns the Client ID to the partner. For confidential clients without JWKS, a Client Secret is also issued.
 4. **Partner** signs a JWT assertion with its private key and exchanges it at `<base>/auth/token` (see Token request below). OAuth 2.0 Client Credentials with Client ID + Secret is accepted for internal integrations as a fallback.
 
