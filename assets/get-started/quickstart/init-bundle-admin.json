@@ -3,6 +3,29 @@
   "type": "transaction",
   "entry": [
     {
+      "request": {
+        "method": "POST",
+        "url": "/$fhir-package-install"
+      },
+      "resource": {
+        "resourceType": "Parameters",
+        "parameter": [
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-pas%402.0.1.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-dtr%402.0.1.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-crd%402.0.1.tar.gz"
+          }
+        ]
+      }
+    },
+    {
       "resource": {
         "resourceType": "FHIRSchema",
         "url": "http://aidbox.app/StructureDefinition/Client/created-by",
@@ -460,12 +483,37 @@
           },
           "secret-access-key": {
             "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "path-style": {
+            "type": "boolean"
+          },
+          "use-ssl": {
+            "type": "boolean"
           }
         }
       },
       "request": {
         "method": "PUT",
         "url": "FHIRSchema/AwsAccount"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AwsAccount",
+        "id": "minio",
+        "region": "us-east-1",
+        "access-key-id": "minioadmin",
+        "secret-access-key": "minioadmin",
+        "host": "minio:9000",
+        "path-style": true,
+        "use-ssl": false
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AwsAccount/minio"
       }
     },
     {
