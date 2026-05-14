@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 500"
-     width="1080" height="500" fill="none" preserveAspectRatio="xMidYMid meet"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 520"
+     width="1080" height="520" fill="none" preserveAspectRatio="xMidYMid meet"
      style="max-width:100%;height:auto;">
   <style>
     line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
@@ -13,86 +13,86 @@
   </style>
 
   <!-- LEFT: Provider EHR group (blue) with 3 sub-cards -->
-  <rect x="20" y="60" width="220" height="380" fill="#FFFFFF" stroke="#549FEA" stroke-width="2" rx="14"/>
-  <text x="130" y="92" text-anchor="middle" class="d-group-title-blue">Provider EHR</text>
+  <rect x="20" y="80" width="220" height="420" fill="#FFFFFF" stroke="#549FEA" stroke-width="2" rx="14"/>
+  <text x="130" y="112" text-anchor="middle" class="d-group-title-blue">Provider EHR</text>
 
-  <rect x="40" y="115" width="180" height="80" fill="#E5F2FF" rx="10"/>
-  <text x="130" y="148" text-anchor="middle" class="d-card-title">CDS Hooks client</text>
-  <text x="130" y="170" text-anchor="middle" class="d-card-sub">order-sign · order-select</text>
-  <text x="130" y="185" text-anchor="middle" class="d-card-sub">order-dispatch · appointment-book</text>
+  <rect x="40" y="140" width="180" height="100" fill="#E5F2FF" rx="10"/>
+  <text x="130" y="172" text-anchor="middle" class="d-card-title">CDS Hooks client</text>
+  <text x="130" y="200" text-anchor="middle" class="d-card-sub">order-sign · order-select</text>
+  <text x="130" y="218" text-anchor="middle" class="d-card-sub">order-dispatch · appointment-book</text>
 
-  <rect x="40" y="215" width="180" height="80" fill="#E5F2FF" rx="10"/>
-  <text x="130" y="248" text-anchor="middle" class="d-card-title">DTR launcher</text>
-  <text x="130" y="270" text-anchor="middle" class="d-card-sub">Opens the DTR SMART app</text>
-  <text x="130" y="285" text-anchor="middle" class="d-card-sub">via SMART App Launch</text>
+  <rect x="40" y="265" width="180" height="100" fill="#E5F2FF" rx="10"/>
+  <text x="130" y="297" text-anchor="middle" class="d-card-title">DTR launcher</text>
+  <text x="130" y="325" text-anchor="middle" class="d-card-sub">Opens the DTR SMART app</text>
+  <text x="130" y="343" text-anchor="middle" class="d-card-sub">via SMART App Launch</text>
 
-  <rect x="40" y="315" width="180" height="80" fill="#E5F2FF" rx="10"/>
-  <text x="130" y="348" text-anchor="middle" class="d-card-title">PAS client</text>
-  <text x="130" y="370" text-anchor="middle" class="d-card-sub">Submits Claim Bundle</text>
-  <text x="130" y="385" text-anchor="middle" class="d-card-sub">(FHIR or X12 278)</text>
+  <rect x="40" y="390" width="180" height="100" fill="#E5F2FF" rx="10"/>
+  <text x="130" y="422" text-anchor="middle" class="d-card-title">PAS client</text>
+  <text x="130" y="450" text-anchor="middle" class="d-card-sub">Submits Claim Bundle</text>
+  <text x="130" y="468" text-anchor="middle" class="d-card-sub">(FHIR or X12 278)</text>
 
   <!-- CENTER: Payerbox group (red) with 3 sub-cards -->
-  <rect x="420" y="60" width="240" height="380" fill="#FFFFFF" stroke="#EA4A35" stroke-width="2" rx="14"/>
-  <text x="540" y="92" text-anchor="middle" class="d-group-title-red">Payerbox</text>
+  <rect x="420" y="80" width="240" height="420" fill="#FFFFFF" stroke="#EA4A35" stroke-width="2" rx="14"/>
+  <text x="540" y="112" text-anchor="middle" class="d-group-title-red">Payerbox</text>
 
-  <rect x="440" y="115" width="200" height="80" fill="#FCEEEB" rx="10"/>
-  <text x="540" y="148" text-anchor="middle" class="d-card-title">CRD CDS service</text>
-  <text x="540" y="170" text-anchor="middle" class="d-card-sub">Receives hooks, forwards</text>
-  <text x="540" y="185" text-anchor="middle" class="d-card-sub">to decision service</text>
+  <rect x="440" y="140" width="200" height="100" fill="#FCEEEB" rx="10"/>
+  <text x="540" y="172" text-anchor="middle" class="d-card-title">CRD CDS service</text>
+  <text x="540" y="200" text-anchor="middle" class="d-card-sub">Receives hooks, forwards</text>
+  <text x="540" y="218" text-anchor="middle" class="d-card-sub">to decision service</text>
 
-  <rect x="440" y="215" width="200" height="80" fill="#FCEEEB" rx="10"/>
-  <text x="540" y="248" text-anchor="middle" class="d-card-title">DTR SMART app</text>
-  <text x="540" y="270" text-anchor="middle" class="d-card-sub">Renders Questionnaire, runs CQL.</text>
-  <text x="540" y="285" text-anchor="middle" class="d-card-sub">Loaded via $questionnaire-package</text>
+  <rect x="440" y="265" width="200" height="100" fill="#FCEEEB" rx="10"/>
+  <text x="540" y="297" text-anchor="middle" class="d-card-title">DTR SMART app</text>
+  <text x="540" y="325" text-anchor="middle" class="d-card-sub">Renders Questionnaire, runs CQL.</text>
+  <text x="540" y="343" text-anchor="middle" class="d-card-sub">Loaded via $questionnaire-package</text>
 
-  <rect x="440" y="315" width="200" height="80" fill="#FCEEEB" rx="10"/>
-  <text x="540" y="345" text-anchor="middle" class="d-card-title">PAS endpoint</text>
-  <text x="540" y="365" text-anchor="middle" class="d-card-sub">Claim/$submit, $inquire,</text>
-  <text x="540" y="380" text-anchor="middle" class="d-card-sub">Subscription notifications,</text>
-  <text x="540" y="392" text-anchor="middle" class="d-card-sub">X12 ↔ FHIR converter</text>
+  <rect x="440" y="390" width="200" height="100" fill="#FCEEEB" rx="10"/>
+  <text x="540" y="418" text-anchor="middle" class="d-card-title">PAS endpoint</text>
+  <text x="540" y="442" text-anchor="middle" class="d-card-sub">Claim/$submit, $inquire,</text>
+  <text x="540" y="460" text-anchor="middle" class="d-card-sub">Subscription notifications,</text>
+  <text x="540" y="478" text-anchor="middle" class="d-card-sub">X12 ↔ FHIR converter</text>
 
   <!-- RIGHT: Health Plan (or third-party) backend with 2 sub-cards -->
-  <rect x="840" y="60" width="220" height="380" fill="#FFFFFF" stroke="#D3DBE6" stroke-width="2" rx="14"/>
-  <text x="950" y="92" text-anchor="middle" class="d-group-title-neutral">Health Plan</text>
+  <rect x="840" y="80" width="220" height="420" fill="#FFFFFF" stroke="#D3DBE6" stroke-width="2" rx="14"/>
+  <text x="950" y="112" text-anchor="middle" class="d-group-title-neutral">Health Plan</text>
 
-  <rect x="860" y="115" width="180" height="80" fill="#F6F7F8" rx="10"/>
-  <text x="950" y="148" text-anchor="middle" class="d-card-title">Decision service</text>
-  <text x="950" y="170" text-anchor="middle" class="d-card-sub">Coverage rules,</text>
-  <text x="950" y="185" text-anchor="middle" class="d-card-sub">policies</text>
+  <rect x="860" y="140" width="180" height="100" fill="#F6F7F8" rx="10"/>
+  <text x="950" y="172" text-anchor="middle" class="d-card-title">Decision service</text>
+  <text x="950" y="200" text-anchor="middle" class="d-card-sub">Coverage rules,</text>
+  <text x="950" y="218" text-anchor="middle" class="d-card-sub">policies</text>
 
-  <rect x="860" y="315" width="180" height="80" fill="#F6F7F8" rx="10"/>
-  <text x="950" y="348" text-anchor="middle" class="d-card-title">UM system</text>
-  <text x="950" y="370" text-anchor="middle" class="d-card-sub">Adjudication,</text>
-  <text x="950" y="385" text-anchor="middle" class="d-card-sub">clinical reviewer</text>
+  <rect x="860" y="390" width="180" height="100" fill="#F6F7F8" rx="10"/>
+  <text x="950" y="422" text-anchor="middle" class="d-card-title">UM system</text>
+  <text x="950" y="450" text-anchor="middle" class="d-card-sub">Adjudication,</text>
+  <text x="950" y="468" text-anchor="middle" class="d-card-sub">clinical reviewer</text>
 
-  <!-- Stage 1: CRD (between row 1 of each group) -->
-  <line x1="220" y1="155" x2="418" y2="155" stroke="#353B50" stroke-width="1"/>
-  <polygon points="420,155 412,151 412,159" fill="#353B50"/>
-  <rect x="290" y="149" width="60" height="12" fill="#FFFFFF"/>
-  <text x="320" y="159" text-anchor="middle" class="d-stage-tag">CRD</text>
+  <!-- Stage 1: CRD (sub-card mid y=190) -->
+  <line x1="220" y1="190" x2="418" y2="190" stroke="#353B50" stroke-width="1"/>
+  <polygon points="420,190 412,186 412,194" fill="#353B50"/>
+  <rect x="290" y="184" width="60" height="12" fill="#FFFFFF"/>
+  <text x="320" y="194" text-anchor="middle" class="d-stage-tag">CRD</text>
 
-  <line x1="660" y1="155" x2="838" y2="155" stroke="#353B50" stroke-width="1"/>
-  <polygon points="840,155 832,151 832,159" fill="#353B50"/>
+  <line x1="660" y1="190" x2="838" y2="190" stroke="#353B50" stroke-width="1"/>
+  <polygon points="840,190 832,186 832,194" fill="#353B50"/>
 
-  <!-- Stage 2: DTR (EHR <-> Payerbox only; questionnaire library lives in Payerbox, no external call) -->
-  <line x1="220" y1="255" x2="418" y2="255" stroke="#353B50" stroke-width="1"/>
-  <polygon points="420,255 412,251 412,259" fill="#353B50"/>
-  <rect x="290" y="249" width="60" height="12" fill="#FFFFFF"/>
-  <text x="320" y="259" text-anchor="middle" class="d-stage-tag">DTR</text>
+  <!-- Stage 2: DTR — EHR ↔ Payerbox only (no external call) -->
+  <line x1="220" y1="315" x2="418" y2="315" stroke="#353B50" stroke-width="1"/>
+  <polygon points="420,315 412,311 412,319" fill="#353B50"/>
+  <rect x="290" y="309" width="60" height="12" fill="#FFFFFF"/>
+  <text x="320" y="319" text-anchor="middle" class="d-stage-tag">DTR</text>
 
   <!-- Stage 3: PAS forward (EHR -> Payerbox) -->
-  <line x1="220" y1="345" x2="418" y2="345" stroke="#353B50" stroke-width="1"/>
-  <polygon points="420,345 412,341 412,349" fill="#353B50"/>
-  <rect x="290" y="339" width="60" height="12" fill="#FFFFFF"/>
-  <text x="320" y="349" text-anchor="middle" class="d-stage-tag">PAS</text>
+  <line x1="220" y1="430" x2="418" y2="430" stroke="#353B50" stroke-width="1"/>
+  <polygon points="420,430 412,426 412,434" fill="#353B50"/>
+  <rect x="290" y="424" width="60" height="12" fill="#FFFFFF"/>
+  <text x="320" y="434" text-anchor="middle" class="d-stage-tag">PAS</text>
 
   <!-- Stage 3: PAS return notification (Payerbox -> EHR via FHIR Subscription) -->
-  <line x1="420" y1="365" x2="222" y2="365" stroke="#353B50" stroke-width="1"/>
-  <polygon points="220,365 228,361 228,369" fill="#353B50"/>
-  <rect x="258" y="359" width="124" height="12" fill="#FFFFFF"/>
-  <text x="320" y="369" text-anchor="middle" class="d-conn-op">Subscription notification</text>
+  <line x1="420" y1="455" x2="222" y2="455" stroke="#353B50" stroke-width="1"/>
+  <polygon points="220,455 228,451 228,459" fill="#353B50"/>
+  <rect x="258" y="449" width="124" height="12" fill="#FFFFFF"/>
+  <text x="320" y="459" text-anchor="middle" class="d-conn-op">Subscription notification</text>
 
   <!-- Stage 3: Payerbox -> UM system -->
-  <line x1="660" y1="355" x2="838" y2="355" stroke="#353B50" stroke-width="1"/>
-  <polygon points="840,355 832,351 832,359" fill="#353B50"/>
+  <line x1="660" y1="440" x2="838" y2="440" stroke="#353B50" stroke-width="1"/>
+  <polygon points="840,440 832,436 832,444" fill="#353B50"/>
 </svg>
