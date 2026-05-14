@@ -290,26 +290,6 @@ Quote text here.
 {% endquote %}
 ```
 
-### Swagger (API endpoint block)
-
-For inline endpoint documentation outside the main `api-reference/operations/*` reference pages (e.g. small ad-hoc examples on a pillar page). Reference pages use full Parameters tables instead.
-
-```markdown
-{% swagger method="post" path="/Claim/$submit" baseUrl="https://payerbox.example.com" summary="Submit PAS request" %}
-{% swagger-description %}
-Submits a Claim Bundle for prior authorization review.
-{% endswagger-description %}
-
-{% swagger-parameter in="header" name="Authorization" type="string" required="true" %}
-Bearer token (SMART Backend Services).
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="Successful submission" %}
-ClaimResponse Bundle with disposition.
-{% endswagger-response %}
-{% endswagger %}
-```
-
 ## Available Commands
 
 ```
