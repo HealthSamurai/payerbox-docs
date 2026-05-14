@@ -1,6 +1,6 @@
 # Prior Auth (ePA) APIs
 
-![Prior Authorization flow: payer UM System on the left exchanges Prior Auth with Payerbox; on the right, Payerbox exposes Prior Auth API, Prior Auth, and SMART App to Healthcare Providers' ePA Requests and ePA Decisions panel.](../../assets/prior-auth/prior-auth-flow.png)
+![Prior Authorization flow: payer UM System on the left exchanges Prior Auth with Payerbox; on the right, Payerbox exposes Prior Auth API, Prior Auth, and SMART App to Healthcare Providers' ePA Requests and ePA Decisions panel.](../../assets/prior-auth/prior-auth-flow.avif)
 
 Da Vinci electronic Prior Authorization stack. CMS-0057-F requires a FHIR-based Prior Authorization API by January 1, 2027. Payerbox implements the Da Vinci CRD, DTR, and PAS Implementation Guides — see [Compliance / CMS-0057](../compliance/cms-0057.md).
 
