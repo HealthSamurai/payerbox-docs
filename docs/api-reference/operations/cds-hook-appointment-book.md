@@ -6,7 +6,7 @@ description: appointment-book CDS Hook — fires when an appointment is being sc
 
 The `appointment-book` hook fires when a user is scheduling one or more future appointments for a patient. It allows CDS services to provide coverage and prior authorization guidance while appointments are being proposed or booked — including recommendations about scheduling, required documentation, or coverage limitations.
 
-Defined by the [CDS Hooks appointment-book specification](https://cds-hooks.hl7.org/hooks/appointment-book/). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per [Da Vinci CRD STU 2.0.1](https://hl7.org/fhir/us/davinci-crd/STU2.0.1/).
+Defined by the [CDS Hooks appointment-book specification](https://cds-hooks.hl7.org/hooks/appointment-book/). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per the [Da Vinci CRD IG](https://hl7.org/fhir/us/davinci-crd/).
 
 ## Endpoint
 

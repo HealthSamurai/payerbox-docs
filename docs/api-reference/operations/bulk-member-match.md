@@ -1,6 +1,6 @@
 # $bulk-member-match
 
-Operation defined by [Da Vinci PDex STU 2.1.0](https://hl7.org/fhir/us/davinci-pdex/STU2.1/) for **Payer-to-Payer** member matching. The receiving payer submits a list of new members with demographics and prior coverage references; the responding (former) payer matches and returns three Group resources.
+Operation defined by the [Da Vinci PDex IG](https://hl7.org/fhir/us/davinci-pdex/) for **Payer-to-Payer** member matching. The receiving payer submits a list of new members with demographics and prior coverage references; the responding (former) payer matches and returns three Group resources.
 
 Supports both **synchronous** and **asynchronous** modes.
 

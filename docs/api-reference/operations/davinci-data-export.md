@@ -1,6 +1,6 @@
 # $davinci-data-export
 
-Operation defined by [Da Vinci PDex STU 2.1.0](https://hl7.org/fhir/us/davinci-pdex/STU2.1/OperationDefinition-davinci-data-export.html) for bulk export of member data. Extends the FHIR [Bulk Data `$export`](https://hl7.org/fhir/uv/bulkdata/STU2/export.html) with an `exportType` parameter that controls consent rules and data scope.
+Operation defined by the [Da Vinci ATR IG](http://hl7.org/fhir/us/davinci-atr/) and referenced by [Da Vinci PDex](https://hl7.org/fhir/us/davinci-pdex/) for bulk export of member data. Extends the FHIR [Bulk Data `$export`](https://hl7.org/fhir/uv/bulkdata/) with an `exportType` parameter that controls consent rules and data scope.
 
 Used by Provider Access and Payer-to-Payer to pull data for a Group of members produced by [`$provider-member-match`](provider-member-match.md) or [`$bulk-member-match`](bulk-member-match.md).
 

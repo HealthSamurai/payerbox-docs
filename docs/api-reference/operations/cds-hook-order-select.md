@@ -6,7 +6,7 @@ description: order-select CDS Hook — fires when a clinician selects orders fro
 
 The `order-select` hook fires when a clinician selects one or more orders from a list of potential orders for a patient. It occurs while the clinician is still in the process of selecting orders to include in the current ordering session, before they are finalized. The context contains all draft orders being considered, plus a `selections` array indicating which specific orders have been selected.
 
-Defined by the [CDS Hooks order-select specification](https://cds-hooks.hl7.org/hooks/STU1/order-select.html). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per [Da Vinci CRD STU 2.0.1](https://hl7.org/fhir/us/davinci-crd/STU2.0.1/).
+Defined by the [CDS Hooks order-select specification](https://cds-hooks.hl7.org/hooks/STU1/order-select.html). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per the [Da Vinci CRD IG](https://hl7.org/fhir/us/davinci-crd/).
 
 ## Endpoint
 

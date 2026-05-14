@@ -6,7 +6,7 @@ description: order-sign CDS Hook — fires when a clinician is about to sign one
 
 The `order-sign` hook fires when a clinician is ready to sign one or more orders for a patient (medications, procedures, labs, and others). It is among the last workflow events before an order is promoted out of a `draft` status. The context contains all order details (dose, quantity, route, etc.), although the orders are still in draft.
 
-Defined by the [CDS Hooks order-sign specification](https://cds-hooks.hl7.org/hooks/STU1/order-sign.html). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per [Da Vinci CRD STU 2.0.1](https://hl7.org/fhir/us/davinci-crd/STU2.0.1/).
+Defined by the [CDS Hooks order-sign specification](https://cds-hooks.hl7.org/hooks/STU1/order-sign.html). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per the [Da Vinci CRD IG](https://hl7.org/fhir/us/davinci-crd/).
 
 ## Endpoint
 

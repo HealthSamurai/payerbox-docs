@@ -6,7 +6,7 @@ description: order-dispatch CDS Hook — fires when an order is dispatched to a 
 
 The `order-dispatch` hook fires when a user is dispatching one or more orders to a specific performer (e.g., a pharmacy, lab, or imaging center). It occurs after orders have been signed and allows CDS services to provide coverage and prior authorization guidance based on the selected performer.
 
-Defined by the [CDS Hooks order-dispatch specification](https://cds-hooks.hl7.org/hooks/order-dispatch/). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per [Da Vinci CRD STU 2.0.1](https://hl7.org/fhir/us/davinci-crd/STU2.0.1/).
+Defined by the [CDS Hooks order-dispatch specification](https://cds-hooks.hl7.org/hooks/order-dispatch/). Implemented by Payerbox for [CRD](../../prior-auth/crd.md) per the [Da Vinci CRD IG](https://hl7.org/fhir/us/davinci-crd/).
 
 ## Endpoint
 

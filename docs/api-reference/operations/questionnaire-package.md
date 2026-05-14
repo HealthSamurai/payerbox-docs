@@ -1,10 +1,10 @@
 ---
-description: $questionnaire-package operation reference — Da Vinci DTR STU 2.0.0
+description: $questionnaire-package operation reference — Da Vinci DTR.
 ---
 
 # $questionnaire-package
 
-Operation defined by [Da Vinci DTR STU 2.0.0](https://hl7.org/fhir/us/davinci-dtr/STU2/OperationDefinition-questionnaire-package.html) for packaging a Questionnaire together with its referenced ValueSets and a pre-populated draft QuestionnaireResponse, returned as a single Bundle.
+Operation defined by the [Da Vinci DTR IG](https://hl7.org/fhir/us/davinci-dtr/) for packaging a Questionnaire together with its referenced ValueSets and a pre-populated draft QuestionnaireResponse, returned as a single Bundle.
 
 A DTR client calls this operation to retrieve everything needed to render a payer's questionnaire — Questionnaire definition, expanded ValueSets, and a draft QuestionnaireResponse with prefilled answers — without making additional requests to the server.
 

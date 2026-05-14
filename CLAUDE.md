@@ -76,6 +76,7 @@ Must not include:
 - Full Parameters tables (lives in reference)
 - All Response variants or error codes (lives in reference)
 - Authentication onboarding flow (lives in `authentication.md`)
+- Regulatory anchor tables — CFR citations, compliance dates, response-time SLAs, member-education timelines. In the page's opening paragraph (right after the H1) hyperlink the rule name to its `compliance/*` page and state the compliance deadline. No second clause describing what lives in compliance ("full regulatory detail …", "for CFR citations see …") — the hyperlink is the link.
 
 External systems referenced from a pillar (e.g. CRD's Decision Service via `CDS_DECISION_SERVICE_URL`) stay in the pillar — they explain architecture, not the endpoint contract.
 

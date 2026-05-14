@@ -1,10 +1,10 @@
 ---
-description: PAS Claim/$inquire operation reference — Da Vinci PAS STU 2.1.0
+description: PAS Claim/$inquire operation reference — Da Vinci PAS.
 ---
 
 # Claim/$inquire
 
-Checks the status of a previously submitted prior authorization request, defined by [Da Vinci PAS STU 2.1.0](https://hl7.org/fhir/us/davinci-pas/STU2.1/OperationDefinition-Claim-inquiry.html). The response is a FHIR Bundle containing the latest `ClaimResponse`, or an `OperationOutcome` on error.
+Checks the status of a previously submitted prior authorization request, defined by the [Da Vinci PAS IG](https://hl7.org/fhir/us/davinci-pas/). The response is a FHIR Bundle containing the latest `ClaimResponse`, or an `OperationOutcome` on error.
 
 ## Endpoint
 

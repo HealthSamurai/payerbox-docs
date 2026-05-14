@@ -1,10 +1,10 @@
 ---
-description: PAS Claim/$submit operation reference — Da Vinci PAS STU 2.1.0
+description: PAS Claim/$submit operation reference — Da Vinci PAS.
 ---
 
 # Claim/$submit
 
-Submits a prior authorization request as a FHIR Bundle for adjudication, defined by [Da Vinci PAS STU 2.1.0](https://hl7.org/fhir/us/davinci-pas/STU2.1/OperationDefinition-Claim-submit.html). The response is a FHIR Bundle containing a `ClaimResponse`, or an `OperationOutcome` on error.
+Submits a prior authorization request as a FHIR Bundle for adjudication, defined by the [Da Vinci PAS IG](https://hl7.org/fhir/us/davinci-pas/). The response is a FHIR Bundle containing a `ClaimResponse`, or an `OperationOutcome` on error.
 
 The Da Vinci PAS Request Bundle profile requires exactly one focal `Claim` per Bundle — the underlying X12 278 transaction carries one prior authorization per BHT. To submit multiple prior authorizations, make multiple `Claim/$submit` calls.
 
