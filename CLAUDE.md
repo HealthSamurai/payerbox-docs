@@ -65,6 +65,7 @@ Must include:
 - H1 = human name of the API (no backticks, no `$op-name`)
 - Overview: what it is, who uses it, how it fits the stack (e.g. CRD → DTR → PAS)
 - Architectural / sequence diagram if helpful
+- **"What Payerbox covers"** — 3–6 bullets of concrete product capabilities (IGs preconfigured, operations exposed, ingestion adapters, audit logging, etc.). Position right after the intro paragraph and the flow diagram, **before** auth/paths/operations sections. Reader sees product scope before protocol detail.
 - Path-choice table when alternatives exist (e.g. DTR SMART App vs `$questionnaire-package`)
 - Lifecycle / flow overview
 - For each key flow step: one Request+Response pair in `{% tabs %}`, JSON payloads, ≤30 lines each — to convey shape, not depth
@@ -76,11 +77,20 @@ Must not include:
 - Full Parameters tables (lives in reference)
 - All Response variants or error codes (lives in reference)
 - Authentication onboarding flow (lives in `authentication.md`)
-- Regulatory anchor tables — CFR citations, compliance dates, response-time SLAs, member-education timelines. In the page's opening paragraph (right after the H1) hyperlink the rule name to its `compliance/*` page and state the compliance deadline. No second clause describing what lives in compliance ("full regulatory detail …", "for CFR citations see …") — the hyperlink is the link.
+- Regulatory anchor tables **or inline CFR citations in body prose** — CFR citations (`(42 CFR 422.121)`, `per 45 CFR 156.222`), compliance dates, response-time SLAs, member-education timelines. In the page's opening paragraph (right after the H1) hyperlink the rule name to its `compliance/*` page and state the compliance deadline. No second clause describing what lives in compliance ("full regulatory detail …", "for CFR citations see …") — the hyperlink is the link. No inline parenthetical citations anywhere else on the page.
 
 External systems referenced from a pillar (e.g. CRD's Decision Service via `CDS_DECISION_SERVICE_URL`) stay in the pillar — they explain architecture, not the endpoint contract.
 
 `docs/compliance/*` is neither pillar nor reference — regulatory citation only, with CFR/CMS anchors and links to relevant pillar/reference pages.
+
+## Verifying spec claims before publishing
+
+When a page makes a factual claim about an IG, an operation, or implementation behavior, the claim must be checked against the source before merge — not paraphrased from a competitor's docs or extrapolated from a generic FHIR pattern.
+
+- **Operation invocation level.** Verify whether an operation is invoked at system (`POST <base>/fhir/$op`), type (`POST <base>/fhir/Resource/$op`), or instance (`POST <base>/fhir/Resource/[id]/$op`) level by reading the OperationDefinition's `system` / `type` / `instance` boolean fields. Don't guess from naming.
+- **Operation IG attribution.** Some operations are defined in one IG and referenced by another — for example, `$davinci-data-export` is defined in the Da Vinci ATR IG and referenced by PDex. Write "defined in X and referenced by Y" rather than collapsing to "defined in PDex".
+- **Error response tables.** Enumerate only HTTP status codes and `OperationOutcome` codes the codebase actually emits. Don't import generic FHIR Bulk Data error patterns. If implementation isn't accessible, omit the table — pillar pages should defer to reference for error details anyway (see the Pillar / Reference split above).
+- **Implementation-specific behavior** (cleanup intervals, validity windows, default scopes, opt-out capture channels). Mark it explicitly as Payerbox / interop-app behavior, not as a spec requirement. Don't blur "the IG requires X" with "Payerbox implements X with these defaults".
 
 ## Writing Documentation
 
@@ -159,6 +169,16 @@ graph LR
 ```
 
 Class definitions are auto-injected — do not write `classDef` lines manually.
+
+### Inline SVG architecture / flow diagrams
+
+For new architecture or data-flow diagrams, use inline SVG in the house style — three semantic tiers (red `#EA4A35` for Payerbox / our product, blue `#549FEA` for optional / third-party, neutral `#D3DBE6` / `#F6F7F8` for external systems), Inter font, solid 1px connectors with `vector-effect: non-scaling-stroke`. Full style guide lives in the `diagrams-draw` skill (currently in agent worktrees: `.claude/worktrees/*/skills/diagrams-draw/SKILL.md`).
+
+Before committing, verify the rendered diagram:
+
+- **No connector label overlapping its own line.** When a label is wider than a comfortable gap between line segments, prefer a `<rect fill="#FFFFFF">` mask sized to the label behind the text — the line stays solid; the rect punches it where the label sits. Cleaner than splitting the line, less fragile geometry.
+- **Arrows between vertically- or horizontally-aligned boxes centered on the shared visual axis.** If two boxes are both centered at `x=480`, the connecting line must be at `x=480` too. Off-axis connectors read as misalignment.
+- **No card text clipping or overflow.** Read the rendered SVG (Read tool on the page screenshot, or open the SVG directly) after writing.
 
 ### Markdown Rules
 
