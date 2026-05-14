@@ -37,7 +37,7 @@ Both rules apply to the same payer set, with one carve-out for Provider Director
 | Payer-to-Payer | CMS-0057-F | January 1, 2027 |
 | Prior Authorization API | CMS-0057-F | January 1, 2027 |
 | Prior-authorization decision timeframes (7-day standard / 72-hour expedited) | CMS-0057-F | January 1, 2026 |
-| First annual prior-authorization metrics report | CMS-0057-F | March 31, 2026 (covering CY 2025) |
+| First annual reports — public prior-auth metrics and confidential Patient Access API metrics | CMS-0057-F | March 31, 2026 (covering CY 2025) |
 
 For Medicaid MCOs and CHIP MCEs, CMS-0057-F API deadlines apply to contracts with rating periods beginning on or after January 1, 2027. For QHP issuers on the FFE, they apply to the first plan year beginning on or after January 1, 2027.
 

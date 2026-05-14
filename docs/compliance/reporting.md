@@ -1,22 +1,24 @@
 ---
-description: CMS-0057-F requires impacted payers to publish aggregated prior-authorization metrics on their public website annually, beginning March 31, 2026 (covering CY 2025).
+description: CMS-0057-F imposes two annual reporting obligations on impacted payers — public prior-authorization metrics on the payer's website, and confidential Patient Access API metrics to CMS. Both first due March 31, 2026 (covering CY 2025).
 ---
 
 # Reporting
 
-Impacted payers must publish a fixed set of prior-authorization metrics on a publicly accessible page of their website. The requirement comes from [CMS-0057-F](cms-0057.md) and is separate from any FHIR API implementation.
+[CMS-0057-F](cms-0057.md) imposes two distinct annual reporting obligations on impacted payers. Both have the same first-report deadline: **March 31, 2026** (covering CY 2025).
 
-## Cadence
+## Public prior-authorization metrics
+
+Posted on a publicly accessible page of the payer's website, no login. Excludes drugs.
 
 | Property | Value |
 |---|---|
 | First report due | March 31, 2026 |
 | First report covers | Calendar year 2025 |
-| Ongoing cadence | Annually, by March 31 of each year, covering the prior calendar year |
-| Where | Publicly accessible page on the payer's own website (no login) |
-| Drugs | Excluded — metrics cover non-drug prior authorizations only |
+| Cadence | Annually, by March 31, covering the prior calendar year |
+| Where | Publicly accessible page on the payer's own website |
+| Drugs | Excluded |
 
-## Required metrics
+### Required metrics
 
 Aggregated across all items and services the payer requires prior authorization for:
 
@@ -30,6 +32,24 @@ Aggregated across all items and services the payer requires prior authorization 
 | Median decision time — standard requests | From submission to determination |
 | Average decision time — expedited requests | From submission to determination |
 | Median decision time — expedited requests | From submission to determination |
+
+## Confidential Patient Access API metrics
+
+Reported privately to CMS as aggregated, de-identified data — not posted publicly.
+
+| Property | Value |
+|---|---|
+| First report due | March 31, 2026 |
+| First report covers | Calendar year 2025 |
+| Cadence | Annually |
+| Where | To CMS, in aggregated de-identified form |
+
+### Required metrics
+
+| Metric | Description |
+|---|---|
+| Unique patients whose data was transferred via the Patient Access API | To a health app designated by the patient |
+| Unique patients whose data was transferred more than once | To a health app designated by the patient |
 
 ## Who reports
 
