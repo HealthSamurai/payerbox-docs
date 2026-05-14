@@ -1,0 +1,1060 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "FHIRSchema",
+        "url": "http://aidbox.app/StructureDefinition/Client/created-by",
+        "id": "client-created-by",
+        "base": "Extension",
+        "name": "client-created-by",
+        "kind": "complex-type",
+        "type": "Extension",
+        "version": "0.0.1",
+        "elements": {
+          "url": {
+            "fixed": "http://aidbox.app/StructureDefinition/Client/created-by"
+          },
+          "value": {
+            "choices": [
+              "valueReference"
+            ]
+          },
+          "valueReference": {
+            "type": "Reference",
+            "refers": [
+              "User"
+            ],
+            "choiceOf": "value"
+          }
+        },
+        "derivation": "constraint"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "FHIRSchema/client-created-by"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Client.created-by",
+        "url": "http://aidbox.app/StructureDefinition/Client/created-by",
+        "name": "created-by",
+        "status": "active",
+        "code": "created-by",
+        "base": [
+          "Client"
+        ],
+        "type": "token",
+        "description": "Client created-by User",
+        "expression": "Client.meta.extension.where(url='http://aidbox.app/StructureDefinition/Client/created-by').value.Reference.id"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "SearchParameter/Client.created-by"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "FHIRSchema",
+        "url": "http://aidbox.app/StructureDefinition/Client/status",
+        "id": "client-status",
+        "base": "Extension",
+        "name": "client-status",
+        "kind": "complex-type",
+        "type": "Extension",
+        "version": "0.0.2",
+        "elements": {
+          "url": {
+            "fixed": "http://aidbox.app/StructureDefinition/Client/status"
+          },
+          "value": {
+            "choices": [
+              "valueCode"
+            ]
+          },
+          "valueCode": {
+            "type": "code",
+            "choiceOf": "value",
+            "constraints": {
+              "enum-client-status": {
+                "severity": "error",
+                "expression": "%context.subsetOf('draft' | 'review' | 'active' | 'rejected')"
+              }
+            }
+          }
+        },
+        "derivation": "constraint"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "FHIRSchema/client-status"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Client.status",
+        "url": "http://aidbox.app/StructureDefinition/Client/status",
+        "name": "status",
+        "status": "active",
+        "code": "status",
+        "base": [
+          "Client"
+        ],
+        "type": "token",
+        "description": "Client status (draft, review, active, rejected)",
+        "expression": "Client.meta.extension.where(url='http://aidbox.app/StructureDefinition/Client/status').value.code"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "SearchParameter/Client.status"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Client",
+        "id": "smartbox-admin-portal",
+        "first_party": true,
+        "grant_types": [
+          "code"
+        ],
+        "scope": [
+          "openid",
+          "profile",
+          "email"
+        ],
+        "auth": {
+          "authorization_code": {
+            "redirect_uri": "http://localhost:8095/api/admin/auth/callback",
+            "access_token_expiration": 3600,
+            "token_format": "jwt",
+            "pkce": true,
+            "refresh_token": true,
+            "refresh_token_expiration": 86400
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Client/smartbox-admin-portal"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Client",
+        "id": "admin-api",
+        "secret": "admin-api-secret-change-in-production",
+        "grant_types": [
+          "client_credentials"
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Client/admin-api"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-api",
+        "engine": "matcho",
+        "description": "Scoped access for admin API client (sessions, orgs, clients, users, tos/privacy)",
+        "matcho": {
+          "client": {
+            "id": "admin-api"
+          },
+          "$one-of": [
+            {
+              "params": {
+                "resource/type": "Session"
+              },
+              "operation": {
+                "id": {
+                  "$one-of": [
+                    "FhirCreate",
+                    "FhirSearch",
+                    "FhirRead",
+                    "FhirUpdate",
+                    "FhirPatch"
+                  ]
+                }
+              }
+            },
+            {
+              "params": {
+                "resource/type": "Organization"
+              },
+              "operation": {
+                "id": {
+                  "$one-of": [
+                    "FhirSearch",
+                    "FhirRead"
+                  ]
+                }
+              }
+            },
+            {
+              "params": {
+                "resource/type": "Client"
+              },
+              "operation": {
+                "id": {
+                  "$one-of": [
+                    "FhirSearch",
+                    "FhirRead"
+                  ]
+                }
+              }
+            },
+            {
+              "params": {
+                "resource/type": "User"
+              },
+              "operation": {
+                "id": "FhirRead"
+              }
+            },
+            {
+              "params": {
+                "resource/type": "DocumentReference",
+                "resource/id": {
+                  "$one-of": [
+                    "smartbox-tos",
+                    "smartbox-privacy"
+                  ]
+                }
+              },
+              "operation": {
+                "id": {
+                  "$one-of": [
+                    "FhirRead",
+                    "FhirUpdate",
+                    "FhirCreate"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-api"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-license-activation",
+        "engine": "matcho",
+        "description": "Allow unauthenticated access to license activation endpoints",
+        "matcho": {
+          "uri": {
+            "$one-of": [
+              "/api/v1/license/activate",
+              "/api/v1/license/status",
+              "/"
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/allow-license-activation"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-read-settings",
+        "engine": "matcho",
+        "description": "Allow admin-api client to read Aidbox settings",
+        "matcho": {
+          "client": {
+            "id": "admin-api"
+          },
+          "uri": {
+            "$one-of": [
+              "/api/v1/settings/introspect",
+              "^/api/v1/settings/.*"
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/allow-read-settings"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Communication.about",
+        "url": "http://smartbox.hs/sp/Communication-about",
+        "name": "communication-about",
+        "status": "active",
+        "code": "about",
+        "base": [
+          "Communication"
+        ],
+        "type": "reference",
+        "description": "Search Communication by Communication.about (any reference, incl. Aidbox system resources)",
+        "expression": "Communication.about"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "SearchParameter/Communication.about"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Session.client",
+        "url": "http://smartbox.hs/sp/Session-client",
+        "name": "session-client",
+        "status": "active",
+        "code": "client",
+        "base": [
+          "Session"
+        ],
+        "type": "reference",
+        "description": "Search Session by client reference",
+        "expression": "Session.client",
+        "target": [
+          "Client"
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "SearchParameter/Session.client"
+      }
+    },
+    {
+      "resource": {
+        "roles": [
+          {
+            "type": "admin"
+          }
+        ]
+      },
+      "request": {
+        "method": "PATCH",
+        "url": "User/admin"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/patient-can-get-launch-uri"
+      },
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "patient-can-get-launch-uri",
+        "type": "rpc",
+        "engine": "matcho-rpc",
+        "rpc": {
+          "aidbox.smart/get-launch-uri": {
+            "user": {
+              "fhirUser": {
+                "resourceType": "Patient"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/smart-app-can-read-patient-api"
+      },
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "smart-app-can-read-patient-api",
+        "engine": "matcho",
+        "matcho": {
+          "jwt": {
+            "atv": 2,
+            "scope": "present?",
+            "context": {
+              "patient": "present?"
+            }
+          },
+          "client": {
+            "type": "smart-app",
+            "active": true
+          }
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "smartbox-tos",
+        "status": "current",
+        "type": {
+          "text": "Terms of Service"
+        },
+        "category": [
+          {
+            "text": "legal"
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "text/html"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "DocumentReference/smartbox-tos"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "smartbox-privacy",
+        "status": "current",
+        "type": {
+          "text": "Privacy Policy"
+        },
+        "category": [
+          {
+            "text": "legal"
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "text/html"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "DocumentReference/smartbox-privacy"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "FHIRSchema",
+        "url": "http://smartbox.hs/StructureDefinition/AwsAccount",
+        "id": "AwsAccount",
+        "name": "AwsAccount",
+        "type": "AwsAccount",
+        "kind": "resource",
+        "derivation": "specialization",
+        "elements": {
+          "region": {
+            "type": "string"
+          },
+          "access-key-id": {
+            "type": "string"
+          },
+          "secret-access-key": {
+            "type": "string"
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "FHIRSchema/AwsAccount"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "FHIRSchema",
+        "url": "http://smartbox.hs/StructureDefinition/GcpServiceAccount",
+        "id": "GcpServiceAccount",
+        "name": "GcpServiceAccount",
+        "type": "GcpServiceAccount",
+        "kind": "resource",
+        "derivation": "specialization",
+        "elements": {
+          "private-key": {
+            "type": "string"
+          },
+          "service-account-email": {
+            "type": "string"
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "FHIRSchema/GcpServiceAccount"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuthConfig",
+        "id": "smartbox",
+        "theme": {
+          "styleUrl": "http://localhost:3001/auth.css"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AuthConfig/smartbox"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin access to Client resources",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "Client"
+          }
+        },
+        "id": "admin-role-client",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-client"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin search and read Session resources",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "Session"
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-session",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-session"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin access to Organization resources",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "Organization"
+          }
+        },
+        "id": "admin-role-organization",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-organization"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin read Patient with ORGBAC",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "Patient"
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead",
+                "orgbac-fhir-search",
+                "orgbac-fhir-read"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-patient",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-patient"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin read User with ORGBAC",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "User"
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead",
+                "orgbac-fhir-search",
+                "orgbac-fhir-read"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-user",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-user"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin read Group with ORGBAC",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "Group"
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead",
+                "orgbac-fhir-search",
+                "orgbac-fhir-read"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-group",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-group"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin manage DocumentReference",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "DocumentReference"
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead",
+                "FhirUpdate"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-document-reference",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-document-reference"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin access to settings endpoints",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "request": {
+            "uri": {
+              "$one-of": [
+                "/api/v1/settings/introspect",
+                "^/api/v1/settings/.*"
+              ]
+            }
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead",
+                "FhirUpdate"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-settings-introspect",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-settings-introspect"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin access to AwsAccount resources",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "AwsAccount"
+          }
+        },
+        "id": "admin-role-aws-account",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-aws-account"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin access to GcpServiceAccount resources",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "GcpServiceAccount"
+          }
+        },
+        "id": "admin-role-gcp-service-account",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-gcp-service-account"
+      }
+    },
+    {
+      "resource": {
+        "engine": "matcho",
+        "description": "Admin search and read AuditEvent resources",
+        "matcho": {
+          "user": {
+            "roles": [
+              {
+                "type": "admin"
+              }
+            ]
+          },
+          "params": {
+            "resource/type": "AuditEvent"
+          },
+          "operation": {
+            "id": {
+              "$one-of": [
+                "FhirSearch",
+                "FhirRead"
+              ]
+            }
+          }
+        },
+        "id": "admin-role-audit-event",
+        "resourceType": "AccessPolicy"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-audit-event"
+      }
+    },
+    {
+      "resource": {
+        "roles": [
+          {
+            "type": "admin"
+          }
+        ],
+        "password": "$s0$f0801$B3jOpXU2PUyd3iHLOi1qnw==$AJkfwK1Xu+dYkXWS5dRtrJK2CR3ztWos7NuNDIdtVAU=",
+        "id": "portal-admin",
+        "resourceType": "User"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "User/portal-admin"
+      }
+    },
+    {
+      "resource": {
+        "url": "http://aidbox.app/StructureDefinition/AuditEvent/client",
+        "id": "AuditEvent.client",
+        "base": [
+          "AuditEvent"
+        ],
+        "expression": "AuditEvent.agent.who.identifier.value",
+        "name": "client",
+        "status": "active",
+        "type": "token",
+        "resourceType": "SearchParameter",
+        "code": "client",
+        "description": "Filter AuditEvent by client identifier (agent.who.identifier.value)"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "SearchParameter/AuditEvent.client"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/$fhir-package-install"
+      },
+      "resource": {
+        "resourceType": "Parameters",
+        "parameter": [
+          {
+            "name": "package",
+            "valueString": "hl7.fhir.us.core@6.1.0"
+          },
+          {
+            "name": "package",
+            "valueString": "hl7.fhir.us.carin-bb@2.0.0"
+          },
+          {
+            "name": "package",
+            "valueString": "hl7.fhir.us.davinci-pdex@2.0.0"
+          },
+          {
+            "name": "package",
+            "valueString": "hl7.fhir.us.davinci-drug-formulary@2.0.1"
+          },
+          {
+            "name": "package",
+            "valueString": "hl7.fhir.us.davinci-pdex-plan-net@1.1.0"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-pas%402.0.1.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-dtr%402.0.1.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-crd%402.0.1.tar.gz"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/Client/prior-auth-app"
+      },
+      "resource": {
+        "resourceType": "Client",
+        "id": "prior-auth-app",
+        "secret": "secret",
+        "grant_types": [
+          "basic"
+        ]
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/AccessPolicy/allow-prior-auth-app"
+      },
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-prior-auth-app",
+        "engine": "allow",
+        "link": [
+          {
+            "reference": "Client/prior-auth-app"
+          }
+        ]
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/SearchParameter/Group-active"
+      },
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Group-active",
+        "url": "http://hl7.org/fhir/SearchParameter/Group-active",
+        "name": "active",
+        "status": "active",
+        "description": "Whether the group is active",
+        "code": "active",
+        "base": [
+          "Group"
+        ],
+        "type": "token",
+        "expression": "Group.active"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/SearchParameter/Coverage-subscriber-id"
+      },
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Coverage-subscriber-id",
+        "url": "http://hl7.org/fhir/SearchParameter/Coverage-subscriber-id",
+        "name": "subscriber-id",
+        "status": "active",
+        "description": "Subscriber ID on the coverage",
+        "code": "subscriber-id",
+        "base": [
+          "Coverage"
+        ],
+        "type": "token",
+        "expression": "Coverage.subscriberId"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/SearchParameter/Consent-provision-type"
+      },
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Consent-provision-type",
+        "url": "http://hl7.org/fhir/SearchParameter/Consent-provision-type",
+        "name": "provision-type",
+        "status": "active",
+        "description": "Type of consent provision (deny or permit)",
+        "code": "provision-type",
+        "base": [
+          "Consent"
+        ],
+        "type": "token",
+        "expression": "Consent.provision.type"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/SearchParameter/Group-period-end"
+      },
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Group-period-end",
+        "url": "http://hl7.org/fhir/SearchParameter/Group-period-end",
+        "name": "period-end",
+        "status": "active",
+        "description": "End of a Group characteristic's period; used for expiration-based cleanup",
+        "code": "period-end",
+        "base": [
+          "Group"
+        ],
+        "type": "date",
+        "expression": "Group.characteristic.period.end"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/Client/interop-app"
+      },
+      "resource": {
+        "resourceType": "Client",
+        "id": "interop-app",
+        "secret": "secret",
+        "grant_types": [
+          "basic"
+        ]
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "/AccessPolicy/allow-interop-app"
+      },
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-interop-app",
+        "engine": "allow",
+        "link": [
+          {
+            "reference": "Client/interop-app"
+          }
+        ]
+      }
+    }
+  ]
+}
