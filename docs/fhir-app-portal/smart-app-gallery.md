@@ -1,3 +1,0 @@
-# Smart App Gallery
-
-WIP

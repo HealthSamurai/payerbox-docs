@@ -1,6 +1,6 @@
 # Demo
 
-Walkthroughs for the local Payerbox stack after [Quickstart: Run locally](../quickstart-run-locally.md).
+Walkthroughs of the hosted Payerbox demos — try without installing.
 
 {% content-ref url="fhir-app-portal.md" %}
 [Demo: FHIR App Portal](fhir-app-portal.md)

@@ -336,7 +336,7 @@ Three portals ship with the stack — each has its own audience and its own page
 
 * [**Admin Portal**](../fhir-app-portal/admin-portal.md) at http://localhost:8095. Sign in with `portal-admin` / `password` to manage members, review developer apps, and configure the platform.
 * [**Developer Portal**](../fhir-app-portal/developer-portal.md) at http://localhost:8096. Used by external developers to sign up, register SMART on FHIR apps, and test them against the sandbox.
-* [**Smart App Gallery**](../fhir-app-portal/smart-app-gallery.md) — the patient-facing catalog of approved SMART apps. See the page for how to access it.
+* [**FHIR App Gallery**](../fhir-app-portal/fhir-app-gallery.md) — the patient-facing catalog of approved SMART apps. See the page for how to access it.
 
 ## Stop and reset
 
