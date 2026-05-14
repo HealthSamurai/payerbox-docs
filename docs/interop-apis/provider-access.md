@@ -4,7 +4,7 @@ description: Da Vinci PDex Provider Access API — backend-services auth, member
 
 # Provider Access API
 
-![Provider Access flow: Payerbox exposes Bulk Export, Prior Auth API, Prior Auth SMART App, and Member Match arrows toward a Healthcare Providers panel for clinical, claims, coverages, ePA requests, and ePA decisions.](../../assets/interop-apis/provider-access-flow.avif)
+![Provider Access flow: Provider calls Payerbox FHIR platform with $provider-member-match, receives data via $davinci-data-export; Health Plan data sources feed Payerbox with members' data; Member portal handles educational resources and opt-out, with opt-out flag flowing back to the FHIR platform for consent filtering.](../../assets/interop-apis/provider-access-flow.svg)
 
 The [Da Vinci PDex Provider Access API](https://build.fhir.org/ig/HL7/davinci-epdx/provider-access-api-v2.html) lets an in-network provider with a treatment relationship to a payer's member pull that member's clinical, claims, encounter, and prior-authorization data in bulk. Established by [CMS-0057-F](../compliance/cms-0057.md), effective January 1, 2027.
 

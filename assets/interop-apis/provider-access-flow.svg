@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480"
+     width="960" height="480" fill="none" preserveAspectRatio="xMidYMid meet"
+     style="max-width:100%;height:auto;">
+  <style>
+    line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
+    .d-group-title-red    { font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #EC291C; }
+    .d-group-title-neutral{ font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #525263; }
+    .d-card-title         { font: 400 14px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
+    .d-card-sub           { font: 400 12px/1.4 'Inter', system-ui, sans-serif; fill: #525263; }
+    .d-conn-op            { font: 400 11px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
+  </style>
+
+  <!-- PROVIDER (neutral, top-left) -->
+  <rect x="20" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
+  <text x="100" y="155" text-anchor="middle" class="d-group-title-neutral">Provider</text>
+
+  <!-- PAYERBOX FHIR PLATFORM (red, top-center) -->
+  <rect x="370" y="100" width="220" height="100" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
+  <text x="480" y="142" text-anchor="middle" class="d-group-title-red">Payerbox</text>
+  <text x="480" y="170" text-anchor="middle" class="d-card-sub">FHIR platform</text>
+
+  <!-- HEALTH PLAN DATA SOURCES (neutral, top-right) -->
+  <rect x="780" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
+  <text x="860" y="142" text-anchor="middle" class="d-group-title-neutral">Health Plan</text>
+  <text x="860" y="170" text-anchor="middle" class="d-group-title-neutral">data sources</text>
+
+  <!-- MEMBER PORTAL (red, bottom-center) -->
+  <rect x="360" y="300" width="240" height="120" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
+  <text x="480" y="345" text-anchor="middle" class="d-group-title-red">Member portal</text>
+  <text x="480" y="380" text-anchor="middle" class="d-card-sub">Educational resources</text>
+
+  <!-- MEMBERS (neutral pill, bottom-right) -->
+  <rect x="780" y="345" width="120" height="40" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="20"/>
+  <text x="840" y="370" text-anchor="middle" class="d-card-title">Members</text>
+
+  <!-- Provider -> Payerbox: $provider-member-match -->
+  <line x1="180" y1="150" x2="368" y2="150" stroke="#353B50" stroke-width="1"/>
+  <polygon points="370,150 362,146 362,154" fill="#353B50"/>
+  <rect x="200" y="144" width="150" height="12" fill="#FFFFFF"/>
+  <text x="275" y="154" text-anchor="middle" class="d-conn-op">$provider-member-match</text>
+
+  <!-- Health Plan -> Payerbox: Members' data -->
+  <line x1="780" y1="150" x2="592" y2="150" stroke="#353B50" stroke-width="1"/>
+  <polygon points="590,150 598,146 598,154" fill="#353B50"/>
+  <rect x="638" y="144" width="94" height="12" fill="#FFFFFF"/>
+  <text x="685" y="154" text-anchor="middle" class="d-conn-op">Members' data</text>
+
+  <!-- Payerbox -> Provider: $davinci-data-export (return path) -->
+  <path d="M 390 200 L 390 240 L 110 240 L 110 202" stroke="#353B50" stroke-width="1" fill="none"/>
+  <polygon points="110,200 106,208 114,208" fill="#353B50"/>
+  <rect x="183" y="234" width="134" height="12" fill="#FFFFFF"/>
+  <text x="250" y="244" text-anchor="middle" class="d-conn-op">$davinci-data-export</text>
+
+  <!-- Member portal -> Payerbox: Opt-out (consent signal) -->
+  <line x1="480" y1="300" x2="480" y2="202" stroke="#353B50" stroke-width="1"/>
+  <polygon points="480,200 476,208 484,208" fill="#353B50"/>
+  <rect x="453" y="244" width="54" height="12" fill="#FFFFFF"/>
+  <text x="480" y="254" text-anchor="middle" class="d-conn-op">Opt-out</text>
+
+  <!-- Members -> Member portal: unlabeled connection -->
+  <line x1="780" y1="365" x2="602" y2="365" stroke="#353B50" stroke-width="1"/>
+  <polygon points="600,365 608,361 608,369" fill="#353B50"/>
+</svg>
