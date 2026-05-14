@@ -1,93 +1,74 @@
----
-description: Payerbox is a turnkey CMS-0057 compliance platform for payers -  four mandated FHIR APIs pre-built on Da Vinci IGs.
----
-
 # What is Payerbox
 
-Payerbox is a turnkey [CMS-0057](../compliance/cms-0057.md) compliance platform for health plans. All four mandated FHIR APIs — [Patient Access](../interop-apis/patient-access.md), [Provider Access](../interop-apis/provider-access.md), [Prior Authorization](../prior-auth/README.md), and [Payer-to-Payer](../interop-apis/payer-to-payer.md) — ship pre-built on Da Vinci Implementation Guides. Your data stays under your control: deploy managed or self-hosted, connect existing claims, clinical, and eligibility systems without rip-and-replace, and expose compliant APIs alongside the systems you already run.
+Payerbox is the **CMS-0057-F and CMS-9115-F compliance layer** for a US health plan. It sits between the payer's internal systems (claims, clinical data, eligibility, UM, auth) and the external consumers regulated under both rules — plan members through third-party apps, in-network providers, peer payers receiving a member's history.
 
-{% hint style="info" %}
-CMS-0057-F full enforcement begins **January 1, 2027** for Medicare Advantage, Medicaid, CHIP, and QHP issuers.
-{% endhint %}
+![Payerbox sits between payer internal systems (claims, clinical, eligibility, auth, UM) and Patient Access (members) plus Provider Access (providers) as the central CMS-0057-F layer. Built on PostgreSQL, with downstream use cases: risk adjustment, BI, AI/automation, TEFCA, applications, care management.](../../assets/get-started/payerbox-ecosystem.png)
 
-## Four mandated FHIR APIs
+Payerbox publishes the four FHIR APIs the rules require, hosts the portals members and developers use, runs the Da Vinci ePA stack, and stores the FHIR data its operations produce or expose.
 
-CMS-0057 requires four standardized FHIR APIs covering prior authorization, member data access, provider data sharing, and payer-to-payer exchange.
+## What it provides
 
-| API | What it covers | Payerbox docs |
+| Capability | API surface | Anchored in |
 |---|---|---|
-| **Prior Authorization** | FHIR Prior Auth for eligibility checks, required documentation, and electronic decisions (7-day standard, 72-hour expedited) | [Prior Auth (ePA) APIs](../prior-auth/README.md) — Da Vinci CRD, DTR, and PAS |
-| **Patient Access** | Member-facing FHIR APIs for claims, encounters, USCDI clinical data, and prior auth status, updated within one business day | [Patient Access](../interop-apis/patient-access.md) |
-| **Provider Access** | Bulk FHIR so in-network providers can pull claims, clinical, and prior auth data for attributed patients, with opt-out | [Provider Access](../interop-apis/provider-access.md) |
-| **Payer-to-Payer** | FHIR data exchange when members switch plans — opt-in, member match against the prior payer, and transfer of up to five years of claims, clinical, and prior auth history | [Payer-to-Payer](../interop-apis/payer-to-payer.md) |
+| Members access their data through a third-party app | Patient Access API | CMS-9115-F (extended by CMS-0057-F) |
+| In-network providers pull attributed-member data | Provider Access API | CMS-0057-F |
+| New payer pulls history from a member's prior payer | Payer-to-Payer API | CMS-0057-F (replaces 9115's suspended P2P) |
+| Public read of the network directory | Provider Directory API | CMS-9115-F |
+| Discover coverage requirements at point of order | CRD (CDS Hooks) | CMS-0057-F (Da Vinci CRD recommended) |
+| Collect required documentation for a PA | DTR | CMS-0057-F (Da Vinci DTR recommended) |
+| Submit a prior authorization and receive the response | PAS | CMS-0057-F (Da Vinci PAS recommended) |
+| Annual Patient Access usage report to CMS, public PA metrics on payer's site | Reporting | CMS-0057-F |
 
-Payerbox implements these APIs on Da Vinci IGs including CARIN Blue Button, PDex, PAS, and US Core.
+## How payer internal systems connect
 
-## How Payerbox fits your stack
+| Source system | Transport into Payerbox |
+|---|---|
+| Claims and clinical data warehouse | ETL pipeline (FHIR Bundle ingest or scheduled batch) |
+| Eligibility | X12 270/271 or direct FHIR Coverage push |
+| Auth server | OIDC / SAML federation for member sign-in into the FHIR App Portal |
+| UM system | X12 278 over the Prior Authorization integration (bidirectional) |
 
-Payerbox connects alongside your existing systems — claims, formulary/PBM, clinical data, eligibility, and UM/prior auth — and exposes CMS-0057-F compliant FHIR APIs to members, providers, and other payers. No dedicated FHIR team is required to stand up the compliance surface; integration focuses on mapping your source data into FHIR R4 and configuring connectors, consent, and member matching.
+See [Run Payerbox / Connect Systems](../run-payerbox/README.md) for adapter details.
 
-FHIR R4 resources are stored in PostgreSQL and are queryable with SQL for analytics and downstream applications. See [Architecture](../run-payerbox/architecture.md) for deployment topology and component boundaries.
+## What's built on top
 
-## Platform capabilities
+The same FHIR data Payerbox publishes externally is available to the payer's own downstream uses through PostgreSQL or the same FHIR APIs:
 
-### Production-ready APIs
+- Risk Adjustment and Stars analytics
+- AI / automation pipelines
+- TEFCA queries
+- BI and reporting (claims analytics, member dashboards)
+- Care management apps
+- Custom internal applications
 
-Patient Access, Prior Authorization, Provider Access, and Payer-to-Payer FHIR APIs are pre-built and aligned with CMS-0057 guidance, including SMART on FHIR app launch where the IGs require it (for example, the [FHIR App Portal](../fhir-app-portal/README.md) for developer and member-facing experiences).
+Payerbox does not build these capabilities itself; it provides the FHIR foundation they consume.
 
-### Data connectors
+## Compliance dates
 
-Bidirectional adapters convert between FHIR R4 and common payer formats: X12 278/275, C-CDA, HL7v2, CSV, and custom interfaces.
+Two key deadlines:
 
-### Security
+- **January 1, 2026** — PA decision timeframes (72h expedited / 7d standard); first public PA metrics report due March 31, 2026.
+- **January 1, 2027** — Provider Access, Payer-to-Payer, and Prior Authorization APIs go live; Patient Access adds prior-auth data.
 
-SMART on FHIR, OAuth 2.0, OIDC, and mTLS secure FHIR APIs and integrations end-to-end. See [Authentication](../api-reference/authentication.md).
+Full timeline: [Compliance / CMS-0057](../compliance/cms-0057.md#compliance-dates-summary).
 
-### Member portal and consent
+## Implementation guides
 
-Configurable member portal and consent flows for Patient, Provider, and Payer-to-Payer APIs, with opt-in, opt-out, and revocation management.
+Payerbox preconfigures the CMS-recommended IGs (FHIR R4, US Core, CARIN Blue Button, SMART App Launch, Bulk Data, Da Vinci PDex / Plan Net / CRD / DTR / PAS, CDS Hooks). Full version matrix: [API Reference / Implementation Guides](../api-reference/implementation-guides.md).
 
-### Compliance evidence
+## What's not included
 
-Immutable audit logs capture decision timestamps, operational metrics, and consent events to support CMS reporting and internal audits. See [Reporting](../compliance/reporting.md).
+- **Drug prior authorizations.** Excluded from the CMS-0057-F Prior Auth API by regulation. CMS-0062-P (proposed) may bring drug PAs into scope.
+- **The UM decision itself.** Payerbox accepts PAS submissions and routes them to the payer's existing UM system. The authoritative authorization decision lives in UM.
+- **The CRD coverage rules.** Payerbox forwards CDS Hook payloads to an external decision service the payer configures.
+- **Identity provider.** Payerbox integrates with the payer's existing IdP via OIDC / SAML.
+- **Hospital ADT notifications.** A provider-side obligation under CMS-9115-F (42 CFR 482.24(d) and parallels), not a payer obligation.
 
-### Member matching and terminology
+## Where to go next
 
-Master data management improves member matching across plans, data sources, and payer-to-payer exchanges. A FHIR terminology layer loads and validates CMS-aligned code systems (ICD-10, CPT/HCPCS, RxNorm, LOINC, and related value sets from Da Vinci IGs).
-
-### Deployment
-
-Run on AWS, Azure, GCP, on-premises, or hybrid — Kubernetes-native, with managed and marketplace options. See [Deploy](../run-payerbox/deploy.md).
-
-## Beyond compliance
-
-Most compliance solutions treat FHIR data as an audit-only artifact. Payerbox stores the same data in PostgreSQL and exposes it through standard FHIR and SQL interfaces, so you can reuse it without a separate warehouse or ETL pipeline:
-
-- **Applications** — member portals, internal tools, care management apps, and third-party integrations on the same APIs and data store
-- **Risk adjustment and Stars** — US Core–structured clinical and claims data queryable for HCC models and HEDIS measures
-- **Care management** — longitudinal records, including payer-to-payer history from prior plans, for coordination and population health
-- **AI and automation** — structured FHIR ready for ML pipelines, prior auth decision support, and analytics
-- **Provider collaboration** — attribution lists and bulk exports from Provider Access for value-based care and network analytics
-- **Future regulations** — new Da Vinci IGs and exchange requirements land as configuration updates on the platform you already operate
-
-## Next steps
-
-{% content-ref url="quickstart-run-locally.md" %}
-[Quickstart: Run locally](quickstart-run-locally.md)
-{% endcontent-ref %}
-
-{% content-ref url="../run-payerbox/README.md" %}
-[Run Payerbox](../run-payerbox/README.md)
-{% endcontent-ref %}
-
-{% content-ref url="../compliance/cms-0057.md" %}
-[CMS-0057](../compliance/cms-0057.md)
-{% endcontent-ref %}
-
-{% content-ref url="../interop-apis/README.md" %}
-[Interop APIs](../interop-apis/README.md)
-{% endcontent-ref %}
-
-{% content-ref url="../fhir-app-portal/README.md" %}
-[FHIR App Portal](../fhir-app-portal/README.md)
-{% endcontent-ref %}
+| Role | Where to start |
+|---|---|
+| IT operator | [Quickstart: Run locally](quickstart-run-locally.md) → [Run Payerbox](../run-payerbox/README.md) |
+| Third-party app developer | [Demo: FHIR App Portal](demo/fhir-app-portal.md) → [FHIR App Portal / Developer Portal](../fhir-app-portal/developer-portal.md) → [Interop APIs / Patient Access](../interop-apis/patient-access.md) |
+| Provider / EHR integrator | [Interop APIs / Provider Access](../interop-apis/provider-access.md) and [Prior Auth (ePA) APIs](../prior-auth/README.md) |
+| Compliance officer | [Compliance](../compliance/README.md) |

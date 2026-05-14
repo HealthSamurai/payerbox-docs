@@ -1,27 +1,11 @@
----
-description: Learn what is Payerbox and how to get it up and running.
----
-
 # Get Started
 
-## Overview
+Orient yourself, run Payerbox locally, and try the hosted demos.
 
-{% content-ref url="what-is-payerbox.md" %}
-[What is Payerbox](what-is-payerbox.md)
-{% endcontent-ref %}
+If you are deploying Payerbox in your environment, continue with [Run Payerbox](../run-payerbox/README.md). If you are integrating with the APIs as a third-party developer, EHR, or peer payer, continue with [Integrate](../fhir-app-portal/README.md) and [Interop APIs](../interop-apis/README.md).
 
-## Quickstarts
-
-{% content-ref url="quickstart-run-locally.md" %}
-[Quickstart: Run locally](quickstart-run-locally.md)
-{% endcontent-ref %}
-
-## Demo
-
-{% content-ref url="demo/fhir-app-portal.md" %}
-[Demo: FHIR App Portal](demo/fhir-app-portal.md)
-{% endcontent-ref %}
-
-{% content-ref url="demo/ehr-prior-auth.md" %}
-[Demo: EHR (Prior Auth)](demo/ehr-prior-auth.md)
-{% endcontent-ref %}
+| Page | What it covers |
+|---|---|
+| [What is Payerbox](what-is-payerbox.md) | Architecture, scope, what is and isn't included |
+| [Quickstart: Run locally](quickstart-run-locally.md) | Spin up Payerbox in under 10 minutes |
+| [Demo](demo/README.md) | Hosted FHIR App Portal and EHR Prior Auth demos — try without installing |
