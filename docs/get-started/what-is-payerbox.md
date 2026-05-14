@@ -2,7 +2,7 @@
 
 Payerbox is the **CMS-0057-F and CMS-9115-F compliance layer** for a US health plan. It sits between the payer's internal systems (claims, clinical data, eligibility, UM, auth) and the external consumers regulated under both rules — plan members through third-party apps, in-network providers, peer payers receiving a member's history.
 
-![Payerbox sits between payer internal systems (claims, clinical, eligibility, auth, UM) and Patient Access (members) plus Provider Access (providers) as the central CMS-0057-F layer. Built on PostgreSQL, with downstream use cases: risk adjustment, BI, AI/automation, TEFCA, applications, care management.](../../assets/get-started/payerbox-ecosystem.png)
+![Payerbox sits between payer internal systems (claims, clinical, eligibility, auth, UM) and Patient Access (members) plus Provider Access (providers) as the central CMS-0057-F layer. Built on PostgreSQL, with downstream use cases: risk adjustment, BI, AI/automation, TEFCA, applications, care management.](../../assets/get-started/payerbox-ecosystem.avif)
 
 Payerbox publishes the four FHIR APIs the rules require, hosts the portals members and developers use, runs the Da Vinci ePA stack, and stores the FHIR data its operations produce or expose.
 
