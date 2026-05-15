@@ -1,163 +1,407 @@
+---
+description: Da Vinci PDex $bulk-member-match operation reference — async kick-off, status polling, ndjson output, cancellation.
+---
+
 # $bulk-member-match
 
-Operation defined by the [Da Vinci PDex IG](https://hl7.org/fhir/us/davinci-pdex/) for **Payer-to-Payer** member matching. The receiving payer submits a list of new members with demographics and prior coverage references; the responding (former) payer matches and returns three Group resources.
+Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) (STU 2.1.0). The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType=payertopayer` for the Payer-to-Payer bulk export.
 
-Supports both **synchronous** and **asynchronous** modes.
-
-## Endpoint
-
-```
-POST <base>/fhir/$bulk-member-match
-```
+The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-off pattern](https://hl7.org/fhir/uv/bulkdata/export.html#bulk-data-kick-off-request): kick-off returns `202 Accepted` with `Content-Location`, the client polls the status URL, and downloads the result as a single-line ndjson `Parameters` resource.
 
 ## Auth
 
-SMART Backend Services. Scope: `system/Group.cu system/Patient.r`. Receiving and responding payers exchange JWKS at onboarding.
+SMART Backend Services Claim Credentials. The requesting payer's NPI **must** be present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`.
+Requests with no NPI on the OAuth client are rejected with `403`. See [Authentication](../authentication.md).
 
-See [Authentication](../authentication.md).
+## Kick-off
 
-## Request
+### Endpoint
 
-A FHIR Parameters bundle with one entry per member.
-
-```http
-POST <base>/fhir/$bulk-member-match
-Authorization: Bearer <access-token>
-Content-Type: application/fhir+json
-Prefer: respond-async      # optional; sync is the default
+```
+POST <base>/fhir/Group/$bulk-member-match
 ```
 
-```json
+`Prefer: respond-async` is required. Requests without it are rejected with `400`.
+
+### Parameters
+
+The request body is a `Parameters` resource with one or more `MemberBundle` entries, validated against the [`pdex-parameters-multi-member-match-bundle-in`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-parameters-multi-member-match-bundle-in.html) profile.
+
+| Direction | Parameter | Type | Cardinality | Description |
+|---|---|---|---|---|
+| IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-patient-demographics.html) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-coverage.html); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
+| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
+| IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
+| OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
+
+### Example
+
+{% tabs %}
+{% tab title="Request" %}
+```http
+POST /fhir/Group/$bulk-member-match
+Content-Type: application/fhir+json
+Prefer: respond-async
+
 {
   "resourceType": "Parameters",
   "parameter": [
     {
-      "name": "MemberPatient",
-      "resource": {
-        "resourceType": "Patient",
-        "identifier": [{ "system": "http://hl7.org/fhir/sid/us-mbi", "value": "1A23B45C67D8" }],
-        "name": [{ "family": "Smith", "given": ["John"] }],
-        "birthDate": "1970-04-15",
-        "gender": "male"
-      }
-    },
-    {
-      "name": "CoverageToMatch",
-      "resource": {
-        "resourceType": "Coverage",
-        "status": "active",
-        "subscriberId": "1A23B45C67D8",
-        "payor": [{ "identifier": { "value": "REQUESTING-PAYER-ID" } }],
-        "period": { "start": "2026-01-01" }
-      }
-    },
-    {
-      "name": "Consent",
-      "resource": {
-        "resourceType": "Consent",
-        "status": "active",
-        "scope": { "coding": [{ "code": "patient-privacy" }] },
-        "category": [{ "coding": [{ "code": "IDSCL" }] }],
-        "patient": { "reference": "Patient/<requesting-payer-member-id>" }
-      }
+      "name": "MemberBundle",
+      "part": [
+        {
+          "name": "MemberPatient",
+          "resource": {
+            "resourceType": "Patient",
+            "name": [{"family": "Smith", "given": ["John"]}],
+            "gender": "male",
+            "birthDate": "1970-05-15",
+            "identifier": [{"system": "http://hl7.org/fhir/sid/us-mbi", "value": "1A23B45C67D8"}]
+          }
+        },
+        {
+          "name": "CoverageToMatch",
+          "resource": {
+            "resourceType": "Coverage",
+            "status": "active",
+            "subscriberId": "1A23B45C67D8",
+            "beneficiary": {"reference": "Patient/patient-1"},
+            "payor": [{"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"}}]
+          }
+        },
+        {
+          "name": "Consent",
+          "resource": {
+            "resourceType": "Consent",
+            "status": "active",
+            "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+            "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
+            "patient": {"reference": "Patient/patient-1"},
+            "dateTime": "2026-04-01T08:00:00Z",
+            "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"}],
+            "provision": {
+              "type": "permit",
+              "period": {"start": "2026-01-01T00:00:00Z", "end": "2027-01-01T00:00:00Z"},
+              "actor": [{
+                "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
+                "reference": {"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"}}
+              }]
+            }
+          }
+        }
+      ]
     }
   ]
 }
 ```
-
-The request can carry many members. Each member contributes one (MemberPatient, CoverageToMatch, Consent) triplet.
-
-| Parameter | Cardinality | Description |
-|---|---|---|
-| `MemberPatient` | 1..* | One per member |
-| `CoverageToMatch` | 0..1 per member | Active coverage from the receiving payer |
-| `Consent` | 1..1 per member | Member's opt-in consent record (CMS-0057-F requires opt-in for P2P) |
-
-## Sync mode
-
-The default. Server returns the three Groups in the response body.
-
+{% endtab %}
+{% tab title="Response (accepted)" %}
 ```http
-HTTP/1.1 200 OK
+HTTP/1.1 202 Accepted
+Content-Location: <base>/fhir/Group/$bulk-member-match-status/<task-id>
+```
+{% endtab %}
+{% tab title="Response (missing Prefer)" %}
+```http
+HTTP/1.1 400 Bad Request
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [{
+    "severity": "error",
+    "code": "processing",
+    "diagnostics": "This operation requires Prefer: respond-async header"
+  }]
+}
+```
+{% endtab %}
+{% tab title="Response (no NPI)" %}
+```http
+HTTP/1.1 403 Forbidden
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [{
+    "severity": "error",
+    "code": "forbidden",
+    "diagnostics": "OAuth client must carry an NPI identifier"
+  }]
+}
+```
+{% endtab %}
+{% tab title="Response (validation fail)" %}
+```http
+HTTP/1.1 422 Unprocessable Entity
 Content-Type: application/fhir+json
 ```
+
+The body is the `OperationOutcome` returned by Aidbox `$validate` against the input profile.
+{% endtab %}
+{% endtabs %}
+
+## Status polling
+
+### Endpoint
+
+```
+GET <base>/fhir/Group/$bulk-member-match-status/<task-id>
+```
+
+`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client whose NPI does not match `Task.requester.identifier` get `404` (cross-tenant guard).
+
+### Parameters
+
+Response shape depends on the underlying `Task` status:
+
+| Task status | HTTP | Headers | Body |
+|---|---|---|---|
+| `requested` | 202 | `Retry-After: 5` | — |
+| `in-progress` | 202 | `Retry-After: 5`, `X-Progress: Processing members` | — |
+| `completed` | 200 | `Content-Type: application/json` | Bulk Data manifest |
+| `failed` | 500 | — | `OperationOutcome` |
+| `cancelled` / not found | 404 | — | `OperationOutcome` |
+
+### Example
+
+{% tabs %}
+{% tab title="Request" %}
+```http
+GET /fhir/Group/$bulk-member-match-status/<task-id>
+```
+{% endtab %}
+{% tab title="Response (in progress)" %}
+```http
+HTTP/1.1 202 Accepted
+Retry-After: 5
+X-Progress: Processing members
+```
+{% endtab %}
+{% tab title="Response (completed)" %}
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "transactionTime": "2026-05-15T13:17:56Z",
+  "request": "<base>/fhir/Group/$bulk-member-match",
+  "requiresAccessToken": true,
+  "output": [
+    {"type": "Parameters", "url": "<base>/output/<task-id>.ndjson"}
+  ],
+  "error": []
+}
+```
+{% endtab %}
+{% tab title="Response (failed)" %}
+```http
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [{
+    "severity": "error",
+    "code": "exception",
+    "diagnostics": "Internal error processing request"
+  }]
+}
+```
+{% endtab %}
+{% endtabs %}
+
+## Output download
+
+### Endpoint
+
+```
+GET <base>/output/<task-id>.ndjson
+```
+
+URL comes from `output[0].url` in the manifest. Body is a single ndjson line — a `Parameters` resource conforming to the [`pdex-parameters-multi-member-match-bundle-out`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-parameters-multi-member-match-bundle-out.html) profile. `MatchedMembers` is always present (1..1 per the output profile); the other two buckets appear only when non-empty.
+
+### Parameters
+
+| Direction | Parameter | Type | Cardinality | Description |
+|---|---|---|---|---|
+| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to `$davinci-data-export?exportType=payertopayer`. `quantity = 0` and `member` omitted when empty. |
+| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
+| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
+
+### Example
+
+{% tabs %}
+{% tab title="Request" %}
+```http
+GET /output/<task-id>.ndjson
+```
+{% endtab %}
+{% tab title="Response" %}
+```http
+HTTP/1.1 200 OK
+Content-Type: application/fhir+ndjson
+```
+
+Body (single ndjson line, formatted for readability):
 
 ```json
 {
   "resourceType": "Parameters",
+  "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-parameters-multi-member-match-bundle-out"]},
   "parameter": [
     {
       "name": "MatchedMembers",
-      "valueReference": { "reference": "Group/matched-<uuid>" }
-    },
-    {
-      "name": "NonMatchedMembers",
-      "valueReference": { "reference": "Group/non-matched-<uuid>" }
+      "resource": {
+        "resourceType": "Group",
+        "id": "<task-id>-matched",
+        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-member-match-group"]},
+        "active": true, "type": "person", "actual": true,
+        "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "match"}]},
+        "characteristic": [{
+          "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "match"}]},
+          "valueReference": {
+            "identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"},
+            "reference": "Organization/payer-org-1"
+          },
+          "exclude": false
+        }],
+        "quantity": 1,
+        "member": [{"entity": {"reference": "Patient/patient-1", "display": "Smith, John"}, "inactive": false}]
+      }
     },
     {
       "name": "ConsentConstrainedMembers",
-      "valueReference": { "reference": "Group/consent-constrained-<uuid>" }
+      "resource": {
+        "resourceType": "Group",
+        "id": "<task-id>-consent",
+        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-member-no-match-group"]},
+        "active": true, "type": "person", "actual": true,
+        "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "consentconstraint"}]},
+        "characteristic": [{
+          "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "consentconstraint"}]},
+          "valueReference": {
+            "identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"},
+            "reference": "Organization/payer-org-1"
+          },
+          "exclude": false
+        }],
+        "quantity": 1,
+        "member": [{"entity": {"reference": "Patient/patient-2", "display": "Doe, Jane"}, "inactive": false}]
+      }
+    },
+    {
+      "name": "NonMatchedMembers",
+      "resource": {
+        "resourceType": "Group",
+        "id": "<task-id>-nomatch",
+        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-member-no-match-group"]},
+        "active": true, "type": "person", "actual": true,
+        "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "nomatch"}]},
+        "contained": [{"resourceType": "Patient", "id": "1", "name": [{"family": "Unknown", "given": ["Nobody"]}], "gender": "male", "birthDate": "2000-01-01"}],
+        "characteristic": [{
+          "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "nomatch"}]},
+          "valueBoolean": true,
+          "exclude": false
+        }],
+        "quantity": 1,
+        "member": [{
+          "entity": {
+            "reference": "#1",
+            "extension": [{
+              "url": "http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/base-ext-match-parameters",
+              "valueReference": {"reference": "#1"}
+            }]
+          },
+          "inactive": false
+        }]
+      }
     }
   ]
 }
 ```
+{% endtab %}
+{% endtabs %}
 
-Recommended for batches under a few hundred members.
+`MatchedMembers` and `ConsentConstrainedMembers` carry the requesting payer's NPI in `characteristic[0].valueReference.identifier`; the literal `Organization/<id>` reference is added when the responding payer has an Organization registered for that NPI. `Patient.identifier` entries submitted on `MemberPatient` are used as additional matching tokens but are not echoed back on the matched Group.
 
-## Async mode
+## Cancellation
 
-For larger batches. Include `Prefer: respond-async`.
+### Endpoint
 
-```mermaid
-sequenceDiagram
-  participant receiver as Receiving payer
-  participant responder as Responding payer
-  receiver->>responder: POST $bulk-member-match (Prefer: respond-async)
-  responder->>receiver: 202 Accepted, Content-Location: <status-url>
-  loop poll
-    receiver->>responder: GET <status-url>
-    responder->>receiver: 202 (in progress) | 200 (complete)
-  end
-  responder->>receiver: 200 with three Group references
+```
+DELETE <base>/fhir/Group/$bulk-member-match-cancel/<task-id>
 ```
 
+A custom URL is used (rather than `DELETE` on the status URL) because Aidbox operation dispatch is keyed on method + URL. Cross-tenant calls return `404`.
+
+### Parameters
+
+Behaviour depends on the current `Task` status:
+
+| Task status | Action | Response |
+|---|---|---|
+| `requested` / `in-progress` | Set `Task.status = "cancelled"`. The background worker stops at its next checkpoint (per-member loop + pre-persist) without writing Groups, the Binary, or persisted Consents. | `202 Accepted` |
+| `completed` / `failed` / `cancelled` | Delete the `Task` and every resource referenced from `Task.output` (Groups, Binary, and persisted Consents). | `202 Accepted` |
+| not found | — | `404` with `OperationOutcome` |
+
+### Example
+
+{% tabs %}
+{% tab title="Request" %}
+```http
+DELETE /fhir/Group/$bulk-member-match-cancel/<task-id>
+```
+{% endtab %}
+{% tab title="Response" %}
 ```http
 HTTP/1.1 202 Accepted
-Content-Location: <base>/fhir/$bulk-member-match/<job-id>/status
 ```
+{% endtab %}
+{% endtabs %}
 
-Poll the status URL until 200. The completion response is the same Parameters payload as sync mode.
+## Matching behavior
 
-## The three Groups
+Each submitted member is evaluated independently. Per-member failures never fail the batch — problematic members are routed to `NonMatchedMembers` or `ConsentConstrainedMembers`.
 
-All three conform to `PDexMemberMatchGroup` profile.
+**Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
 
-| Group | Members included |
+**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true:
+
+| Check | Constrains when |
 |---|---|
-| `MatchedMembers` | Confirmed matches with valid consent. Use as input to `$davinci-data-export?exportType=payertopayer`. |
-| `NonMatchedMembers` | No match found in the responding payer's records. |
-| `ConsentConstrainedMembers` | Matched, but consent prevents data sharing (revoked, expired, or never granted). |
+| `Consent.status` | not `"active"` |
+| `Consent.provision.period` | absent, unparseable, or does not cover the current time |
+| `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer — checked in order: literal `Organization/<id>` reference (when the payer Org is registered), inline `identifier` matching the OAuth client's NPI, or NPI dereferenced from an `Organization/<id>` reference |
+| `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
 
-`Group.characteristic` carries the requesting payer reference and a timestamp.
+**Opt-out check.** Same as [`$provider-member-match`](provider-member-match.md#matching-behavior): an Aidbox search for an active `deny` `Consent` on the matched Patient with category `provider-access`. Any hit routes the member to `ConsentConstrainedMembers`. A failing opt-out query (non-2xx) fails safe to constrained.
 
-## Next step
+**Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization. The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
-For each member in `MatchedMembers`, the receiving payer calls `$davinci-data-export` with `exportType=payertopayer` on that Group:
+## Group lifecycle
 
-```bash
-POST <base>/fhir/Group/matched-<uuid>/$davinci-data-export?exportType=payertopayer
-Authorization: Bearer <access-token>
-Prefer: respond-async
-```
+Each output Group carries a 30-day validity window in `Group.characteristic[0].period`. A background job inside the interop app runs hourly:
 
-See [`$davinci-data-export`](davinci-data-export.md).
+1. Groups whose `period.end` is in the past and whose `active = true` are flipped to `active = false`.
+2. Groups with `active = false` whose `period.end` is more than 90 days in the past are hard-deleted along with the Task, Binary, and persisted Consents they belong to.
+
+The scan filters on `_profile=<pdex-member-match-group,pdex-member-no-match-group>` — non-PDex Groups in the same Aidbox instance are left alone.
 
 ## Errors
 
-| HTTP | Cause |
-|---|---|
-| 400 | Malformed Parameters payload |
-| 401 | Invalid token |
-| 403 | Token scope insufficient; requesting payer not registered as a P2P partner |
-| 422 | Consent missing or invalid for a member; required CoverageToMatch missing |
+| Status | Where | Cause |
+|---|---|---|
+| 400 | Kick-off | `Prefer: respond-async` header missing |
+| 403 | Kick-off | OAuth client carries no NPI identifier |
+| 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
+| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
+| 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
+| 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
+| 500 | Kick-off / status / cancel | Upstream Aidbox read or write failed transiently |
 
+Individual member failures (validation issues, exceptions while evaluating one member, Consent persistence failures) route to `NonMatchedMembers` or `ConsentConstrainedMembers` with a reason recorded in `Task` logs — they do not fail the batch.
+
+After a `MatchedMembers` Group is returned, the requesting payer uses its id with [`$davinci-data-export?exportType=payertopayer`](davinci-data-export.md) to pull the matched members' clinical data. Architectural context lives in the [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillar.
