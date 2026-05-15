@@ -1,98 +1,284 @@
 # Authentication
 
-Payerbox supports two SMART on FHIR authentication flows:
+Payerbox supports three OAuth 2.0 flows:
 
-- **SMART App Launch** — member-authorized OAuth 2.0 for third-party apps reading a single member's data (Patient Access)
-- **SMART Backend Services** — system-to-system asymmetric JWT for Provider Access, Payer-to-Payer, PAS
+- **[SMART App Launch](#smart-app-launch-member-authorized)** — member-authorized authorization code grant for third-party apps reading a single member's data (Patient Access).
+- **[SMART Backend Services](#smart-backend-services-system-to-system)** — system-to-system asymmetric JWT (`private_key_jwt`) for Provider Access, Payer-to-Payer, PAS.
+- **[Client Credentials](#client-credentials)** — symmetric client_id + client_secret grant for trusted internal services, sandboxes, and quick integrations.
 
-Both are defined in the [HL7 SMART App Launch IG 2.2.0](https://hl7.org/fhir/smart-app-launch/STU2.2/).
+SMART flows follow the [HL7 SMART App Launch IG 2.2.0](https://hl7.org/fhir/smart-app-launch/STU2.2/). The OAuth 2.0 RFC is [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749).
 
 ## Endpoint discovery
 
-The SMART configuration document advertises all endpoints. Fetch it before configuring a client:
+Fetch the SMART configuration document before configuring a client — it advertises the live token / authorization / JWKS URLs, supported scopes, signing algorithms, grant types, and capabilities.
 
-```bash
+```
 GET <base>/.well-known/smart-configuration
 ```
 
-Returns issuer, authorization endpoint, token endpoint, JWKS URL, supported scopes, supported response types, and SMART capabilities.
+Key fields Payerbox returns:
+
+<table>
+<thead>
+<tr><th width="340">Field</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>authorization_endpoint</code></td><td><code>&lt;base&gt;/auth/authorize</code></td></tr>
+<tr><td><code>token_endpoint</code></td><td><code>&lt;base&gt;/auth/token</code></td></tr>
+<tr><td><code>introspection_endpoint</code></td><td><code>&lt;base&gt;/auth/introspect</code></td></tr>
+<tr><td><code>jwks_uri</code></td><td><code>&lt;base&gt;/.well-known/jwks.json</code></td></tr>
+<tr><td><code>grant_types_supported</code></td><td><code>authorization_code</code>, <code>client_credentials</code>, <code>password</code>, <code>implicit</code>, <code>urn:ietf:params:oauth:grant-type:token-exchange</code></td></tr>
+<tr><td><code>token_endpoint_auth_methods_supported</code></td><td><code>client_secret_basic</code>, <code>client_secret_post</code>, <code>private_key_jwt</code></td></tr>
+<tr><td><code>token_endpoint_auth_signing_alg_values_supported</code></td><td><code>RS384</code>, <code>ES384</code></td></tr>
+<tr><td><code>code_challenge_methods_supported</code></td><td><code>S256</code></td></tr>
+<tr><td><code>capabilities</code></td><td><code>launch-standalone</code>, <code>launch-ehr</code>, <code>client-public</code>, <code>client-confidential-symmetric</code>, <code>client-confidential-asymmetric</code>, <code>permission-patient</code>, <code>permission-user</code>, <code>permission-v1</code>, <code>permission-v2</code>, <code>permission-offline</code>, <code>sso-openid-connect</code></td></tr>
+<tr><td><code>scopes_supported</code></td><td><code>openid</code>, <code>profile</code>, <code>email</code>, <code>launch</code>, <code>launch/patient</code>, <code>patient/*.cruds</code>, <code>system/*.cruds</code>, <code>user/*.cruds</code>, <code>fhirUser</code>, <code>offline_access</code>, <code>online_access</code></td></tr>
+</tbody>
+</table>
+
+## Endpoints
 
 | Endpoint | Used by |
 |---|---|
 | `<base>/auth/authorize` | SMART App Launch — authorization redirect |
-| `<base>/auth/token` | Both flows — token exchange |
-| `<base>/fhir/.well-known/jwks.json` | Backend Services — clients use this to fetch the server's public keys; clients also publish their own JWKS for the server to verify their signed JWTs |
-| `<base>/fhir/metadata` | CapabilityStatement (per API surface) |
+| `<base>/auth/token` | Token issuance (all flows) |
+| `<base>/auth/introspect` | RFC 7662 token introspection |
+| `<base>/auth/userinfo` | OpenID Connect UserInfo |
+| `<base>/.well-known/jwks.json` | Server's public keys (used by clients to validate Payerbox-issued JWTs) |
+| `<base>/.well-known/smart-configuration` | SMART discovery document |
+| `<base>/fhir/metadata` | FHIR CapabilityStatement |
 
 ## SMART App Launch (member-authorized)
 
-Used by third-party apps in the [FHIR App Portal](../fhir-app-portal/README.md). Member discovers an app in the [FHIR App Gallery](../fhir-app-portal/fhir-app-gallery.md), clicks Launch, signs in, and grants the scopes the app requested.
+Used by third-party apps in the [FHIR App Portal](../fhir-app-portal/README.md). The member discovers an app in the [FHIR App Gallery](../fhir-app-portal/fhir-app-gallery.md), clicks Launch, signs in, and grants the requested scopes.
+
+### Client registration
+
+Each SMART app is registered as an Aidbox `Client` resource with `type: smart-app` and a `code` grant type:
+
+{% tabs %}
+{% tab title="Public client (PKCE)" %}
+```json
+PUT /Client/my-public-smart-app
+Content-Type: application/json
+
+{
+  "resourceType": "Client",
+  "id": "my-public-smart-app",
+  "type": "smart-app",
+  "active": true,
+  "grant_types": ["code"],
+  "auth": {
+    "authorization_code": {
+      "redirect_uri": "https://app.example.com/redirect",
+      "token_format": "jwt",
+      "access_token_expiration": 3600,
+      "refresh_token": true,
+      "secret_required": false,
+      "pkce": true
+    }
+  },
+  "smart": {"launch_uri": "https://app.example.com/launch"}
+}
+```
+{% endtab %}
+{% tab title="Confidential client" %}
+```json
+PUT /Client/my-confidential-smart-app
+Content-Type: application/json
+
+{
+  "resourceType": "Client",
+  "id": "my-confidential-smart-app",
+  "type": "smart-app",
+  "active": true,
+  "grant_types": ["code"],
+  "secret": "<client-secret>",
+  "auth": {
+    "authorization_code": {
+      "redirect_uri": "https://app.example.com/redirect",
+      "token_format": "jwt",
+      "access_token_expiration": 3600,
+      "refresh_token": true,
+      "secret_required": true,
+      "pkce": true
+    }
+  },
+  "smart": {"launch_uri": "https://app.example.com/launch"}
+}
+```
+{% endtab %}
+{% endtabs %}
+
+Public apps (single-page apps, native apps without a server-side component) must use PKCE; confidential apps may opt in to PKCE as defence-in-depth.
+
+### Authorization request
+
+```
+GET <base>/auth/authorize?<params>
+```
+
+<table>
+<thead>
+<tr><th width="180">Parameter</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>response_type</code></td><td>Fixed value <code>code</code>.</td></tr>
+<tr><td><code>client_id</code></td><td>Client resource id.</td></tr>
+<tr><td><code>redirect_uri</code></td><td>Must match the registered <code>Client.auth.authorization_code.redirect_uri</code>.</td></tr>
+<tr><td><code>scope</code></td><td>Space-separated SMART scopes. Include <code>launch/patient</code> for standalone or <code>launch</code> for EHR launch, plus <code>openid fhirUser</code> for identity and <code>offline_access</code> to receive a refresh token.</td></tr>
+<tr><td><code>aud</code></td><td>FHIR base URL the app intends to call (typically <code>&lt;base&gt;/fhir</code>).</td></tr>
+<tr><td><code>state</code></td><td>Opaque value used to prevent CSRF; the server echoes it on the redirect back.</td></tr>
+<tr><td><code>code_challenge</code> + <code>code_challenge_method</code></td><td>Required for public apps (PKCE). <code>code_challenge_method</code> is always <code>S256</code>.</td></tr>
+<tr><td><code>launch</code></td><td>EHR launch only — the JWT identifier the EHR passed to the app.</td></tr>
+</tbody>
+</table>
 
 ### Standalone launch
 
-```mermaid
-sequenceDiagram
-  participant app as Third-party app
-  participant aidbox as Payerbox /auth/authorize
-  participant idp as Identity Provider
-  app->>aidbox: GET /auth/authorize?response_type=code&client_id=...&scope=...&redirect_uri=...&state=...&aud=<fhir-base>
-  aidbox->>idp: redirect member to sign in
-  idp->>aidbox: member identity
-  aidbox->>app: redirect to redirect_uri with code
-  app->>aidbox: POST /auth/token (code, client_id, [client_secret])
-  aidbox->>app: access_token, refresh_token, patient, scope
-```
+The user picks the app from outside the EHR. The app goes straight to `/auth/authorize` with `scope=launch/patient ...`, then exchanges the returned `code` at `/auth/token`.
 
 ### EHR launch
 
-The EHR initiates the launch by redirecting to the app with a `launch` token; the app then completes the OAuth dance using the same endpoints. See the [SMART App Launch — EHR Launch](https://hl7.org/fhir/smart-app-launch/STU2.2/app-launch.html#launch-app-ehr-launch) section.
+The EHR initiates a launch by opening the app at `Client.smart.launch_uri` with `iss=<base>/fhir` and `launch=<launch-jwt>`. The app then performs the same authorization code flow, passing the `launch` value back to `/auth/authorize`.
 
-### Required parameters
+The `launch` JWT is signed by Aidbox and carries the launch context:
 
-| Parameter | Value |
+| Claim | Value |
 |---|---|
-| `response_type` | `code` |
-| `client_id` | Issued by the [Developer Portal](../fhir-app-portal/developer-portal.md) |
-| `redirect_uri` | Registered with the app |
-| `scope` | Space-separated SMART scopes; must include `launch/patient` for standalone or `launch` for EHR launch, plus `openid fhirUser` for identity |
-| `aud` | The FHIR base URL the app intends to call |
-| `state` | CSRF nonce |
-| `code_challenge` + `code_challenge_method=S256` | Required for public apps (PKCE) |
+| `client` | SMART client id |
+| `user` | Aidbox user id |
+| `ctx.patient` | Patient id |
+| `exp` | Expiration (seconds since epoch) |
 
-### Confidential vs public apps
+A helper RPC builds a complete launch URL:
 
-| Type | Token exchange | Client Secret |
-|---|---|---|
-| Confidential | `client_secret_basic` or `client_secret_post` | Issued at app registration |
-| Public | PKCE required | Not used |
+```http
+POST /rpc
+Content-Type: application/json
 
-## SMART Backend Services (system-to-system)
-
-Used by Provider Access, Payer-to-Payer, and PAS. The client signs a JWT with its private key; Payerbox verifies it against the client's JWKS endpoint registered at onboarding.
-
-### Onboarding flow
-
-Before a client can request tokens, the payer admin registers it.
-
-1. **Partner** provides its JWKS to the payer — either by reference (a `jwks_uri` URL the payer fetches) or by value (inline JWKS supplied at registration). Per [SMART Backend Services — Registering a SMART Backend Service](https://hl7.org/fhir/smart-app-launch/STU2.2/backend-services.html#registering-a-smart-backend-service).
-2. **Payer admin** creates a Client resource in Aidbox referencing the partner's JWKS (`jwks_uri` or inline `jwks`), the allowed scopes (e.g. `system/Claim.cu system/ClaimResponse.r` for PAS, `system/*.read` for Provider Access), and access policies. See Aidbox docs on Application/Client Management for the Client resource shape.
-3. **Payer admin** returns the Client ID to the partner. For confidential clients without JWKS, a Client Secret is also issued.
-4. **Partner** signs a JWT assertion with its private key and exchanges it at `<base>/auth/token` (see Token request below). OAuth 2.0 Client Credentials with Client ID + Secret is accepted for internal integrations as a fallback.
+{
+  "method": "aidbox.smart/get-launch-uri",
+  "params": {
+    "client": "my-public-smart-app",
+    "user": "<user-id>",
+    "iss": "<base>/fhir",
+    "ctx": {"patient": "<patient-id>"}
+  }
+}
+```
 
 ### Token request
 
-```mermaid
-sequenceDiagram
-  participant client as Client system
-  participant aidbox as Payerbox /auth/token
-  client->>client: sign JWT (RS384/ES384) with private key
-  client->>aidbox: POST /auth/token (grant_type, scope, client_assertion)
-  aidbox->>aidbox: verify JWT signature against client's JWKS
-  aidbox->>client: access_token (system-scoped)
+After receiving the authorization code, exchange it for an access token:
+
+{% tabs %}
+{% tab title="Request" %}
+```http
+POST /auth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code
+&code=<code>
+&redirect_uri=https://app.example.com/redirect
+&client_id=my-public-smart-app
+&code_verifier=<verifier>
 ```
 
-```bash
-POST <base>/auth/token
+Confidential clients omit `client_id` from the body and authenticate with `Authorization: Basic <base64(client_id:client_secret)>` (or send `client_id` + `client_secret` in the body).
+{% endtab %}
+{% tab title="Response" %}
+```json
+{
+  "token_type": "Bearer",
+  "access_token": "<jwt>",
+  "refresh_token": "<jwt>",
+  "id_token": "<jwt>",
+  "scope": "launch/patient openid fhirUser offline_access patient/*.read",
+  "patient": "<patient-id>",
+  "expires_in": 3600,
+  "need_patient_banner": true
+}
+```
+{% endtab %}
+{% endtabs %}
+
+### Refresh token
+
+If the app requested `offline_access` it can refresh the access token without user interaction:
+
+```http
+POST /auth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token
+&refresh_token=<refresh-token>
+&client_id=my-public-smart-app
+```
+
+## SMART Backend Services (system-to-system)
+
+Used by Provider Access, Payer-to-Payer, and PAS. The client signs a JWT with its private key; Payerbox verifies it against the client's JWKS endpoint registered at onboarding. No client secret is shared.
+
+### Client registration
+
+Each backend partner is registered as an Aidbox `Client` resource with `grant_types: ["client_credentials"]`, `auth.client_credentials.client_assertion_types: ["urn:ietf:params:oauth:client-assertion-type:jwt-bearer"]`, and a `jwks_uri` (or inline `jwks`) carrying the partner's public keys:
+
+```json
+PUT /Client/partner-payer
+Content-Type: application/json
+
+{
+  "resourceType": "Client",
+  "id": "partner-payer",
+  "active": true,
+  "grant_types": ["client_credentials"],
+  "auth": {
+    "client_credentials": {
+      "client_assertion_types": ["urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+      "token_format": "jwt",
+      "access_token_expiration": 300
+    }
+  },
+  "jwks_uri": "https://partner.example.com/.well-known/jwks.json",
+  "scope": ["system/*.read"],
+  "details": {
+    "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "<NPI>"}]
+  }
+}
+```
+
+For operations that require the caller's NPI (`$bulk-member-match`, `$provider-member-match`), the NPI must be present on `Client.details.identifier[system=http://hl7.org/fhir/sid/us-npi]`. Aidbox rejects top-level `Client.identifier`, so the NPI lives under `details`.
+
+### Client assertion JWT
+
+The client signs a short-lived JWT with its private key. Payerbox verifies the signature against the client's JWKS.
+
+**Header**
+
+| Field | Value |
+|---|---|
+| `alg` | `RS384` or `ES384` |
+| `kid` | Key id matching one entry in the client's JWKS |
+| `typ` | `JWT` |
+| `jku` (optional) | TLS-protected URL of the client's JWK Set — must match `Client.jwks_uri` when present |
+
+**Claims**
+
+| Claim | Value |
+|---|---|
+| `iss` | Client id |
+| `sub` | Client id (same as `iss`) |
+| `aud` | Token endpoint URL — `<base>/auth/token` |
+| `exp` | Expiration (≤ 5 minutes from now) |
+| `jti` | Unique nonce — prevents replay |
+
+### Token request
+
+{% tabs %}
+{% tab title="Request" %}
+```http
+POST /auth/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
@@ -100,33 +286,103 @@ grant_type=client_credentials
 &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
 &client_assertion=<signed-JWT>
 ```
-
-### Client assertion JWT
-
-| Claim | Value |
-|---|---|
-| `iss` | Client's Client ID |
-| `sub` | Same as `iss` |
-| `aud` | Payerbox token endpoint URL |
-| `exp` | Now + 5 minutes (max) |
-| `jti` | Unique nonce |
-| Signature | RS384 or ES384 (RS256 not allowed per spec) |
+{% endtab %}
+{% tab title="Response" %}
+```json
+{
+  "token_type": "Bearer",
+  "access_token": "<jwt>",
+  "scope": "system/Patient.read system/ExplanationOfBenefit.read",
+  "expires_in": 300
+}
+```
+{% endtab %}
+{% endtabs %}
 
 ### Client JWKS
 
-At onboarding, the client registers a JWKS URL (preferred) or pre-shared public keys with the payer. Payerbox fetches the JWKS to verify client assertions. Key rotation: clients update their JWKS endpoint; Payerbox refreshes the cached keys per the `Cache-Control` header.
+At onboarding, the partner registers either a `jwks_uri` (preferred — Payerbox refreshes the cached keys per the `Cache-Control` header) or an inline `jwks` array. Each JWK must include `kty` and `kid`; RSA keys also need `n` and `e`, EC keys need `crv`, `x`, and `y`. Key rotation is non-breaking — publish the new key, keep the old one until clients have rotated, then retire the old key.
+
+## Client Credentials
+
+Plain OAuth 2.0 `client_credentials` grant with a pre-shared `client_id` + `client_secret`. Intended for trusted internal services, local stacks, and the quickstart — **not** for production payer-to-payer or provider integrations, which must use SMART Backend Services (asymmetric).
+
+### Client registration
+
+```json
+PUT /Client/my-service
+Content-Type: application/json
+
+{
+  "resourceType": "Client",
+  "id": "my-service",
+  "active": true,
+  "grant_types": ["client_credentials"],
+  "secret": "<client-secret>"
+}
+```
+
+An access policy must grant the client access to whatever resources it will read or write.
+
+### Token request
+
+{% tabs %}
+{% tab title="Request (form body)" %}
+```http
+POST /auth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=my-service
+&client_secret=<client-secret>
+```
+{% endtab %}
+{% tab title="Request (Basic auth)" %}
+```http
+POST /auth/token
+Authorization: Basic <base64(my-service:<client-secret>)>
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+```
+{% endtab %}
+{% tab title="Response" %}
+```json
+{
+  "token_type": "Bearer",
+  "access_token": "<token>",
+  "need_patient_banner": true
+}
+```
+{% endtab %}
+{% endtabs %}
+
+Use the returned `access_token` as `Authorization: Bearer <token>` on any FHIR request.
 
 ## Scopes
 
-SMART v2 scopes follow the format `<context>/<resource>.<permissions>`:
+Payerbox supports both SMART v1 and v2 scope syntax (capabilities `permission-v1` and `permission-v2` are both advertised).
 
 | Context | Use |
 |---|---|
-| `patient/` | Member-scoped (SMART App Launch). The access token's `patient` claim identifies which member. |
-| `system/` | System-level (Backend Services). No per-member filter; access governed by attribution and consent. |
-| `user/` | User-scoped (rare; used when a logged-in clinician launches an app). |
+| `patient/` | Member-scoped (SMART App Launch). The access token's `context.patient` claim identifies which member. |
+| `system/` | System-level (Backend Services / Client Credentials). No per-member filter; access is governed by access policies, attribution, and consent. |
+| `user/` | User-scoped — used when a logged-in clinician launches an app. |
 
-Permissions in v2: `c` (create), `r` (read), `u` (update), `d` (delete), `s` (search). Wildcards: `*` for any.
+Permissions:
+
+- **v1** — `read`, `write`, `*` (e.g. `patient/*.read`, `system/Claim.write`).
+- **v2** — granular CRUDS letters: `c` (create), `r` (read), `u` (update), `d` (delete), `s` (search). Wildcard `*` allowed (e.g. `patient/*.cruds`, `system/Patient.rs`).
+
+### Scopes with search parameters (v2)
+
+Append a FHIR search query to a v2 read/search scope to narrow what the token can pull:
+
+```
+patient/Observation.rs?status=final
+```
+
+Aidbox auto-applies the filter to every search and read under that scope. Disallowed inside `c` / `u` / `d` permissions and disallowed with `_include`, `_revinclude`, `_has`, `_assoc`, `_with`.
 
 ### Common scope sets
 
@@ -137,16 +393,20 @@ Permissions in v2: `c` (create), `r` (read), `u` (update), `d` (delete), `s` (se
 | Payer-to-Payer (Backend Services) | `system/*.read` |
 | PAS (Backend Services) | `system/Claim.cu system/ClaimResponse.r` |
 
-Full scope inventory exposed by Payerbox: see `<base>/.well-known/smart-configuration` `scopes_supported`.
+Full inventory of what a given deployment exposes is in the SMART configuration document's `scopes_supported`.
 
 ## Common errors
 
-| HTTP | OAuth error | Cause |
-|---|---|---|
-| 400 | `invalid_request` | Missing required parameter |
-| 400 | `invalid_grant` | Authorization code expired, already used, or refresh token invalid |
-| 400 | `invalid_client` | Client ID unknown or client assertion signature invalid |
-| 400 | `invalid_scope` | Requested scope not allowed for this client |
-| 401 | `invalid_token` | Access token expired or revoked |
-| 403 | `insufficient_scope` | Token lacks required scope for the resource |
-
+<table>
+<thead>
+<tr><th>HTTP</th><th width="200">OAuth error</th><th>Cause</th></tr>
+</thead>
+<tbody>
+<tr><td>400</td><td><code>invalid_request</code></td><td>Missing or malformed parameter</td></tr>
+<tr><td>400</td><td><code>invalid_grant</code></td><td>Authorization code expired, already used, or refresh token invalid</td></tr>
+<tr><td>400</td><td><code>invalid_client</code></td><td>Unknown <code>client_id</code>, wrong secret, or client assertion signature did not verify against the registered JWKS</td></tr>
+<tr><td>400</td><td><code>invalid_scope</code></td><td>Requested scope not allowed for this client</td></tr>
+<tr><td>401</td><td><code>invalid_token</code></td><td>Access token expired, revoked, or signature invalid</td></tr>
+<tr><td>403</td><td><code>insufficient_scope</code></td><td>Token lacks the required scope for the resource (returned as <code>OperationOutcome</code> from <code>/fhir</code>)</td></tr>
+</tbody>
+</table>
