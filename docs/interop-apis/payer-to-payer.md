@@ -1,6 +1,6 @@
 # Payer-to-Payer
 
-![Payer-to-Payer flow: Other Payers (clinical and claims) exchange Bulk Export and Member Match with Payerbox to support 5-year record transfer when members switch plans.](../../assets/interop-apis/payer-to-payer-flow.png)
+![Payer-to-Payer flow: Other Payers (clinical and claims) exchange Bulk Export and Member Match with Payerbox to support 5-year record transfer when members switch plans.](../../assets/interop-apis/payer-to-payer-flow.avif)
 
 The Payer-to-Payer API lets a receiving payer (new plan) pull a member's clinical, claims, encounter, and prior-authorization history from a previous payer when the member changes coverage. Established by CMS-0057-F, effective January 1, 2027. Replaces the suspended 9115 P2P provision.
 
