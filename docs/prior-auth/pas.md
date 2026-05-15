@@ -10,7 +10,7 @@ Payerbox implements Da Vinci PAS STU 2.1.0. See [Compliance / CMS-0057](../compl
 
 PAS supports three operations forming a typical flow:
 
-1. **[Claim/$submit](../api-reference/operations/claim-submit.md)** — Submit a prior authorization request as a FHIR Bundle. Payerbox returns a `ClaimResponse` (queued, approved, denied, or pended).
+1. **[Claim/$submit](../api-reference/operations/claim-submit.md)** — Submit a prior authorization request as a FHIR Bundle. Payerbox returns a `ClaimResponse` with `outcome = "queued"`; the payer's UM system later updates the same `ClaimResponse` to convey the decision via the `reviewAction` extension (e.g. X12 code `A1` = certified / approved, `A3` = not certified / denied, `A4` = pended).
 2. **[Claim/$inquire](../api-reference/operations/claim-inquire.md)** — Poll the status of a previously submitted request.
 3. **[$submit-attachment](../api-reference/operations/submit-attachment.md)** — (Optional) Submit clinical documentation associated with an existing prior authorization, when the payer requests additional information.
 

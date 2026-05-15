@@ -11,11 +11,11 @@ Payerbox implements Da Vinci CRD STU 2.0.1. See [Compliance / CMS-0057](../compl
 CRD uses [CDS Hooks 2.0](https://cds-hooks.hl7.org/2.0/) to invoke Payerbox at clinically meaningful workflow events. All hooks follow the same processing pipeline:
 
 1. **Receive Hook Request** — EHR sends a CDS Hooks request (e.g., `order-sign`, `order-select`) with context data and prefetch resources.
-2. **Validate Request Structure** — request validated against the CDS Hooks schema.
-3. **Validate FHIR Resources** — `draftOrders` and `prefetch` resources validated against Aidbox.
-4. **Fetch Missing Resources** — referenced but not prefetched resources are fetched recursively from the EHR's `fhirServer` using `fhirAuthorization`.
-5. **Persist Resources** — all validated resources persisted to Aidbox for audit and reference.
-6. **Enrich and Proxy** — request enriched with resolved prefetch data and proxied to the **Decision Service** (external to Payerbox), which returns Cards with coverage requirements, documentation needs, or prior authorization information.
+2. **Validate request structure** — request body validated against the CDS Hooks schema.
+3. **Validate FHIR resources** — `draftOrders` and `prefetch` resources validated against Aidbox.
+4. **Persist resources** — the validated request-side resources are persisted to Aidbox for audit and reference.
+5. **Fetch missing resources** — references not present in `prefetch` are fetched recursively from the EHR's `fhirServer` using `fhirAuthorization`, then merged into the request's prefetch map for the decision call (not persisted).
+6. **Proxy to the Decision Service** — the enriched request is forwarded to the **Decision Service** (external to Payerbox), which returns Cards with coverage requirements, documentation needs, or prior-authorization information.
 
 ## Decision Service
 
