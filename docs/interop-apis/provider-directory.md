@@ -19,7 +19,7 @@ Unauthenticated `GET` is permitted on `Practitioner`, `PractitionerRole`, `Organ
 
 ## Resources and profiles
 
-Plan-Net 1.2.0 defines nine profiles. Payerbox ships seed bundles shaped against them; the IG package can be loaded to turn on profile validation.
+Plan-Net 1.1.0 defines nine profiles. Payerbox ships seed bundles shaped against them; the IG package can be loaded to turn on profile validation.
 
 | FHIR resource | Plan-Net profile | Use |
 |---|---|---|
@@ -50,7 +50,7 @@ Plan-Net 1.2.0 defines nine profiles. Payerbox ships seed bundles shaped against
 
 ## Pharmacy directory (MA-PD)
 
-Medicare Advantage organizations offering MA-PD also publish pharmacy data through the same API: pharmacy name, address, phone, network pharmacy count, and pharmacy type (retail, mail-order, LTC). Plan-Net 1.2.0 does not define a dedicated pharmacy profile — pharmacies are modeled as `Organization` plus `HealthcareService` with the pharmacy type in `category`.
+Medicare Advantage organizations offering MA-PD also publish pharmacy data through the same API: pharmacy name, address, phone, network pharmacy count, and pharmacy type (retail, mail-order, LTC). Plan-Net 1.1.0 does not define a dedicated pharmacy profile — pharmacies are modeled as `Organization` plus `HealthcareService` with the pharmacy type in `category`.
 
 ## Search examples
 

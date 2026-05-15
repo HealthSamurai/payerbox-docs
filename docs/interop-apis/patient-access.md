@@ -17,7 +17,7 @@ The Patient Access API lets a member authorize a third-party app to read their o
 | Property | Value |
 |---|---|
 | Caller | Third-party app the member authorizes (mobile, web, desktop) |
-| Authentication | SMART App Launch 2.0.0 / 2.2.0 — OAuth 2.0 authorization code, PKCE for public clients, OpenID Connect for identity |
+| Authentication | SMART App Launch 2.2.0 — OAuth 2.0 authorization code, PKCE for public clients, OpenID Connect for identity |
 | Discovery | `<base>/.well-known/smart-configuration` |
 | Authorization endpoint | `<base>/auth/authorize` |
 | Token endpoint | `<base>/auth/token` |
@@ -36,11 +36,11 @@ What a member can read through the API:
 | Data class | FHIR resources | IG |
 |---|---|---|
 | USCDI clinical | Patient, Condition, Observation, MedicationRequest, AllergyIntolerance, Procedure, Immunization, DocumentReference, ... | US Core 6.1.0 |
-| Adjudicated claims with remittances and enrollee cost-sharing | ExplanationOfBenefit, Claim, Coverage | CARIN IG for Blue Button 2.0.0 / 2.1.0 |
+| Adjudicated claims with remittances and enrollee cost-sharing | ExplanationOfBenefit, Claim, Coverage | CARIN IG for Blue Button 2.0.0 |
 | Encounters with capitated providers | Encounter | US Core 6.1.0 |
 | Lab results | Observation (`category=laboratory`) | US Core 6.1.0 |
-| Drug formulary (MA-PD only) | InsurancePlan, Basic (formulary item), MedicationKnowledge | PDex US Drug Formulary 2.0.1 / 2.1.0 |
-| Prior authorization (effective January 1, 2027) | Claim, ClaimResponse, Task | PDex 2.0.0 / 2.1.0 |
+| Drug formulary (MA-PD only) | InsurancePlan, MedicationKnowledge | PDex US Drug Formulary 2.0.1 |
+| Prior authorization (effective January 1, 2027) | Claim, ClaimResponse, Task | PDex 2.1.0 |
 
 Service date floor: **January 1, 2016**.
 

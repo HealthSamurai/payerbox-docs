@@ -21,15 +21,15 @@ The [Da Vinci PDex Provider Access API](https://build.fhir.org/ig/HL7/davinci-ep
 | Property | Value |
 |---|---|
 | Caller | In-network provider system (EHR, care-coordination platform) |
-| Authentication | SMART Backend Services (asymmetric JWT, JWKS or pre-shared public key) per PDex's SHOULD-level recommendation for CMS-0057-F conformance. OAuth2 client_credentials (client_id + client_secret) is supported as a simpler alternative for sandboxes and non-conformance use cases. |
+| Authentication | SMART Backend Services (asymmetric JWT) per PDex's SHOULD-level recommendation for CMS-0057-F conformance. OAuth 2.0 Client Credentials (`client_id` + `client_secret`) is supported as a simpler alternative for sandboxes and trusted internal services. |
 | Token endpoint | `<base>/auth/token` |
-| Scope | PDex proposes a narrowed Group-scoped scope (`system/Group.u?code=...`) rather than blanket `system/*.read`. The exact scope a deployment requires is configurable. |
+| Scope | `system/*.read` is the common default; deployments may narrow this per resource type via Aidbox access policies. The interop app additionally requires the provider's NPI on the OAuth `Client` resource (`Client.details.identifier[system=http://hl7.org/fhir/sid/us-npi]`). |
 
 See [API Reference / Authentication](../api-reference/authentication.md).
 
 ## Two paths to the data
 
-PDex v2.2.0 keeps two patterns for delivering Provider Access data. For **CMS-0057-F conformance the IG recommends v2** (Attestation). v1 is retained primarily for value-based-care attribution workflows.
+PDex 2.1.0 keeps two patterns for delivering Provider Access data. For **CMS-0057-F conformance the IG recommends v2** (Attestation). v1 is retained primarily for value-based-care attribution workflows.
 
 ### v1 — Payer-attributed Group export
 
@@ -83,9 +83,9 @@ Same data set Provider Access shares with Patient Access, **excluding provider r
 
 | Data class | FHIR resources | IG |
 |---|---|---|
-| USCDI clinical | Patient, Condition, Observation, MedicationRequest, ... | US Core (PDex accepts 3.1.1 or 6.1; pick the version your USCDI obligation requires) |
-| Claims and encounters (no remittance, no cost-sharing) | ExplanationOfBenefit (filtered), Claim, Coverage | PDex 2.2.0 |
-| Prior authorization | Claim, ClaimResponse, Task | PDex 2.2.0 |
+| USCDI clinical | Patient, Condition, Observation, MedicationRequest, ... | US Core (PDex 2.1.0 accepts 3.1.1 or 6.1; pick the version your USCDI obligation requires) |
+| Claims and encounters (no remittance, no cost-sharing) | ExplanationOfBenefit (filtered), Claim, Coverage | PDex 2.1.0 |
+| Prior authorization | Claim, ClaimResponse, Task | PDex 2.1.0 |
 
 Service date floor: **January 1, 2016**.
 
@@ -93,7 +93,7 @@ Service date floor: **January 1, 2016**.
 
 ### `$provider-member-match`
 
-v2 only. The provider submits demographics + (optional) prior coverage and an attestation; the payer returns the three result Groups (`MatchedMembers`, `NonMatchedMembers`, `ConsentConstrainedMembers`).
+v2 only. The provider submits one or more `MemberBundle` parameters — each carrying a `MemberPatient` (demographics), `CoverageToMatch`, and a `Consent` (treatment-relationship attestation). The kick-off returns `202 Accepted` with a `Content-Location`; when polled, the manifest points at an ndjson `Parameters` resource holding up to three inline `Group` resources (`MatchedMembers`, `NonMatchedMembers`, `ConsentConstrainedMembers`).
 
 {% tabs %}
 {% tab title="Request" %}
@@ -101,47 +101,44 @@ v2 only. The provider submits demographics + (optional) prior coverage and an at
 POST <base>/fhir/Group/$provider-member-match
 Authorization: Bearer <access-token>
 Content-Type: application/fhir+json
-```
-```json
+Prefer: respond-async
+
 {
   "resourceType": "Parameters",
-  "parameter": [
-    { "name": "MemberPatient",
-      "resource": {
+  "parameter": [{
+    "name": "MemberBundle",
+    "part": [
+      {"name": "MemberPatient", "resource": {
         "resourceType": "Patient",
-        "name": [{ "family": "Smith", "given": ["John"] }],
-        "birthDate": "1970-04-15",
-        "gender": "male"
-      } },
-    { "name": "CoverageToMatch",
-      "resource": {
-        "resourceType": "Coverage",
-        "status": "active",
-        "subscriberId": "1A23B45C67D8"
-      } }
-  ]
+        "name": [{"family": "Smith", "given": ["John"]}],
+        "gender": "male", "birthDate": "1970-05-15"
+      }},
+      {"name": "CoverageToMatch", "resource": {
+        "resourceType": "Coverage", "status": "active",
+        "beneficiary": {"reference": "Patient/patient-1"},
+        "payor": [{"reference": "Organization/payer-org-1"}]
+      }},
+      {"name": "Consent", "resource": {
+        "resourceType": "Consent", "status": "active",
+        "patient": {"reference": "Patient/patient-1"}
+      }}
+    ]
+  }]
 }
 ```
 {% endtab %}
 
 {% tab title="Response" %}
-```json
-{
-  "resourceType": "Parameters",
-  "parameter": [
-    { "name": "MatchedMembers",
-      "resource": { "resourceType": "Group", "id": "matched-2026-05-14" } },
-    { "name": "NonMatchedMembers",
-      "resource": { "resourceType": "Group", "id": "nonmatched-2026-05-14" } },
-    { "name": "ConsentConstrainedMembers",
-      "resource": { "resourceType": "Group", "id": "optedout-2026-05-14" } }
-  ]
-}
+```http
+HTTP/1.1 202 Accepted
+Content-Location: <base>/fhir/Group/$provider-member-match-status/<task-id>
 ```
+
+Poll the status URL until `200 OK`; the manifest's `output[0].url` points at the ndjson `Parameters` body with the three inline `Group` resources.
 {% endtab %}
 {% endtabs %}
 
-Full parameter table, all variants and error responses: [`$provider-member-match` reference](../api-reference/operations/provider-member-match.md).
+Full parameter table, status / output / cancel endpoints, and all response variants: [`$provider-member-match` reference](../api-reference/operations/provider-member-match.md).
 
 ### `$davinci-data-export`
 
@@ -150,10 +147,18 @@ v1 and v2. Async bulk export against a Group of attributed (v1) or matched (v2) 
 {% tabs %}
 {% tab title="Request" %}
 ```http
-POST <base>/fhir/Group/<group-id>/$davinci-data-export?exportType=provider-download
+POST <base>/fhir/Group/<group-id>/$davinci-data-export
 Authorization: Bearer <access-token>
-Accept: application/fhir+json
+Content-Type: application/fhir+json
 Prefer: respond-async
+
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {"name": "exportType", "valueCanonical": "hl7.fhir.us.davinci-pdex#provider-download"},
+    {"name": "_type",      "valueString":    "Patient,Coverage,ExplanationOfBenefit"}
+  ]
+}
 ```
 {% endtab %}
 
@@ -163,8 +168,8 @@ HTTP/1.1 202 Accepted
 Content-Location: <base>/fhir/$export-status/<job-id>
 ```
 
-Poll the `Content-Location` URL. When complete, it returns an `output` array of NDJSON file URLs grouped by resource type.
+Poll the `Content-Location` URL. When complete, it returns a manifest whose `output[].url` entries are pre-signed ndjson URLs grouped by resource type.
 {% endtab %}
 {% endtabs %}
 
-Full parameter table (including `exportType`, `_since`, `_type`, `_typeFilter`), poll/manifest payloads, and error responses: [`$davinci-data-export` reference](../api-reference/operations/davinci-data-export.md).
+Full parameter table (`exportType` allowed values, `_since`, `_until`, `_type`, `_typeFilter`, `_outputFormat`, `patient`), poll / output / cancel endpoints, and error responses: [`$davinci-data-export` reference](../api-reference/operations/davinci-data-export.md).
