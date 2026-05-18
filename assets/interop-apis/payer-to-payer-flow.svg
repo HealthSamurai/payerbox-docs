@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320"
+     width="960" height="320" fill="none" preserveAspectRatio="xMidYMid meet"
+     style="max-width:100%;height:auto;">
+  <style>
+    line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
+    .d-group-title-red    { font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #EC291C; }
+    .d-group-title-neutral{ font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #525263; }
+    .d-card-title         { font: 400 14px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
+    .d-card-sub           { font: 400 12px/1.4 'Inter', system-ui, sans-serif; fill: #525263; }
+    .d-conn-op            { font: 400 11px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
+  </style>
+
+  <!-- OTHER PAYER (neutral, top-left) — the requesting/receiving payer -->
+  <rect x="20" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
+  <text x="100" y="142" text-anchor="middle" class="d-group-title-neutral">Other payer</text>
+  <text x="100" y="170" text-anchor="middle" class="d-card-sub">(receiving)</text>
+
+  <!-- PAYERBOX FHIR PLATFORM (red, top-center) — the responding payer -->
+  <rect x="370" y="100" width="220" height="100" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
+  <text x="480" y="142" text-anchor="middle" class="d-group-title-red">Payerbox</text>
+  <text x="480" y="170" text-anchor="middle" class="d-card-sub">FHIR platform</text>
+
+  <!-- HEALTH PLAN DATA SOURCES (neutral, top-right) -->
+  <rect x="780" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
+  <text x="860" y="142" text-anchor="middle" class="d-group-title-neutral">Health Plan</text>
+  <text x="860" y="170" text-anchor="middle" class="d-group-title-neutral">data sources</text>
+
+  <!-- Other payer -> Payerbox: $bulk-member-match (top horizontal) -->
+  <line x1="180" y1="135" x2="368" y2="135" stroke="#353B50" stroke-width="1"/>
+  <polygon points="370,135 362,131 362,139" fill="#353B50"/>
+  <rect x="200" y="129" width="150" height="12" fill="#FFFFFF"/>
+  <text x="275" y="139" text-anchor="middle" class="d-conn-op">$bulk-member-match</text>
+
+  <!-- Payerbox -> Other payer: $davinci-data-export (return, parallel below) -->
+  <line x1="368" y1="165" x2="182" y2="165" stroke="#353B50" stroke-width="1"/>
+  <polygon points="180,165 188,161 188,169" fill="#353B50"/>
+  <rect x="208" y="159" width="134" height="12" fill="#FFFFFF"/>
+  <text x="275" y="169" text-anchor="middle" class="d-conn-op">$davinci-data-export</text>
+
+  <!-- Health Plan -> Payerbox: Members' data -->
+  <line x1="780" y1="150" x2="592" y2="150" stroke="#353B50" stroke-width="1"/>
+  <polygon points="590,150 598,146 598,154" fill="#353B50"/>
+  <rect x="638" y="144" width="94" height="12" fill="#FFFFFF"/>
+  <text x="685" y="154" text-anchor="middle" class="d-conn-op">Members' data</text>
+</svg>
