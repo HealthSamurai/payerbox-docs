@@ -4,6 +4,12 @@
 
 The Payer-to-Payer API lets a receiving payer (new plan) pull a member's clinical, claims, encounter, and prior-authorization history from a previous payer when the member changes coverage. Established by CMS-0057-F, effective January 1, 2027. Replaces the suspended 9115 P2P provision.
 
+## What Payerbox covers
+
+- Asynchronous FHIR `$bulk-member-match` with the matched member's submitted `Consent` persisted on the responding side.
+- Five-year member history on demand: clinical, claims, encounters.
+- FHIR `Consent` resources with full audit trail of opt-in capture and revocation.
+
 ## Caller and auth
 
 | Property | Value |
@@ -123,41 +129,3 @@ Prefer: respond-async
 Response: `202 Accepted` with `Content-Location`. On completion, the Aidbox `$export-status` manifest carries pre-signed ndjson URLs grouped by resource type.
 
 See [API Reference / Operations / $davinci-data-export](../api-reference/operations/davinci-data-export.md).
-
-## Quickstart
-
-1. Onboard with the responding payer: exchange Client ID, JWKS, agreed IG versions.
-2. At new-member enrollment, capture opt-in consent. Store the consent record.
-3. Sign a JWT, request token at the responding payer's `/auth/token` with `system/*.read` scope.
-4. Submit `$bulk-member-match`:
-
-```bash
-curl -X POST -H "Authorization: Bearer $TOKEN" \
-  -H "Prefer: respond-async" \
-  -H "Content-Type: application/fhir+json" \
-  -d @member-bundles.json \
-  "<base>/fhir/Group/\$bulk-member-match"
-```
-
-5. Poll the status URL until match completes. Capture the three Group IDs.
-6. Trigger export on the MatchedMembers Group.
-7. Poll until export complete; ingest the NDJSON.
-
-## Common errors
-
-| HTTP | Cause |
-|---|---|
-| 400 | `Prefer: respond-async` header missing on kick-off |
-| 401 | Token signature invalid or expired |
-| 403 | OAuth client carries no NPI identifier |
-| 422 | Input `Parameters` failed `$validate` against the input profile |
-| 500 | Background processing failed; or upstream Aidbox read/write failed transiently |
-
-Members that route to `NonMatchedMembers` or `ConsentConstrainedMembers` are **not** an error — they appear in their respective buckets and the export skips them.
-
-## What Payerbox covers
-
-- Asynchronous FHIR `$bulk-member-match` with the matched member's submitted `Consent` persisted on the responding side.
-- Five-year member history on demand: clinical, claims, encounters.
-- FHIR `Consent` resources with full audit trail of opt-in capture and revocation.
-

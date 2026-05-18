@@ -6,6 +6,13 @@ description: Public, unauthenticated FHIR API exposing contracted providers, pha
 
 The [Da Vinci PDex Plan-Net IG](https://hl7.org/fhir/us/davinci-pdex-plan-net/) profiles a payer's network of contracted providers, pharmacies, organizations, locations, and plans as FHIR resources so members and third-party apps can query them without an account. Required under CMS-9115-F since January 1, 2021; CMS-0057-F did not change it. See [Compliance / CMS-9115](../compliance/cms-9115.md) for citations and SLAs.
 
+## What Payerbox covers
+
+- Plan-Net IG preconfigured.
+- Public unauthenticated `GET` on the Plan-Net directory resource types (`Practitioner`, `PractitionerRole`, `Organization`, `Location`, `HealthcareService`); everything else stays authenticated.
+- `Location.near` geographic search.
+- FHIR Bulk Data `$export` for periodic directory snapshots.
+
 ## Caller and auth
 
 | Property | Value |
@@ -113,10 +120,3 @@ GET <base>/fhir/PractitionerRole
 ## Bulk download
 
 CMS recommends — but does not mandate — periodic full-directory downloads alongside REST search. Payerbox supports FHIR Bulk Data system-level `$export` with `_type=Practitioner,PractitionerRole,Organization,Location,HealthcareService` returning NDJSON, suitable for nightly snapshots a CDN or third party can mirror.
-
-## What Payerbox covers
-
-- Plan-Net IG preconfigured.
-- Public unauthenticated `GET` on the Plan-Net directory resource types (`Practitioner`, `PractitionerRole`, `Organization`, `Location`, `HealthcareService`); everything else stays authenticated.
-- `Location.near` geographic search.
-- FHIR Bulk Data `$export` for periodic directory snapshots.
