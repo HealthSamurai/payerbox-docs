@@ -93,7 +93,7 @@ Service date floor: **January 1, 2016**.
 
 ### `$provider-member-match`
 
-v2 only. The provider submits one or more `MemberBundle` parameters — each carrying a `MemberPatient` (demographics), `CoverageToMatch`, and a `Consent` (treatment-relationship attestation). The kick-off returns `202 Accepted` with a `Content-Location`; when polled, the manifest points at an ndjson `Parameters` resource holding up to three inline `Group` resources (`MatchedMembers`, `NonMatchedMembers`, `ConsentConstrainedMembers`).
+v2 only. The provider submits one or more `MemberBundle` parameters — each carrying a `MemberPatient` (demographics), `CoverageToMatch`, and a `Consent` (treatment-relationship attestation). The `Consent` must conform to the [HRex Consent profile](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html) — `meta.profile`, `provision.period`, source, and two actors (`performer` for the member's payer and `IRCP` recipient for the requesting provider) are required. The kick-off returns `202 Accepted` with a `Content-Location`; when polled, the manifest points at an ndjson `Parameters` resource holding up to three inline `Group` resources (`MatchedMembers`, `NonMatchedMembers`, `ConsentConstrainedMembers`).
 
 {% tabs %}
 {% tab title="Request" %}
@@ -119,8 +119,30 @@ Prefer: respond-async
         "payor": [{"reference": "Organization/payer-org-1"}]
       }},
       {"name": "Consent", "resource": {
-        "resourceType": "Consent", "status": "active",
-        "patient": {"reference": "Patient/patient-1"}
+        "resourceType": "Consent",
+        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"]},
+        "status": "active",
+        "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+        "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
+        "patient": {"reference": "Patient/patient-1"},
+        "performer": [{"reference": "Patient/patient-1"}],
+        "sourceReference": {"reference": "http://example.org/DocumentReference/consent-doc-1"},
+        "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#regular"}],
+        "provision": {
+          "type": "permit",
+          "period": {"start": "2026-01-01", "end": "2027-01-01"},
+          "actor": [
+            {
+              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type", "code": "performer"}]},
+              "reference": {"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "9876543210"}, "display": "Member health plan"}
+            },
+            {
+              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
+              "reference": {"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "0123456789"}, "display": "Requesting provider"}
+            }
+          ],
+          "action": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentaction", "code": "disclose"}]}]
+        }
       }}
     ]
   }]
