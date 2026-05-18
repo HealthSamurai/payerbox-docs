@@ -8,7 +8,7 @@ The Patient Access API lets a member authorize a third-party app to read their o
 
 ## What Payerbox covers
 
-- US Core 6.1.0 preloaded; [CARIN IG for Blue Button](https://hl7.org/fhir/us/carin-bb/), [PDex](https://hl7.org/fhir/us/davinci-pdex/), and [PDex US Drug Formulary](https://hl7.org/fhir/us/davinci-drug-formulary/) supported as additional FHIR packages.
+- [US Core](https://hl7.org/fhir/us/core/) preloaded; [CARIN IG for Blue Button](https://hl7.org/fhir/us/carin-bb/), [PDex](https://hl7.org/fhir/us/davinci-pdex/), and [PDex US Drug Formulary](https://hl7.org/fhir/us/davinci-drug-formulary/) supported as additional FHIR packages.
 - [FHIR App Portal](../fhir-app-portal/README.md) for member-facing app discovery and the [Developer Portal](../fhir-app-portal/developer-portal.md) for third-party app registration.
 - Per-app audit logging of every member access.
 
@@ -17,7 +17,7 @@ The Patient Access API lets a member authorize a third-party app to read their o
 | Property | Value |
 |---|---|
 | Caller | Third-party app the member authorizes (mobile, web, desktop) |
-| Authentication | SMART App Launch 2.2.0 — OAuth 2.0 authorization code, PKCE for public clients, OpenID Connect for identity |
+| Authentication | SMART App Launch — OAuth 2.0 authorization code, PKCE for public clients, OpenID Connect for identity |
 | Discovery | `<base>/.well-known/smart-configuration` |
 | Authorization endpoint | `<base>/auth/authorize` |
 | Token endpoint | `<base>/auth/token` |
@@ -35,41 +35,66 @@ What a member can read through the API:
 
 | Data class | FHIR resources | IG |
 |---|---|---|
-| USCDI clinical | Patient, Condition, Observation, MedicationRequest, AllergyIntolerance, Procedure, Immunization, DocumentReference, ... | US Core 6.1.0 |
-| Adjudicated claims with remittances and enrollee cost-sharing | ExplanationOfBenefit, Claim, Coverage | CARIN IG for Blue Button 2.0.0 |
-| Encounters with capitated providers | Encounter | US Core 6.1.0 |
-| Lab results | Observation (`category=laboratory`) | US Core 6.1.0 |
-| Drug formulary (MA-PD only) | InsurancePlan, MedicationKnowledge | PDex US Drug Formulary 2.0.1 |
-| Prior authorization (effective January 1, 2027) | Claim, ClaimResponse, Task | PDex 2.1.0 |
+| USCDI clinical | Patient, Condition, Observation, MedicationRequest, AllergyIntolerance, Procedure, Immunization, DocumentReference, ... | US Core |
+| Adjudicated claims with remittances and enrollee cost-sharing | ExplanationOfBenefit, Coverage | CARIN IG for Blue Button |
+| Encounters with capitated providers | Encounter | US Core |
+| Lab results | Observation (`category=laboratory`) | US Core |
+| Drug formulary (MA-PD only) | InsurancePlan, Basic (formulary item), MedicationKnowledge | PDex US Drug Formulary |
+| Prior authorization request and decision (effective January 1, 2027, drug PA excluded) | ExplanationOfBenefit (`use=preauthorization`) | PDex |
 
 Service date floor: **January 1, 2016**.
 
-The payer is responsible for landing claim and encounter data in Payerbox **no later than one business day** after adjudication / receipt — that SLA is on the payer's ingestion feed, not the FHIR server.
-
 ## Read examples
 
+Mapped to common member-app needs. Every request carries the member's `Authorization: Bearer <access-token>` header; Payerbox scopes results to the patient in the token's `patient` claim.
+
+### Member demographics
+
 ```bash
-# Member demographics
 GET <base>/fhir/Patient/<id>
-
-# Lab results
-GET <base>/fhir/Observation?patient=<id>&category=laboratory
-
-# Adjudicated claims (EOBs)
-GET <base>/fhir/ExplanationOfBenefit?patient=<id>&_count=50
-
-# Active coverages
-GET <base>/fhir/Coverage?patient=<id>&status=active
-
-# Drug formulary (MA-PD)
-GET <base>/fhir/InsurancePlan?_profile=http://hl7.org/fhir/us/davinci-drug-formulary/StructureDefinition/usdf-PayerInsurancePlan
 ```
 
-Every request carries the member's `Authorization: Bearer <access-token>` header.
+### Lab results
+
+`Observation` profiled as US Core Laboratory Result; filter by `category=laboratory`.
+
+```bash
+GET <base>/fhir/Observation?patient=<id>&category=laboratory
+```
+
+### Adjudicated claims
+
+`ExplanationOfBenefit` is CARIN BB's focal resource for paid claims (institutional, professional, pharmacy, oral).
+
+```bash
+GET <base>/fhir/ExplanationOfBenefit?patient=<id>
+```
+
+### Active coverage
+
+```bash
+GET <base>/fhir/Coverage?patient=<id>&status=active
+```
+
+### Drug formulary (MA-PD)
+
+Browse covered drugs in the member's plan formulary:
+
+```bash
+GET <base>/fhir/MedicationKnowledge?_profile=http://hl7.org/fhir/us/davinci-drug-formulary/StructureDefinition/usdf-FormularyDrug
+```
+
+### Prior authorization (from January 1, 2027)
+
+Adjudicated PA decisions surface as `ExplanationOfBenefit` with `use=preauthorization`:
+
+```bash
+GET <base>/fhir/ExplanationOfBenefit?patient=<id>&_profile=http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-priorauthorization
+```
 
 ## Limitations
 
 - **Opt-in per app.** The member authorizes each third-party app separately. There is no payer-wide consent equivalent to Provider Access's opt-out model.
-- **Prior authorization data lands January 1, 2027.** Before that date, `Claim`, `ClaimResponse`, and `Task` resources for prior-auth need not be exposed.
+- **Prior authorization data lands January 1, 2027.** Before that date, prior-authorization data need not be exposed through Patient Access.
 - **No `$export` on member-scoped tokens.** Bulk export is a system-level operation used by the payer; member apps use synchronous REST.
 - **Single patient per token.** A guardian or personal representative needs separate tokens per dependent member.
