@@ -37,15 +37,15 @@
   <rect x="638" y="144" width="94" height="12" fill="#FFFFFF"/>
   <text x="685" y="154" text-anchor="middle" class="d-conn-op">Members' data</text>
 
-  <!-- Member -> Payerbox: SMART App Launch + FHIR read -->
+  <!-- Member -> Payerbox: SMART launch + FHIR read -->
   <line x1="182" y1="150" x2="368" y2="150" stroke="#353B50" stroke-width="1"/>
   <polygon points="370,150 362,146 362,154" fill="#353B50"/>
-  <rect x="190" y="144" width="170" height="12" fill="#FFFFFF"/>
-  <text x="275" y="154" text-anchor="middle" class="d-conn-op">SMART App Launch + FHIR read</text>
+  <rect x="208" y="144" width="134" height="12" fill="#FFFFFF"/>
+  <text x="275" y="154" text-anchor="middle" class="d-conn-op">SMART launch + read</text>
 
-  <!-- Member -> Member portal: App gallery + launch (curved down-right from Member to portal top-center) -->
-  <path d="M 100 200 L 100 250 L 480 250 L 480 298" stroke="#353B50" stroke-width="1" fill="none"/>
-  <polygon points="480,300 476,292 484,292" fill="#353B50"/>
+  <!-- Member portal -> Member: App gallery + launch (from portal top-center, curved up-left into Member bottom-center) -->
+  <path d="M 480 300 L 480 250 L 100 250 L 100 202" stroke="#353B50" stroke-width="1" fill="none"/>
+  <polygon points="100,200 96,208 104,208" fill="#353B50"/>
   <rect x="220" y="244" width="140" height="12" fill="#FFFFFF"/>
   <text x="290" y="254" text-anchor="middle" class="d-conn-op">App gallery + launch</text>
 </svg>
