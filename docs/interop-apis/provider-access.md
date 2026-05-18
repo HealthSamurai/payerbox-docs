@@ -29,7 +29,7 @@ See [API Reference / Authentication](../api-reference/authentication.md).
 
 ## Two paths to the data
 
-PDex 2.1.0 keeps two patterns for delivering Provider Access data. For **CMS-0057-F conformance the IG recommends v2** (Attestation). v1 is retained primarily for value-based-care attribution workflows.
+PDex keeps two patterns for delivering Provider Access data. For **CMS-0057-F conformance the IG recommends v2** (Attestation). v1 is retained primarily for value-based-care attribution workflows.
 
 ### v1 — Payer-attributed Group export
 
@@ -73,7 +73,7 @@ Both `$provider-member-match` and `$davinci-data-export` are **always asynchrono
 
 ## Consent model
 
-CMS-0057-F prescribes **opt-out** for Provider Access. Default is share-on; a member who opts out is removed from the data response for all in-network providers — PDex v2.2.0 frames the opt-out as all-or-nothing, not per-provider. The member can opt out and reverse the choice at any time.
+CMS-0057-F prescribes **opt-out** for Provider Access. Default is share-on; a member who opts out is removed from the data response for all in-network providers — PDex 2.1.0 frames the opt-out as all-or-nothing, not per-provider. The member can opt out and reverse the choice at any time.
 
 Opt-out is captured by the payer and surfaced to Payerbox so the API filters out opted-out members before responding, regardless of whether v1 or v2 is used.
 
@@ -84,8 +84,8 @@ Same data set Provider Access shares with Patient Access, **excluding provider r
 | Data class | FHIR resources | IG |
 |---|---|---|
 | USCDI clinical | Patient, Condition, Observation, MedicationRequest, ... | US Core (PDex 2.1.0 accepts 3.1.1 or 6.1; pick the version your USCDI obligation requires) |
-| Claims and encounters (no remittance, no cost-sharing) | ExplanationOfBenefit (filtered), Claim, Coverage | PDex 2.1.0 |
-| Prior authorization | Claim, ClaimResponse, Task | PDex 2.1.0 |
+| Claims and encounters (no remittance, no cost-sharing) | ExplanationOfBenefit (CARIN BB Non-Financial Basis profiles), Coverage | PDex 2.1.0 |
+| Prior authorization request and decision (drug PA excluded) | ExplanationOfBenefit (`use=preauthorization`) | PDex |
 
 Service date floor: **January 1, 2016**.
 
