@@ -382,6 +382,8 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 **Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization. The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
+**Stale Consent deactivation.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check, opt-out hit, or persistence failure), the prior persisted `Consent` at the deterministic id is flipped to `status = inactive`. The row is retained for audit, but `$davinci-data-export?exportType=payertopayer` will not honor it on subsequent reads.
+
 ## Group lifecycle
 
 Output Groups carry no `period.end` and no TTL extension today. Until lifecycle management ships, `$bulk-member-match` output Groups remain `active = true` indefinitely; the only removal path is [`$bulk-member-match-cancel`](#cancellation) on a completed Task, which sweeps the Task and every resource referenced from `Task.output` (Groups, Binary, and persisted Consents).
