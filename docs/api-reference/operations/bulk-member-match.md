@@ -383,12 +383,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 ## Group lifecycle
 
-Each output Group carries a 30-day validity window in `Group.characteristic[0].period`. A background job inside the interop app runs hourly:
-
-1. Groups whose `period.end` is in the past and whose `active = true` are flipped to `active = false`.
-2. Groups with `active = false` whose `period.end` is more than 90 days in the past are hard-deleted along with the Task, Binary, and persisted Consents they belong to.
-
-The scan filters on `_profile=<pdex-member-match-group,pdex-member-no-match-group>` — non-PDex Groups in the same Aidbox instance are left alone.
+Output Groups carry no `period.end` and no TTL extension today. Until lifecycle management ships, `$bulk-member-match` output Groups remain `active = true` indefinitely; the only removal path is [`$bulk-member-match-cancel`](#cancellation) on a completed Task, which sweeps the Task and every resource referenced from `Task.output` (Groups, Binary, and persisted Consents).
 
 ## Errors
 
