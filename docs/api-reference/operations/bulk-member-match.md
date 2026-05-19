@@ -10,8 +10,9 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 ## Auth
 
-SMART Backend Services Claim Credentials. The requesting payer's NPI **must** be present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`.
-Requests with no NPI on the OAuth client are rejected with `403`. See [Authentication](../authentication.md).
+SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
+
+An authenticated admin session (Aidbox Console) without a client NPI is also accepted: the requesting payer is derived from `Coverage.payor[0]` in the first submitted `MemberBundle`, resolved to an `Organization` by `identifier[system=us-npi]`. If the referenced Organization is unregistered or carries no `us-npi` identifier, the kick-off rejects with `422 Unprocessable Entity`. Fully anonymous callers (no client NPI and no user session) are rejected with `403`.
 
 ## Kick-off
 
@@ -390,9 +391,9 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
-| 403 | Kick-off | OAuth client carries no NPI identifier |
+| 403 | Kick-off | OAuth client carries no NPI identifier and no authenticated user session is present |
 | 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
-| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
+| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile; or, for admin sessions, `Coverage.payor[0]` could not be resolved to a registered `Organization` with a `us-npi` identifier |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
 | 500 | Kick-off / status / cancel | Upstream Aidbox read or write failed transiently |
