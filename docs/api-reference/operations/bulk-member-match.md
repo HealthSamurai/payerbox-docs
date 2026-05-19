@@ -164,7 +164,7 @@ Response shape depends on the underlying `Task` status:
 | `in-progress` | 202 | `Retry-After: 5`, `X-Progress: Processing members` | — |
 | `completed` | 200 | `Content-Type: application/json` | Bulk Data manifest |
 | `failed` | 500 | — | `OperationOutcome` |
-| `cancelled` / not found | 404 | — | `OperationOutcome` |
+| `cancelled` / not found / tombstoned (Aidbox `410 Gone`) | 404 | — | `OperationOutcome` |
 
 ### Example
 
@@ -346,7 +346,7 @@ Behaviour depends on the current `Task` status:
 |---|---|---|
 | `requested` / `in-progress` | Set `Task.status = "cancelled"`. The background worker stops at its next checkpoint (per-member loop + pre-persist) without writing Groups, the Binary, or persisted Consents. | `202 Accepted` |
 | `completed` / `failed` / `cancelled` | Delete the `Task` and every resource referenced from `Task.output` (Groups, Binary, and persisted Consents). | `202 Accepted` |
-| not found | — | `404` with `OperationOutcome` |
+| not found / tombstoned | — | `404` with `OperationOutcome` (Aidbox `410 Gone` is mapped to `404` so clients stop polling) |
 
 ### Example
 
