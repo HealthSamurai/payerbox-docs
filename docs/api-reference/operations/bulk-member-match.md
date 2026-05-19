@@ -393,6 +393,7 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 | 400 | Kick-off | `Prefer: respond-async` header missing |
 | 403 | Kick-off | OAuth client carries no NPI identifier and no authenticated user session is present |
 | 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
+| 409 | Kick-off | Requesting payer NPI is registered on more than one `Organization` in the responding payer's directory; resolve duplicates and retry |
 | 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile; or, for admin sessions, `Coverage.payor[0]` could not be resolved to a registered `Organization` with a `us-npi` identifier |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
