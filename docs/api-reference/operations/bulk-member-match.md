@@ -377,8 +377,9 @@ Each submitted member is evaluated independently. Per-member failures never fail
 | `Consent.provision.period` | absent, unparseable, or does not cover the current time |
 | `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer — checked in order: literal `Organization/<id>` reference (when the payer Org is registered), inline `identifier` matching the OAuth client's NPI, or NPI dereferenced from an `Organization/<id>` reference |
 | `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
+| Active `provider-access` deny `Consent` on the matched Patient (opt-out) | any active hit; a failing opt-out query (non-2xx) fails safe to constrained |
 
-**Opt-out check.** Same as [`$provider-member-match`](provider-member-match.md#matching-behavior): an Aidbox search for an active `deny` `Consent` on the matched Patient with category `provider-access`. Any hit routes the member to `ConsentConstrainedMembers`. A failing opt-out query (non-2xx) fails safe to constrained.
+The opt-out check reuses the same Aidbox search as [`$provider-member-match`](provider-member-match.md#matching-behavior): `Consent?status=active&category=provider-access&patient=<id>&decision=deny`.
 
 **Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization. The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
