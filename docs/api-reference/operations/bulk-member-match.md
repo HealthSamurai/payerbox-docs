@@ -10,8 +10,9 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 ## Auth
 
-SMART Backend Services Claim Credentials. The requesting payer's NPI **must** be present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`.
-Requests with no NPI on the OAuth client are rejected with `403`. See [Authentication](../authentication.md).
+SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
+
+Aidbox Console sessions without a client NPI are also accepted: the requesting payer is read from `Coverage.payor[0].reference` (must be `Organization/<id>`) in the first submitted `MemberBundle`, and its `us-npi` identifier becomes the requesting payer's NPI. If that Organization is missing or carries no `us-npi`, the kick-off rejects with `422`. Other callers without a client NPI are rejected with `403`.
 
 ## Kick-off
 
@@ -141,6 +142,21 @@ Content-Type: application/fhir+json
 
 The body is the `OperationOutcome` returned by Aidbox `$validate` against the input profile.
 {% endtab %}
+{% tab title="Response (ambiguous NPI)" %}
+```http
+HTTP/1.1 409 Conflict
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [{
+    "severity": "error",
+    "code": "conflict",
+    "diagnostics": "Ambiguous payer Organization lookup for NPI 1234567893; multiple Organizations share this identifier"
+  }]
+}
+```
+{% endtab %}
 {% endtabs %}
 
 ## Status polling
@@ -163,7 +179,7 @@ Response shape depends on the underlying `Task` status:
 | `in-progress` | 202 | `Retry-After: 5`, `X-Progress: Processing members` | — |
 | `completed` | 200 | `Content-Type: application/json` | Bulk Data manifest |
 | `failed` | 500 | — | `OperationOutcome` |
-| `cancelled` / not found | 404 | — | `OperationOutcome` |
+| `cancelled` / not found / hard-deleted | 404 | — | `OperationOutcome` |
 
 ### Example
 
@@ -345,7 +361,7 @@ Behaviour depends on the current `Task` status:
 |---|---|---|
 | `requested` / `in-progress` | Set `Task.status = "cancelled"`. The background worker stops at its next checkpoint (per-member loop + pre-persist) without writing Groups, the Binary, or persisted Consents. | `202 Accepted` |
 | `completed` / `failed` / `cancelled` | Delete the `Task` and every resource referenced from `Task.output` (Groups, Binary, and persisted Consents). | `202 Accepted` |
-| not found | — | `404` with `OperationOutcome` |
+| not found / already hard-deleted | — | `404` with `OperationOutcome` |
 
 ### Example
 
@@ -366,7 +382,7 @@ HTTP/1.1 202 Accepted
 
 Each submitted member is evaluated independently. Per-member failures never fail the batch — problematic members are routed to `NonMatchedMembers` or `ConsentConstrainedMembers`.
 
-**Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
+**Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). Identifier-AND is bulk-specific: [`$provider-member-match`](provider-member-match.md#matching-behavior) ignores submitted `Patient.identifier` entries, because provider-side systems carry MRNs the payer does not store. `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
 
 **Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true:
 
@@ -376,28 +392,27 @@ Each submitted member is evaluated independently. Per-member failures never fail
 | `Consent.provision.period` | absent, unparseable, or does not cover the current time |
 | `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer — checked in order: literal `Organization/<id>` reference (when the payer Org is registered), inline `identifier` matching the OAuth client's NPI, or NPI dereferenced from an `Organization/<id>` reference |
 | `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
+| Active `provider-access` deny `Consent` on the matched Patient (opt-out) | any active hit; a failing opt-out query (non-2xx) fails safe to constrained |
 
-**Opt-out check.** Same as [`$provider-member-match`](provider-member-match.md#matching-behavior): an Aidbox search for an active `deny` `Consent` on the matched Patient with category `provider-access`. Any hit routes the member to `ConsentConstrainedMembers`. A failing opt-out query (non-2xx) fails safe to constrained.
+The opt-out check reuses the same Aidbox search as [`$provider-member-match`](provider-member-match.md#matching-behavior): `Consent?patient=<id>&status=active&category=http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose|provider-access&provision-type=deny`.
 
-**Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization. The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
+**Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization (FHIR shape is `0..*`; today exactly one element is written). The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
+
+**Stale Consent deactivation.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check, opt-out hit, or persistence failure), the prior persisted `Consent` at the deterministic id is flipped to `status = inactive`. The row is retained for audit, but `$davinci-data-export?exportType=payertopayer` will not honor it on subsequent reads.
 
 ## Group lifecycle
 
-Each output Group carries a 30-day validity window in `Group.characteristic[0].period`. A background job inside the interop app runs hourly:
-
-1. Groups whose `period.end` is in the past and whose `active = true` are flipped to `active = false`.
-2. Groups with `active = false` whose `period.end` is more than 90 days in the past are hard-deleted along with the Task, Binary, and persisted Consents they belong to.
-
-The scan filters on `_profile=<pdex-member-match-group,pdex-member-no-match-group>` — non-PDex Groups in the same Aidbox instance are left alone.
+Output Groups carry no `period.end` and no TTL extension today. Until lifecycle management ships, `$bulk-member-match` output Groups remain `active = true` indefinitely; the only removal path is [`$bulk-member-match-cancel`](#cancellation) on a completed Task, which sweeps the Task and every resource referenced from `Task.output` (Groups, Binary, and persisted Consents).
 
 ## Errors
 
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
-| 403 | Kick-off | OAuth client carries no NPI identifier |
+| 403 | Kick-off | OAuth client carries no NPI identifier and no authenticated user session is present |
 | 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
-| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
+| 409 | Kick-off | Requesting payer NPI is registered on more than one `Organization` in the responding payer's directory; resolve duplicates and retry |
+| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile; or, for admin sessions, `Coverage.payor[0]` could not be resolved to a registered `Organization` with a `us-npi` identifier |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
 | 500 | Kick-off / status / cancel | Upstream Aidbox read or write failed transiently |
