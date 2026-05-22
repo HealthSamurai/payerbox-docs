@@ -12,7 +12,7 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
 
-An authenticated admin session (Aidbox Console) without a client NPI is also accepted: the requesting payer is derived from `Coverage.payor[0]` in the first submitted `MemberBundle`, resolved to an `Organization` by `identifier[system=us-npi]`. If the referenced Organization is unregistered or carries no `us-npi` identifier, the kick-off rejects with `422 Unprocessable Entity`. Fully anonymous callers (no client NPI and no user session) are rejected with `403`.
+An authenticated admin session (Aidbox Console) without a client NPI is also accepted: the requesting payer is derived from `Coverage.payor[0].reference` in the first submitted `MemberBundle`. The reference must be `Organization/<id>`; that `Organization` is read and its `identifier[system=us-npi]` becomes the requesting payer's NPI. If the reference is missing or not an `Organization`, the `Organization` is not found, or it carries no `us-npi` identifier, the kick-off rejects with `422 Unprocessable Entity`. Admin path is gated by `:app :admin-client-ids` (default `#{"box-ui"}`, env override `INTEROP_ADMIN_CLIENT_IDS`); callers outside the allowlist with no client NPI are rejected with `403`.
 
 ## Kick-off
 
@@ -141,6 +141,21 @@ Content-Type: application/fhir+json
 ```
 
 The body is the `OperationOutcome` returned by Aidbox `$validate` against the input profile.
+{% endtab %}
+{% tab title="Response (ambiguous NPI)" %}
+```http
+HTTP/1.1 409 Conflict
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [{
+    "severity": "error",
+    "code": "conflict",
+    "diagnostics": "Ambiguous payer Organization lookup for NPI 1234567893; multiple Organizations share this identifier"
+  }]
+}
+```
 {% endtab %}
 {% endtabs %}
 
@@ -379,7 +394,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 | `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
 | Active `provider-access` deny `Consent` on the matched Patient (opt-out) | any active hit; a failing opt-out query (non-2xx) fails safe to constrained |
 
-The opt-out check reuses the same Aidbox search as [`$provider-member-match`](provider-member-match.md#matching-behavior): `Consent?status=active&category=provider-access&patient=<id>&decision=deny`.
+The opt-out check reuses the same Aidbox search as [`$provider-member-match`](provider-member-match.md#matching-behavior): `Consent?patient=<id>&status=active&category=http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose|provider-access&provision-type=deny`.
 
 **Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization (FHIR shape is `0..*`; today exactly one element is written). The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
