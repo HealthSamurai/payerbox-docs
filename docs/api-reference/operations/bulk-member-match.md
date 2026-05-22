@@ -12,7 +12,7 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
 
-An authenticated admin session (Aidbox Console) without a client NPI is also accepted: the requesting payer is derived from `Coverage.payor[0].reference` in the first submitted `MemberBundle`. The reference must be `Organization/<id>`; that `Organization` is read and its `identifier[system=us-npi]` becomes the requesting payer's NPI. If the reference is missing or not an `Organization`, the `Organization` is not found, or it carries no `us-npi` identifier, the kick-off rejects with `422 Unprocessable Entity`. Admin path is gated by `:app :admin-client-ids` (default `#{"box-ui"}`, env override `INTEROP_ADMIN_CLIENT_IDS`); callers outside the allowlist with no client NPI are rejected with `403`.
+Aidbox Console sessions without a client NPI are also accepted: the requesting payer is read from `Coverage.payor[0].reference` (must be `Organization/<id>`) in the first submitted `MemberBundle`, and its `us-npi` identifier becomes the requesting payer's NPI. If that Organization is missing or carries no `us-npi`, the kick-off rejects with `422`. Other callers without a client NPI are rejected with `403`.
 
 ## Kick-off
 
