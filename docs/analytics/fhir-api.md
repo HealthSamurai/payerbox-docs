@@ -1,8 +1,8 @@
 ---
-description: Counts and slices on Payerbox's prior-auth data through the FHIR API - anatomy of a request, the headline query patterns, modifiers.
+description: Querying Payerbox's prior-auth data through the FHIR API - anatomy of a request, the headline search patterns, modifiers.
 ---
 
-# Counts and aggregates via FHIR API
+# Querying via FHIR API
 
 Every query is a `GET` to `/fhir/<ResourceType>`, every filter is a
 [SearchParameter](https://www.health-samurai.io/docs/aidbox/api/rest-api/fhir-search/searchparameter),

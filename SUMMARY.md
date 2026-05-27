@@ -32,7 +32,7 @@
   * [CMS-0057](compliance/cms-0057.md)
   * [Reporting](compliance/reporting.md)
 * [Analytics](analytics/README.md)
-  * [Counts and aggregates via FHIR API](analytics/fhir-api.md)
+  * [Querying via FHIR API](analytics/fhir-api.md)
   * [Flat views on FHIR data](analytics/flat-views.md)
   * [SQL on FHIR data](analytics/sql-mat-views.md)
   * [Common queries](analytics/common-queries.md)
