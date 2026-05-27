@@ -79,7 +79,7 @@ GET /fhir/ExplanationOfBenefit?use=claim&_summary=count
 The Aidbox UI lists the SearchParameters available for any resource
 type under **Resources → ExplanationOfBenefit → Search parameters**:
 
-![Available SearchParameters for ExplanationOfBenefit shown in the Aidbox UI - care-team, claim, coverage, created, disposition, encounter, identifier, patient, provider, status, and more, each with type and description columns](../../assets/analytics/eob-search-parameters.png)
+![Available SearchParameters for ExplanationOfBenefit shown in the Aidbox UI - care-team, claim, coverage, created, disposition, encounter, identifier, patient, provider, status, and more, each with type and description columns](../../assets/analytics/eob-search-parameters.avif)
 
 The patterns below use those parameters.
 

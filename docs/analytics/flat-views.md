@@ -15,7 +15,7 @@ The example below is the view Payerbox uses for prior-auth
 analytics: `pdex_prior_authorization_item`. The Aidbox UI has a
 **ViewDefinition Builder** for editing it visually:
 
-![ViewDefinition Builder showing pdex_prior_authorization_item with its WHERE clauses, columns, and a sample EOB instance side-by-side](../../assets/analytics/viewdefinition-builder.png)
+![ViewDefinition Builder showing pdex_prior_authorization_item with its WHERE clauses, columns, and a sample EOB instance side-by-side](../../assets/analytics/viewdefinition-builder.avif)
 
 ## The ViewDefinition
 
