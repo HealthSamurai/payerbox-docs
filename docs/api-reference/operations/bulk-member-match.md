@@ -4,7 +4,7 @@ description: Da Vinci PDex $bulk-member-match operation reference — async kick
 
 # $bulk-member-match
 
-Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) (STU 2.1.0). The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType=payertopayer` for the Payer-to-Payer bulk export.
+Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://hl7.org/fhir/us/davinci-pdex/STU2.1/) (STU 2.1.0). The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer` for the Payer-to-Payer bulk export.
 
 The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-off pattern](https://hl7.org/fhir/uv/bulkdata/export.html#bulk-data-kick-off-request): kick-off returns `202 Accepted` with `Content-Location`, the client polls the status URL, and downloads the result as a single-line ndjson `Parameters` resource.
 
@@ -12,7 +12,7 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
 
-Aidbox Console sessions without a client NPI are also accepted: the requesting payer is read from `Coverage.payor[0].reference` (must be `Organization/<id>`) in the first submitted `MemberBundle`, and its `us-npi` identifier becomes the requesting payer's NPI. If that Organization is missing or carries no `us-npi`, the kick-off rejects with `422`. Other callers without a client NPI are rejected with `403`.
+Aidbox Console UI sessions without a client NPI are also accepted: the requesting payer is read from `Coverage.payor[0].reference` (must be `Organization/<id>`) in the first submitted `MemberBundle`, and its `us-npi` identifier becomes the requesting payer's NPI. If that Organization is missing or carries no `us-npi`, the kick-off rejects with `422`. Other callers without a client NPI are rejected with `403`.
 
 ## Kick-off
 
@@ -26,14 +26,14 @@ POST <base>/fhir/Group/$bulk-member-match
 
 ### Parameters
 
-The request body is a `Parameters` resource with one or more `MemberBundle` entries, validated against the [`pdex-parameters-multi-member-match-bundle-in`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-parameters-multi-member-match-bundle-in.html) profile.
+The request body is a `Parameters` resource with one or more `MemberBundle` entries, validated against the [`pdex-parameters-multi-member-match-bundle-in`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-parameters-multi-member-match-bundle-in.html) profile.
 
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
-| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-patient-demographics.html) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
-| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-coverage.html); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
-| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-patient-demographics.html) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
+| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
 | IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
 | OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
 
@@ -237,15 +237,15 @@ Content-Type: application/fhir+json
 GET <base>/output/<task-id>.ndjson
 ```
 
-URL comes from `output[0].url` in the manifest. Body is a single ndjson line — a `Parameters` resource conforming to the [`pdex-parameters-multi-member-match-bundle-out`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-parameters-multi-member-match-bundle-out.html) profile. `MatchedMembers` is always present (1..1 per the output profile); the other two buckets appear only when non-empty.
+URL comes from `output[0].url` in the manifest. Body is a single ndjson line — a `Parameters` resource conforming to the [`pdex-parameters-multi-member-match-bundle-out`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-parameters-multi-member-match-bundle-out.html) profile. `MatchedMembers` is always present (1..1 per the output profile); the other two buckets appear only when non-empty.
 
 ### Parameters
 
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
-| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to `$davinci-data-export?exportType=payertopayer`. `quantity = 0` and `member` omitted when empty. |
-| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
-| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
+| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer`. `quantity = 0` and `member` omitted when empty. |
+| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
+| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
 
 ### Example
 
@@ -384,7 +384,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 **Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). Identifier-AND is bulk-specific: [`$provider-member-match`](provider-member-match.md#matching-behavior) ignores submitted `Patient.identifier` entries, because provider-side systems carry MRNs the payer does not store. `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
 
-**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true:
+**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true (the opt-out category code below is Payerbox-specific, forward-compatible with the `pdex-consent-api-purpose` CodeSystem introduced in PDex 2.2.0 — STU 2.1's `pdex-provider-consent` profile pins `Consent.category = v3-ActCode|IDSCL` instead):
 
 | Check | Constrains when |
 |---|---|
@@ -410,7 +410,8 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
 | 403 | Kick-off | OAuth client carries no NPI identifier and no authenticated user session is present |
-| 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
+| 404 | Status / output | Unknown `<task-id>`, `Task.status = cancelled`, or caller NPI does not match `Task.requester.identifier` |
+| 404 | Cancel | Unknown `<task-id>` (hard-deleted), or caller NPI does not match `Task.requester.identifier` (cancel on a `cancelled` Task returns `202` and sweeps outputs) |
 | 409 | Kick-off | Requesting payer NPI is registered on more than one `Organization` in the responding payer's directory; resolve duplicates and retry |
 | 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile; or, for admin sessions, `Coverage.payor[0]` could not be resolved to a registered `Organization` with a `us-npi` identifier |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
@@ -419,4 +420,4 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 
 Individual member failures (validation issues, exceptions while evaluating one member, Consent persistence failures) route to `NonMatchedMembers` or `ConsentConstrainedMembers` with a reason recorded in `Task` logs — they do not fail the batch.
 
-After a `MatchedMembers` Group is returned, the requesting payer uses its id with [`$davinci-data-export?exportType=payertopayer`](davinci-data-export.md) to pull the matched members' clinical data. Architectural context lives in the [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillar.
+After a `MatchedMembers` Group is returned, the requesting payer uses its id with [`$davinci-data-export`](davinci-data-export.md) (`exportType = hl7.fhir.us.davinci-pdex#payertopayer`) to pull the matched members' clinical data. Architectural context lives in the [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillar.
