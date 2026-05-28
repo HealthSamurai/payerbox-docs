@@ -38,15 +38,36 @@ Five-year window of date-of-service, excluding remittances, cost-sharing, drug p
 | Claims and encounters (no remittance, no cost-sharing) | ExplanationOfBenefit (CARIN BB Non-Financial Basis profiles), Coverage | PDex 2.1.0 |
 | Prior authorization request and decision (excluding drug PAs and denied PAs) | ExplanationOfBenefit (`use=preauthorization`) | PDex 2.1.0 |
 
+## Test dataset
+
+Operation examples below reference this dataset. Load it first to reproduce them.
+
+Download:
+
+{% file src="/docs/payerbox/assets/seeds/p2p-member-match.ndjson.gz" %}
+p2p-member-match.ndjson.gz
+{% endfile %}
+
+Or load from the Aidbox REST Console:
+
+```http
+POST /fhir/$load
+Content-Type: application/json
+
+{"source": "https://www.health-samurai.io/docs/payerbox/assets/seeds/p2p-member-match.ndjson.gz"}
+```
+
 ## Operations
 
 ### `$bulk-member-match`
 
-The receiving payer submits one or more `MemberBundle` parameters — each carrying a `MemberPatient` (demographics), `CoverageToMatch`, and an opt-in `Consent`. The `Consent` must conform to the [HRex Consent profile](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html) — `meta.profile`, `provision.period`, source, and two actors (`performer` for the previous payer and `IRCP` recipient for the receiving payer) are required. The operation is **always asynchronous** — the kick-off returns `202 Accepted` with `Content-Location`; when polled, the manifest points at an ndjson `Parameters` resource holding up to three inline `Group` resources.
+The receiving payer submits one or more `MemberBundle` parameters — each carrying a `MemberPatient` (demographics), `CoverageToMatch`, and an opt-in HRex `Consent` whose `provision.actor[role=IRCP]` recipient identifies the receiving payer. The operation is **always asynchronous** — the kick-off returns `202 Accepted` with `Content-Location`; when polled, the manifest points at an ndjson `Parameters` resource holding up to three inline `Group` resources.
+
+The example below uses `test-member-001` (Johnson, Robert) from the [Test dataset](#test-dataset), submitted by `test-payer-client`:
 
 ```http
 POST <base>/fhir/Group/$bulk-member-match
-Authorization: Bearer <access-token>
+Authorization: Basic <test-payer-client:test-payer-secret>
 Prefer: respond-async
 Content-Type: application/fhir+json
 
@@ -57,38 +78,29 @@ Content-Type: application/fhir+json
     "part": [
       {"name": "MemberPatient", "resource": {
         "resourceType": "Patient",
-        "name": [{"family": "Smith", "given": ["John"]}],
-        "gender": "male", "birthDate": "1970-05-15"
+        "name": [{"family": "Johnson", "given": ["Robert"]}],
+        "gender": "male", "birthDate": "1952-07-25"
       }},
       {"name": "CoverageToMatch", "resource": {
         "resourceType": "Coverage", "status": "active",
-        "beneficiary": {"reference": "Patient/patient-1"},
-        "payor": [{"reference": "Organization/previous-payer"}]
+        "subscriberId": "SUB-001",
+        "beneficiary": {"reference": "Patient/test-member-001"},
+        "payor": [{"reference": "Organization/test-payer-001"}]
       }},
       {"name": "Consent", "resource": {
-        "resourceType": "Consent",
-        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"]},
-        "status": "active",
+        "resourceType": "Consent", "status": "active",
         "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
         "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
-        "patient": {"reference": "Patient/patient-1"},
-        "performer": [{"reference": "Patient/patient-1"}],
-        "sourceReference": {"reference": "http://example.org/DocumentReference/consent-doc-1"},
-        "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#regular"}],
+        "patient": {"reference": "Patient/test-member-001"},
+        "dateTime": "2026-04-01T08:00:00Z",
+        "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"}],
         "provision": {
           "type": "permit",
-          "period": {"start": "2026-01-01", "end": "2027-01-01"},
-          "actor": [
-            {
-              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type", "code": "performer"}]},
-              "reference": {"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "9876543210"}, "display": "Previous payer"}
-            },
-            {
-              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
-              "reference": {"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567890"}, "display": "Receiving payer"}
-            }
-          ],
-          "action": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentaction", "code": "disclose"}]}]
+          "period": {"start": "2026-01-01T00:00:00Z", "end": "2027-01-01T00:00:00Z"},
+          "actor": [{
+            "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
+            "reference": {"reference": "Organization/test-payer-001"}
+          }]
         }
       }}
     ]
