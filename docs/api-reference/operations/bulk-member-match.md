@@ -581,8 +581,10 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
+| 403 | Kick-off | Requesting payer identity could not be resolved from the OAuth client |
 | 404 | Status / output | Unknown `<task-id>`, `Task.status = cancelled`, or caller is not the originating requester |
 | 404 | Cancel | Unknown `<task-id>` (hard-deleted), or caller is not the originating requester (cancel on a `cancelled` Task returns `202` and sweeps outputs) |
+| 409 | Kick-off | Requesting payer identity is ambiguous — more than one Organization in the responding payer's directory matches; resolve duplicates and retry |
 | 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
