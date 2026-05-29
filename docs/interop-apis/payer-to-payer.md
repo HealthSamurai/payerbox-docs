@@ -42,20 +42,147 @@ Five-year window of date-of-service, excluding remittances, cost-sharing, drug p
 
 Operation examples below reference this dataset. Load it first to reproduce them.
 
-Download:
+Load from the Aidbox REST Console — the bundle goes through the normal FHIR write path so AccessPolicies and Clients become active immediately:
 
-{% file src="/docs/payerbox/assets/seeds/p2p-member-match.ndjson.gz" %}
-p2p-member-match.ndjson.gz
-{% endfile %}
+<details>
 
-Or load from the Aidbox REST Console:
+<summary>Click to view test dataset bundle JSON</summary>
 
 ```http
-POST /fhir/$load
-Content-Type: application/json
+POST /fhir
+Content-Type: application/fhir+json
 
-{"source": "https://www.health-samurai.io/docs/payerbox/assets/seeds/p2p-member-match.ndjson.gz"}
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "request": {"method": "PUT", "url": "/Client/test-payer-client"},
+      "resource": {
+        "resourceType": "Client",
+        "id": "test-payer-client",
+        "secret": "test-payer-secret",
+        "grant_types": ["basic"],
+        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]}
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Client/test-provider-client"},
+      "resource": {
+        "resourceType": "Client",
+        "id": "test-provider-client",
+        "secret": "test-provider-secret",
+        "grant_types": ["basic"],
+        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]}
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-payer-client"},
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-test-payer-client",
+        "engine": "allow",
+        "link": [{"resourceType": "Client", "id": "test-payer-client"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-provider-client"},
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-test-provider-client",
+        "engine": "allow",
+        "link": [{"resourceType": "Client", "id": "test-provider-client"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Organization/test-payer-001"},
+      "resource": {
+        "resourceType": "Organization",
+        "id": "test-payer-001",
+        "name": "Test Payer Organization",
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Organization/test-provider-001"},
+      "resource": {
+        "resourceType": "Organization",
+        "id": "test-provider-001",
+        "name": "Test Provider Organization",
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Organization/other-payer-001"},
+      "resource": {
+        "resourceType": "Organization",
+        "id": "other-payer-001",
+        "name": "Other Payer (not the requester)",
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "9999999999"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Patient/test-member-001"},
+      "resource": {
+        "resourceType": "Patient",
+        "id": "test-member-001",
+        "name": [{"family": "Johnson", "given": ["Robert"]}],
+        "gender": "male",
+        "birthDate": "1952-07-25",
+        "identifier": [{"system": "http://example.org/member-id", "value": "M12345"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Patient/test-member-002"},
+      "resource": {
+        "resourceType": "Patient",
+        "id": "test-member-002",
+        "name": [{"family": "Williams", "given": ["Sarah"]}],
+        "gender": "female",
+        "birthDate": "1985-03-12",
+        "identifier": [{"system": "http://example.org/member-id", "value": "M67890"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Coverage/test-coverage-001"},
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "test-coverage-001",
+        "status": "active",
+        "subscriberId": "SUB-001",
+        "beneficiary": {"reference": "Patient/test-member-001"},
+        "payor": [{"reference": "Organization/test-payer-001"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Coverage/test-coverage-002"},
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "test-coverage-002",
+        "status": "active",
+        "subscriberId": "SUB-002",
+        "beneficiary": {"reference": "Patient/test-member-002"},
+        "payor": [{"reference": "Organization/test-payer-001"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Consent/test-optout-member-002"},
+      "resource": {
+        "resourceType": "Consent",
+        "id": "test-optout-member-002",
+        "status": "active",
+        "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+        "patient": {"reference": "Patient/test-member-002"},
+        "category": [{"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose", "code": "provider-access"}]}],
+        "provision": {"type": "deny"},
+        "policyRule": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "OPTIN"}]}
+      }
+    }
+  ]
+}
 ```
+
+</details>
 
 ## Operations
 
