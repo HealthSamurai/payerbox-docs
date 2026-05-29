@@ -34,7 +34,7 @@ For a complete local setup example, see [Quickstart: Run locally](../get-started
 Operators can require specific HTTP headers on every inbound hook request via a comma-separated allowlist. When any listed header is missing or blank, Payerbox rejects the request with `400` and an `OperationOutcome` before reaching the Decision Service. Discovery (`GET /cds-services`) is not gated — only hook POSTs.
 
 ```
-CDS_REQUIRED_HEADERS=x-client-id,x-caller-app
+CDS_REQUIRED_HEADERS=x-client-id
 ```
 
 Header names are case-insensitive. Default (unset) — no header validation, requests pass through.
