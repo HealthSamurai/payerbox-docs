@@ -29,6 +29,26 @@ The service holds the payer's coverage rules: medical policy, formulary tiers, n
 
 For a complete local setup example, see [Quickstart: Run locally](../get-started/quickstart-run-locally.md).
 
+## Required headers
+
+Operators can require specific HTTP headers on every inbound hook request via a comma-separated allowlist. When any listed header is missing or blank, Payerbox rejects the request with `400` and an `OperationOutcome` before reaching the Decision Service. Discovery (`GET /cds-services`) is not gated — only hook POSTs.
+
+```
+CDS_REQUIRED_HEADERS=x-client-id
+```
+
+Header names are case-insensitive. Default (unset) — no header validation, requests pass through.
+
+## Enabled hooks
+
+To advertise only a subset of the supported hooks — useful while the upstream Decision Service is implementing CRD incrementally — operators can pass a comma-separated allowlist of hook ids. When set, `GET /cds-services` returns only the listed ids and `POST /cds-services/<other-id>` returns `404` with an `OperationOutcome`.
+
+```
+CDS_ENABLED_HOOKS=order-sign-crd,order-select-crd
+```
+
+Valid ids are `order-sign-crd`, `order-select-crd`, `order-dispatch-crd`, `appointment-book-crd`; matching is case-insensitive. Default (unset) — all four hooks are exposed.
+
 ## Supported hooks
 
 | Hook | When it fires | Reference |
