@@ -194,7 +194,7 @@ The example below uses `test-member-001` (Johnson, Robert) from the [Test datase
 
 ```http
 POST <base>/fhir/Group/$bulk-member-match
-Authorization: Basic <test-payer-client:test-payer-secret>
+Authorization: Basic dGVzdC1wYXllci1jbGllbnQ6dGVzdC1wYXllci1zZWNyZXQ=
 Prefer: respond-async
 Content-Type: application/fhir+json
 
