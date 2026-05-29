@@ -29,9 +29,7 @@ Content-Type: application/json
 
 ## Auth
 
-SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
-
-Aidbox Console UI sessions without a client NPI are also accepted: the requesting payer is read from `Coverage.payor[0].reference` (must be `Organization/<id>`) in the first submitted `MemberBundle`, and its `us-npi` identifier becomes the requesting payer's NPI. If that Organization is missing or carries no `us-npi`, the kick-off rejects with `422`. Other callers without a client NPI are rejected with `403`.
+SMART Backend Services. See [Authentication](../authentication.md).
 
 ## Kick-off
 
@@ -196,21 +194,6 @@ Content-Type: application/fhir+json
 }
 ```
 {% endtab %}
-{% tab title="Response (no NPI)" %}
-```http
-HTTP/1.1 403 Forbidden
-Content-Type: application/fhir+json
-
-{
-  "resourceType": "OperationOutcome",
-  "issue": [{
-    "severity": "error",
-    "code": "forbidden",
-    "diagnostics": "OAuth client must carry an NPI identifier"
-  }]
-}
-```
-{% endtab %}
 {% tab title="Response (validation fail)" %}
 ```http
 HTTP/1.1 422 Unprocessable Entity
@@ -218,21 +201,6 @@ Content-Type: application/fhir+json
 ```
 
 The body is the `OperationOutcome` returned by Aidbox `$validate` against the input profile.
-{% endtab %}
-{% tab title="Response (ambiguous NPI)" %}
-```http
-HTTP/1.1 409 Conflict
-Content-Type: application/fhir+json
-
-{
-  "resourceType": "OperationOutcome",
-  "issue": [{
-    "severity": "error",
-    "code": "conflict",
-    "diagnostics": "Ambiguous payer Organization lookup for NPI 1234567893; multiple Organizations share this identifier"
-  }]
-}
-```
 {% endtab %}
 {% endtabs %}
 
@@ -244,7 +212,7 @@ Content-Type: application/fhir+json
 GET <base>/fhir/Group/$bulk-member-match-status/<task-id>
 ```
 
-`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client whose NPI does not match `Task.requester.identifier` get `404` (cross-tenant guard).
+`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client other than the originating requester get `404` (cross-tenant guard).
 
 ### Parameters
 
@@ -467,7 +435,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 |---|---|
 | `Consent.status` | not `"active"` |
 | `Consent.provision.period` | absent, unparseable, or does not cover the current time |
-| `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer — checked in order: literal `Organization/<id>` reference (when the payer Org is registered), inline `identifier` matching the OAuth client's NPI, or NPI dereferenced from an `Organization/<id>` reference |
+| `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer's `Organization/<id>` reference |
 | `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
 | Active `provider-access` deny `Consent` on the matched Patient (opt-out) | any active hit; a failing opt-out query (non-2xx) fails safe to constrained |
 
@@ -486,11 +454,9 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
-| 403 | Kick-off | OAuth client carries no NPI identifier and no authenticated user session is present |
-| 404 | Status / output | Unknown `<task-id>`, `Task.status = cancelled`, or caller NPI does not match `Task.requester.identifier` |
-| 404 | Cancel | Unknown `<task-id>` (hard-deleted), or caller NPI does not match `Task.requester.identifier` (cancel on a `cancelled` Task returns `202` and sweeps outputs) |
-| 409 | Kick-off | Requesting payer NPI is registered on more than one `Organization` in the responding payer's directory; resolve duplicates and retry |
-| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile; or, for admin sessions, `Coverage.payor[0]` could not be resolved to a registered `Organization` with a `us-npi` identifier |
+| 404 | Status / output | Unknown `<task-id>`, `Task.status = cancelled`, or caller is not the originating requester |
+| 404 | Cancel | Unknown `<task-id>` (hard-deleted), or caller is not the originating requester (cancel on a `cancelled` Task returns `202` and sweeps outputs) |
+| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
 | 500 | Kick-off / status / cancel | Upstream Aidbox read or write failed transiently |

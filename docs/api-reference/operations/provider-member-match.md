@@ -29,7 +29,7 @@ Content-Type: application/json
 
 ## Auth
 
-SMART Backend Services or Client Credentials. The provider organization's NPI must be present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]` — it is stamped on `Task.requester` and on `MatchedMembers.identifier`, and it scopes status/cancel calls to the originating caller. See [Authentication](../authentication.md).
+SMART Backend Services. See [Authentication](../authentication.md).
 
 ## Kick-off
 
@@ -201,7 +201,7 @@ The body is the `OperationOutcome` returned by Aidbox `$validate` against the in
 GET <base>/fhir/Group/$provider-member-match-status/<task-id>
 ```
 
-`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client whose NPI does not match `Task.requester.identifier` get `404` (cross-tenant guard).
+`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client other than the originating requester get `404` (cross-tenant guard).
 
 ### Parameters
 
@@ -457,7 +457,7 @@ The scan filters on `_profile=<pdex-treatment-relationship,pdex-member-no-match-
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
-| 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
+| 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller is not the originating requester |
 | 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
 | 500 | Kick-off / status / cancel | Upstream Aidbox read or write failed transiently |

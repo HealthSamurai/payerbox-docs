@@ -116,8 +116,6 @@ Three buckets in the response:
 | `NonMatchedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) | No match found |
 | `ConsentConstrainedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) (code `consentconstraint`) | Matched member with active opt-out, expired consent, or consent that could not be persisted |
 
-The requesting payer's NPI must be present on the OAuth `Client` resource — `$bulk-member-match` rejects NPI-less callers with `403`.
-
 See [API Reference / Operations / $bulk-member-match](../api-reference/operations/bulk-member-match.md).
 
 ### `$davinci-data-export` with `payertopayer` exportType
