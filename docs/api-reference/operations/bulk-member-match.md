@@ -4,7 +4,7 @@ description: Da Vinci PDex $bulk-member-match operation reference — async kick
 
 # $bulk-member-match
 
-Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://hl7.org/fhir/us/davinci-pdex/STU2.1/) (STU 2.1.0). The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer` for the Payer-to-Payer bulk export.
+Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) v2.2.0. The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer` for the Payer-to-Payer bulk export.
 
 The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-off pattern](https://hl7.org/fhir/uv/bulkdata/export.html#bulk-data-kick-off-request): kick-off returns `202 Accepted` with `Content-Location`, the client polls the status URL, and downloads the result as a single-line ndjson `Parameters` resource.
 
@@ -45,14 +45,14 @@ POST <base>/fhir/Group/$bulk-member-match
 
 ### Parameters
 
-The request body is a `Parameters` resource with one or more `MemberBundle` entries, validated against the [`pdex-parameters-multi-member-match-bundle-in`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-parameters-multi-member-match-bundle-in.html) profile.
+The request body is a `Parameters` resource with one or more `MemberBundle` entries, validated against the [`pdex-parameters-multi-member-match-bundle-in`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-parameters-multi-member-match-bundle-in.html) profile.
 
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
-| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-patient-demographics.html) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
-| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
-| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
+| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
 | IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
 | OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
 
@@ -314,15 +314,15 @@ Content-Type: application/fhir+json
 GET <base>/output/<task-id>.ndjson
 ```
 
-URL comes from `output[0].url` in the manifest. Body is a single ndjson line — a `Parameters` resource conforming to the [`pdex-parameters-multi-member-match-bundle-out`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-parameters-multi-member-match-bundle-out.html) profile. `MatchedMembers` is always present (1..1 per the output profile); the other two buckets appear only when non-empty.
+URL comes from `output[0].url` in the manifest. Body is a single ndjson line — a `Parameters` resource conforming to the [`pdex-parameters-multi-member-match-bundle-out`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-parameters-multi-member-match-bundle-out.html) profile. `MatchedMembers` is always present (1..1 per the output profile); the other two buckets appear only when non-empty.
 
 ### Parameters
 
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
-| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer`. `quantity = 0` and `member` omitted when empty. |
-| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
-| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
+| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer`. `quantity = 0` and `member` omitted when empty. |
+| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
+| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
 
 ### Example
 

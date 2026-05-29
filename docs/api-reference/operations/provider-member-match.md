@@ -4,7 +4,7 @@ description: Da Vinci PDex $provider-member-match operation reference — async 
 
 # $provider-member-match
 
-Matches a batch of provider-submitted members against payer-side Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) (STU 2.1.0). The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) for the Provider Access bulk export.
+Matches a batch of provider-submitted members against payer-side Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) v2.2.0. The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) for the Provider Access bulk export.
 
 The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-off pattern](https://hl7.org/fhir/uv/bulkdata/export.html#bulk-data-kick-off-request): kick-off returns `202 Accepted` with `Content-Location`, the client polls the status URL, and downloads the result as a single-line ndjson `Parameters` resource.
 
@@ -48,9 +48,9 @@ The request body is a `Parameters` resource with one or more `MemberBundle` entr
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
-| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-patient-demographics.html) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching |
-| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-coverage.html); `subscriberId` and `payor[0].reference` are read by the matcher |
-| IN | `MemberBundle.Consent` | Consent | 1..1 | [Provider Treatment Relationship Consent](http://hl7.org/fhir/us/davinci-pdex/StructureDefinition-provider-treatment-relationship-consent.html); attestation accepted when `status = "active"` |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage); `subscriberId` and `payor[0].reference` are read by the matcher |
+| IN | `MemberBundle.Consent` | Consent | 1..1 | [Provider Treatment Relationship Consent](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-provider-treatment-relationship-consent.html); attestation accepted when `status = "active"` |
 | IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
 | OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
 
