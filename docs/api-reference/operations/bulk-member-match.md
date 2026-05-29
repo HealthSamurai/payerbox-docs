@@ -556,7 +556,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 **Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). Identifier-AND is bulk-specific: [`$provider-member-match`](provider-member-match.md#matching-behavior) ignores submitted `Patient.identifier` entries, because provider-side systems carry MRNs the payer does not store. `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
 
-**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true (the opt-out category code below is Payerbox-specific, forward-compatible with the `pdex-consent-api-purpose` CodeSystem introduced in PDex 2.2.0 — STU 2.1's `pdex-provider-consent` profile pins `Consent.category = v3-ActCode|IDSCL` instead):
+**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true (the opt-out category code below uses the `pdex-consent-api-purpose` CodeSystem from PDex 2.2.0):
 
 | Check | Constrains when |
 |---|---|

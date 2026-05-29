@@ -558,7 +558,7 @@ A member is **unmatched** when the search returns zero entries **or** more than 
 
 **Treatment attestation.** Accepted when the `Consent` part is present and `Consent.status = "active"`. There is no deeper verification of the attestation claim itself.
 
-**Opt-out check.** After a successful match, an Aidbox search runs against the matched Patient:
+**Opt-out check.** After a successful match, an Aidbox search runs against the matched Patient (the opt-out category code uses the `pdex-consent-api-purpose` CodeSystem from PDex 2.2.0):
 
 ```http
 GET /fhir/Consent
