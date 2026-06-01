@@ -38,6 +38,10 @@ Five-year window of date-of-service, excluding remittances, cost-sharing, drug p
 | Claims and encounters (no remittance, no cost-sharing) | ExplanationOfBenefit (CARIN BB Non-Financial Basis profiles), Coverage | PDex 2.1.0 |
 | Prior authorization request and decision (excluding drug PAs and denied PAs) | ExplanationOfBenefit (`use=preauthorization`) | PDex 2.1.0 |
 
+{% hint style="info" %}
+The five-year date-of-service window, the remittance / cost-sharing / drug-PA / denied-PA exclusions, and the CARIN BB Non-Financial Basis profiling above describe the target data scope; they are not yet enforced server-side. The export currently returns the Group's full resource set, so narrow it explicitly with `_type` / `_typeFilter` / `_since`.
+{% endhint %}
+
 ## Test dataset
 
 Operation examples below reference this dataset. Load it first to reproduce them.

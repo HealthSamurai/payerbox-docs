@@ -261,6 +261,10 @@ HTTP/1.1 202 Accepted
 | `hl7.fhir.us.davinci-pdex#provider-snapshot` | Provider Access | Member opt-out applies | Point-in-time snapshot of each member's record |
 | `hl7.fhir.us.davinci-pdex#payertopayer` | Payer-to-Payer | Active opt-in `Consent` asserted at `$bulk-member-match` time | Five-year window; excludes drug PAs, denied PAs, provider remittances, and enrollee cost-sharing |
 
+{% hint style="info" %}
+The `payertopayer` **Data scope** above — the five-year window and the drug-PA / denied-PA / remittance / cost-sharing exclusions — describes the target Da Vinci semantics; it is not yet enforced by the export. The export currently returns the Group's full resource set, so narrow it explicitly with `_type` / `_typeFilter` / `_since`.
+{% endhint %}
+
 ## Errors
 
 | Status | Where | Cause |
