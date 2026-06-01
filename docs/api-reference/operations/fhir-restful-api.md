@@ -466,6 +466,17 @@ POST /fhir/
 
 Submit a `Bundle` of `type: transaction` (all-or-nothing) or `type: batch` (per-entry, independent failures). Each `entry.request` carries an HTTP method and URL — the server applies the entries and returns a `Bundle` of `type: transaction-response` / `batch-response` with the per-entry outcomes and resolved references.
 
+## Validate
+
+Dry-run validation against the FHIR core schema and any profile the resource claims via `meta.profile`. Always returns `200 OK`; the outcome is in `OperationOutcome.id` — `allok` or `validationfail`.
+
+```
+POST /fhir/<resourceType>/$validate
+POST /fhir/<resourceType>/<id>/$validate
+```
+
+The same validator runs on every Create / Update / Patch — when the resource carries a `meta.profile` from one of the [loaded Implementation Guides](../implementation-guides.md), a failed write returns `422`. See [$validate](https://www.health-samurai.io/docs/aidbox/api/rest-api/other/validate) in the Aidbox docs for modes, profile parameter, and async validation.
+
 ## Errors
 
 | Status | Cause |

@@ -133,7 +133,7 @@ GET /fhir/ExplanationOfBenefit?provider:Organization.identifier=https://example.
 FHIR Search is read-shaped, not analytical. When you need
 aggregation, joins across resource types, or fields without a
 SearchParameter, step up to [flat views on FHIR data](flat-views.md) or
-[SQL on FHIR data](sql-mat-views.md). For Aidbox's alternative
+[SQL on FHIR data](sql-on-fhir.md). For Aidbox's alternative
 search surfaces (`Search` resource, AidboxQuery, dot expressions)
 see
 [Aidbox Search](https://www.health-samurai.io/docs/aidbox/api/rest-api/aidbox-search)

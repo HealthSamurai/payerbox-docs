@@ -34,7 +34,7 @@
 * [Analytics](analytics/README.md)
   * [Querying via FHIR API](analytics/fhir-api.md)
   * [Flat views on FHIR data](analytics/flat-views.md)
-  * [SQL on FHIR data](analytics/sql-mat-views.md)
+  * [SQL on FHIR data](analytics/sql-on-fhir.md)
   * [Common queries](analytics/common-queries.md)
 * [API Reference](api-reference/README.md)
   * [Capability Statement](api-reference/capability-statement.md)
