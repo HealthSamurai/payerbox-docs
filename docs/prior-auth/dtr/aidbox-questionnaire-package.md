@@ -58,8 +58,8 @@ Accept: application/fhir+json
 |---|---|---|
 | Who renders the questionnaire | The client (EHR, third-party DTR app) | Payerbox-shipped SMART app |
 | Launch mechanism | Direct API call | EHR SMART on FHIR launch |
-| CQL execution | Client-side, by the DTR client | Client-side, inside the SMART app |
+| Prefill execution | Client-side, by the DTR client | Client-side, inside the SMART app |
 
-The operation is implemented as a subset of Da Vinci DTR STU 2.0.1; most notably, **CQL Libraries referenced by the Questionnaire are not bundled** — the rendering client must resolve them. Full parameter list, limitations, and examples: [`$questionnaire-package`](../../api-reference/operations/questionnaire-package.md).
+The operation is implemented as a subset of Da Vinci DTR STU 2.0.1: it bundles the Questionnaire and its expanded ValueSets, and prefill uses the questionnaire's FHIRPath `initialExpression`s (no CQL). Full parameter list, limitations, and examples: [`$questionnaire-package`](../../api-reference/operations/questionnaire-package.md).
 
 The QuestionnaireResponse produced by either path becomes the input to [PAS](../pas.md).
