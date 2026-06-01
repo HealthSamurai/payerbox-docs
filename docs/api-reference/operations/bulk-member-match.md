@@ -4,15 +4,159 @@ description: Da Vinci PDex $bulk-member-match operation reference — async kick
 
 # $bulk-member-match
 
-Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) (STU 2.1.0). The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType=payertopayer` for the Payer-to-Payer bulk export.
+Matches a batch of member bundles submitted by a requesting payer against the responding payer's Patients and produces up to three `Group` resources, defined by the [Da Vinci PDex IG](https://build.fhir.org/ig/HL7/davinci-epdx/) v2.2.0. The `MatchedMembers` Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer` for the Payer-to-Payer bulk export.
 
 The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-off pattern](https://hl7.org/fhir/uv/bulkdata/export.html#bulk-data-kick-off-request): kick-off returns `202 Accepted` with `Content-Location`, the client polls the status URL, and downloads the result as a single-line ndjson `Parameters` resource.
 
+## Test dataset
+
+Request and Response examples on this page reference this dataset. Load it first to reproduce them.
+
+Load from the Aidbox REST Console — the bundle goes through the normal FHIR write path so AccessPolicies and Clients become active immediately:
+
+<details>
+
+<summary>Click to view test dataset bundle JSON</summary>
+
+```http
+POST /fhir
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "request": {"method": "PUT", "url": "/Client/test-payer-client"},
+      "resource": {
+        "resourceType": "Client",
+        "id": "test-payer-client",
+        "secret": "test-payer-secret",
+        "grant_types": ["basic"],
+        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]}
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Client/test-provider-client"},
+      "resource": {
+        "resourceType": "Client",
+        "id": "test-provider-client",
+        "secret": "test-provider-secret",
+        "grant_types": ["basic"],
+        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]}
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-payer-client"},
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-test-payer-client",
+        "engine": "allow",
+        "link": [{"resourceType": "Client", "id": "test-payer-client"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-provider-client"},
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-test-provider-client",
+        "engine": "allow",
+        "link": [{"resourceType": "Client", "id": "test-provider-client"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Organization/test-payer-001"},
+      "resource": {
+        "resourceType": "Organization",
+        "id": "test-payer-001",
+        "name": "Test Payer Organization",
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Organization/test-provider-001"},
+      "resource": {
+        "resourceType": "Organization",
+        "id": "test-provider-001",
+        "name": "Test Provider Organization",
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Organization/other-payer-001"},
+      "resource": {
+        "resourceType": "Organization",
+        "id": "other-payer-001",
+        "name": "Other Payer (not the requester)",
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "9999999999"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Patient/test-member-001"},
+      "resource": {
+        "resourceType": "Patient",
+        "id": "test-member-001",
+        "name": [{"family": "Johnson", "given": ["Robert"]}],
+        "gender": "male",
+        "birthDate": "1952-07-25",
+        "identifier": [{"system": "http://example.org/member-id", "value": "M12345"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Patient/test-member-002"},
+      "resource": {
+        "resourceType": "Patient",
+        "id": "test-member-002",
+        "name": [{"family": "Williams", "given": ["Sarah"]}],
+        "gender": "female",
+        "birthDate": "1985-03-12",
+        "identifier": [{"system": "http://example.org/member-id", "value": "M67890"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Coverage/test-coverage-001"},
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "test-coverage-001",
+        "status": "active",
+        "subscriberId": "SUB-001",
+        "beneficiary": {"reference": "Patient/test-member-001"},
+        "payor": [{"reference": "Organization/test-payer-001"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Coverage/test-coverage-002"},
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "test-coverage-002",
+        "status": "active",
+        "subscriberId": "SUB-002",
+        "beneficiary": {"reference": "Patient/test-member-002"},
+        "payor": [{"reference": "Organization/test-payer-001"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Consent/test-optout-member-002"},
+      "resource": {
+        "resourceType": "Consent",
+        "id": "test-optout-member-002",
+        "status": "active",
+        "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+        "patient": {"reference": "Patient/test-member-002"},
+        "category": [{"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose", "code": "provider-access"}]}],
+        "provision": {"type": "deny"},
+        "policyRule": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "OPTIN"}]}
+      }
+    }
+  ]
+}
+```
+
+</details>
+
 ## Auth
 
-SMART Backend Services Claim Credentials. The requesting payer's NPI is normally present on the OAuth `Client` resource as `identifier[system=http://hl7.org/fhir/sid/us-npi]`. See [Authentication](../authentication.md).
-
-Aidbox Console sessions without a client NPI are also accepted: the requesting payer is read from `Coverage.payor[0].reference` (must be `Organization/<id>`) in the first submitted `MemberBundle`, and its `us-npi` identifier becomes the requesting payer's NPI. If that Organization is missing or carries no `us-npi`, the kick-off rejects with `422`. Other callers without a client NPI are rejected with `403`.
+SMART Backend Services. See [Authentication](../authentication.md).
 
 ## Kick-off
 
@@ -31,9 +175,9 @@ The request body is a `Parameters` resource with one or more `MemberBundle` entr
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
-| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-patient-demographics.html) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
-| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-coverage.html); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
-| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
+| IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
 | IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
 | OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
 
@@ -43,6 +187,7 @@ The request body is a `Parameters` resource with one or more `MemberBundle` entr
 {% tab title="Request" %}
 ```http
 POST /fhir/Group/$bulk-member-match
+Authorization: Basic dGVzdC1wYXllci1jbGllbnQ6dGVzdC1wYXllci1zZWNyZXQ=
 Content-Type: application/fhir+json
 Prefer: respond-async
 
@@ -52,51 +197,108 @@ Prefer: respond-async
     {
       "name": "MemberBundle",
       "part": [
-        {
-          "name": "MemberPatient",
-          "resource": {
-            "resourceType": "Patient",
-            "name": [{"family": "Smith", "given": ["John"]}],
-            "gender": "male",
-            "birthDate": "1970-05-15",
-            "identifier": [{"system": "http://hl7.org/fhir/sid/us-mbi", "value": "1A23B45C67D8"}]
+        {"name": "MemberPatient", "resource": {
+          "resourceType": "Patient",
+          "name": [{"family": "Johnson", "given": ["Robert"]}],
+          "gender": "male", "birthDate": "1952-07-25"
+        }},
+        {"name": "CoverageToMatch", "resource": {
+          "resourceType": "Coverage", "status": "active",
+          "subscriberId": "SUB-001",
+          "beneficiary": {"reference": "Patient/test-member-001"},
+          "payor": [{"reference": "Organization/test-payer-001"}]
+        }},
+        {"name": "Consent", "resource": {
+          "resourceType": "Consent", "status": "active",
+          "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+          "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
+          "patient": {"reference": "Patient/test-member-001"},
+          "dateTime": "2026-04-01T08:00:00Z",
+          "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"}],
+          "provision": {
+            "type": "permit",
+            "period": {"start": "2026-01-01T00:00:00Z", "end": "2027-01-01T00:00:00Z"},
+            "actor": [{
+              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
+              "reference": {"reference": "Organization/test-payer-001"}
+            }]
           }
-        },
-        {
-          "name": "CoverageToMatch",
-          "resource": {
-            "resourceType": "Coverage",
-            "status": "active",
-            "subscriberId": "1A23B45C67D8",
-            "beneficiary": {"reference": "Patient/patient-1"},
-            "payor": [{"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"}}]
+        }}
+      ]
+    },
+    {
+      "name": "MemberBundle",
+      "part": [
+        {"name": "MemberPatient", "resource": {
+          "resourceType": "Patient",
+          "name": [{"family": "Williams", "given": ["Sarah"]}],
+          "gender": "female", "birthDate": "1985-03-12"
+        }},
+        {"name": "CoverageToMatch", "resource": {
+          "resourceType": "Coverage", "status": "active",
+          "subscriberId": "SUB-002",
+          "beneficiary": {"reference": "Patient/test-member-002"},
+          "payor": [{"reference": "Organization/test-payer-001"}]
+        }},
+        {"name": "Consent", "resource": {
+          "resourceType": "Consent", "status": "active",
+          "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+          "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
+          "patient": {"reference": "Patient/test-member-002"},
+          "dateTime": "2026-04-01T08:00:00Z",
+          "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"}],
+          "provision": {
+            "type": "permit",
+            "period": {"start": "2026-01-01T00:00:00Z", "end": "2027-01-01T00:00:00Z"},
+            "actor": [{
+              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
+              "reference": {"reference": "Organization/other-payer-001"}
+            }]
           }
-        },
-        {
-          "name": "Consent",
-          "resource": {
-            "resourceType": "Consent",
-            "status": "active",
-            "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
-            "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
-            "patient": {"reference": "Patient/patient-1"},
-            "dateTime": "2026-04-01T08:00:00Z",
-            "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"}],
-            "provision": {
-              "type": "permit",
-              "period": {"start": "2026-01-01T00:00:00Z", "end": "2027-01-01T00:00:00Z"},
-              "actor": [{
-                "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
-                "reference": {"identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"}}
-              }]
-            }
+        }}
+      ]
+    },
+    {
+      "name": "MemberBundle",
+      "part": [
+        {"name": "MemberPatient", "resource": {
+          "resourceType": "Patient",
+          "name": [{"family": "Unknown", "given": ["Nobody"]}],
+          "gender": "male", "birthDate": "2000-01-01"
+        }},
+        {"name": "CoverageToMatch", "resource": {
+          "resourceType": "Coverage", "status": "active",
+          "subscriberId": "SUB-999",
+          "beneficiary": {"reference": "Patient/test-member-001"},
+          "payor": [{"reference": "Organization/test-payer-001"}]
+        }},
+        {"name": "Consent", "resource": {
+          "resourceType": "Consent", "status": "active",
+          "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
+          "category": [{"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL"}]}],
+          "patient": {"reference": "Patient/test-member-001"},
+          "dateTime": "2026-04-01T08:00:00Z",
+          "policy": [{"uri": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"}],
+          "provision": {
+            "type": "permit",
+            "period": {"start": "2026-01-01T00:00:00Z", "end": "2027-01-01T00:00:00Z"},
+            "actor": [{
+              "role": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType", "code": "IRCP"}]},
+              "reference": {"reference": "Organization/test-payer-001"}
+            }]
           }
-        }
+        }}
       ]
     }
   ]
 }
 ```
+
+Three submitted MemberBundles drive the three output buckets:
+
+- **Johnson** → demographics match `Patient/test-member-001`; Consent recipient = `Organization/test-payer-001` (the caller) → `MatchedMembers`
+- **Williams** → demographics match `Patient/test-member-002`; Consent recipient = `Organization/other-payer-001` (not the caller) → fails recipient match → `ConsentConstrainedMembers`
+- **Unknown** → demographics do not match any seeded Patient → `NonMatchedMembers`
 {% endtab %}
 {% tab title="Response (accepted)" %}
 ```http
@@ -119,21 +321,6 @@ Content-Type: application/fhir+json
 }
 ```
 {% endtab %}
-{% tab title="Response (no NPI)" %}
-```http
-HTTP/1.1 403 Forbidden
-Content-Type: application/fhir+json
-
-{
-  "resourceType": "OperationOutcome",
-  "issue": [{
-    "severity": "error",
-    "code": "forbidden",
-    "diagnostics": "OAuth client must carry an NPI identifier"
-  }]
-}
-```
-{% endtab %}
 {% tab title="Response (validation fail)" %}
 ```http
 HTTP/1.1 422 Unprocessable Entity
@@ -141,21 +328,6 @@ Content-Type: application/fhir+json
 ```
 
 The body is the `OperationOutcome` returned by Aidbox `$validate` against the input profile.
-{% endtab %}
-{% tab title="Response (ambiguous NPI)" %}
-```http
-HTTP/1.1 409 Conflict
-Content-Type: application/fhir+json
-
-{
-  "resourceType": "OperationOutcome",
-  "issue": [{
-    "severity": "error",
-    "code": "conflict",
-    "diagnostics": "Ambiguous payer Organization lookup for NPI 1234567893; multiple Organizations share this identifier"
-  }]
-}
-```
 {% endtab %}
 {% endtabs %}
 
@@ -167,7 +339,7 @@ Content-Type: application/fhir+json
 GET <base>/fhir/Group/$bulk-member-match-status/<task-id>
 ```
 
-`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client whose NPI does not match `Task.requester.identifier` get `404` (cross-tenant guard).
+`<task-id>` is the id at the end of the `Content-Location` from kick-off. Calls from a client other than the originating requester get `404` (cross-tenant guard).
 
 ### Parameters
 
@@ -243,7 +415,7 @@ URL comes from `output[0].url` in the manifest. Body is a single ndjson line —
 
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
-| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to `$davinci-data-export?exportType=payertopayer`. `quantity = 0` and `member` omitted when empty. |
+| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer`. `quantity = 0` and `member` omitted when empty. |
 | OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
 | OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
 
@@ -279,33 +451,13 @@ Body (single ndjson line, formatted for readability):
         "characteristic": [{
           "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "match"}]},
           "valueReference": {
-            "identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"},
-            "reference": "Organization/payer-org-1"
+            "identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"},
+            "reference": "Organization/test-payer-001"
           },
           "exclude": false
         }],
         "quantity": 1,
-        "member": [{"entity": {"reference": "Patient/patient-1", "display": "Smith, John"}, "inactive": false}]
-      }
-    },
-    {
-      "name": "ConsentConstrainedMembers",
-      "resource": {
-        "resourceType": "Group",
-        "id": "<task-id>-consent",
-        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-member-no-match-group"]},
-        "active": true, "type": "person", "actual": true,
-        "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "consentconstraint"}]},
-        "characteristic": [{
-          "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "consentconstraint"}]},
-          "valueReference": {
-            "identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"},
-            "reference": "Organization/payer-org-1"
-          },
-          "exclude": false
-        }],
-        "quantity": 1,
-        "member": [{"entity": {"reference": "Patient/patient-2", "display": "Doe, Jane"}, "inactive": false}]
+        "member": [{"entity": {"reference": "Patient/test-member-001", "display": "Johnson, Robert"}, "inactive": false}]
       }
     },
     {
@@ -333,6 +485,26 @@ Body (single ndjson line, formatted for readability):
           },
           "inactive": false
         }]
+      }
+    },
+    {
+      "name": "ConsentConstrainedMembers",
+      "resource": {
+        "resourceType": "Group",
+        "id": "<task-id>-consent",
+        "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-member-no-match-group"]},
+        "active": true, "type": "person", "actual": true,
+        "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "consentconstraint"}]},
+        "characteristic": [{
+          "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "consentconstraint"}]},
+          "valueReference": {
+            "identifier": {"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"},
+            "reference": "Organization/test-payer-001"
+          },
+          "exclude": false
+        }],
+        "quantity": 1,
+        "member": [{"entity": {"reference": "Patient/test-member-002", "display": "Williams, Sarah"}, "inactive": false}]
       }
     }
   ]
@@ -384,13 +556,13 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 **Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). Identifier-AND is bulk-specific: [`$provider-member-match`](provider-member-match.md#matching-behavior) ignores submitted `Patient.identifier` entries, because provider-side systems carry MRNs the payer does not store. `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
 
-**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true:
+**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true (the opt-out category code below uses the `pdex-consent-api-purpose` CodeSystem from PDex 2.2.0):
 
 | Check | Constrains when |
 |---|---|
 | `Consent.status` | not `"active"` |
 | `Consent.provision.period` | absent, unparseable, or does not cover the current time |
-| `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer — checked in order: literal `Organization/<id>` reference (when the payer Org is registered), inline `identifier` matching the OAuth client's NPI, or NPI dereferenced from an `Organization/<id>` reference |
+| `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer's `Organization/<id>` reference |
 | `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
 | Active `provider-access` deny `Consent` on the matched Patient (opt-out) | any active hit; a failing opt-out query (non-2xx) fails safe to constrained |
 
@@ -409,14 +581,15 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
-| 403 | Kick-off | OAuth client carries no NPI identifier and no authenticated user session is present |
-| 404 | Status / cancel / output | Unknown `<task-id>`, status `cancelled`, or caller NPI does not match `Task.requester.identifier` |
-| 409 | Kick-off | Requesting payer NPI is registered on more than one `Organization` in the responding payer's directory; resolve duplicates and retry |
-| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile; or, for admin sessions, `Coverage.payor[0]` could not be resolved to a registered `Organization` with a `us-npi` identifier |
+| 403 | Kick-off | Requesting payer identity could not be resolved from the OAuth client |
+| 404 | Status / output | Unknown `<task-id>`, `Task.status = cancelled`, or caller is not the originating requester |
+| 404 | Cancel | Unknown `<task-id>` (hard-deleted), or caller is not the originating requester (cancel on a `cancelled` Task returns `202` and sweeps outputs) |
+| 409 | Kick-off | Requesting payer identity is ambiguous — more than one Organization in the responding payer's directory matches; resolve duplicates and retry |
+| 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |
 | 500 | Kick-off / status / cancel | Upstream Aidbox read or write failed transiently |
 
 Individual member failures (validation issues, exceptions while evaluating one member, Consent persistence failures) route to `NonMatchedMembers` or `ConsentConstrainedMembers` with a reason recorded in `Task` logs — they do not fail the batch.
 
-After a `MatchedMembers` Group is returned, the requesting payer uses its id with [`$davinci-data-export?exportType=payertopayer`](davinci-data-export.md) to pull the matched members' clinical data. Architectural context lives in the [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillar.
+After a `MatchedMembers` Group is returned, the requesting payer uses its id with [`$davinci-data-export`](davinci-data-export.md) (`exportType = hl7.fhir.us.davinci-pdex#payertopayer`) to pull the matched members' clinical data. Architectural context lives in the [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillar.
