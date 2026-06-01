@@ -65,9 +65,7 @@ This is the **May 2026** release (tag `2605`); the apps run on an Aidbox FHIR se
 - Discover, launch, and test registered SMART apps. See [FHIR App Gallery](fhir-app-portal/fhir-app-gallery.md).
 - Patients can review their connected apps and revoke access.
 
-## Security & Authentication
+**Security & Authentication**
+
 - Multi-tenant deployments: host multiple organizations on one instance with per-organization data isolation, built on Aidbox OrgBAC. Org-scoped admins manage only their own organization.
 - Role-based access control: admin, developer, and patient roles gate the Admin Portal, Developer Portal, and app gallery.
-
-## Demo
-- Explore the end-to-end demo (mock EHR, payer, DTR SMART app, decision service, and payer portal). See [Demo](get-started/demo/README.md).
