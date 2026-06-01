@@ -24,6 +24,10 @@ flattened from `ExplanationOfBenefit`. Each row is one
 `ExplanationOfBenefit.item`; EOB-level fields repeat for every item
 row from the same EOB.
 
+<details>
+
+<summary>Show full ViewDefinition</summary>
+
 ```json
 {
   "resourceType": "ViewDefinition",
@@ -117,6 +121,10 @@ row from the same EOB.
   ]
 }
 ```
+
+</details>
+
+`ViewDefinition` is a regular FHIR resource - the Builder is just one UI on top of it, and its **Edit** tab exposes the raw JSON for in-place editing. The same view can also be authored, versioned, and patched via `POST /fhir/ViewDefinition` or `PUT /fhir/ViewDefinition/<id>`. Every column, `where` clause, or `forEach` change is a normal FHIR write.
 
 The `where` clause restricts to EOBs tagged with the
 [PDex Prior Authorization](http://hl7.org/fhir/us/davinci-pdex/StructureDefinition-pdex-priorauthorization.html)
