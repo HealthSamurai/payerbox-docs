@@ -9,6 +9,7 @@
 * [Run Payerbox](run-payerbox/README.md)
   * [Architecture](run-payerbox/architecture.md)
   * [Deploy](run-payerbox/deploy.md)
+  * [MPF Pipeline](run-payerbox/provider-directory-pipeline.md)
   * [Maintain](run-payerbox/maintain/README.md)
     * [Observability](run-payerbox/maintain/observability.md)
     * [Upgrade](run-payerbox/maintain/upgrade.md)
@@ -55,4 +56,5 @@
     * [order-select](api-reference/operations/cds-hook-order-select.md)
     * [order-dispatch](api-reference/operations/cds-hook-order-dispatch.md)
     * [appointment-book](api-reference/operations/cds-hook-appointment-book.md)
+    * [MPF Endpoints](api-reference/operations/mpf-pipeline-api.md)
 * [Releases](releases.md)
