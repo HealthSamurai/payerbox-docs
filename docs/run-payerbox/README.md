@@ -5,5 +5,5 @@ Operate Payerbox in your environment: deploy the four-image bundle, integrate wi
 | Page | What it covers |
 |---|---|
 | [Architecture](architecture.md) | Four-image topology, network, authentication chain, data flow |
-| [Deploy](deploy.md) | docker-compose, helm, AWS / Azure / GCP |
+| [Deploy](deploy.md) | Install on Kubernetes with the `payerbox` umbrella Helm chart |
 | [Maintain](maintain/README.md) | Day-2 operations |
