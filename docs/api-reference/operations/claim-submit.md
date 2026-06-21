@@ -185,3 +185,9 @@ Accept: application/json
 
 {% endtab %}
 {% endtabs %}
+
+## Duplicate submissions
+
+A submission is matched against existing claims by the first `Claim.identifier` (its `system` and `value`). If a claim with the same identifier already exists, `$submit` returns its latest `ClaimResponse` and creates nothing new. This makes retries safe: resending the same bundle does not fork the authorization into a second record.
+
+Matching uses only the identifier. Changed `item[]` content does not create a new claim; to change a prior authorization, submit a new `Claim.identifier` with `Claim.related.relationship = "replaces"` pointing to the previous `Claim`. Identifiers without both `system` and `value` are not matched and always create a new claim.
