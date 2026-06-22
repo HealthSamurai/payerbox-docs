@@ -1,10 +1,10 @@
 # CRD
 
-The Payerbox CRD implementation enables real-time communication between EHR systems and payers to determine documentation and prior authorization requirements at the point of care. Built on the [HL7 Da Vinci Coverage Requirements Discovery Implementation Guide](https://hl7.org/fhir/us/davinci-crd/STU2.0.1/).
+The Payerbox CRD implementation enables real-time communication between EHR systems and payers to determine documentation and prior authorization requirements at the point of care. Built on the [HL7 Da Vinci Coverage Requirements Discovery Implementation Guide](https://hl7.org/fhir/us/davinci-crd/STU2.1/).
 
 When combined with [DTR](dtr/README.md) and [PAS](pas.md), CRD ensures providers are informed of coverage requirements early in the workflow, reducing claim denials and improving the authorization process.
 
-Payerbox implements Da Vinci CRD STU 2.0.1. See [Compliance / CMS-0057](../compliance/cms-0057.md) for the regulatory context.
+Payerbox implements Da Vinci CRD STU 2.1.0. See [Compliance / CMS-0057](../compliance/cms-0057.md) for the regulatory context.
 
 ## How CDS Hooks work in CRD
 

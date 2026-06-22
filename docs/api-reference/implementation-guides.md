@@ -49,7 +49,7 @@ CMS recommends these IGs but does not mandate them. The regulation requires func
 
 | IG | Version | Spec | Used by |
 |---|---|---|---|
-| Da Vinci Coverage Requirements Discovery (CRD) | STU 2.0.1 | [hl7.org/fhir/us/davinci-crd/STU2.0.1](https://hl7.org/fhir/us/davinci-crd/STU2.0.1/) | CRD |
+| Da Vinci Coverage Requirements Discovery (CRD) | STU 2.1.0 | [hl7.org/fhir/us/davinci-crd/STU2.1](https://hl7.org/fhir/us/davinci-crd/STU2.1/) | CRD |
 | Da Vinci Documentation Templates and Rules (DTR) | STU 2.0.1 | [hl7.org/fhir/us/davinci-dtr/STU2](https://hl7.org/fhir/us/davinci-dtr/STU2/) | DTR |
 | Da Vinci Prior Authorization Support (PAS) | STU 2.1.0 | [hl7.org/fhir/us/davinci-pas/STU2.1](https://hl7.org/fhir/us/davinci-pas/STU2.1/) | PAS |
 | Da Vinci Clinical Data Exchange (CDex) | STU 2.1.0 | [hl7.org/fhir/us/davinci-cdex/STU2](https://hl7.org/fhir/us/davinci-cdex/STU2/) | PAS attachments (`$submit-attachment`) |
