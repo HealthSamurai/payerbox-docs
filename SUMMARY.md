@@ -12,6 +12,7 @@
   * [MPF Pipeline](run-payerbox/provider-directory-pipeline.md)
   * [Maintain](run-payerbox/maintain/README.md)
     * [Observability](run-payerbox/maintain/observability.md)
+    * [Event Notifications](run-payerbox/maintain/event-notifications.md)
     * [Upgrade](run-payerbox/maintain/upgrade.md)
 * [Interop APIs](interop-apis/README.md)
   * [Patient Access](interop-apis/patient-access.md)
