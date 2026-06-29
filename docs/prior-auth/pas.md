@@ -70,3 +70,7 @@ Accept: application/json
 {% endtabs %}
 
 Full Bundle profiles, all parameters, and edge cases: [Claim/$submit](../api-reference/operations/claim-submit.md). For status checks and attachment workflows: [Claim/$inquire](../api-reference/operations/claim-inquire.md), [$submit-attachment](../api-reference/operations/submit-attachment.md).
+
+## Notifications
+
+Rather than polling `Claim/$inquire`, a downstream system can subscribe to decision events and be notified when a `ClaimResponse` is recorded. See [Event Notifications](event-notifications.md) for how to set up a FHIR topic-based subscription.
