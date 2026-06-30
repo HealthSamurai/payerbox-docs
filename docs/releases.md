@@ -1,19 +1,61 @@
 ---
-description: Notable changes across Payerbox — the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal.
+description: "Notable changes across Payerbox: the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal."
 ---
 
 # Releases
 
-This page tracks notable changes across Payerbox — the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal.
+This page tracks notable changes across Payerbox: the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal. Releases are listed newest first. The apps run on an Aidbox FHIR server; each component heading links to its image on Docker Hub.
 
-This is the **May 2026** release (tag `2605`); the apps run on an Aidbox FHIR server. Each component heading below links to its image on Docker Hub.
+## June 2026 (`2606`)
 
-## Interop APIs [`2605`](https://hub.docker.com/r/healthsamurai/interop)
+This release adds the `payerbox` umbrella Helm chart, which deploys the full Payerbox stack (the portals, Interop APIs, Prior Auth, and Aidbox) to Kubernetes in one release. See [Deploy](run-payerbox/deploy.md).
+
+### Interop APIs [`2606`](https://hub.docker.com/r/healthsamurai/interop)
+
+**Payer-to-Payer**
+
+- `$bulk-member-match` authenticates the calling payer via UDAP (B2B). See [Authentication](api-reference/authentication.md).
+- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) adds the `payertopayer` export type for Payer-to-Payer exchange.
+
+**Provider Directory**
+
+- The CMS Medicare Plan Finder (MPF) provider-directory pipeline is optimized: directory scope filtering now runs server-side in the `$export` query, export output is gzip-compressed, and files are published through presigned URLs so the storage buckets stay private. See the [MPF Pipeline](run-payerbox/provider-directory-pipeline.md); a runnable reference implementation is now public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder).
+
+### Prior Auth (ePA) APIs [`2606`](https://hub.docker.com/r/healthsamurai/prior-auth)
+
+**Implementation Guide versions**
+
+- PAS is upgraded to Da Vinci STU `2.1.0`, now the default. STU `2.0.1` remains selectable via the `PAS_IG_VERSION` setting. See [PAS](prior-auth/pas.md).
+- CRD and DTR are upgraded to `2.1.0`. See [CRD](prior-auth/crd.md) and [DTR](prior-auth/dtr/README.md).
+
+**PAS**
+
+- [`Claim/$submit`](api-reference/operations/claim-submit.md) adds a ClaimResponse reference extension on the submitted Claim, linking it to the resulting ClaimResponse.
+- `Claim/$submit` is idempotent on `Claim.identifier` (the X12 278 trace number): resubmitting the same identifier without a `replaces` reference is treated as a retry and returns the existing ClaimResponse.
+- Under PAS 2.1.0, a prior authorization's ClaimResponse stays on the original (root) Claim and update Claims carry none; `Claim/$submit` and `Claim/$inquire` follow a `replaces` chain back to the root and return its ClaimResponse.
+
+**CRD**
+
+- When the CRD decision service returns an error, Payerbox relays its HTTP status and surfaces the original error in the returned `OperationOutcome`. See [CRD](prior-auth/crd.md).
+
+### FHIR App Portal [`2606`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
+
+**Developer Portal**
+
+- Backend (bulk data) services can now authenticate with a client secret as well as a JWKS URI. See [Authentication](api-reference/authentication.md).
+
+**Admin Portal**
+
+- Redesigned the app review card in the admin interface.
+
+## May 2026 (`2605`)
+
+### Interop APIs [`2605`](https://hub.docker.com/r/healthsamurai/interop)
 
 **Provider Access**
 
 - Added the [`$provider-member-match`](api-reference/operations/provider-member-match.md) operation: asynchronous demographic matching with treatment attestation and opt-out consent checks. See [Provider Access](interop-apis/provider-access.md).
-- Added the [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) operation: an asynchronous FHIR Bulk Data export over a member `Group`, used by both Provider Access and Payer-to-Payer.
+- Added the [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) operation: an asynchronous FHIR Bulk Data export over a member `Group`, used by Provider Access.
 
 **Payer-to-Payer**
 
@@ -23,7 +65,7 @@ This is the **May 2026** release (tag `2605`); the apps run on an Aidbox FHIR se
 
 - Added a CMS Medicare Plan Finder (MPF) provider-directory export (opt-in per deployment): builds the MPF provider feed and publishes a public index URL per Medicare Advantage contract and reporting year, designed to run on a daily schedule.
 
-## Prior Auth (ePA) APIs [`2605`](https://hub.docker.com/r/healthsamurai/prior-auth)
+### Prior Auth (ePA) APIs [`2605`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
 **CDS Hooks**
 
@@ -46,7 +88,7 @@ This is the **May 2026** release (tag `2605`); the apps run on an Aidbox FHIR se
 - Added asynchronous result delivery: completed decisions are delivered to the EHR as a PAS Response Bundle via a topic-based FHIR Subscription.
 - When additional documentation is submitted via `$submit-attachment`, the prior authorization is re-queued for review (ClaimResponse disposition "Pending Review").
 
-## FHIR App Portal [`2605`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
+### FHIR App Portal [`2605`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
 
 **Developer Portal**
 
