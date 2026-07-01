@@ -19,20 +19,20 @@ This release adds the `payerbox` umbrella Helm chart, which deploys the full Pay
 
 **Provider Directory**
 
-- The CMS Medicare Plan Finder (MPF) provider-directory pipeline is optimized: directory scope filtering now runs server-side in the `$export` query, export output is gzip-compressed, and files are published through presigned URLs so the storage buckets stay private. See the [MPF Pipeline](run-payerbox/provider-directory-pipeline.md); a runnable reference implementation is now public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder).
+- The CMS Medicare Plan Finder (MPF) provider-directory pipeline is optimized: directory scope filtering now runs server-side in the `$export` query, and export output is gzip-compressed. See the [MPF Pipeline](run-payerbox/provider-directory-pipeline.md); a runnable reference implementation is now public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder).
 
 ### Prior Auth (ePA) APIs [`2606`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
 **Implementation Guide versions**
 
-- PAS is upgraded to Da Vinci STU `2.1.0`, now the default. STU `2.0.1` remains selectable via the `PAS_IG_VERSION` setting. See [PAS](prior-auth/pas.md).
+- PAS is upgraded to Da Vinci STU `2.1.0`, now the default. STU `2.0.1` remains selectable via the `PAS_IG_VERSION` environment variable. See [PAS](prior-auth/pas.md).
 - CRD and DTR are upgraded to `2.1.0`. See [CRD](prior-auth/crd.md) and [DTR](prior-auth/dtr/README.md).
 
 **PAS**
 
 - [`Claim/$submit`](api-reference/operations/claim-submit.md) adds a ClaimResponse reference extension on the submitted Claim, linking it to the resulting ClaimResponse.
-- `Claim/$submit` is idempotent on `Claim.identifier` (the X12 278 trace number): resubmitting the same identifier without a `replaces` reference is treated as a retry and returns the existing ClaimResponse.
-- Under PAS 2.1.0, a prior authorization's ClaimResponse stays on the original (root) Claim and update Claims carry none; `Claim/$submit` and `Claim/$inquire` follow a `replaces` chain back to the root and return its ClaimResponse.
+- `Claim/$submit` is idempotent on `Claim.identifier`: resubmitting a Claim whose identifier already exists returns the existing ClaimResponse and does not create a duplicate prior authorization.
+- Under PAS 2.1.0, an updated prior authorization keeps a single ClaimResponse on the original Claim; `Claim/$submit` and `Claim/$inquire` return it for any Claim in the update chain.
 
 **CRD**
 
@@ -42,7 +42,7 @@ This release adds the `payerbox` umbrella Helm chart, which deploys the full Pay
 
 **Developer Portal**
 
-- Backend (bulk data) services can now authenticate with a client secret as well as a JWKS URI. See [Authentication](api-reference/authentication.md).
+- The Developer Portal can now register a backend (bulk data) service that uses a client secret (client-credentials), in addition to a JWKS URI. See [Developer Portal](fhir-app-portal/developer-portal.md).
 
 **Admin Portal**
 
