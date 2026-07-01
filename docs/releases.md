@@ -14,7 +14,7 @@ This release adds the `payerbox` umbrella Helm chart, which deploys the full Pay
 
 **Payer-to-Payer**
 
-- `$bulk-member-match` authenticates the calling payer via UDAP (B2B). See [Authentication](api-reference/authentication.md).
+- [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) authenticates the calling payer via UDAP (B2B). See [Authentication](api-reference/authentication.md).
 - [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) adds the `payertopayer` export type for Payer-to-Payer exchange.
 
 **Provider Directory**
