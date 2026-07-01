@@ -8,7 +8,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 ## June 2026 (`2606`)
 
-This release adds the `payerbox` umbrella Helm chart, which deploys the full Payerbox stack (the portals, Interop APIs, Prior Auth, and Aidbox) to Kubernetes in one release. See [Deploy](run-payerbox/deploy.md).
+A new `payerbox` umbrella Helm chart deploys the full stack (portals, Interop APIs, Prior Auth, and Aidbox) to Kubernetes. See [Deploy](run-payerbox/deploy.md).
 
 ### Interop APIs [`2606`](https://hub.docker.com/r/healthsamurai/interop)
 
@@ -19,34 +19,35 @@ This release adds the `payerbox` umbrella Helm chart, which deploys the full Pay
 
 **Provider Directory**
 
-- The CMS Medicare Plan Finder (MPF) provider-directory pipeline is optimized: directory scope filtering now runs server-side in the `$export` query, and export output is gzip-compressed. See the [MPF Pipeline](run-payerbox/provider-directory-pipeline.md); a runnable reference implementation is now public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder).
+- The CMS Medicare Plan Finder (MPF) provider-directory pipeline now runs its scope filters inside the `$export` query and gzip-compresses the export output. A runnable reference implementation is public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder). See the [MPF Pipeline](run-payerbox/provider-directory-pipeline.md).
 
 ### Prior Auth (ePA) APIs [`2606`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
-**Implementation Guide versions**
+**CRD**
 
-- PAS is upgraded to Da Vinci STU `2.1.0`, now the default. STU `2.0.1` remains selectable via the `PAS_IG_VERSION` environment variable. See [PAS](prior-auth/pas.md).
-- CRD and DTR are upgraded to `2.1.0`. See [CRD](prior-auth/crd.md) and [DTR](prior-auth/dtr/README.md).
+- Upgraded to Da Vinci CRD 2.1.0. See [CRD](prior-auth/crd.md).
+- When the decision service returns an error, Payerbox relays its HTTP status and surfaces the original error in the returned `OperationOutcome`.
+
+**DTR**
+
+- Upgraded to Da Vinci DTR 2.1.0. See [DTR](prior-auth/dtr/README.md).
 
 **PAS**
 
+- Upgraded to Da Vinci PAS STU 2.1.0, now the default. STU 2.0.1 remains selectable via the `PAS_IG_VERSION` environment variable. See [PAS](prior-auth/pas.md).
 - [`Claim/$submit`](api-reference/operations/claim-submit.md) adds a ClaimResponse reference extension on the submitted Claim, linking it to the resulting ClaimResponse.
 - `Claim/$submit` is idempotent on `Claim.identifier`: resubmitting a Claim whose identifier already exists returns the existing ClaimResponse and does not create a duplicate prior authorization.
 - Under PAS 2.1.0, an updated prior authorization keeps a single ClaimResponse on the original Claim; `Claim/$submit` and [`Claim/$inquire`](api-reference/operations/claim-inquire.md) return it for any Claim in the update chain.
-
-**CRD**
-
-- When the CRD decision service returns an error, Payerbox relays its HTTP status and surfaces the original error in the returned `OperationOutcome`. See [CRD](prior-auth/crd.md).
 
 ### FHIR App Portal [`2606`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
 
 **Developer Portal**
 
-- The Developer Portal can now register a backend (bulk data) service that uses a client secret (client-credentials), in addition to a JWKS URI. See [Developer Portal](fhir-app-portal/developer-portal.md).
+- Register a backend (bulk data) service with a client secret (client-credentials), in addition to a JWKS URI. See [Developer Portal](fhir-app-portal/developer-portal.md).
 
 **Admin Portal**
 
-- Redesigned the app review card in the admin interface.
+- Redesigned the app review card.
 
 ## May 2026 (`2605`)
 
