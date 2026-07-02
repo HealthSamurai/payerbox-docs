@@ -1,2 +1,7 @@
 redirects:
   run-payerbox/maintain/event-notifications.md: prior-auth/event-notifications.md
+  fhir-app-portal/developer-portal#register-a-smart-app: fhir-app-portal/smart-app.md#register-a-smart-app
+  fhir-app-portal/developer-portal#test-your-app: fhir-app-portal/smart-app.md#test-your-app
+  fhir-app-portal/developer-portal#example-growth-chart-app: fhir-app-portal/smart-app.md#example-growth-chart-app
+  fhir-app-portal/developer-portal#submit-for-review: fhir-app-portal/smart-app.md#submit-for-review
+  fhir-app-portal/developer-portal#app-status: fhir-app-portal/smart-app.md#app-status

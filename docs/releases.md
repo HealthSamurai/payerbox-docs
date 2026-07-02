@@ -43,7 +43,7 @@ A new `payerbox` umbrella Helm chart deploys the full stack (portals, Interop AP
 
 **Developer Portal**
 
-- Register a backend (bulk data) service with a client secret (client-credentials), in addition to a JWKS URI. See [Developer Portal](fhir-app-portal/developer-portal.md).
+- Register a backend (bulk data) service with a client secret (client-credentials), in addition to a JWKS URI. See [Backend Services](fhir-app-portal/backend-services.md).
 
 **Admin Portal**
 
@@ -93,8 +93,8 @@ A new `payerbox` umbrella Helm chart deploys the full stack (portals, Interop AP
 
 **Developer Portal**
 
-- Register SMART apps with configurable scopes and supported search parameters, including DSI (decision-support intervention) transparency fields. See [Developer Portal](fhir-app-portal/developer-portal.md).
-- Register backend (system) services for the bulk data APIs; these clients authenticate with a customer-supplied `jwks_uri` (JWKS URL) rather than a client secret. See [Authentication](api-reference/authentication.md).
+- Register SMART apps with configurable scopes and supported search parameters, including DSI (decision-support intervention) transparency fields. See [SMART App](fhir-app-portal/smart-app.md).
+- Register backend (system) services for the bulk data APIs; these clients authenticate with a customer-supplied `jwks_uri` (JWKS URL) rather than a client secret. See [Backend Services](fhir-app-portal/backend-services.md).
 
 **Admin Portal**
 

@@ -8,11 +8,20 @@ Exports clinical, claims, encounter, and prior-authorization data for the member
 
 The operation is **always asynchronous** and follows the [FHIR Bulk Data export pattern](https://hl7.org/fhir/uv/bulkdata/export.html): kick-off returns `202 Accepted` with `Content-Location`, the client polls the status URL, and downloads each ndjson file referenced in the completed manifest.
 
-`exportType` selects the PDex scenario the request runs under and governs consent rules and data scope per the IG (see [`exportType` values](#exporttype-values)). The kick-off endpoint is owned by Payerbox's interop app; status polling, output download, and cancellation are served by Aidbox at its standard Bulk Data Export URLs (`$export-status`, signed output URLs).
+`exportType` selects the PDex scenario the request runs under (see [`exportType` values](#exporttype-values)). Scope follows the Da Vinci [Payer-to-Payer Bulk Data Exchange](https://build.fhir.org/ig/HL7/davinci-epdx/payertopayerbulkexchange.html) and [ATR `$davinci-data-export` requirements](https://hl7.org/fhir/us/davinci-atr/STU2.1/spec.html#requirements-for-implementation-of-the-davinci-data-export-operation):
+
+- Opt-in / opt-out consent, per exportType
+- Financial fields excluded from `ExplanationOfBenefit` and `Coverage`
+- Drug claims and drug PAs dropped
+- 5-year `ExplanationOfBenefit` `service-date` window for `payertopayer`
+
+The kick-off endpoint is owned by Payerbox's interop app; status polling, output download, and cancellation are served by Aidbox at its standard Bulk Data Export URLs (`$export-status`, signed output URLs).
 
 ## Auth
 
 SMART Backend Services and Client Credentials. The caller's OAuth client must be allowed to read the Group and the resource types referenced by `_type` (and their referenced resources, since Aidbox `$export` chases references). See [Authentication](../authentication.md).
+
+`payertopayer` gates the opt-in export on the [UDAP HL7 B2B `organization_id` claim](../authentication.md#hl7-b2b-authorization-extension-udap); the interop app fails closed with `401` when the caller's token carries no such claim.
 
 ## Kick-off
 
@@ -33,11 +42,11 @@ The request body must be a FHIR `Parameters` resource. Unsupported parameter nam
 <tr><th>Dir.</th><th width="150">Parameter</th><th width="190">Type</th><th>Card.</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>IN</td><td><code>exportType</code></td><td>canonical (<code>valueCanonical</code>)</td><td>0..1</td><td>One of <code>hl7.fhir.us.davinci-pdex#provider-download</code>, <code>hl7.fhir.us.davinci-pdex#provider-delta</code>, <code>hl7.fhir.us.davinci-pdex#provider-snapshot</code>, <code>hl7.fhir.us.davinci-pdex#payertopayer</code>. Selects the PDex scenario (consent rule + data scope) — see <a href="#exporttype-values"><code>exportType</code> values</a>.</td></tr>
-<tr><td>IN</td><td><code>_since</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated since this time. <strong>Required</strong> when <code>exportType = hl7.fhir.us.davinci-pdex#provider-delta</code>.</td></tr>
+<tr><td>IN</td><td><code>exportType</code></td><td>canonical (<code>valueCanonical</code>)</td><td>0..1</td><td>Selects the PDex scenario (consent rule + data scope). Supported values: <code>hl7.fhir.us.davinci-pdex#provider-download</code> and <code>hl7.fhir.us.davinci-pdex#payertopayer</code>. See <a href="#exporttype-values"><code>exportType</code> values</a>.</td></tr>
+<tr><td>IN</td><td><code>_since</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated since this time.</td></tr>
 <tr><td>IN</td><td><code>_until</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated up to this time.</td></tr>
 <tr><td>IN</td><td><code>_type</code></td><td>string (<code>valueString</code>)</td><td>0..1</td><td>Comma-separated FHIR resource types to include (e.g. <code>Patient,Coverage,ExplanationOfBenefit</code>).</td></tr>
-<tr><td>IN</td><td><code>_typeFilter</code></td><td>string (<code>valueString</code>)</td><td>0..*</td><td>Per-type FHIR search expression (e.g. <code>Observation?category=laboratory</code>).</td></tr>
+<tr><td>IN</td><td><code>_typeFilter</code></td><td>string (<code>valueString</code>)</td><td>0..*</td><td>Per-type FHIR search expression (e.g. <code>Observation?category=laboratory</code>). A caller clause naming <code>ExplanationOfBenefit</code> is rejected with <code>400</code>: it would OR-merge with the interop app's injected pharmacy/service-date EOB filter and re-admit excluded data.</td></tr>
 <tr><td>IN</td><td><code>_outputFormat</code></td><td>string (<code>valueString</code>)</td><td>0..1</td><td>Output format. <code>application/fhir+ndjson</code> is the default and only value supported in PDex 2.1.0.</td></tr>
 <tr><td>IN</td><td><code>patient</code></td><td>reference (<code>valueReference</code>)</td><td>0..*</td><td>Narrow the export to specific Patients.</td></tr>
 <tr><td>OUT</td><td>—</td><td>—</td><td>—</td><td><code>202 Accepted</code> with <code>Content-Location</code> pointing at the Aidbox status URL.</td></tr>
@@ -94,10 +103,27 @@ Interop returns one of these diagnostics:
 
 - `Request body must be a FHIR Parameters resource`
 - `Unsupported parameter(s): <name>`
+- `Parameter exportType is required`
 - `Parameter exportType must appear at most once`
 - `Parameter exportType must use valueCanonical`
 - `Unsupported exportType: <value>`
-- `exportType provider-delta requires _since`
+- `_outputFormat must be application/fhir+ndjson, got: <value>`
+- `Caller-supplied _typeFilter on ExplanationOfBenefit is not supported`
+{% endtab %}
+{% tab title="Response (missing UDAP claim)" %}
+```http
+HTTP/1.1 401 Unauthorized
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [{
+    "severity": "error",
+    "code": "login",
+    "diagnostics": "payertopayer export requires the caller UDAP hl7-b2b organization_id claim; it is missing"
+  }]
+}
+```
 {% endtab %}
 {% tab title="Response (group not found)" %}
 ```http
@@ -256,23 +282,25 @@ HTTP/1.1 202 Accepted
 
 | Value | Used by | Consent rule | Data scope |
 |---|---|---|---|
-| `hl7.fhir.us.davinci-pdex#provider-download` | Provider Access | Member opt-out applies | Full set of resources for each member in the Group |
-| `hl7.fhir.us.davinci-pdex#provider-delta` | Provider Access | Member opt-out applies | Only resources updated since `_since` (`_since` is required) |
-| `hl7.fhir.us.davinci-pdex#provider-snapshot` | Provider Access | Member opt-out applies | Point-in-time snapshot of each member's record |
-| `hl7.fhir.us.davinci-pdex#payertopayer` | Payer-to-Payer | Active opt-in `Consent` asserted at `$bulk-member-match` time | Five-year window; excludes drug PAs, denied PAs, provider remittances, and enrollee cost-sharing |
+| `hl7.fhir.us.davinci-pdex#provider-download` | Provider Access | Member opt-out (`consentStrategy=opt-out`, PDex Provider Consent, `provision.type=deny`) | Full member record, minus drug claims / drug PAs and money fields |
+| `hl7.fhir.us.davinci-pdex#payertopayer` | Payer-to-Payer | Active opt-in `Consent` asserted at `$bulk-member-match` time (`consentStrategy=opt-in`, HRex Consent) | Same as `provider-download`, plus `ExplanationOfBenefit` floored to a 5-year `service-date` window |
+
+Denied PAs are not yet excluded, and a caller `_typeFilter` naming `ExplanationOfBenefit` is rejected with `400`.
 
 {% hint style="info" %}
-The `payertopayer` **Data scope** above — the five-year window and the drug-PA / denied-PA / remittance / cost-sharing exclusions — describes the target Da Vinci semantics; it is not yet enforced by the export. The export currently returns the Group's full resource set, so narrow it explicitly with `_type` / `_typeFilter` / `_since`.
+Financial filtering requires Aidbox's `fhir.bulk-data.export.nested-elements` setting. The [Quickstart Docker Compose](../../get-started/quickstart-run-locally.md) turns it on via `BOX_FHIR_BULK_DATA_EXPORT_NESTED_ELEMENTS`; see [Aidbox nested `_elements`](https://www.health-samurai.io/docs/aidbox/api/bulk-api/export#nested-elements).
 {% endhint %}
 
 ## Errors
 
 | Status | Where | Cause |
 |---|---|---|
-| 400 | Kick-off (interop) | `Prefer: respond-async` missing; body not `Parameters`; unsupported parameter; unsupported `exportType`; `exportType` not using `valueCanonical`; `provider-delta` without `_since` |
+| 400 | Kick-off (interop) | `Prefer: respond-async` missing; body not `Parameters`; unsupported parameter; `exportType` missing, repeated, not `valueCanonical`, or unknown; `_outputFormat` not `application/fhir+ndjson`; caller `_typeFilter` naming `ExplanationOfBenefit` |
+| 401 | Kick-off (interop) | `payertopayer` export whose access token carries no UDAP HL7 B2B `organization_id` claim; the opt-in gate fails closed |
+| 422 | Kick-off (interop) | `exportType` is a recognized Da Vinci canonical this server does not yet translate; Group `meta.profile` incompatible with `exportType`; inactive Group |
 | 404 | Kick-off (Aidbox) | `Group/<id>` not found |
 | 404 | Status / cancel (Aidbox) | Unknown `<job-id>` or job expired |
 | 422 | Kick-off (Aidbox) | Body fails `BulkExportProfile` validation (for example empty `parameter[]`) |
-| 500 | Status (Aidbox) | Background export failed — see `BulkExportStatus.extension[BulkExportStatus.internal-error]` |
+| 500 | Status (Aidbox) | Background export failed; see `BulkExportStatus.extension[BulkExportStatus.internal-error]` |
 
-For architectural context see the [Provider Access](../../interop-apis/provider-access.md) and [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillars.
+See the [Provider Access](../../interop-apis/provider-access.md) and [Payer-to-Payer](../../interop-apis/payer-to-payer.md) pillars.

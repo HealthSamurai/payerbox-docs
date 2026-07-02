@@ -27,6 +27,8 @@
   * [Event Notifications](prior-auth/event-notifications.md)
 * [FHIR App Portal](fhir-app-portal/README.md)
   * [Developer Portal](fhir-app-portal/developer-portal.md)
+    * [SMART App](fhir-app-portal/smart-app.md)
+    * [Backend Services](fhir-app-portal/backend-services.md)
   * [Admin Portal](fhir-app-portal/admin-portal.md)
   * [FHIR App Gallery](fhir-app-portal/fhir-app-gallery.md)
 * [Compliance](compliance/README.md)

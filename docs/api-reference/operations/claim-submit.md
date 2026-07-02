@@ -186,8 +186,21 @@ Accept: application/json
 {% endtab %}
 {% endtabs %}
 
+## ClaimResponse link
+
+Before persisting, Payerbox links the `Claim` to its `ClaimResponse`: the stored `Claim` carries an extension whose `valueReference` points at the `ClaimResponse`.
+
+```json
+{
+  "url": "https://fhir.aidbox.app/fhir/StructureDefinition/claim-response-reference",
+  "valueReference": { "reference": "ClaimResponse/c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd" }
+}
+```
+
+The id rides along on the `Claim` in [change notifications](../../prior-auth/event-notifications.md), so a consumer correlates the pair without a separate `ClaimResponse` search. Present on initial submits and on PAS 2.1.0 update/cancel requests, which reuse the prior authorization's original `ClaimResponse` instead of minting a new one. Payerbox behavior, not a PAS profile element.
+
 ## Duplicate submissions
 
 A submission is matched against existing claims by the first `Claim.identifier` (its `system` and `value`). If a claim with the same identifier already exists, `$submit` returns its latest `ClaimResponse` and creates nothing new. This makes retries safe: resending the same bundle does not fork the authorization into a second record.
 
-Matching uses only the identifier. Changed `item[]` content does not create a new claim; to change a prior authorization, submit a new `Claim.identifier` with `Claim.related.relationship = "replaces"` pointing to the previous `Claim`. Identifiers without both `system` and `value` are not matched and always create a new claim.
+Matching uses only the identifier. Changed `item[]` content does not create a new claim; to change a prior authorization, submit a new `Claim` (new `Claim.identifier`) whose `Claim.related` points at the previous `Claim` with relationship `prior` (PAS 2.1.0; the legacy `replaces` code is also accepted). An update `$submit` returns the [original Claim's `ClaimResponse`](#claimresponse-link) rather than minting a new one. Identifiers without both `system` and `value` are not matched and always create a new claim.
