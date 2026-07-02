@@ -16,11 +16,12 @@ The Payer-to-Payer API lets a receiving payer (new plan) pull a member's clinica
 |---|---|
 | Caller | Receiving payer (the new plan) |
 | Authentication | SMART Backend Services Authorization (asymmetric JWT, system-level scope) |
+| Caller identity | UDAP HL7 B2B `organization_id` claim in the access token |
 | Token endpoint | `<base>/auth/token` on the responding payer's deployment |
 
-The two payers exchange JWKS endpoints out-of-band (or pre-shared keys) at onboarding time.
+The two payers exchange JWKS endpoints out-of-band (or pre-shared keys) at onboarding time. The caller's `organization_id` claim gates the opt-in export and is matched against the submitted `Consent` recipient (`provision.actor[role=IRCP]`).
 
-See [API Reference / Authentication](../api-reference/authentication.md).
+See [API Reference / Authentication](../api-reference/authentication.md#hl7-b2b-authorization-extension-udap).
 
 ## Consent
 
@@ -247,7 +248,7 @@ Three buckets in the response:
 | `NonMatchedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) | No match found |
 | `ConsentConstrainedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) (code `consentconstraint`) | Matched member with active opt-out, expired consent, or consent that could not be persisted |
 
-`$bulk-member-match` rejects callers whose requesting-payer identity cannot be resolved from the OAuth client with `403`.
+`$bulk-member-match` rejects non-admin callers whose access token lacks the hl7-b2b `organization_id` claim with `403`.
 
 See [API Reference / Operations / $bulk-member-match](../api-reference/operations/bulk-member-match.md).
 

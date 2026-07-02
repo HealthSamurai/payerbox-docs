@@ -241,14 +241,36 @@ Content-Type: application/json
     }
   },
   "jwks_uri": "https://partner.example.com/.well-known/jwks.json",
-  "scope": ["system/*.read"],
-  "details": {
-    "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "<NPI>"}]
+  "scope": ["system/*.read"]
+}
+```
+
+### HL7 B2B authorization extension (UDAP)
+
+Member-match and Payer-to-Payer operations identify the calling organization from the [UDAP HL7 B2B Authorization Extension](https://hl7.org/fhir/us/udap-security/b2b.html#b2b-authorization-extension-object), not from any `Client` field. Aidbox produces the `hl7-b2b` extension on issued access tokens automatically; no extra configuration is required. Payerbox reads it from the token JWT under `extensions.hl7-b2b`:
+
+```json
+{
+  "sub": "partner-payer",
+  "extensions": {
+    "hl7-b2b": {
+      "version": "1",
+      "organization_id": "http://hl7.org/fhir/sid/us-npi#1234567893",
+      "purpose_of_use": ["..."]
+    }
   }
 }
 ```
 
-For operations that require the caller's NPI (`$bulk-member-match`, `$provider-member-match`), the NPI must be present on `Client.details.identifier[system=http://hl7.org/fhir/sid/us-npi]`. Aidbox rejects top-level `Client.identifier`, so the NPI lives under `details`.
+`organization_id` is a single string in `<system-uri>#<value>` form, split on the last `#`. Any identifier system works: NPI, NAIC, or CARIN BB `payerid`. Operations that read it:
+
+| Operation | Uses `organization_id` for |
+|---|---|
+| [`$bulk-member-match`](operations/bulk-member-match.md) | Requesting-payer identity; stamped onto `MatchedMembers`; matched against Consent `provision.actor[role=IRCP]` |
+| [`$provider-member-match`](operations/provider-member-match.md) | Caller identity |
+| [`$davinci-data-export`](operations/davinci-data-export.md) (`payertopayer`) | Gates the opt-in export and resolves the requesting payer |
+
+A non-admin caller without the claim gets `403`.
 
 ### Client assertion JWT
 

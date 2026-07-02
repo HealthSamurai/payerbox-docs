@@ -156,7 +156,7 @@ Content-Type: application/fhir+json
 
 ## Auth
 
-SMART Backend Services. See [Authentication](../authentication.md).
+SMART Backend Services. Caller identity comes from the [UDAP HL7 B2B `organization_id` claim](../authentication.md#hl7-b2b-authorization-extension-udap).
 
 ## Kick-off
 

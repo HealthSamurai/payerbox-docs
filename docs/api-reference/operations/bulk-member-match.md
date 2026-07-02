@@ -156,7 +156,7 @@ Content-Type: application/fhir+json
 
 ## Auth
 
-SMART Backend Services. See [Authentication](../authentication.md).
+SMART Backend Services. Requesting-payer identity comes from the [UDAP HL7 B2B `organization_id` claim](../authentication.md#hl7-b2b-authorization-extension-udap).
 
 ## Kick-off
 
@@ -513,7 +513,7 @@ Body (single ndjson line, formatted for readability):
 {% endtab %}
 {% endtabs %}
 
-`MatchedMembers` and `ConsentConstrainedMembers` carry the requesting payer's NPI in `characteristic[0].valueReference.identifier`; the literal `Organization/<id>` reference is added when the responding payer has an Organization registered for that NPI. `Patient.identifier` entries submitted on `MemberPatient` are used as additional matching tokens but are not echoed back on the matched Group.
+`MatchedMembers` and `ConsentConstrainedMembers` carry the requesting payer's identifier in `characteristic[0].valueReference.identifier`: the `{system, value}` parsed from the hl7-b2b `organization_id` claim. The literal `Organization/<id>` reference is added when the responding payer has an Organization registered with that identifier. The example uses an NPI system, but any registered system works. `Patient.identifier` entries submitted on `MemberPatient` are used as additional matching tokens but are not echoed back on the matched Group.
 
 ## Cancellation
 
@@ -568,7 +568,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 The opt-out check reuses the same Aidbox search as [`$provider-member-match`](provider-member-match.md#matching-behavior): `Consent?patient=<id>&status=active&category=http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose|provider-access&provision-type=deny`.
 
-**Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization (FHIR shape is `0..*`; today exactly one element is written). The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's NPI has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
+**Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization (FHIR shape is `0..*`; today exactly one element is written). The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's identifier has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
 **Stale Consent deactivation.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check, opt-out hit, or persistence failure), the prior persisted `Consent` at the deterministic id is flipped to `status = inactive`. The row is retained for audit, but `$davinci-data-export?exportType=payertopayer` will not honor it on subsequent reads.
 
@@ -581,10 +581,10 @@ Output Groups carry no `period.end` and no TTL extension today. Until lifecycle 
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off | `Prefer: respond-async` header missing |
-| 403 | Kick-off | Requesting payer identity could not be resolved from the OAuth client |
+| 403 | Kick-off | Access token lacks the UDAP HL7 B2B `organization_id` claim (non-admin caller) |
 | 404 | Status / output | Unknown `<task-id>`, `Task.status = cancelled`, or caller is not the originating requester |
 | 404 | Cancel | Unknown `<task-id>` (hard-deleted), or caller is not the originating requester (cancel on a `cancelled` Task returns `202` and sweeps outputs) |
-| 409 | Kick-off | Requesting payer identity is ambiguous — more than one Organization in the responding payer's directory matches; resolve duplicates and retry |
+| 409 | Kick-off | Requesting payer identity is ambiguous — more than one Organization in the responding payer's directory matches the claim's identifier; resolve duplicates and retry |
 | 422 | Kick-off | Input `Parameters` failed `$validate` against the input profile |
 | 500 | Kick-off | Failed to resolve requesting payer Organization (transient Aidbox read failure) |
 | 500 | Status | Background processing failed; generic `OperationOutcome` returned (real cause in interop-app logs) |

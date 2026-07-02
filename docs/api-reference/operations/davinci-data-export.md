@@ -14,6 +14,8 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data export 
 
 SMART Backend Services and Client Credentials. The caller's OAuth client must be allowed to read the Group and the resource types referenced by `_type` (and their referenced resources, since Aidbox `$export` chases references). See [Authentication](../authentication.md).
 
+`payertopayer` gates the opt-in export on the [UDAP HL7 B2B `organization_id` claim](../authentication.md#hl7-b2b-authorization-extension-udap); a non-admin caller without it gets `403`.
+
 ## Kick-off
 
 ### Endpoint
@@ -270,6 +272,7 @@ The `payertopayer` **Data scope** above — the five-year window and the drug-PA
 | Status | Where | Cause |
 |---|---|---|
 | 400 | Kick-off (interop) | `Prefer: respond-async` missing; body not `Parameters`; unsupported parameter; unsupported `exportType`; `exportType` not using `valueCanonical`; `provider-delta` without `_since` |
+| 403 | Kick-off (interop) | `payertopayer` export whose access token lacks the UDAP HL7 B2B `organization_id` claim (non-admin caller) |
 | 404 | Kick-off (Aidbox) | `Group/<id>` not found |
 | 404 | Status / cancel (Aidbox) | Unknown `<job-id>` or job expired |
 | 422 | Kick-off (Aidbox) | Body fails `BulkExportProfile` validation (for example empty `parameter[]`) |
