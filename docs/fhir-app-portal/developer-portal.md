@@ -1,23 +1,23 @@
 ---
 description: >-
-  Developer guide to registering, testing, and submitting SMART on FHIR
-  applications in the Developer Portal.
+  Register a developer account, choose a client type, and submit clients for
+  review in the Developer Portal.
 ---
 
 # Developer Portal
 
-The Developer Portal is a public-facing website where SMART on FHIR app developers can register, test, and manage their applications.
+The Developer Portal is a public-facing website where developers register, test, and manage the clients that connect to Payerbox: interactive [SMART Apps](smart-app.md) and non-interactive [Backend Services](backend-services.md).
 
 ## Overview
 
 The Developer Portal enables:
 
-* **Developer Registration** — Create an account to register apps
-* **App Registration** — Register SMART Apps with OAuth settings
-* **Test Launch** — Launch your app against sample patient data
-* **App Submission** — Submit apps for admin review
+* **Developer registration**: create an account to register clients
+* **Client registration**: register a SMART App or a Backend Service
+* **Sandbox testing**: run a client against sample data before submission
+* **Submission**: send a client for admin review
 
-## Register as a Developer
+## Register as a developer
 
 1. Open the Developer Portal and click **Sign Up**
 2. Fill out the registration form
@@ -25,74 +25,17 @@ The Developer Portal enables:
 4. Set your password on the confirmation page
 5. Click **Sign In** to access your dashboard
 
-## Register a SMART App
+## Choose a client type
 
-1. From the dashboard, click **Register New**
-2. Fill in the app details:
-   * **App name** — Your application name
-   * **Confidentiality** — Public or Confidential
-   * **Redirect URL** — Where users return after authorization
-   * **Launch URL** — Your app's SMART launch endpoint
-3. Click **Create App**
+The dashboard splits registration into two sections. Pick by how the client authenticates and who drives it.
 
-You'll be redirected to your app's draft page where you can review, edit, or delete the app.
+| | [SMART App](smart-app.md) | [Backend Services](backend-services.md) |
+|---|---|---|
+| Driven by | A user in a browser | A server, no user |
+| OAuth grant | `authorization_code` | `client_credentials` |
+| Register under | **Smart Apps** | **Backend Services** |
+| Auth | Public or confidential; redirect + launch URL | JWKS URI or client secret |
+| Scopes | `patient/*`, `user/*`, launch, OIDC | `system/*` only |
+| Use for | Patient- or provider-facing apps | Bulk export, server-to-server APIs |
 
-## Test Your App
-
-Before submitting for review, test your app in the sandbox:
-
-1. Copy the **Client ID** from your app's page
-2. Configure your app to use this Client ID
-3. Click **Test Launch** in the portal
-
-The test launch uses sample patient data (`Patient/test-pt-1`) and redirects to your launch URL with the required SMART context.
-
-## Submit for Review
-
-When your app is ready:
-
-1. Open your app's draft page
-2. Click **Submit for Review**
-3. Your app status changes to **Under Review**
-
-Administrators will review your app from the Admin Portal and either approve or reject it.
-
-## App Status
-
-| Status           | Description                        |
-| ---------------- | ---------------------------------- |
-| **Draft**        | Not yet submitted                  |
-| **Under Review** | Waiting for admin decision         |
-| **Active**       | Approved and available to patients |
-| **Rejected**     | Did not meet requirements          |
-
-## Example: Growth Chart App
-
-Here's how to test with the Growth Chart demo app:
-
-### 1. Get the app
-
-```bash
-git clone git@github.com:smart-on-fhir/growth-chart-app.git
-cd growth-chart-app
-npm install
-npm start
-```
-
-### 2. Register in the portal
-
-Register a new app with:
-
-* **App name**: Growth Chart
-* **Confidentiality**: Public
-* **Redirect URL**: `http://localhost:9000/`
-* **Launch URL**: `http://localhost:9000/launch.html`
-
-### 3. Configure and launch
-
-1. Copy the **Client ID** from the portal
-2. Open `growth-chart-app/launch.html` and set the `client_id` value
-3. Save the file
-4. Click **Test Launch** in the portal
-
-The app will launch with test patient data.
+Each client-type page covers its own registration, testing, submission, and status.
