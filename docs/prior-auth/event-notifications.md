@@ -128,6 +128,8 @@ On create, confirm the subscription reached `active` (`GET /Subscription/pas-cla
 
 With `backport-payload-content: full-resource`, each delivery carries the complete triggering resource. For Prior Auth this is the `ClaimResponse` whose `reviewAction` extension conveys the decision (e.g. X12 `A1` = certified, `A3` = not certified, `A4` = pended — see [PAS](pas.md)). A subscriber that needs the full referenced context (Claim, Patient, Coverage) can resolve those references against the FHIR API, or use the AWS SNS extension below, which can ship them pre-resolved.
 
+A subscriber that triggers on `Claim` instead finds the `ClaimResponse` id in the `claim-response-reference` extension Payerbox adds to the stored `Claim` (see [Claim/$submit](../api-reference/operations/claim-submit.md#claimresponse-link)), so it correlates the pair without a separate lookup.
+
 ## Provisioning at deploy time
 
 In production these resources are created from an init-bundle rather than by hand, with environment-variable substitution for environment-specific values (endpoint URL, auth token). One ordering rule applies: a subscription topic must exist before any `Subscription` that references its `url`.

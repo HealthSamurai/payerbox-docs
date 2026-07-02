@@ -186,6 +186,19 @@ Accept: application/json
 {% endtab %}
 {% endtabs %}
 
+## ClaimResponse link
+
+Before persisting, Payerbox links the `Claim` to its `ClaimResponse`: the stored `Claim` carries an extension whose `valueReference` points at the `ClaimResponse`.
+
+```json
+{
+  "url": "https://fhir.aidbox.app/fhir/StructureDefinition/claim-response-reference",
+  "valueReference": { "reference": "ClaimResponse/c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd" }
+}
+```
+
+The id rides along on the `Claim` in [change notifications](../../prior-auth/event-notifications.md), so a consumer correlates the pair without a separate `ClaimResponse` search. Present on initial submits and on PAS 2.1.0 update/cancel requests, which reuse the prior authorization's original `ClaimResponse` instead of minting a new one. Payerbox behavior, not a PAS profile element.
+
 ## Duplicate submissions
 
 A submission is matched against existing claims by the first `Claim.identifier` (its `system` and `value`). If a claim with the same identifier already exists, `$submit` returns its latest `ClaimResponse` and creates nothing new. This makes retries safe: resending the same bundle does not fork the authorization into a second record.
