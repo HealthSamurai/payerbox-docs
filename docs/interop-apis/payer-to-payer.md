@@ -40,7 +40,7 @@ Five-year window of date-of-service, excluding remittances, cost-sharing, drug p
 | Prior authorization request and decision (excluding drug PAs and denied PAs) | ExplanationOfBenefit (`use=preauthorization`) | PDex 2.1.0 |
 
 {% hint style="info" %}
-The five-year date-of-service window, the remittance / cost-sharing / drug-PA / denied-PA exclusions, and the CARIN BB Non-Financial Basis profiling above describe the target data scope; they are not yet enforced server-side. The export currently returns the Group's full resource set, so narrow it explicitly with `_type` / `_typeFilter` / `_since`.
+The export enforces most of this scope server-side: `ExplanationOfBenefit` is floored to a 5-year `service-date` window, drug claims and drug PAs are dropped, and remittance / cost-sharing money fields are stripped from `ExplanationOfBenefit` and `Coverage`. Two gaps remain: denied prior authorizations are not yet filtered, and filtered resources carry Aidbox's `SUBSETTED` tag rather than the CARIN BB Non-Financial Basis profiles. Non-EOB clinical resources are date-bounded only if you pass `_since`. See [`$davinci-data-export`](../api-reference/operations/davinci-data-export.md#server-applied-filters).
 {% endhint %}
 
 ## Test dataset

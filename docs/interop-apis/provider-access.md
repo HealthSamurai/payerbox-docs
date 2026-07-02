@@ -89,6 +89,10 @@ Same data set Provider Access shares with Patient Access, **excluding provider r
 
 Service date floor: **January 1, 2016**.
 
+{% hint style="info" %}
+Money fields are stripped from `ExplanationOfBenefit` and `Coverage` at the field level, and drug claims / drug PAs are dropped whole. Filtered resources carry Aidbox's `SUBSETTED` tag rather than being re-tagged to the CARIN BB Non-Financial Basis profiles. See [`$davinci-data-export`](../api-reference/operations/davinci-data-export.md#server-applied-filters).
+{% endhint %}
+
 ## Operations
 
 ### `$provider-member-match`
