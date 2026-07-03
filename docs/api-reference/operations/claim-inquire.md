@@ -12,6 +12,14 @@ Checks the status of a previously submitted prior authorization request, defined
 POST <base>/fhir/Claim/$inquire
 ```
 
+### Update chains
+
+A prior authorization is updated or cancelled by submitting a new `Claim` that points at the prior one through `Claim.related` (relationship `prior`, or the legacy `replaces`). Under PAS 2.1.0 the decision `ClaimResponse` stays on the original (root) `Claim` of the chain; update and cancel `Claim`s carry none of their own.
+
+From any `Claim` in the chain, `$inquire` walks `Claim.related` backward to the root and returns that `Claim`'s latest `ClaimResponse`. Inquiring on the original `Claim`, an intermediate update, or the newest update returns the same `ClaimResponse`. Cycle and depth guards stop a malformed chain from looping.
+
+Under the legacy 2.0.1 model each `Claim` in a chain carried its own `ClaimResponse`, and `$inquire` resolved forward to the newest one. Payerbox behavior, not a PAS profile element.
+
 ## Auth
 
 SMART Backend Services. Scope: `system/Claim.r system/ClaimResponse.r`. See [Authentication](../authentication.md).
@@ -112,13 +120,5 @@ Accept: application/json
 
 {% endtab %}
 {% endtabs %}
-
-## Update chains
-
-A prior authorization is updated or cancelled by submitting a new `Claim` that points at the prior one through `Claim.related` (relationship `prior`, or the legacy `replaces`). Under PAS 2.1.0 the decision `ClaimResponse` stays on the original (root) `Claim` of the chain; update and cancel `Claim`s carry none of their own.
-
-From any `Claim` in the chain, `$inquire` walks `Claim.related` backward to the root and returns that `Claim`'s latest `ClaimResponse`. Inquiring on the original `Claim`, an intermediate update, or the newest update returns the same `ClaimResponse`. Cycle and depth guards stop a malformed chain from looping.
-
-Under the legacy 2.0.1 model each `Claim` in a chain carried its own `ClaimResponse`, and `$inquire` resolved forward to the newest one. Payerbox behavior, not a PAS profile element.
 
 See [Claim/$submit](claim-submit.md#claimresponse-link), [PAS](../../prior-auth/pas.md).

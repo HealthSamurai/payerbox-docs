@@ -53,6 +53,19 @@ The request body must be a FHIR `Parameters` resource. Unsupported parameter nam
 </tbody>
 </table>
 
+### exportType values
+
+| Value | Used by | Consent rule | Data scope |
+|---|---|---|---|
+| `hl7.fhir.us.davinci-pdex#provider-download` | Provider Access | Member opt-out (`consentStrategy=opt-out`, PDex Provider Consent, `provision.type=deny`) | Full member record, minus drug claims / drug PAs and money fields |
+| `hl7.fhir.us.davinci-pdex#payertopayer` | Payer-to-Payer | Active opt-in `Consent` asserted at `$bulk-member-match` time (`consentStrategy=opt-in`, HRex Consent) | Same as `provider-download`, plus `ExplanationOfBenefit` floored to a 5-year `service-date` window |
+
+Denied PAs are not yet excluded, and a caller `_typeFilter` naming `ExplanationOfBenefit` is rejected with `400`.
+
+{% hint style="info" %}
+Financial filtering requires Aidbox's `fhir.bulk-data.export.nested-elements` setting. The [Quickstart Docker Compose](../../get-started/quickstart-run-locally.md) turns it on via `BOX_FHIR_BULK_DATA_EXPORT_NESTED_ELEMENTS`; see [Aidbox nested `_elements`](https://www.health-samurai.io/docs/aidbox/api/bulk-api/export#nested-elements).
+{% endhint %}
+
 ### Example
 
 {% tabs %}
@@ -277,19 +290,6 @@ HTTP/1.1 202 Accepted
 ```
 {% endtab %}
 {% endtabs %}
-
-## exportType values
-
-| Value | Used by | Consent rule | Data scope |
-|---|---|---|---|
-| `hl7.fhir.us.davinci-pdex#provider-download` | Provider Access | Member opt-out (`consentStrategy=opt-out`, PDex Provider Consent, `provision.type=deny`) | Full member record, minus drug claims / drug PAs and money fields |
-| `hl7.fhir.us.davinci-pdex#payertopayer` | Payer-to-Payer | Active opt-in `Consent` asserted at `$bulk-member-match` time (`consentStrategy=opt-in`, HRex Consent) | Same as `provider-download`, plus `ExplanationOfBenefit` floored to a 5-year `service-date` window |
-
-Denied PAs are not yet excluded, and a caller `_typeFilter` naming `ExplanationOfBenefit` is rejected with `400`.
-
-{% hint style="info" %}
-Financial filtering requires Aidbox's `fhir.bulk-data.export.nested-elements` setting. The [Quickstart Docker Compose](../../get-started/quickstart-run-locally.md) turns it on via `BOX_FHIR_BULK_DATA_EXPORT_NESTED_ELEMENTS`; see [Aidbox nested `_elements`](https://www.health-samurai.io/docs/aidbox/api/bulk-api/export#nested-elements).
-{% endhint %}
 
 ## Errors
 
