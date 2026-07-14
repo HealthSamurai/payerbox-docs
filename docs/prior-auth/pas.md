@@ -71,6 +71,35 @@ Accept: application/json
 
 Full Bundle profiles, all parameters, and edge cases: [Claim/$submit](../api-reference/operations/claim-submit.md). For status checks and attachment workflows: [Claim/$inquire](../api-reference/operations/claim-inquire.md), [$submit-attachment](../api-reference/operations/submit-attachment.md).
 
+## Forwarding to the payer's UM system
+
+After `Claim/$submit` returns the queued `ClaimResponse`, Payerbox forwards the request to the payer's utilization management (UM) system for adjudication. Forwarding is configured per payer with a `UMTenantConfig` resource: incoming Claims are routed by matching `Claim.insurer` against the tenant's insurer reference or identifier, queued as a FHIR `Task`, and delivered by a background worker with retries.
+
+`UMTenantConfig.connector` selects the integration:
+
+| Connector | UM system contract |
+|---|---|
+| `guidingcare` | HealthEdge GuidingCare REST API, with ConceptMap-driven code translation |
+| `pas-passthrough` | Any UM system that itself implements Da Vinci PAS: the request Bundle is forwarded to the delegate's own `Claim/$submit`, and status can be refreshed via its `Claim/$inquire` |
+
+With `pas-passthrough`, onboarding a PAS-conformant delegate is a configuration change only — no code changes or redeployment. The key `UMTenantConfig` elements:
+
+| Element | Purpose |
+|---|---|
+| `connector` | `guidingcare` or `pas-passthrough` |
+| `insurer.reference` / `insurer.identifier` | Routing key matched against `Claim.insurer` |
+| `endpoint.baseUrl` | UM system API base URL |
+| `endpoint.auth` | `oauth2-client-credentials` (token URL + client id, secret resolved from an environment variable) or `api-key`. Secrets are referenced by environment variable name, never stored in the resource |
+| `endpoint.timeoutMs` / `endpoint.connectTimeoutMs` | Per-attempt timeouts (defaults: 30000 / 10000 ms) |
+| `endpoint.retry` | Delivery attempts and backoff (defaults: 5 attempts, 30s / 2m / 10m / 30m) |
+| `inquireRefresh` | When `true`, `Claim/$inquire` fetches the live decision from the UM system instead of returning only the stored `ClaimResponse` |
+
+Delivery notes for `pas-passthrough`:
+
+- The delegate must implement Da Vinci PAS 2.1.0 `Claim/$submit` (and `Claim/$inquire` for status refresh).
+- The forwarded Bundle carries the original submitter's transaction identifier as `Bundle.identifier`, and the Claim is forwarded with its original identifier (TRN). Retries of the same delivery carry the same identifiers, so a conformant delegate deduplicates them as PAS duplicate-TRN submissions.
+- Ambiguous delivery failures (for example, a timeout after the delegate may have accepted the request) are parked for manual review rather than blindly retried.
+
 ## Notifications
 
 Rather than polling `Claim/$inquire`, a downstream system can subscribe to decision events and be notified when a `ClaimResponse` is recorded. See [Event Notifications](event-notifications.md) for how to set up a FHIR topic-based subscription.
