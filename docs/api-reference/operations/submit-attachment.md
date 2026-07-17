@@ -11,7 +11,7 @@ Unlike `Claim/$submit` and `Claim/$inquire`, this is a **system-level** operatio
 ## Endpoint
 
 ```
-POST <base>/$submit-attachment
+POST <base>/fhir/$submit-attachment
 ```
 
 ## Auth
@@ -25,17 +25,23 @@ SMART Backend Services. Scope requirements depend on the attachment content type
 | TrackingId | Identifier | 1..1 | Correlation identifier tying attachments to a prior authorization (must match an existing Claim identifier) |
 | AttachTo | code | 1..1 | `"claim"` or `"preauthorization"` — indicates what the attachment relates to |
 | MemberId | Identifier | 1..1 | Patient member identifier |
-| Final | boolean | 1..1 | Whether this is the final attachment submission for the given TrackingId |
 | Attachment | BackboneElement | 1..* | Container for attachment content and metadata (see sub-parameters below) |
+| Final | boolean | 0..1 | Whether this is the final attachment submission for the given TrackingId. Defaults to `true` when omitted |
+| PayerId | Identifier | 0..1 | Payer identifier |
+| OrganizationId | Identifier | 0..1 | Submitting organization identifier |
+| ProviderId | Identifier | 0..1 | Provider identifier |
+| ServiceDate | dateTime | 0..1 | Date of service the attachment relates to |
+| AdminRefNumber | Identifier | 0..1 | Administrative reference number for the prior authorization |
 
 {% hint style="info" %}
-The CDex profile enforces a minimum of 5 elements in the `parameter` array. All five parameters listed above must be present to pass validation.
+`TrackingId`, `AttachTo`, `MemberId`, and at least one `Attachment` are required. Requests missing any of these four parameters fail validation with HTTP 422.
 {% endhint %}
 
 **Attachment sub-parameters** (nested `part` elements):
 
 | Sub-parameter | Type | Cardinality | Description |
 |---|---|---|---|
+| LineItem | string | 0..* | Claim line item number(s) the attachment applies to |
 | Code | CodeableConcept | 0..1 | LOINC or PWK01 code identifying the attachment type. When provided, it is stored in the Claim's `supportingInfo.code` |
 | Content | Resource | 1..1 | The FHIR resource containing the attachment data (e.g., `DocumentReference`, `Bundle`, `QuestionnaireResponse`, `Observation`) |
 
@@ -61,7 +67,7 @@ The CDex profile enforces a minimum of 5 elements in the `parameter` array. All 
 {% tab title="Request" %}
 
 ```http
-POST /$submit-attachment
+POST /fhir/$submit-attachment
 Content-Type: application/json
 Accept: application/json
 
