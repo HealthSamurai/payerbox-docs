@@ -26,49 +26,6 @@
       }
     },
     {
-      "request": {
-        "method": "POST",
-        "url": "/$fhir-package-install"
-      },
-      "resource": {
-        "resourceType": "Parameters",
-        "parameter": [
-          {
-            "name": "package",
-            "valueString": "hl7.fhir.us.core@6.1.0"
-          },
-          {
-            "name": "package",
-            "valueString": "hl7.fhir.us.carin-bb@2.0.0"
-          },
-          {
-            "name": "package",
-            "valueString": "hl7.fhir.us.davinci-pdex@2.0.0"
-          },
-          {
-            "name": "package",
-            "valueString": "hl7.fhir.us.davinci-drug-formulary@2.0.1"
-          },
-          {
-            "name": "package",
-            "valueString": "hl7.fhir.us.davinci-pdex-plan-net@1.1.0"
-          },
-          {
-            "name": "package",
-            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-pas%402.0.1.tar.gz"
-          },
-          {
-            "name": "package",
-            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-dtr%402.0.1.tar.gz"
-          },
-          {
-            "name": "package",
-            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-crd%402.0.1.tar.gz"
-          }
-        ]
-      }
-    },
-    {
       "resource": {
         "resourceType": "StructureDefinition",
         "id": "client-created-by",
