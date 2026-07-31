@@ -130,7 +130,7 @@ services:
       BOX_SECURITY_AUTH_KEYS_SECRET: change-this-secret
       BOX_MODULE_SDC_STRICT_ACCESS_CONTROL: "true"
       BOX_SETTINGS_MODE: read-write
-      BOX_INIT_BUNDLE: https://storage.googleapis.com/aidbox-public/smartbox/init-bundle-admin.json
+      BOX_INIT_BUNDLE: https://storage.googleapis.com/payerbox-public/init-bundle-admin.json
       BOX_MODULE_PROVIDER_DEFAULT_TYPE: ""
       BOX_MODULE_PROVIDER_DEFAULT_URL: ""
       BOX_MODULE_PROVIDER_DEFAULT_USERNAME: ""
@@ -177,7 +177,7 @@ services:
       BOX_SECURITY_DEV_MODE: "true"
       BOX_MODULE_SDC_STRICT_ACCESS_CONTROL: "true"
       BOX_SETTINGS_MODE: read-write
-      BOX_INIT_BUNDLE: https://storage.googleapis.com/aidbox-public/smartbox/init-bundle-developer.json
+      BOX_INIT_BUNDLE: https://storage.googleapis.com/payerbox-public/init-bundle-developer.json
       BOX_MODULE_PROVIDER_DEFAULT_URL: ""
       BOX_MODULE_PROVIDER_DEFAULT_USERNAME: ""
       BOX_MODULE_PROVIDER_DEFAULT_FROM: ""
