@@ -12,15 +12,15 @@
         "parameter": [
           {
             "name": "package",
-            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-pas%402.0.1.tar.gz"
+            "valueString": "https://storage.googleapis.com/payerbox-public/hl7.fhir.us.davinci-pas%402.0.1.tar.gz"
           },
           {
             "name": "package",
-            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-dtr%402.0.1.tar.gz"
+            "valueString": "https://storage.googleapis.com/payerbox-public/hl7.fhir.us.davinci-dtr%402.0.1.tar.gz"
           },
           {
             "name": "package",
-            "valueString": "https://storage.googleapis.com/aidbox-public/smartbox/hl7.fhir.us.davinci-crd%402.0.1.tar.gz"
+            "valueString": "https://storage.googleapis.com/payerbox-public/hl7.fhir.us.davinci-crd%402.0.1.tar.gz"
           }
         ]
       }
@@ -1607,7 +1607,7 @@
     },
     {
       "resource": {
-        "source": "https://storage.googleapis.com/aidbox-public/smartbox/all_data.ndjson.gz"
+        "source": "https://storage.googleapis.com/payerbox-public/all_data.ndjson.gz"
       },
       "request": {
         "method": "POST",
@@ -1644,7 +1644,7 @@
         "id": "smartbox",
         "resourceType": "AidboxConfig",
         "smartbox": {
-          "logoUrl": "https://storage.googleapis.com/aidbox-public/smartbox/health-system-logo.png"
+          "logoUrl": "https://storage.googleapis.com/payerbox-public/health-system-logo.png"
         }
       }
     },
