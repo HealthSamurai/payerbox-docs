@@ -1,10 +1,19 @@
 ---
 description: >-
-  MPF pipeline endpoint reference: the sync and refresh triggers and the
-  public directory endpoint.
+  MPF pipeline endpoint reference: the sync and refresh triggers, the export
+  scope settings, and the public directory endpoint.
 ---
 
 # MPF Endpoints
+
+The endpoints of the MPF provider-directory module. They mount only when the portal runs with `MPF_ENABLED=true`; otherwise every path below answers `404`. What the module publishes: [Provider Directory](../../interop-apis/provider-directory.md#mpf-feed-for-medicare-plan-finder). Setup: [Deploy](../../run-payerbox/deploy.md#mpf-provider-directory-pipeline).
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /admin/mpf/sync` | Full run: export, filter, bundle, publish |
+| `POST /admin/mpf/refresh` | Re-bundle a previous export without re-exporting |
+| `GET` / `PUT /admin/mpf/settings` | Read and write the export scope |
+| `GET` / `HEAD /mpf-provider-directory/{contract}/{year}/{file}` | Public, the URL CMS crawls |
 
 ## Auth
 
@@ -99,14 +108,57 @@ Content-Type: application/json
 {% endtab %}
 {% endtabs %}
 
-## GET /mpf-provider-directory/{contract}/{year}/{file}
+## Trigger errors
 
-Public, no auth: the endpoint CMS crawls. Proxies the storage bucket (which can stay private) and supports conditional GET, so repeat crawls only download files that changed. `index.json` lists the bundle URLs. The resources inside the bundles conform to the Plan-Net profiles.
+Both triggers share these.
+
+| Status | Meaning |
+|---|---|
+| `400` | `folder` missing on `/refresh`, a `contract` that is not `H` plus digits, or a `year` outside 2024–2099. |
+| `403` | The token's client is not in `MPF_TRIGGER_CLIENT_IDS`. |
+| `404` | `/refresh` only: the folder holds no files for the exported resource types. |
+| `409` | A run is already in flight. Runs never overlap; retry after the current one finishes. |
+| `500` | `MPF_EXPORT_CLIENT_ID` / `MPF_EXPORT_CLIENT_SECRET` unset, or the export scope could not be read. A failing scope read aborts rather than publishing the wrong scope. |
+
+## GET / PUT /admin/mpf/settings
+
+The export scope: which `InsurancePlan` ids and which network `Organization` ids the pipeline keeps. Stored on the admin Aidbox as a `DocumentReference`, so it survives restarts and upgrades, and both triggers resolve it at the start of every run. The Admin Portal edits the same values under **Settings → MPF**.
+
+Same auth as the triggers.
+
+{% tabs %}
+{% tab title="GET response" %}
+```json
+{
+  "planIds": ["snp-plan", "map-plan"],
+  "networkIds": ["network-a", "network-b"],
+  "source": "settings"
+}
+```
+{% endtab %}
+{% tab title="PUT request" %}
+```json
+{
+  "planIds": ["snp-plan", "map-plan"],
+  "networkIds": ["network-a", "network-b"]
+}
+```
+{% endtab %}
+{% endtabs %}
+
+`source` reports where the current values come from: `settings` once saved, `defaults` while the deployment still runs on the ids compiled into the image. `PUT` takes non-empty arrays of FHIR ids for both fields, answers `400` otherwise, and writes an `AuditEvent` on success.
+
+## GET / HEAD /mpf-provider-directory/{contract}/{year}/{file}
+
+Public, no auth: the endpoint CMS crawls. Proxies the storage bucket (which can stay private) and terminates conditional requests, so repeat crawls only download files that changed. `HEAD` returns the same headers without a body. Responses carry `Cache-Control: public, max-age=0, must-revalidate` plus the store's `ETag` and `Last-Modified`. `index.json` lists the bundle URLs.
 
 ```http
-GET /mpf-provider-directory/H1234/2026/index.json
-GET /mpf-provider-directory/H1234/2026/PractitionerRole-001.json
+GET  /mpf-provider-directory/H1234/2026/index.json
+HEAD /mpf-provider-directory/H1234/2026/index.json
+GET  /mpf-provider-directory/H1234/2026/PractitionerRole-001.json
 ```
+
+Path segments are validated before anything is fetched, and anything else answers `404`: `contract` is `H` followed by digits, `year` is a four-digit year in the 2000s, and `file` is either `index.json` or `<ResourceType>-<three digits>.json`.
 
 | Status | Meaning |
 |---|---|
