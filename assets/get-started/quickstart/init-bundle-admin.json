@@ -1685,37 +1685,96 @@
     },
     {
       "resource": {
-        "resourceType": "FHIRSchema",
-        "url": "http://smartbox.hs/StructureDefinition/AwsAccount",
+        "resourceType": "StructureDefinition",
         "id": "AwsAccount",
+        "url": "http://smartbox.hs/StructureDefinition/AwsAccount",
         "name": "AwsAccount",
-        "type": "AwsAccount",
+        "status": "active",
         "kind": "resource",
+        "abstract": false,
+        "type": "AwsAccount",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/DomainResource",
         "derivation": "specialization",
-        "elements": {
-          "region": {
-            "type": "string"
-          },
-          "access-key-id": {
-            "type": "string"
-          },
-          "secret-access-key": {
-            "type": "string"
-          },
-          "host": {
-            "type": "string"
-          },
-          "path-style": {
-            "type": "boolean"
-          },
-          "use-ssl": {
-            "type": "boolean"
-          }
+        "differential": {
+          "element": [
+            {
+              "id": "AwsAccount",
+              "path": "AwsAccount",
+              "min": 0,
+              "max": "*"
+            },
+            {
+              "id": "AwsAccount.region",
+              "path": "AwsAccount.region",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "string"
+                }
+              ]
+            },
+            {
+              "id": "AwsAccount.access-key-id",
+              "path": "AwsAccount.access-key-id",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "string"
+                }
+              ]
+            },
+            {
+              "id": "AwsAccount.secret-access-key",
+              "path": "AwsAccount.secret-access-key",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "string"
+                }
+              ]
+            },
+            {
+              "id": "AwsAccount.host",
+              "path": "AwsAccount.host",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "string"
+                }
+              ]
+            },
+            {
+              "id": "AwsAccount.path-style",
+              "path": "AwsAccount.path-style",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "boolean"
+                }
+              ]
+            },
+            {
+              "id": "AwsAccount.use-ssl",
+              "path": "AwsAccount.use-ssl",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "boolean"
+                }
+              ]
+            }
+          ]
         }
       },
       "request": {
         "method": "PUT",
-        "url": "FHIRSchema/AwsAccount"
+        "url": "StructureDefinition/AwsAccount"
       }
     },
     {
@@ -1736,25 +1795,52 @@
     },
     {
       "resource": {
-        "resourceType": "FHIRSchema",
-        "url": "http://smartbox.hs/StructureDefinition/GcpServiceAccount",
+        "resourceType": "StructureDefinition",
         "id": "GcpServiceAccount",
+        "url": "http://smartbox.hs/StructureDefinition/GcpServiceAccount",
         "name": "GcpServiceAccount",
-        "type": "GcpServiceAccount",
+        "status": "active",
         "kind": "resource",
+        "abstract": false,
+        "type": "GcpServiceAccount",
+        "baseDefinition": "http://hl7.org/fhir/StructureDefinition/DomainResource",
         "derivation": "specialization",
-        "elements": {
-          "private-key": {
-            "type": "string"
-          },
-          "service-account-email": {
-            "type": "string"
-          }
+        "differential": {
+          "element": [
+            {
+              "id": "GcpServiceAccount",
+              "path": "GcpServiceAccount",
+              "min": 0,
+              "max": "*"
+            },
+            {
+              "id": "GcpServiceAccount.private-key",
+              "path": "GcpServiceAccount.private-key",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "string"
+                }
+              ]
+            },
+            {
+              "id": "GcpServiceAccount.service-account-email",
+              "path": "GcpServiceAccount.service-account-email",
+              "min": 0,
+              "max": "1",
+              "type": [
+                {
+                  "code": "string"
+                }
+              ]
+            }
+          ]
         }
       },
       "request": {
         "method": "PUT",
-        "url": "FHIRSchema/GcpServiceAccount"
+        "url": "StructureDefinition/GcpServiceAccount"
       }
     },
     {
