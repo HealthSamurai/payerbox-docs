@@ -12,7 +12,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **Payer-to-Payer and Provider Access**
 
-- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) now removes remittance and enrollee cost-sharing data from exported `ExplanationOfBenefit` and `Coverage` resources. All money elements are removed — including totals, payments, benefit balances, item/detail/subdetail/addItem prices and amounts, adjudication amounts, `costToBeneficiary`, and `subrogation` — while clinical and administrative content, extensions, and contained resources are retained. Filtered resources are tagged `SUBSETTED`. See [Payer-to-Payer](interop-apis/payer-to-payer.md) and [Provider Access](interop-apis/provider-access.md).
+- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) now removes remittance and enrollee cost-sharing data from exported `ExplanationOfBenefit` and `Coverage` resources. All money elements are removed including totals, payments, benefit balances, item/detail/subdetail/addItem prices and amounts, adjudication amounts, `costToBeneficiary`, and `subrogation` while clinical and administrative content, extensions, and contained resources are retained.
 
 ### Prior Auth (ePA) APIs [`2607`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
