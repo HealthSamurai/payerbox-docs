@@ -6,7 +6,7 @@ description: Forwarding PAS prior authorization requests to the payer's utilizat
 
 Payerbox does not adjudicate. [`Claim/$submit`](../api-reference/operations/claim-submit.md) validates and stores the request, returns a `ClaimResponse` with `outcome = "queued"`, and forwards it to the payer's utilization management (UM) system, which produces the authoritative decision. Payerbox writes that decision back onto the same `ClaimResponse`, where [`Claim/$inquire`](../api-reference/operations/claim-inquire.md) and [Event Notifications](event-notifications.md) pick it up.
 
-Forwarding is enabled per payer by a [`UMTenantConfig`](../api-reference/um-tenant-config.md) resource. With no matching config, Payerbox stores the request and returns `queued` — the UM leg is simply skipped.
+Forwarding is enabled per payer by a [`UMTenantConfig`](../api-reference/configuration-resources/um-tenant-config.md) resource. With no matching config, Payerbox stores the request and returns `queued` — the UM leg is simply skipped.
 
 ## What Payerbox covers
 
@@ -80,6 +80,6 @@ An `invalid` tenant is excluded from routing — its Claims are stored and retur
 
 ## Related
 
-- [`UMTenantConfig`](../api-reference/um-tenant-config.md) — full element reference and examples
+- [`UMTenantConfig`](../api-reference/configuration-resources/um-tenant-config.md) — full element reference and examples
 - [PAS](pas.md), [`Claim/$submit`](../api-reference/operations/claim-submit.md), [`Claim/$inquire`](../api-reference/operations/claim-inquire.md)
 - [Compliance / CMS-0057](../compliance/cms-0057.md)
