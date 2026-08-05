@@ -6,11 +6,11 @@ description: Configuration resource that connects a payer to its utilization man
 
 Custom resource that configures forwarding of Prior Auth submissions to a payer's utilization management (UM) system. Its `StructureDefinition` is registered by Payerbox at startup; instances are managed over the FHIR REST API at `<base>/fhir/UMTenantConfig`.
 
-One instance per payer per UM system. Instances are re-read about once a minute, so changes apply without a restart. Narrative overview: [UM System Integration](../prior-auth/um-integration.md).
+One instance per payer per UM system. Instances are re-read about once a minute, so changes apply without a restart. Narrative overview: [UM System Integration](../../prior-auth/um-integration.md).
 
 ## Authentication
 
-`UMTenantConfig` is an administrative resource — access is governed by the same Aidbox access policies as any other resource, and is not part of the PAS partner-facing scope set. See [Authentication](authentication.md).
+`UMTenantConfig` is an administrative resource — access is governed by the same Aidbox access policies as any other resource, and is not part of the PAS partner-facing scope set. See [Authentication](../authentication.md).
 
 ## Routing
 

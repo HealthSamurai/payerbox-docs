@@ -87,7 +87,7 @@ Lenient mode is intended for sandbox and onboarding environments, where trading 
 
 ## Forwarding to the payer's UM system
 
-After `Claim/$submit` returns the queued `ClaimResponse`, Payerbox forwards the request to the payer's utilization management (UM) system for adjudication and writes the decision back onto the same `ClaimResponse`. Forwarding is enabled per payer with a [`UMTenantConfig`](../api-reference/um-tenant-config.md) resource; with no matching config the request is stored and stays `queued`.
+After `Claim/$submit` returns the queued `ClaimResponse`, Payerbox forwards the request to the payer's utilization management (UM) system for adjudication and writes the decision back onto the same `ClaimResponse`. Forwarding is enabled per payer with a [`UMTenantConfig`](../api-reference/configuration-resources/um-tenant-config.md) resource; with no matching config the request is stored and stays `queued`.
 
 See [UM System Integration](um-integration.md) for the connectors, the delivery lifecycle and its limitations.
 

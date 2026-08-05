@@ -6,6 +6,36 @@ description: "Notable changes across Payerbox: the Interop APIs, the Prior Auth 
 
 This page tracks notable changes across Payerbox: the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal. Releases are listed newest first. The apps run on an Aidbox FHIR server; each component heading links to its image on Docker Hub.
 
+## July 2026 (`2607`)
+
+### Interop APIs [`2607`](https://hub.docker.com/r/healthsamurai/interop)
+
+**Payer-to-Payer and Provider Access**
+
+- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) now removes remittance and enrollee cost-sharing data from exported `ExplanationOfBenefit` and `Coverage` resources. All money elements are removed — including totals, payments, benefit balances, item/detail/subdetail/addItem prices and amounts, adjudication amounts, `costToBeneficiary`, and `subrogation` — while clinical and administrative content, extensions, and contained resources are retained. Filtered resources are tagged `SUBSETTED`. See [Payer-to-Payer](interop-apis/payer-to-payer.md) and [Provider Access](interop-apis/provider-access.md).
+
+### Prior Auth (ePA) APIs [`2607`](https://hub.docker.com/r/healthsamurai/prior-auth)
+
+**PAS**
+
+- Prior authorization requests can now be routed to an external utilization management (UM) system according to `Claim.insurer`. The `pas-passthrough` connector forwards requests to any conformant Da Vinci PAS delegate, using its `Claim/$submit` and `Claim/$inquire` endpoints, preserving request identifiers and preventing duplicate submissions during retries. Configure the delivery path with [`UMTenantConfig`](api-reference/configuration-resources/um-tenant-config.md). See [UM System Integration](prior-auth/um-integration.md) and [PAS](prior-auth/pas.md).
+- Added an integration with HealthEdge GuidingCare for PAS decisioning. The `guidingcare` connector uses GuidingCare's REST API and payer-configured `ConceptMap` crosswalks to translate requests and decisions. See [UM System Integration](prior-auth/um-integration.md#choosing-a-connector) and [`UMTenantConfig`](api-reference/configuration-resources/um-tenant-config.md).
+- Configurable lenient FHIR validation can treat display-name and referenced-resource profile mismatches as warnings. Structural, profile, and missing-reference errors remain blocking. See [PAS validation strictness](prior-auth/pas.md#validation-strictness).
+
+**CRD**
+
+- Configurable lenient FHIR validation can tolerate hook-context references that exist only in the EHR and cannot be resolved by Payerbox. See [CRD validation strictness](prior-auth/crd.md#validation-strictness).
+
+**Analytics**
+
+- The PAS metrics SQL-on-FHIR package (`io.healthsamurai.pas-metrics` 0.1.2) is available on request. Contact us to receive the package, which includes 10 `ViewDefinition` resources and 15 `Library` resources implementing metrics suggested by the PAS Implementation Guide. See [Analytics](analytics/README.md), [flat views](analytics/flat-views.md), and [SQL on FHIR data](analytics/sql-on-fhir.md).
+
+### FHIR App Portal [`2607`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
+
+- MPF pipeline configuration supports publishing the provider-directory `index.json` file. See [MPF Pipeline](run-payerbox/provider-directory-pipeline.md) and the [MPF endpoint reference](api-reference/operations/mpf-pipeline-api.md).
+- The app-detail page now includes a **Policies and legal links** card for the developer's privacy policy and terms of service. Missing values are marked **Not provided**, and apps requesting patient data without a privacy policy display a warning. See [Admin Portal](fhir-app-portal/admin-portal.md).
+- When declining an app, an administrator can add a free-text note alongside the preset reason; developers see both on the declined app. See [Admin Portal](fhir-app-portal/admin-portal.md).
+
 ## June 2026 (`2606`)
 
 A new `payerbox` umbrella Helm chart deploys the full stack (portals, Interop APIs, Prior Auth, and Aidbox) to Kubernetes. See [Deploy](run-payerbox/deploy.md).
