@@ -49,6 +49,16 @@ CDS_ENABLED_HOOKS=order-sign-crd,order-select-crd
 
 Valid ids are `order-sign-crd`, `order-select-crd`, `order-dispatch-crd`, `appointment-book-crd`; matching is case-insensitive. Default (unset) — all four hooks are exposed.
 
+## Validation strictness
+
+Hook-context resources (context and prefetch content) are validated before they reach the Decision Service. By default validation is strict: any error-level finding fails the hook request.
+
+```
+FHIR_VALIDATION_LENIENT=true
+```
+
+In lenient mode, terminology display-name mismatches, referenced-resource profile mismatches, and context references that cannot be resolved (the referenced resources may exist only in the EHR's own store) are logged as warnings and the hook proceeds; only structural and profile errors fail the request. Default (unset) — strict. The same flag also controls [PAS submission validation](pas.md#validation-strictness).
+
 ## Supported hooks
 
 | Hook | When it fires | Reference |
