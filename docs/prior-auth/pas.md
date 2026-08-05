@@ -71,6 +71,20 @@ Accept: application/json
 
 Full Bundle profiles, all parameters, and edge cases: [Claim/$submit](../api-reference/operations/claim-submit.md). For status checks and attachment workflows: [Claim/$inquire](../api-reference/operations/claim-inquire.md), [$submit-attachment](../api-reference/operations/submit-attachment.md).
 
+## Validation strictness
+
+Every `Claim/$submit` Bundle is validated against the Da Vinci PAS profiles before anything is persisted. By default validation is strict: any error-level finding rejects the submission with `422` and an `OperationOutcome` listing all findings.
+
+Operators can relax this per deployment:
+
+```
+FHIR_VALIDATION_LENIENT=true
+```
+
+In lenient mode, findings that do not affect the integrity of the submission — terminology display-name mismatches and referenced-resource profile mismatches — are logged as warnings instead of rejecting the request, and a `422` response body carries only the blocking findings. Structural errors, profile violations, and references to resources missing from the Bundle still reject the submission.
+
+Lenient mode is intended for sandbox and onboarding environments, where trading partners iterate on their payloads and cosmetic findings should not block end-to-end testing. Keep production deployments strict. Default (unset) — strict. The same flag also controls [CRD hook-context validation](crd.md#validation-strictness).
+
 ## Forwarding to the payer's UM system
 
 After `Claim/$submit` returns the queued `ClaimResponse`, Payerbox forwards the request to the payer's utilization management (UM) system for adjudication. Forwarding is configured per payer with a `UMTenantConfig` resource: incoming Claims are routed by matching `Claim.insurer` against the tenant's insurer reference or identifier, queued as a FHIR `Task`, and delivered by a background worker with retries.
