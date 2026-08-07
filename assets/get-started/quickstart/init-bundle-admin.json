@@ -1517,7 +1517,7 @@
         "resourceType": "AccessPolicy",
         "id": "admin-api-access-policy",
         "engine": "matcho",
-        "description": "Allow admin-api client to manage per-backend-service AccessPolicies (bs-policy-*) created/removed on app approval/deactivation (#478)",
+        "description": "Allow admin-api client to manage per-backend-service AccessPolicies (bs-policy-*) created/removed on app approval/deactivation (#478) and per-admin AccessPolicies (admin-*) created with each portal admin (#580)",
         "matcho": {
           "client": {
             "id": "admin-api"
@@ -1533,7 +1533,9 @@
           "uri": {
             "$one-of": [
               "#^/AccessPolicy/bs-policy-.*",
-              "#^/fhir/AccessPolicy/bs-policy-.*"
+              "#^/fhir/AccessPolicy/bs-policy-.*",
+              "#^/AccessPolicy/admin-[a-zA-Z0-9._-]+$",
+              "#^/fhir/AccessPolicy/admin-[a-zA-Z0-9._-]+$"
             ]
           }
         }
@@ -1603,15 +1605,6 @@
       "request": {
         "method": "PUT",
         "url": "SearchParameter/User.patient"
-      }
-    },
-    {
-      "resource": {
-        "source": "https://storage.googleapis.com/payerbox-public/all_data.ndjson.gz"
-      },
-      "request": {
-        "method": "POST",
-        "url": "/$load"
       }
     },
     {

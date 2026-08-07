@@ -4,6 +4,61 @@
   "entry": [
     {
       "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "developer-api-admin-user",
+        "engine": "matcho",
+        "description": "Allow developer-api client to mirror portal-admin Users (created from the Admin Portal) into the sandbox so admins can use its console too (#580)",
+        "matcho": {
+          "client": {
+            "id": "developer-api"
+          },
+          "request-method": {
+            "$one-of": [
+              "get",
+              "put",
+              "delete"
+            ]
+          },
+          "uri": "#^/User/[a-zA-Z0-9._-]+$"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/developer-api-admin-user"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "developer-api-access-policy",
+        "engine": "matcho",
+        "description": "Allow developer-api client to manage per-admin AccessPolicies (admin-*) created with each portal admin (#580)",
+        "matcho": {
+          "client": {
+            "id": "developer-api"
+          },
+          "request-method": {
+            "$one-of": [
+              "get",
+              "put",
+              "delete"
+            ]
+          },
+          "uri": {
+            "$one-of": [
+              "#^/AccessPolicy/admin-[a-zA-Z0-9._-]+$",
+              "#^/fhir/AccessPolicy/admin-[a-zA-Z0-9._-]+$"
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/developer-api-access-policy"
+      }
+    },
+    {
+      "resource": {
         "resourceType": "StructureDefinition",
         "id": "client-created-by",
         "url": "http://aidbox.app/StructureDefinition/Client/created-by",
@@ -165,15 +220,6 @@
     },
     {
       "resource": {
-        "source": "https://storage.googleapis.com/payerbox-public/all_data.ndjson.gz"
-      },
-      "request": {
-        "method": "POST",
-        "url": "/$load"
-      }
-    },
-    {
-      "resource": {
         "resourceType": "Client",
         "id": "smartbox-developer-portal",
         "first_party": true,
@@ -213,6 +259,15 @@
       "request": {
         "method": "PUT",
         "url": "Client/developer-api"
+      }
+    },
+    {
+      "resource": {
+        "source": "https://storage.googleapis.com/payerbox-public/developer_data.ndjson.gz"
+      },
+      "request": {
+        "method": "POST",
+        "url": "/$load"
       }
     },
     {
