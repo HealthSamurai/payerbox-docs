@@ -175,6 +175,7 @@ aidbox-admin:
   config:
     # Substituted into the admin Aidbox init-bundle (OAuth client redirect/asset URLs).
     ADMIN_FRONTEND_URL: https://portal.example.com
+    BOX_FHIR_VALIDATION_SKIP_REFERENCE: "true"
 
 aidbox-sandbox:
   host: aidbox-sandbox.example.com
