@@ -69,8 +69,13 @@ Accept: application/json
         "item": [
           {
             "sequence": 1,
+            "extension": [
+              { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-serviceItemRequestType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1525", "code": "SC", "display": "Specialty Care Review" }] } },
+              { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-certificationType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1322", "code": "I", "display": "Initial" }] } }
+            ],
             "category": { "coding": [{ "system": "https://codesystem.x12.org/005010/1365", "code": "42", "display": "Home Health Care" }] },
-            "productOrService": { "coding": [{ "system": "http://www.ama-assn.org/go/cpt", "code": "99213", "display": "Established patient office visit" }] }
+            "productOrService": { "coding": [{ "system": "http://www.ama-assn.org/go/cpt", "code": "99213", "display": "Established patient office visit" }] },
+            "locationCodeableConcept": { "coding": [{ "system": "https://www.cms.gov/Medicare/Coding/place-of-service-codes/Place_of_Service_Code_Set", "code": "11", "display": "Office" }] }
           }
         ]
       }

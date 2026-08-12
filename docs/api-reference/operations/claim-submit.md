@@ -89,8 +89,13 @@ Accept: application/json
         "item": [
           {
             "sequence": 1,
+            "extension": [
+              { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-serviceItemRequestType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1525", "code": "SC", "display": "Specialty Care Review" }] } },
+              { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-certificationType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1322", "code": "I", "display": "Initial" }] } }
+            ],
             "category": { "coding": [{ "system": "https://codesystem.x12.org/005010/1365", "code": "42", "display": "Home Health Care" }] },
             "productOrService": { "coding": [{ "system": "http://www.ama-assn.org/go/cpt", "code": "99213", "display": "Established patient office visit" }] },
+            "locationCodeableConcept": { "coding": [{ "system": "https://www.cms.gov/Medicare/Coding/place-of-service-codes/Place_of_Service_Code_Set", "code": "11", "display": "Office" }] },
             "detail": [
               {
                 "sequence": 1,
@@ -107,7 +112,7 @@ Accept: application/json
         "resourceType": "Patient",
         "id": "patient-1",
         "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-beneficiary", "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-subscriber"] },
-        "identifier": [{ "system": "http://hospital.example.org/patients", "value": "MRN123456" }],
+        "identifier": [{ "type": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB", "display": "Member Number" }] }, "system": "http://example.org/member-id", "value": "MEM123456" }],
         "active": true,
         "name": [{ "use": "official", "family": "Smith", "given": ["John", "Robert"] }],
         "telecom": [{ "system": "phone", "value": "555-123-4567", "use": "home" }],
@@ -125,7 +130,9 @@ Accept: application/json
         "status": "active",
         "type": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "HIP", "display": "health insurance plan policy" }] },
         "subscriber": { "reference": "Patient/patient-1" },
+        "subscriberId": "MEM123456",
         "beneficiary": { "reference": "Patient/patient-1" },
+        "relationship": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship", "code": "self", "display": "Self" }] },
         "payor": [{ "reference": "Organization/payer-org-1" }],
         "class": [
           {
