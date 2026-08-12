@@ -119,7 +119,7 @@ services:
       BOX_FHIR_SEARCH_COMPARISONS: "true"
       BOX_FHIR_CREATEDAT_URL: https://aidbox.app/ex/createdAt
       BOX_SEARCH_INCLUDE_CONFORMANT: "true"
-      BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.terminology.r4#6.4.0:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.0.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.0.1:hl7.fhir.us.davinci-pdex-plan-net#1.1.0:hl7.fhir.us.davinci-cdex#2.1.0"
+      BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.terminology.r4#6.4.0:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.0.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.0.1:hl7.fhir.us.davinci-pdex-plan-net#1.1.0:hl7.fhir.us.davinci-cdex#2.1.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0"
       BOX_FHIR_NPM_PACKAGE_REGISTRY: https://fs.get-ig.org/pkgs
       BOX_FHIR_BULK_STORAGE_PROVIDER: aws
       BOX_FHIR_BULK_STORAGE_AWS_ACCOUNT: minio
@@ -312,7 +312,7 @@ Open `docker-compose.yaml` and replace two values with the JWT licenses you obta
 docker compose up
 ```
 
-First startup takes several minutes while Aidbox pulls images, downloads FHIR packages, applies the init bundle (Prior Auth/Interop clients, AwsAccount/minio, Da Vinci PAS/DTR/CRD packages), and the Prior Auth and Interop apps register with admin Aidbox.
+First startup takes several minutes while Aidbox downloads the FHIR packages listed in `BOX_BOOTSTRAP_FHIR_PACKAGES`, applies the init bundle (Prior Auth/Interop clients, AwsAccount/minio), and the Prior Auth and Interop apps register with admin Aidbox.
 
 ## Step 4. Open the UIs
 
