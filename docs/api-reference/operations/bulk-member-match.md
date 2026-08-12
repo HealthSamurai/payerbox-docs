@@ -570,7 +570,7 @@ The opt-out check reuses the same Aidbox search as [`$provider-member-match`](pr
 
 **Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization (FHIR shape is `0..*`; today exactly one element is written). The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's identifier has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
-**Stale Consent deactivation.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check, opt-out hit, or persistence failure), the prior persisted `Consent` at the deterministic id is flipped to `status = inactive`. The row is retained for audit, but `$davinci-data-export?exportType=payertopayer` will not honor it on subsequent reads.
+**Stale Consent removal.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check, opt-out hit, or persistence failure), the prior persisted `Consent` at the deterministic id is deleted (one batch `Bundle` for all pairs). Deleted rather than deactivated: the HRex Consent profile fixes `status = active`, so a status flip would `422`. `$davinci-data-export?exportType=payertopayer` fails closed on the missing permit.
 
 ## Group lifecycle
 
