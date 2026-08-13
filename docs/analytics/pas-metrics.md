@@ -42,7 +42,7 @@ inquiry (`Claim/$inquire`) exchanges.
 | 4 | Error percentage | Share of exchanges that carried a business error (`ClaimResponse.error`) |
 | 5 | Final response on initial submission | Share of requests decided on the first response, without a pend |
 | 6 | Pend volume and resolution | Items currently pended vs resolved, with average time to resolution |
-| 7 | Time to final result | Elapsed time from request to final decision, per service line |
+| 7 | Time to final result | Elapsed time from request to final decision, per service line - the 100 slowest decided items per payer |
 | 8 | Segmentation | Item counts by result (approved, denied, modified, pended, cancelled), segmented by day, payer, provider and line of business |
 | 9 | Outstanding requests | Requests still awaiting a final decision |
 | 10 | Pend aging | How long currently pended items have been waiting |
@@ -51,11 +51,14 @@ The **query bucket of metric 2** and **metric 3** report on
 `Claim/$inquire` exchanges. `$inquire` is a read operation and
 persists nothing by default, so these views are populated only where
 the deployment chooses to store inquiries as `Claim` resources.
+Metric 3 additionally needs the identity of the inquiring provider
+captured on those stored inquiries to tell ordering from
+non-ordering queries.
 
 ## The package
 
 - **Download:**
-  [`io.healthsamurai.pas-metrics-0.1.4.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.4.tar.gz)
+  [`io.healthsamurai.pas-metrics-0.1.5.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.5.tar.gz)
 - **Contents:** 25 SQL-on-FHIR resources - 10 `ViewDefinition`s and
   15 `Library` resources (5 source/model wrappers plus one per
   metric).
@@ -77,14 +80,16 @@ Content-Type: application/json
 {
   "resourceType": "Parameters",
   "parameter": [
-    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.4.tar.gz"}
+    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.5.tar.gz"}
   ]
 }
 ```
 
 Alternatively, serve it from a package registry and reference it by
-`io.healthsamurai.pas-metrics#0.1.4` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
-or an init bundle. See
+`io.healthsamurai.pas-metrics#0.1.5` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
+or an init bundle. Note that `BOX_BOOTSTRAP_FHIR_PACKAGES` only
+installs into an empty package store - on a live instance use
+`$fhir-package-install`. See
 [FHIR packages](https://www.health-samurai.io/docs/aidbox/modules/fhir-package)
 in the Aidbox docs for the mechanics.
 
