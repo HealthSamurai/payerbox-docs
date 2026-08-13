@@ -25,3 +25,4 @@ asking.
 - [Flat views on FHIR data](flat-views.md)
 - [SQL on FHIR data](sql-on-fhir.md)
 - [Common queries](common-queries.md)
+- [PAS Metrics](pas-metrics.md)
