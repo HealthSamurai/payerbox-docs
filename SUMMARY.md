@@ -41,6 +41,7 @@
   * [Flat views on FHIR data](analytics/flat-views.md)
   * [SQL on FHIR data](analytics/sql-on-fhir.md)
   * [Common queries](analytics/common-queries.md)
+  * [PAS Metrics](analytics/pas-metrics.md)
 * [API Reference](api-reference/README.md)
   * [Capability Statement](api-reference/capability-statement.md)
   * [Implementation Guides](api-reference/implementation-guides.md)
