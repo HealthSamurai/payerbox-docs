@@ -58,7 +58,7 @@ non-ordering queries.
 ## The package
 
 - **Download:**
-  [`io.healthsamurai.pas-metrics-0.1.5.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.5.tar.gz)
+  [`io.healthsamurai.pas-metrics-0.1.6.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.6.tar.gz)
 - **Contents:** 25 SQL-on-FHIR resources - 10 `ViewDefinition`s and
   15 `Library` resources (5 source/model wrappers plus one per
   metric).
@@ -80,13 +80,13 @@ Content-Type: application/json
 {
   "resourceType": "Parameters",
   "parameter": [
-    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.5.tar.gz"}
+    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.6.tar.gz"}
   ]
 }
 ```
 
 Alternatively, serve it from a package registry and reference it by
-`io.healthsamurai.pas-metrics#0.1.5` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
+`io.healthsamurai.pas-metrics#0.1.6` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
 or an init bundle. Note that `BOX_BOOTSTRAP_FHIR_PACKAGES` only
 installs into an empty package store - on a live instance use
 `$fhir-package-install`. See
@@ -121,7 +121,7 @@ and point a BI tool at it, the same way as any other
 
 ## Reading the results
 
-Two things are worth knowing when you interpret the numbers:
+Three things are worth knowing when you interpret the numbers:
 
 - **Request time is the submitted `Claim.created`**, the time the
   request carries in its payload, not the moment the server received
@@ -132,3 +132,11 @@ Two things are worth knowing when you interpret the numbers:
   request can be decided independently (one approved while another
   pends or is denied). When every item shares the same outcome and
   timing, the rows differ only by item sequence.
+- **Metric 4 counts business errors, and only on requests that were
+  accepted.** An error is an entry in `ClaimResponse.error` - typically
+  an X12 error code written back by the utilization-management system.
+  A submission rejected up front, for example by profile validation, is
+  answered with an `OperationOutcome` and never stored, so it appears in
+  neither the numerator nor the denominator of this metric. To exercise
+  metric 4, drive a request that is accepted and then answered with an
+  error rather than a decision.
