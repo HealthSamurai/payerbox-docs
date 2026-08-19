@@ -12,11 +12,13 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 Request and Response examples on this page reference this dataset. Load it first to reproduce them.
 
-Load from the Aidbox REST Console — the bundle goes through the normal FHIR write path so AccessPolicies and Clients become active immediately:
+Load it in two passes from the Aidbox REST Console: FHIR resources through `/fhir`, `Client` and `AccessPolicy` through the Aidbox base endpoint.
 
 <details>
 
 <summary>Click to view test dataset bundle JSON</summary>
+
+First, the FHIR resources:
 
 ```http
 POST /fhir
@@ -26,44 +28,6 @@ Content-Type: application/fhir+json
   "resourceType": "Bundle",
   "type": "transaction",
   "entry": [
-    {
-      "request": {"method": "PUT", "url": "/Client/test-payer-client"},
-      "resource": {
-        "resourceType": "Client",
-        "id": "test-payer-client",
-        "secret": "test-payer-secret",
-        "grant_types": ["basic"],
-        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]}
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Client/test-provider-client"},
-      "resource": {
-        "resourceType": "Client",
-        "id": "test-provider-client",
-        "secret": "test-provider-secret",
-        "grant_types": ["basic"],
-        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]}
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-payer-client"},
-      "resource": {
-        "resourceType": "AccessPolicy",
-        "id": "allow-test-payer-client",
-        "engine": "allow",
-        "link": [{"resourceType": "Client", "id": "test-payer-client"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-provider-client"},
-      "resource": {
-        "resourceType": "AccessPolicy",
-        "id": "allow-test-provider-client",
-        "engine": "allow",
-        "link": [{"resourceType": "Client", "id": "test-provider-client"}]
-      }
-    },
     {
       "request": {"method": "PUT", "url": "/Organization/test-payer-001"},
       "resource": {
@@ -152,11 +116,81 @@ Content-Type: application/fhir+json
 }
 ```
 
+Then the clients, through the Aidbox base endpoint rather than `/fhir` (see [Registering a B2B client](../authentication.md#registering-a-b2b-client)). Each `Client` carries the `client-hl7B2b` extension pointing at the Organization whose NPI it presents:
+
+```http
+POST /
+Content-Type: application/json
+
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "request": {"method": "PUT", "url": "/Client/test-payer-client"},
+      "resource": {
+        "resourceType": "Client",
+        "id": "test-payer-client",
+        "secret": "test-payer-secret",
+        "grant_types": ["client_credentials"],
+        "auth": {"client_credentials": {"token_format": "jwt", "access_token_expiration": 3600}},
+        "extension": [{
+          "url": "http://health-samurai.io/fhir/core/StructureDefinition/client-hl7B2b",
+          "extension": [
+            {"url": "organization", "valueReference": {"reference": "Organization/test-payer-001"}},
+            {"url": "organizationIdentifierSystem", "valueUri": "http://hl7.org/fhir/sid/us-npi"},
+            {"url": "purposeOfUse", "valueCoding": {"system": "http://terminology.hl7.org/CodeSystem/v3-ActReason", "code": "HPAYMT"}}
+          ]
+        }]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/Client/test-provider-client"},
+      "resource": {
+        "resourceType": "Client",
+        "id": "test-provider-client",
+        "secret": "test-provider-secret",
+        "grant_types": ["client_credentials"],
+        "auth": {"client_credentials": {"token_format": "jwt", "access_token_expiration": 3600}},
+        "extension": [{
+          "url": "http://health-samurai.io/fhir/core/StructureDefinition/client-hl7B2b",
+          "extension": [
+            {"url": "organization", "valueReference": {"reference": "Organization/test-provider-001"}},
+            {"url": "organizationIdentifierSystem", "valueUri": "http://hl7.org/fhir/sid/us-npi"},
+            {"url": "purposeOfUse", "valueCoding": {"system": "http://terminology.hl7.org/CodeSystem/v3-ActReason", "code": "TREAT"}}
+          ]
+        }]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-payer-client"},
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-test-payer-client",
+        "engine": "allow",
+        "link": [{"resourceType": "Client", "id": "test-payer-client"}]
+      }
+    },
+    {
+      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-provider-client"},
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "allow-test-provider-client",
+        "engine": "allow",
+        "link": [{"resourceType": "Client", "id": "test-provider-client"}]
+      }
+    }
+  ]
+}
+```
+
 </details>
 
 ## Auth
 
-SMART Backend Services. Caller identity comes from the [UDAP HL7 B2B `organization_id` claim](../authentication.md#hl7-b2b-authorization-extension-udap).
+SMART Backend Services. Caller identity comes from the [UDAP HL7 B2B `organization_id` claim](../authentication.md#hl7-b2b-authorization-extension-udap), which Aidbox emits when the calling `Client` carries a `client-hl7B2b` extension. A token without it is rejected with `403`.
+
+Examples below use a token issued to `test-provider-client` from the [Test dataset](#test-dataset); its claim reads `http://hl7.org/fhir/sid/us-npi#1982947230`. That client authenticates with a shared secret ([Client Credentials](../authentication.md#client-credentials)); production callers use asymmetric JWT.
 
 ## Kick-off
 
@@ -187,7 +221,7 @@ The request body is a `Parameters` resource with one or more `MemberBundle` entr
 {% tab title="Request" %}
 ```http
 POST /fhir/Group/$provider-member-match
-Authorization: Basic dGVzdC1wcm92aWRlci1jbGllbnQ6dGVzdC1wcm92aWRlci1zZWNyZXQ=
+Authorization: Bearer <access-token>
 Content-Type: application/fhir+json
 Prefer: respond-async
 

@@ -23,7 +23,8 @@ The [Da Vinci PDex Provider Access API](https://build.fhir.org/ig/HL7/davinci-ep
 | Caller | In-network provider system (EHR, care-coordination platform) |
 | Authentication | SMART Backend Services (asymmetric JWT) per PDex's SHOULD-level recommendation for CMS-0057-F conformance. OAuth 2.0 Client Credentials (`client_id` + `client_secret`) is supported as a simpler alternative for sandboxes and trusted internal services. |
 | Token endpoint | `<base>/auth/token` |
-| Scope | `system/*.read` is the common default; deployments may narrow this per resource type via Aidbox access policies. The interop app additionally requires the provider's NPI on the OAuth `Client` resource (`Client.details.identifier[system=http://hl7.org/fhir/sid/us-npi]`). |
+| Scope | `system/*.read` is the common default; deployments may narrow this per resource type via Aidbox access policies. |
+| Caller identity | UDAP HL7 B2B `organization_id` claim in the access token, from the `client-hl7B2b` extension on the caller's `Client`. See [Authentication](../api-reference/authentication.md#hl7-b2b-authorization-extension-udap). |
 
 See [API Reference / Authentication](../api-reference/authentication.md).
 
