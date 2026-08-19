@@ -49,9 +49,9 @@ Payerbox CapabilityStatement declares conformance to:
 | Profile family | Source IG |
 |---|---|
 | US Core profiles | [US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) |
-| CARIN Blue Button profiles | [CARIN BB STU 2.0.0](https://hl7.org/fhir/us/carin-bb/STU2/) |
+| CARIN Blue Button profiles | [CARIN BB STU 2.1.0](https://hl7.org/fhir/us/carin-bb/STU2.1/) |
 | PDex profiles | [Da Vinci PDex STU 2.1.0](https://hl7.org/fhir/us/davinci-pdex/STU2.1/) |
-| Plan Net profiles | [PDex Plan Net STU 1.1.0](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.1/) |
+| Plan Net profiles | [PDex Plan Net STU 1.2.0](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/) |
 | PAS Request/Response Bundle profiles | [Da Vinci PAS STU 2.1.0](https://hl7.org/fhir/us/davinci-pas/STU2.1/) |
 
 Full IG matrix: [Implementation Guides](implementation-guides.md).
