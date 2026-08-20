@@ -245,9 +245,11 @@ Content-Type: application/json
 }
 ```
 
+Clients calling member-match or Payer-to-Payer operations also need the `client-hl7B2b` extension on the same resource.
+
 ### HL7 B2B authorization extension (UDAP)
 
-Member-match and Payer-to-Payer operations identify the calling organization from the [UDAP HL7 B2B Authorization Extension](https://hl7.org/fhir/us/udap-security/b2b.html#b2b-authorization-extension-object), not from any `Client` field. Aidbox produces the `hl7-b2b` extension on issued access tokens automatically; no extra configuration is required. Payerbox reads it from the token JWT under `extensions.hl7-b2b`:
+Member-match and Payer-to-Payer operations identify the calling organization from the [UDAP HL7 B2B Authorization Extension](https://hl7.org/fhir/us/udap-security/b2b.html#b2b-authorization-extension-object), not from any `Client` field. Payerbox reads it from the access token JWT under `extensions.hl7-b2b`:
 
 ```json
 {
@@ -256,13 +258,110 @@ Member-match and Payer-to-Payer operations identify the calling organization fro
     "hl7-b2b": {
       "version": "1",
       "organization_id": "http://hl7.org/fhir/sid/us-npi#1234567893",
-      "purpose_of_use": ["..."]
+      "organization_name": "Partner Payer, Inc.",
+      "purpose_of_use": ["http://terminology.hl7.org/CodeSystem/v3-ActReason#HPAYMT"]
     }
   }
 }
 ```
 
-`organization_id` is a single string in `<system-uri>#<value>` form, split on the last `#`. Any identifier system works: NPI, NAIC, or CARIN BB `payerid`. Operations that read it:
+The claim is not emitted by default. Aidbox builds it from a `client-hl7B2b` extension on the `Client` plus the `Organization` it points to. All three must hold:
+
+1. `Client.auth.<grant>.token_format` is `"jwt"`. Opaque tokens carry no claims.
+2. `Client.extension` carries `client-hl7B2b` with `organization` and `organizationIdentifierSystem`.
+3. The referenced `Organization` exists and has an `identifier` entry whose `system` equals `organizationIdentifierSystem`.
+
+Otherwise the token is issued without `extensions.hl7-b2b` and the operations below reject the caller.
+
+#### `client-hl7B2b` extension
+
+URL: `http://health-samurai.io/fhir/core/StructureDefinition/client-hl7B2b` (context: `Client`).
+
+| Sub-extension | Cardinality | Type | Contributes to the token |
+|---|---|---|---|
+| `organization` | 1..1 | `Reference(Organization)` | `organization_id` and `organization_name`. Must resolve to an `Organization` in this deployment. |
+| `organizationIdentifierSystem` | 1..1 | `uri` | Picks which `Organization.identifier.system` becomes `organization_id`, as `<system>#<value>` |
+| `purposeOfUse` | 0..* | `Coding` | One `<system>#<code>` string per entry in `purpose_of_use` |
+
+`version` is always `"1"`. The `Organization` is read at token issuance, so identifier or name edits apply to the next token.
+
+`purposeOfUse` is bound (extensible) to `http://health-samurai.io/fhir/core/ValueSet/b2b-purpose-of-use`: `TREAT`, `HPAYMT`, `HOPERAT`, `PUBHLTH`, `HRESCH`, `PATRQT`, `ETREAT`. UDAP requires `purpose_of_use`, and Aidbox emits it only when at least one `purposeOfUse` is registered. Payer-to-Payer typically uses `HPAYMT`, Provider Access `TREAT`.
+
+#### Registering a B2B client
+
+Create the `Organization` first. Its identifier is what the token carries.
+
+{% tabs %}
+{% tab title="Organization" %}
+```json
+PUT /fhir/Organization/partner-payer-org
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "Organization",
+  "id": "partner-payer-org",
+  "name": "Partner Payer, Inc.",
+  "identifier": [
+    {"system": "http://hl7.org/fhir/sid/us-npi", "value": "1234567893"}
+  ]
+}
+```
+{% endtab %}
+{% tab title="Client (asymmetric JWT)" %}
+```json
+PUT /Client/partner-payer
+Content-Type: application/json
+
+{
+  "resourceType": "Client",
+  "id": "partner-payer",
+  "active": true,
+  "grant_types": ["client_credentials"],
+  "auth": {
+    "client_credentials": {
+      "client_assertion_types": ["urn:ietf:params:oauth:client-assertion-type:jwt-bearer"],
+      "token_format": "jwt",
+      "access_token_expiration": 300
+    }
+  },
+  "jwks_uri": "https://partner.example.com/.well-known/jwks.json",
+  "scope": ["system/*.read"],
+  "extension": [
+    {
+      "url": "http://health-samurai.io/fhir/core/StructureDefinition/client-hl7B2b",
+      "extension": [
+        {"url": "organization", "valueReference": {"reference": "Organization/partner-payer-org"}},
+        {"url": "organizationIdentifierSystem", "valueUri": "http://hl7.org/fhir/sid/us-npi"},
+        {"url": "purposeOfUse", "valueCoding": {"system": "http://terminology.hl7.org/CodeSystem/v3-ActReason", "code": "HPAYMT"}}
+      ]
+    }
+  ]
+}
+```
+{% endtab %}
+{% endtabs %}
+
+Swap `jwks_uri` and `client_assertion_types` for a `secret` to get the symmetric variant, for local stacks and sandboxes only. The extension sits at the top level of `Client`, next to `auth`. `Client` has no `identifier` element, so organization identity travels through this extension.
+
+{% hint style="warning" %}
+Write the `Client` through the Aidbox base endpoint (`PUT /Client/<id>` or a `POST /` transaction Bundle), not through `/fhir`. With `BOX_FHIR_CORRECT_AIDBOX_FORMAT` enabled (the Payerbox default), `/fhir` rewrites the extension's `valueReference` / `valueUri` / `valueCoding` into Aidbox's internal union format (`value: {"Reference": …}`), which the token builder does not read. The write succeeds and tokens are still issued, but without `extensions.hl7-b2b`.
+{% endhint %}
+
+#### Identifier systems
+
+`organization_id` is a single string in `<system-uri>#<value>` form, split on the **last** `#`. Any identifier system works: NPI, NAIC, or CARIN BB `payerid`.
+
+{% hint style="info" %}
+CARIN BB `payerid` is itself a `CodeSystem#code` pair, so the resulting claim carries two `#`:
+
+```
+http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType#payerid#PAYER-123
+```
+
+Splitting on the last `#` keeps `payerid` on the system side. Register the `Organization.identifier.system` as `http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType#payerid` and set `organizationIdentifierSystem` to the same string.
+{% endhint %}
+
+Operations that read the claim:
 
 | Operation | Uses `organization_id` for |
 |---|---|
@@ -270,7 +369,16 @@ Member-match and Payer-to-Payer operations identify the calling organization fro
 | [`$provider-member-match`](operations/provider-member-match.md) | Caller identity |
 | [`$davinci-data-export`](operations/davinci-data-export.md) (`payertopayer`) | Gates the opt-in export and resolves the requesting payer |
 
-A non-admin caller without the claim gets `403`.
+A non-admin caller without the claim gets `403` from the member-match operations and `401` from `$davinci-data-export`.
+
+#### Claim missing from an issued token
+
+Decode the access token and check:
+
+1. **Token is not a JWT.** The grant config lacks `token_format: "jwt"`.
+2. **Extension missing or reshaped.** `GET /Client/<id>`: every sub-extension must still read `valueReference` / `valueUri` / `valueCoding` under the exact `url`s above. A `value: {"Reference": …}` spelling means it went in through `/fhir`; rewrite it through the Aidbox base endpoint.
+3. **`organization` does not resolve.** The referenced `Organization` is absent from this deployment.
+4. **System mismatch.** The `Organization` has no `identifier` whose `system` is exactly `organizationIdentifierSystem`. A trailing slash or an `http`/`https` difference drops the whole claim.
 
 ### Client assertion JWT
 

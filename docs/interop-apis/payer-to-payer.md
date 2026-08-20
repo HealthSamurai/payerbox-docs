@@ -16,7 +16,7 @@ The Payer-to-Payer API lets a receiving payer (new plan) pull a member's clinica
 |---|---|
 | Caller | Receiving payer (the new plan) |
 | Authentication | SMART Backend Services Authorization (asymmetric JWT, system-level scope) |
-| Caller identity | UDAP HL7 B2B `organization_id` claim in the access token |
+| Caller identity | UDAP HL7 B2B `organization_id` claim in the access token, from the `client-hl7B2b` extension on the caller's `Client` |
 | Token endpoint | `<base>/auth/token` on the responding payer's deployment |
 
 The two payers exchange JWKS endpoints out-of-band (or pre-shared keys) at onboarding time. The caller's `organization_id` claim gates the opt-in export and is matched against the submitted `Consent` recipient (`provision.actor[role=IRCP]`).
@@ -45,149 +45,7 @@ The export enforces most of this scope server-side: `ExplanationOfBenefit` is fl
 
 ## Test dataset
 
-Operation examples below reference this dataset. Load it first to reproduce them.
-
-Load from the Aidbox REST Console — the bundle goes through the normal FHIR write path so AccessPolicies and Clients become active immediately:
-
-<details>
-
-<summary>Click to view test dataset bundle JSON</summary>
-
-```http
-POST /fhir
-Content-Type: application/fhir+json
-
-{
-  "resourceType": "Bundle",
-  "type": "transaction",
-  "entry": [
-    {
-      "request": {"method": "PUT", "url": "/Client/test-payer-client"},
-      "resource": {
-        "resourceType": "Client",
-        "id": "test-payer-client",
-        "secret": "test-payer-secret",
-        "grant_types": ["basic"],
-        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]}
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Client/test-provider-client"},
-      "resource": {
-        "resourceType": "Client",
-        "id": "test-provider-client",
-        "secret": "test-provider-secret",
-        "grant_types": ["basic"],
-        "details": {"identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]}
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-payer-client"},
-      "resource": {
-        "resourceType": "AccessPolicy",
-        "id": "allow-test-payer-client",
-        "engine": "allow",
-        "link": [{"resourceType": "Client", "id": "test-payer-client"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-provider-client"},
-      "resource": {
-        "resourceType": "AccessPolicy",
-        "id": "allow-test-provider-client",
-        "engine": "allow",
-        "link": [{"resourceType": "Client", "id": "test-provider-client"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Organization/test-payer-001"},
-      "resource": {
-        "resourceType": "Organization",
-        "id": "test-payer-001",
-        "name": "Test Payer Organization",
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "5555555555"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Organization/test-provider-001"},
-      "resource": {
-        "resourceType": "Organization",
-        "id": "test-provider-001",
-        "name": "Test Provider Organization",
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1982947230"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Organization/other-payer-001"},
-      "resource": {
-        "resourceType": "Organization",
-        "id": "other-payer-001",
-        "name": "Other Payer (not the requester)",
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "9999999999"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Patient/test-member-001"},
-      "resource": {
-        "resourceType": "Patient",
-        "id": "test-member-001",
-        "name": [{"family": "Johnson", "given": ["Robert"]}],
-        "gender": "male",
-        "birthDate": "1952-07-25",
-        "identifier": [{"system": "http://example.org/member-id", "value": "M12345"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Patient/test-member-002"},
-      "resource": {
-        "resourceType": "Patient",
-        "id": "test-member-002",
-        "name": [{"family": "Williams", "given": ["Sarah"]}],
-        "gender": "female",
-        "birthDate": "1985-03-12",
-        "identifier": [{"system": "http://example.org/member-id", "value": "M67890"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Coverage/test-coverage-001"},
-      "resource": {
-        "resourceType": "Coverage",
-        "id": "test-coverage-001",
-        "status": "active",
-        "subscriberId": "SUB-001",
-        "beneficiary": {"reference": "Patient/test-member-001"},
-        "payor": [{"reference": "Organization/test-payer-001"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Coverage/test-coverage-002"},
-      "resource": {
-        "resourceType": "Coverage",
-        "id": "test-coverage-002",
-        "status": "active",
-        "subscriberId": "SUB-002",
-        "beneficiary": {"reference": "Patient/test-member-002"},
-        "payor": [{"reference": "Organization/test-payer-001"}]
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/Consent/test-optout-member-002"},
-      "resource": {
-        "resourceType": "Consent",
-        "id": "test-optout-member-002",
-        "status": "active",
-        "scope": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy"}]},
-        "patient": {"reference": "Patient/test-member-002"},
-        "category": [{"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose", "code": "provider-access"}]}],
-        "provision": {"type": "deny"},
-        "policyRule": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "OPTIN"}]}
-      }
-    }
-  ]
-}
-```
-
-</details>
+Operation examples below reference the same dataset as the reference pages: two payers, two providers, two members with coverage, and one opt-out `Consent`. Load it from [`$bulk-member-match` / Test dataset](../api-reference/operations/bulk-member-match.md#test-dataset).
 
 ## Operations
 
@@ -195,11 +53,11 @@ Content-Type: application/fhir+json
 
 The receiving payer submits one or more `MemberBundle` parameters — each carrying a `MemberPatient` (demographics), `CoverageToMatch`, and an opt-in HRex `Consent` whose `provision.actor[role=IRCP]` recipient identifies the receiving payer. The operation is **always asynchronous** — the kick-off returns `202 Accepted` with `Content-Location`; when polled, the manifest points at an ndjson `Parameters` resource holding up to three inline `Group` resources.
 
-The example below uses `test-member-001` (Johnson, Robert) from the [Test dataset](#test-dataset), submitted by `test-payer-client`:
+The example below uses `test-member-001` (Johnson, Robert) from the [Test dataset](#test-dataset), submitted by `test-payer-client`. Get a token at `<base>/auth/token` first; the issued JWT carries the caller's `hl7-b2b` claim:
 
 ```http
 POST <base>/fhir/Group/$bulk-member-match
-Authorization: Basic dGVzdC1wYXllci1jbGllbnQ6dGVzdC1wYXllci1zZWNyZXQ=
+Authorization: Bearer <access-token>
 Prefer: respond-async
 Content-Type: application/fhir+json
 
