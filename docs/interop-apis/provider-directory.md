@@ -12,6 +12,7 @@ The [Da Vinci PDex Plan-Net IG](https://hl7.org/fhir/us/davinci-pdex-plan-net/) 
 - Public unauthenticated `GET` on the Plan-Net directory resource types (`Practitioner`, `PractitionerRole`, `Organization`, `Location`, `HealthcareService`); everything else stays authenticated.
 - `Location.near` geographic search.
 - FHIR Bulk Data `$export` for periodic directory snapshots.
+- [MPF feed](#mpf-feed-for-medicare-plan-finder) for the CMS Medicare Plan Finder crawler, published daily as static bundles per Medicare Advantage contract and year (optional module).
 
 ## Caller and auth
 
@@ -120,3 +121,36 @@ GET <base>/fhir/PractitionerRole
 ## Bulk download
 
 CMS recommends — but does not mandate — periodic full-directory downloads alongside REST search. Payerbox supports FHIR Bulk Data system-level `$export` with `_type=Practitioner,PractitionerRole,Organization,Location,HealthcareService` returning NDJSON, suitable for nightly snapshots a CDN or third party can mirror.
+
+## MPF feed for Medicare Plan Finder
+
+The CMS Medicare Plan Finder does not call the REST API above. It crawls a static feed: a manifest at a fixed URL, plus the FHIR `Bundle` files that manifest points to. Payerbox builds that feed from the same directory data and republishes it on a daily schedule, as an optional module of the [FHIR App Portal](../fhir-app-portal/README.md). Operators set it up in [Deploy](../run-payerbox/deploy.md#mpf-provider-directory-pipeline).
+
+### What gets published
+
+| Artifact | Shape |
+|---|---|
+| Manifest | `index.json`, a single object: `{"provider_urls": ["<absolute url>", …]}`. A file the manifest does not list is invisible to CMS. |
+| Bundle files | `<ResourceType>-001.json`, `-002.json`, and so on. Each is a `Bundle` with `type: collection`, and every `entry` carries a `fullUrl` plus the resource. |
+| Path | `<public base>/{contract}/{year}/{file}`. Files roll over at 1000 entries or 250 MiB, whichever comes first. |
+
+Six resource types reach the feed, and the manifest lists them in dependency order: `InsurancePlan`, `Organization`, `Practitioner`, `PractitionerRole`, `Location`, `OrganizationAffiliation`. `HealthcareService` and `Endpoint` stay REST-only, so a consumer that needs services or electronic endpoints has to query the API rather than read the feed.
+
+Each `Bundle` carries the run's generation timestamp in `meta.lastUpdated`, while every resource inside keeps the `meta.lastUpdated` it has in the FHIR engine. CMS tracks change per resource, so preserving the resource-level value is what makes an unchanged provider read as unchanged.
+
+### Scope
+
+The feed is not the whole directory. It carries the plans and networks the deployment declares in scope, and everything the graph pulls in with them: the affiliations and practitioner roles attached to those networks, the facility organizations those affiliations point at, and the practitioners and locations those roles reach. Everything else stays out. The in-scope plan and network ids are set per deployment in the Admin Portal, not baked into the image.
+
+### Cadence and the year segment
+
+CMS registers one URL per contract and calendar year, and crawls it daily with conditional requests, so an unchanged directory costs one round trip per file. Publish one run per day per contract. Around open enrollment, when both the current and next plan year are live, run a second sync with the next year to publish both concurrently.
+
+### Choosing a path
+
+| Path | When |
+|---|---|
+| Prebuilt pipeline | The published feed matches the six resource types and the scope model above. Configuration is buckets, credentials, and the in-scope ids. |
+| Custom export flow | Different resource types, a different scope model, or post-processing between the export and the publish. Reuses the same `$export`, client, policy, and storage setup; a runnable example lives in the [Aidbox examples repository](https://github.com/Aidbox/examples). |
+
+Endpoint contracts, status codes, and the settings API: [MPF Endpoints](../api-reference/operations/mpf-pipeline-api.md).

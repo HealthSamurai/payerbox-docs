@@ -1,4 +1,5 @@
 redirects:
+  run-payerbox/provider-directory-pipeline: run-payerbox/deploy#mpf-provider-directory-pipeline
   run-payerbox/maintain/event-notifications.md: prior-auth/event-notifications.md
   fhir-app-portal/developer-portal#register-a-smart-app: fhir-app-portal/smart-app.md#register-a-smart-app
   fhir-app-portal/developer-portal#test-your-app: fhir-app-portal/smart-app.md#test-your-app
