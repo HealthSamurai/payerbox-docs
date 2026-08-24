@@ -9,12 +9,12 @@
     .d-conn-label          { font: 400 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
     .d-muted               { fill: #8A8F9A; }
     .d-state-ok            { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #2E7D5B; }
-    .d-state-gap           { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #C0392B; }
+    .d-state-next          { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #525263; }
   </style>
 
-  <!-- ── ROLE 1 · responding (implemented) ───────────────────────── -->
+  <!-- ── ROLE 1 · responding (available today) ────────────────────── -->
   <text x="8" y="14" class="d-group-title-neutral">1 · Payerbox as the responding plan</text>
-  <text x="600" y="14" text-anchor="end" class="d-state-ok">implemented</text>
+  <text x="600" y="14" text-anchor="end" class="d-state-ok">available today</text>
 
   <rect x="8" y="30" width="160" height="84" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="10"/>
   <text x="88" y="54" text-anchor="middle" class="d-group-title-neutral">Other payer</text>
@@ -38,9 +38,9 @@
   <!-- divider -->
   <line x1="8" y1="140" x2="600" y2="140" stroke="#D3DBE6" stroke-width="1"/>
 
-  <!-- ── ROLE 2 · requesting (not implemented) ───────────────────── -->
+  <!-- ── ROLE 2 · requesting (on the roadmap) ─────────────────────── -->
   <text x="8" y="166" class="d-group-title-neutral">2 · Payerbox as the requesting plan</text>
-  <text x="600" y="166" text-anchor="end" class="d-state-gap">not implemented</text>
+  <text x="600" y="166" text-anchor="end" class="d-state-next">on the roadmap</text>
 
   <rect x="8" y="182" width="160" height="84" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2"
         stroke-dasharray="5 4" rx="12"/>
@@ -53,7 +53,7 @@
   <text x="470" y="198" text-anchor="middle" class="d-group-title-red">Payerbox</text>
   <rect x="360" y="208" width="220" height="52" fill="#FCEEEB" rx="10"/>
   <text x="470" y="230" text-anchor="middle" class="d-card-title">Outbound client</text>
-  <text x="470" y="250" text-anchor="middle" class="d-card-sub">to be built</text>
+  <text x="470" y="250" text-anchor="middle" class="d-card-sub">planned</text>
 
   <line x1="336" y1="212" x2="174" y2="212" stroke="#A6ACB8" stroke-width="1" stroke-dasharray="5 4"/>
   <polygon points="170,212 178,208 178,216" fill="#A6ACB8"/>
