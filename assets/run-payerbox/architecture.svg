@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 616 488" width="616" height="488" fill="none"
+     preserveAspectRatio="xMidYMid meet" style="max-width:100%;height:auto;">
+  <style>
+    /* Adapted for the docs column from public/assets/payers/cms-0057-architecture.svg
+       (health-samurai-io-bun). Same house style as prior-auth-flow.svg, laid out for 616px. */
+    line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
+    .d-group-title-red     { font: 600 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; letter-spacing: 0.16em; text-transform: uppercase; fill: #EA4A35; }
+    .d-group-title-neutral { font: 600 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; letter-spacing: 0.16em; text-transform: uppercase; fill: #525263; }
+    .d-card-title          { font: 400 13px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+    .d-card-sub            { font: 400 12px/1.4 'Inter', system-ui, -apple-system, sans-serif; fill: #525263; }
+    .d-conn-label          { font: 400 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+  </style>
+
+  <!-- Consumers · one per API surface, so the mapping is exact -->
+  <rect x="41" y="16" width="100" height="32" rx="10" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1"/>
+  <text x="91" y="36" text-anchor="middle" class="d-card-title">Members</text>
+
+  <rect x="187" y="16" width="100" height="32" rx="10" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1"/>
+  <text x="237" y="36" text-anchor="middle" class="d-card-title">Payers</text>
+
+  <rect x="333" y="16" width="100" height="32" rx="10" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1"/>
+  <text x="383" y="36" text-anchor="middle" class="d-card-title">Providers</text>
+
+  <rect x="454" y="16" width="150" height="32" rx="10" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1"/>
+  <text x="529" y="36" text-anchor="middle" class="d-card-title">Providers · UM vendors</text>
+
+  <line x1="91" y1="50" x2="91" y2="86" stroke="#525263" stroke-width="1"/>
+  <polygon points="91,90 88,82 94,82" fill="#525263"/>
+  <line x1="237" y1="50" x2="237" y2="86" stroke="#525263" stroke-width="1"/>
+  <polygon points="237,90 234,82 240,82" fill="#525263"/>
+  <line x1="383" y1="50" x2="383" y2="86" stroke="#525263" stroke-width="1"/>
+  <polygon points="383,90 380,82 386,82" fill="#525263"/>
+  <line x1="529" y1="50" x2="529" y2="86" stroke="#525263" stroke-width="1"/>
+  <polygon points="529,90 526,82 532,82" fill="#525263"/>
+
+  <!-- PAYERBOX group: stroke-only frame -->
+  <rect x="10" y="94" width="596" height="182" rx="14" fill="#FFFFFF" stroke="#EA4A35" stroke-width="2"/>
+  <text x="308" y="118" text-anchor="middle" class="d-group-title-red">Payerbox</text>
+
+  <rect x="24" y="134" width="134" height="68" rx="10" fill="#FCEEEB"/>
+  <text x="91" y="157" text-anchor="middle" class="d-card-title">Patient Access</text>
+  <text x="91" y="177" text-anchor="middle" class="d-card-sub">Claims, clinical,</text>
+  <text x="91" y="191" text-anchor="middle" class="d-card-sub">prior auth data</text>
+
+  <rect x="170" y="134" width="134" height="68" rx="10" fill="#FCEEEB"/>
+  <text x="237" y="157" text-anchor="middle" class="d-card-title">Payer-to-Payer</text>
+  <text x="237" y="177" text-anchor="middle" class="d-card-sub">Member data</text>
+  <text x="237" y="191" text-anchor="middle" class="d-card-sub">exchange</text>
+
+  <rect x="316" y="134" width="134" height="68" rx="10" fill="#FCEEEB"/>
+  <text x="383" y="157" text-anchor="middle" class="d-card-title">Provider Access</text>
+  <text x="383" y="177" text-anchor="middle" class="d-card-sub">Bulk data to</text>
+  <text x="383" y="191" text-anchor="middle" class="d-card-sub">treating providers</text>
+
+  <rect x="462" y="134" width="134" height="68" rx="10" fill="#FCEEEB"/>
+  <text x="529" y="157" text-anchor="middle" class="d-card-title">Prior Authorization</text>
+  <text x="529" y="177" text-anchor="middle" class="d-card-sub">Requests</text>
+  <text x="529" y="191" text-anchor="middle" class="d-card-sub">&amp; decisions</text>
+
+  <!-- FHIR datastore: part of what ships, not an external dependency -->
+  <rect x="24" y="216" width="572" height="40" rx="10" fill="#FCEEEB"/>
+  <text x="308" y="240" text-anchor="middle" class="d-card-title">FHIR R4 Datastore on PostgreSQL</text>
+
+  <!-- Connector UP from Your Systems · label = the transports -->
+  <line x1="308" y1="356" x2="308" y2="328" stroke="#353B50" stroke-width="1"/>
+  <text x="308" y="318" text-anchor="middle" class="d-conn-label">X12 270/271 · FHIR Bundle · ETL · direct SQL · Plan-Net ingest</text>
+  <line x1="308" y1="306" x2="308" y2="284" stroke="#353B50" stroke-width="1"/>
+  <polygon points="308,280 305,288 311,288" fill="#353B50"/>
+
+  <!-- YOUR SYSTEMS group (neutral) -->
+  <rect x="10" y="356" width="596" height="116" rx="14" fill="#FFFFFF" stroke="#D3DBE6" stroke-width="2"/>
+  <text x="308" y="380" text-anchor="middle" class="d-group-title-neutral">Your Systems</text>
+
+  <rect x="24" y="400" width="108" height="52" rx="10" fill="#F6F7F8"/>
+  <text x="78" y="430" text-anchor="middle" class="d-card-sub">Claims</text>
+
+  <rect x="140" y="400" width="108" height="52" rx="10" fill="#F6F7F8"/>
+  <text x="194" y="430" text-anchor="middle" class="d-card-sub">Formulary / PBM</text>
+
+  <rect x="256" y="400" width="108" height="52" rx="10" fill="#F6F7F8"/>
+  <text x="310" y="430" text-anchor="middle" class="d-card-sub">Clinical data</text>
+
+  <rect x="372" y="400" width="108" height="52" rx="10" fill="#F6F7F8"/>
+  <text x="426" y="430" text-anchor="middle" class="d-card-sub">Eligibility</text>
+
+  <rect x="488" y="400" width="108" height="52" rx="10" fill="#F6F7F8"/>
+  <text x="542" y="430" text-anchor="middle" class="d-card-sub">UM / Prior auth</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 616 116" width="616" height="116" fill="none"
+     preserveAspectRatio="xMidYMid meet" style="max-width:100%;height:auto;">
+  <style>
+    line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
+    .d-card-title { font: 400 13px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+    .d-card-sub   { font: 400 12px/1.4 'Inter', system-ui, -apple-system, sans-serif; fill: #525263; }
+  </style>
+
+  <!-- inside Payerbox -->
+  <rect x="8" y="20" width="116" height="76" rx="10" fill="#FCEEEB"/>
+  <text x="66" y="48" text-anchor="middle" class="d-card-title">FHIR write</text>
+  <text x="66" y="68" text-anchor="middle" class="d-card-sub">create · update</text>
+  <text x="66" y="82" text-anchor="middle" class="d-card-sub">delete</text>
+
+  <rect x="142" y="20" width="164" height="76" rx="10" fill="#FCEEEB"/>
+  <text x="224" y="48" text-anchor="middle" class="d-card-title">AidboxSubscriptionTopic</text>
+  <text x="224" y="68" text-anchor="middle" class="d-card-sub">trigger + FHIRPath</text>
+
+  <rect x="324" y="20" width="136" height="76" rx="10" fill="#FCEEEB"/>
+  <text x="392" y="48" text-anchor="middle" class="d-card-title">Subscription</text>
+  <text x="392" y="68" text-anchor="middle" class="d-card-sub">rest-hook channel</text>
+
+  <!-- outside -->
+  <rect x="478" y="20" width="132" height="76" rx="10" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1"/>
+  <text x="544" y="48" text-anchor="middle" class="d-card-title">Subscriber</text>
+  <text x="544" y="68" text-anchor="middle" class="d-card-sub">HTTPS endpoint</text>
+
+  <line x1="126" y1="58" x2="134" y2="58" stroke="#353B50" stroke-width="1"/>
+  <polygon points="140,58 132,54 132,62" fill="#353B50"/>
+  <line x1="308" y1="58" x2="316" y2="58" stroke="#353B50" stroke-width="1"/>
+  <polygon points="322,58 314,54 314,62" fill="#353B50"/>
+  <line x1="462" y1="58" x2="470" y2="58" stroke="#353B50" stroke-width="1"/>
+  <polygon points="476,58 468,54 468,62" fill="#353B50"/>
+</svg>

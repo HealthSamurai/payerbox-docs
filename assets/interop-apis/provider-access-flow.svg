@@ -1,63 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480"
-     width="960" height="480" fill="none" preserveAspectRatio="xMidYMid meet"
-     style="max-width:100%;height:auto;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 616 340" width="616" height="340" fill="none"
+     preserveAspectRatio="xMidYMid meet" style="max-width:100%;height:auto;">
   <style>
     line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
-    .d-group-title-red    { font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #EC291C; }
-    .d-group-title-neutral{ font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #525263; }
-    .d-card-title         { font: 400 14px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
-    .d-card-sub           { font: 400 12px/1.4 'Inter', system-ui, sans-serif; fill: #525263; }
-    .d-conn-op            { font: 400 11px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
+    .d-group-title-red     { font: 600 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; letter-spacing: 0.16em; text-transform: uppercase; fill: #EA4A35; }
+    .d-group-title-neutral { font: 600 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; letter-spacing: 0.16em; text-transform: uppercase; fill: #525263; }
+    .d-card-title          { font: 400 13px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+    .d-card-sub            { font: 400 12px/1.4 'Inter', system-ui, -apple-system, sans-serif; fill: #525263; }
+    .d-conn-label          { font: 400 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+    .d-muted               { fill: #8A8F9A; }
+    .d-state-ok            { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #2E7D5B; }
+    .d-state-gap           { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #C0392B; }
   </style>
 
-  <!-- PROVIDER (neutral, top-left) -->
-  <rect x="20" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
-  <text x="100" y="155" text-anchor="middle" class="d-group-title-neutral">Provider</text>
+  <!-- external caller -->
+  <rect x="8" y="36" width="160" height="76" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="10"/>
+  <text x="88" y="64" text-anchor="middle" class="d-group-title-neutral">Provider</text>
+  <text x="88" y="84" text-anchor="middle" class="d-card-sub">in-network,</text>
+  <text x="88" y="101" text-anchor="middle" class="d-card-sub">attested relationship</text>
 
-  <!-- PAYERBOX FHIR PLATFORM (red, top-center) -->
-  <rect x="370" y="100" width="220" height="100" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
-  <text x="480" y="142" text-anchor="middle" class="d-group-title-red">Payerbox</text>
-  <text x="480" y="170" text-anchor="middle" class="d-card-sub">FHIR platform</text>
+  <!-- second external actor -->
+  <rect x="8" y="140" width="160" height="64" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="10"/>
+  <text x="88" y="166" text-anchor="middle" class="d-group-title-neutral">Members</text>
+  <text x="88" y="187" text-anchor="middle" class="d-card-sub">of the plan</text>
 
-  <!-- HEALTH PLAN DATA SOURCES (neutral, top-right) -->
-  <rect x="780" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
-  <text x="860" y="142" text-anchor="middle" class="d-group-title-neutral">Health Plan</text>
-  <text x="860" y="170" text-anchor="middle" class="d-group-title-neutral">data sources</text>
+  <!-- Payerbox boundary -->
+  <rect x="340" y="24" width="260" height="196" fill="#FFFFFF" stroke="#EA4A35" stroke-width="2" rx="14"/>
+  <text x="470" y="46" text-anchor="middle" class="d-group-title-red">Payerbox</text>
 
-  <!-- MEMBER PORTAL (red, bottom-center) -->
-  <rect x="360" y="300" width="240" height="120" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
-  <text x="480" y="345" text-anchor="middle" class="d-group-title-red">Member portal</text>
-  <text x="480" y="380" text-anchor="middle" class="d-card-sub">Educational resources</text>
+  <rect x="360" y="56" width="220" height="64" fill="#FCEEEB" rx="10"/>
+  <text x="470" y="82" text-anchor="middle" class="d-card-title">FHIR platform</text>
+  <text x="470" y="103" text-anchor="middle" class="d-card-sub">opt-out filter applied on read</text>
 
-  <!-- MEMBERS (neutral pill, bottom-right) -->
-  <rect x="780" y="345" width="120" height="40" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="20"/>
-  <text x="840" y="370" text-anchor="middle" class="d-card-title">Members</text>
+  <rect x="360" y="140" width="220" height="64" fill="#FCEEEB" rx="10"/>
+  <text x="470" y="166" text-anchor="middle" class="d-card-title">Member portal</text>
+  <text x="470" y="187" text-anchor="middle" class="d-card-sub">Education · opt-out</text>
 
-  <!-- Provider -> Payerbox: $provider-member-match -->
-  <line x1="180" y1="150" x2="368" y2="150" stroke="#353B50" stroke-width="1"/>
-  <polygon points="370,150 362,146 362,154" fill="#353B50"/>
-  <rect x="200" y="144" width="150" height="12" fill="#FFFFFF"/>
-  <text x="275" y="154" text-anchor="middle" class="d-conn-op">$provider-member-match</text>
+  <!-- dependency the payer provides -->
+  <rect x="340" y="262" width="260" height="56" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="10"/>
+  <text x="470" y="285" text-anchor="middle" class="d-group-title-neutral">Health plan data sources</text>
+  <text x="470" y="304" text-anchor="middle" class="d-card-sub">claims · clinical · encounters · PA</text>
 
-  <!-- Health Plan -> Payerbox: Members' data -->
-  <line x1="780" y1="150" x2="592" y2="150" stroke="#353B50" stroke-width="1"/>
-  <polygon points="590,150 598,146 598,154" fill="#353B50"/>
-  <rect x="638" y="144" width="94" height="12" fill="#FFFFFF"/>
-  <text x="685" y="154" text-anchor="middle" class="d-conn-op">Members' data</text>
+  <!-- request -->
+  <line x1="170" y1="60" x2="336" y2="60" stroke="#353B50" stroke-width="1"/>
+  <polygon points="340,60 332,56 332,64" fill="#353B50"/>
+  <text x="254" y="52" text-anchor="middle" class="d-conn-label">$provider-member-match</text>
 
-  <!-- Payerbox -> Provider: $davinci-data-export (return path) -->
-  <path d="M 390 200 L 390 240 L 110 240 L 110 202" stroke="#353B50" stroke-width="1" fill="none"/>
-  <polygon points="110,200 106,208 114,208" fill="#353B50"/>
-  <rect x="183" y="234" width="134" height="12" fill="#FFFFFF"/>
-  <text x="250" y="244" text-anchor="middle" class="d-conn-op">$davinci-data-export</text>
+  <!-- response -->
+  <line x1="336" y1="96" x2="174" y2="96" stroke="#353B50" stroke-width="1"/>
+  <polygon points="170,96 178,92 178,100" fill="#353B50"/>
+  <text x="254" y="88" text-anchor="middle" class="d-conn-label">$davinci-data-export</text>
+  <text x="254" y="126" text-anchor="middle" class="d-card-sub">async · 202 + poll</text>
 
-  <!-- Member portal -> Payerbox: Opt-out (consent signal) -->
-  <line x1="480" y1="300" x2="480" y2="202" stroke="#353B50" stroke-width="1"/>
-  <polygon points="480,200 476,208 484,208" fill="#353B50"/>
-  <rect x="453" y="244" width="54" height="12" fill="#FFFFFF"/>
-  <text x="480" y="254" text-anchor="middle" class="d-conn-op">Opt-out</text>
+  <!-- members → portal -->
+  <line x1="170" y1="172" x2="336" y2="172" stroke="#353B50" stroke-width="1"/>
+  <polygon points="340,172 332,168 332,176" fill="#353B50"/>
+  <text x="254" y="164" text-anchor="middle" class="d-conn-label">Opt-out choice</text>
 
-  <!-- Members -> Member portal: unlabeled connection -->
-  <line x1="780" y1="365" x2="602" y2="365" stroke="#353B50" stroke-width="1"/>
-  <polygon points="600,365 608,361 608,369" fill="#353B50"/>
+  <!-- data sources → Payerbox -->
+  <line x1="470" y1="260" x2="470" y2="226" stroke="#353B50" stroke-width="1"/>
+  <polygon points="470,222 466,230 474,230" fill="#353B50"/>
+  <text x="482" y="248" text-anchor="start" class="d-conn-label">Members' data</text>
 </svg>

@@ -22,12 +22,7 @@ Two resources work together:
 
 When a CRUD operation matches a topic's trigger, Aidbox delivers a notification bundle to every active `Subscription` bound to that topic. Delivery is asynchronous, so a slow or unavailable subscriber never blocks the originating FHIR write.
 
-```mermaid
-graph LR
-    W(FHIR write<br/>create / update / delete):::blue2 --> T(AidboxSubscriptionTopic<br/>trigger + FHIRPath):::blue2
-    T --> S(Subscription<br/>rest-hook channel):::blue2
-    S --> E(Subscriber<br/>HTTPS endpoint):::green2
-```
+![Event notification chain: a FHIR write (create, update or delete) matches an AidboxSubscriptionTopic (trigger plus FHIRPath), which fans out to each Subscription on its rest-hook channel, which delivers to the subscriber's HTTPS endpoint.](../../assets/prior-auth/event-notifications.svg)
 
 ### Delivery lifecycle
 

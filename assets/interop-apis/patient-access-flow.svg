@@ -1,51 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480"
-     width="960" height="480" fill="none" preserveAspectRatio="xMidYMid meet"
-     style="max-width:100%;height:auto;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 616 340" width="616" height="340" fill="none"
+     preserveAspectRatio="xMidYMid meet" style="max-width:100%;height:auto;">
   <style>
     line, rect, polygon, path, circle, ellipse { vector-effect: non-scaling-stroke; }
-    .d-group-title-red    { font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #EC291C; }
-    .d-group-title-neutral{ font: 600 13px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.2em; text-transform: uppercase; fill: #525263; }
-    .d-card-title         { font: 400 14px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
-    .d-card-sub           { font: 400 12px/1.4 'Inter', system-ui, sans-serif; fill: #525263; }
-    .d-conn-op            { font: 400 11px/1.2 'Inter', system-ui, sans-serif; fill: #353B50; }
+    .d-group-title-red     { font: 600 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; letter-spacing: 0.16em; text-transform: uppercase; fill: #EA4A35; }
+    .d-group-title-neutral { font: 600 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; letter-spacing: 0.16em; text-transform: uppercase; fill: #525263; }
+    .d-card-title          { font: 400 13px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+    .d-card-sub            { font: 400 12px/1.4 'Inter', system-ui, -apple-system, sans-serif; fill: #525263; }
+    .d-conn-label          { font: 400 12px/1.2 'Inter', system-ui, -apple-system, sans-serif; fill: #353B50; }
+    .d-muted               { fill: #8A8F9A; }
+    .d-state-ok            { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #2E7D5B; }
+    .d-state-gap           { font: 600 11px/1.2 'Inter', system-ui, sans-serif; letter-spacing: 0.1em; text-transform: uppercase; fill: #C0392B; }
   </style>
 
-  <!-- MEMBER (neutral, top-left) -->
-  <rect x="20" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
-  <text x="100" y="142" text-anchor="middle" class="d-group-title-neutral">Member</text>
-  <text x="100" y="170" text-anchor="middle" class="d-card-sub">via 3rd-party app</text>
+  <!-- external caller -->
+  <rect x="8" y="56" width="160" height="148" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="10"/>
+  <text x="88" y="122" text-anchor="middle" class="d-group-title-neutral">Member</text>
+  <text x="88" y="144" text-anchor="middle" class="d-card-sub">with a</text>
+  <text x="88" y="161" text-anchor="middle" class="d-card-sub">third-party app</text>
 
-  <!-- PAYERBOX FHIR PLATFORM (red, top-center) -->
-  <rect x="370" y="100" width="220" height="100" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
-  <text x="480" y="142" text-anchor="middle" class="d-group-title-red">Payerbox</text>
-  <text x="480" y="170" text-anchor="middle" class="d-card-sub">FHIR platform</text>
+  <!-- Payerbox boundary -->
+  <rect x="340" y="24" width="260" height="196" fill="#FFFFFF" stroke="#EA4A35" stroke-width="2" rx="14"/>
+  <text x="470" y="46" text-anchor="middle" class="d-group-title-red">Payerbox</text>
 
-  <!-- HEALTH PLAN DATA SOURCES (neutral, top-right) -->
-  <rect x="780" y="100" width="160" height="100" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="2" rx="14"/>
-  <text x="860" y="142" text-anchor="middle" class="d-group-title-neutral">Health Plan</text>
-  <text x="860" y="170" text-anchor="middle" class="d-group-title-neutral">data sources</text>
+  <rect x="360" y="56" width="220" height="64" fill="#FCEEEB" rx="10"/>
+  <text x="470" y="82" text-anchor="middle" class="d-card-title">FHIR platform</text>
+  <text x="470" y="103" text-anchor="middle" class="d-card-sub">SMART on FHIR · FHIR R4 read</text>
 
-  <!-- MEMBER PORTAL (red, bottom-center) -->
-  <rect x="360" y="300" width="240" height="120" fill="#FCEEEB" stroke="#EA4A35" stroke-width="2" rx="14"/>
-  <text x="480" y="345" text-anchor="middle" class="d-group-title-red">Member portal</text>
-  <text x="480" y="375" text-anchor="middle" class="d-card-sub">App gallery</text>
-  <text x="480" y="395" text-anchor="middle" class="d-card-sub">Consent management</text>
+  <rect x="360" y="140" width="220" height="64" fill="#FCEEEB" rx="10"/>
+  <text x="470" y="166" text-anchor="middle" class="d-card-title">Member portal</text>
+  <text x="470" y="187" text-anchor="middle" class="d-card-sub">App discovery · launch</text>
 
-  <!-- Health Plan -> Payerbox: Members' data -->
-  <line x1="780" y1="150" x2="592" y2="150" stroke="#353B50" stroke-width="1"/>
-  <polygon points="590,150 598,146 598,154" fill="#353B50"/>
-  <rect x="638" y="144" width="94" height="12" fill="#FFFFFF"/>
-  <text x="685" y="154" text-anchor="middle" class="d-conn-op">Members' data</text>
+  <!-- dependency the payer provides -->
+  <rect x="340" y="262" width="260" height="56" fill="#F6F7F8" stroke="#D3DBE6" stroke-width="1" rx="10"/>
+  <text x="470" y="285" text-anchor="middle" class="d-group-title-neutral">Health plan data sources</text>
+  <text x="470" y="304" text-anchor="middle" class="d-card-sub">claims · clinical · eligibility · PA</text>
 
-  <!-- Member -> Payerbox: SMART launch + FHIR read -->
-  <line x1="182" y1="150" x2="368" y2="150" stroke="#353B50" stroke-width="1"/>
-  <polygon points="370,150 362,146 362,154" fill="#353B50"/>
-  <rect x="208" y="144" width="134" height="12" fill="#FFFFFF"/>
-  <text x="275" y="154" text-anchor="middle" class="d-conn-op">SMART launch + read</text>
+  <!-- app → FHIR platform -->
+  <line x1="170" y1="88" x2="336" y2="88" stroke="#353B50" stroke-width="1"/>
+  <polygon points="340,88 332,84 332,92" fill="#353B50"/>
+  <text x="254" y="80" text-anchor="middle" class="d-conn-label">SMART launch + read</text>
 
-  <!-- Member portal -> Member: App gallery + launch (from portal top-center, curved up-left into Member bottom-center) -->
-  <path d="M 480 300 L 480 250 L 100 250 L 100 202" stroke="#353B50" stroke-width="1" fill="none"/>
-  <polygon points="100,200 96,208 104,208" fill="#353B50"/>
-  <rect x="220" y="244" width="140" height="12" fill="#FFFFFF"/>
-  <text x="290" y="254" text-anchor="middle" class="d-conn-op">App gallery + launch</text>
+  <!-- member → portal -->
+  <line x1="170" y1="172" x2="336" y2="172" stroke="#353B50" stroke-width="1"/>
+  <polygon points="340,172 332,168 332,176" fill="#353B50"/>
+  <text x="254" y="164" text-anchor="middle" class="d-conn-label">App discovery + launch</text>
+
+  <!-- data sources → Payerbox -->
+  <line x1="470" y1="260" x2="470" y2="226" stroke="#353B50" stroke-width="1"/>
+  <polygon points="470,222 466,230 474,230" fill="#353B50"/>
+  <text x="482" y="248" text-anchor="start" class="d-conn-label">Members' data</text>
 </svg>

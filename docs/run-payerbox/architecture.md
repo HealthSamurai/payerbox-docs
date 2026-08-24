@@ -4,23 +4,7 @@ Payerbox is the CMS-0057-F compliance layer for a US health plan. It sits betwee
 
 ## Context
 
-```mermaid
-flowchart LR
-  internal(Payer Internal Systems<br/>claims · clinical · eligibility<br/>auth server · UM):::yellow2
-  payerbox(Payerbox<br/>CMS-0057-F Layer):::violet3
-  pa(Patient Access<br/>members + 3rd-party apps):::yellow2
-  prov(Provider Access and ePA<br/>healthcare providers):::yellow2
-  p2p(Payer-to-Payer<br/>other payers):::yellow2
-  pg(PostgreSQL):::neutral2
-
-  internal -- ETLs / X12 / Prior Auth --> payerbox
-  payerbox -- SMART on FHIR / FHIR API --> pa
-  payerbox -- Bulk Export / Prior Auth API --> prov
-  prov -- Member Match / Prior Auth SMART App --> payerbox
-  payerbox -- Bulk Export --> p2p
-  p2p -- Member Match --> payerbox
-  payerbox --- pg
-```
+![Architecture. Four consumer groups on top, one per API surface: members reach Patient Access, payers reach Payer-to-Payer, providers reach Provider Access, and providers together with UM vendors reach Prior Authorization. Payerbox is the boundary of what ships: those four API surfaces over a FHIR R4 datastore on PostgreSQL. Your systems below — claims, formulary and PBM, clinical data, eligibility, UM and prior auth — feed Payerbox over X12 270/271, FHIR Bundle ingest, ETL, direct SQL and Plan-Net ingest.](../../assets/run-payerbox/architecture.svg)
 
 ## Internal composition
 
@@ -38,42 +22,10 @@ External dependencies:
 | Dependency | Purpose |
 |---|---|
 | PostgreSQL | FHIR storage |
-| Identity provider | Member sign-in (SMART App Launch) and Admin Portal sign-in. Keycloak ships with the dev bundle; production uses the payer's IdP. |
+| Identity provider | Member sign-in (SMART App Launch) and Admin Portal sign-in. Keycloak ships with the dev bundle and can stay; deployments commonly point at the payer's own IdP instead. |
 | Object storage (S3-compatible) | NDJSON manifests for bulk export |
 | External decision service | CRD coverage rules (configured via `CDS_DECISION_SERVICE_URL`) |
 | External UM system | Authoritative authorization decision; receives X12 278 from Prior Auth |
-
-## Component view
-
-```mermaid
-flowchart TB
-  member(Plan member with third-party app):::yellow2
-  provider(In-network provider system):::yellow2
-  peerpayer(Receiving peer payer):::yellow2
-  umvendor(UM vendor / EHR):::yellow2
-
-  portals(Portals):::violet2
-  interop(Interop):::violet2
-  priorauth(Prior Auth):::violet2
-  aidbox(Aidbox FHIR engine):::blue2
-  pg(Postgres):::neutral2
-  idp(Identity Provider):::green2
-
-  member --> portals
-  member -. SMART App Launch .-> idp
-  member -. authorized FHIR calls .-> interop
-
-  provider -. Backend Services JWT .-> interop
-  peerpayer -. Backend Services JWT .-> interop
-  umvendor -. Backend Services JWT .-> priorauth
-
-  portals --> aidbox
-  interop --> aidbox
-  priorauth --> aidbox
-  aidbox --> pg
-
-  portals -. SMART config / scopes .-> idp
-```
 
 ## Authentication chain
 
@@ -83,35 +35,29 @@ Two flows, depending on who is calling.
 
 ```mermaid
 sequenceDiagram
+  actor member as Member
   participant app as Third-party app
-  participant gallery as Smart App Gallery
-  participant idp as IdP
-  participant aidbox as Aidbox (SMART endpoint)
-  participant interop as Interop
-  app->>gallery: member discovers app
-  app->>aidbox: /authorize (SMART App Launch)
-  aidbox->>idp: redirect member to sign in
-  idp->>aidbox: identity + consent
-  aidbox->>app: access token + scopes
-  app->>interop: GET /Patient, /ExplanationOfBenefit, ...
-  interop->>aidbox: read FHIR resources (scoped to member)
-  aidbox->>interop: filtered resources
-  interop->>app: FHIR Bundle
+  participant pb as Payerbox
+  participant idp as Identity provider
+  member->>app: picks an app from the gallery
+  app->>pb: /authorize (SMART App Launch)
+  pb->>idp: redirect to sign in
+  idp->>pb: identity + consent
+  pb->>app: access token + scopes
+  app->>pb: GET /Patient, /ExplanationOfBenefit
+  pb->>app: FHIR Bundle, scoped to the member
 ```
 
 ### System-to-system (Provider Access, Payer-to-Payer, PAS)
 
 ```mermaid
 sequenceDiagram
-  participant client as Provider / Peer payer / UM vendor
-  participant aidbox as Aidbox (Backend Services endpoint)
-  participant interop as Interop or Prior Auth
-  client->>aidbox: POST /token (signed JWT, system scopes)
-  aidbox->>client: access token
-  client->>interop: $export / $member-match / $submit / ...
-  interop->>aidbox: read/write FHIR resources
-  aidbox->>interop: result
-  interop->>client: response (Bundle, ClaimResponse, or 202 + Content-Location)
+  participant client as Provider · Peer payer · UM vendor
+  participant pb as Payerbox
+  client->>pb: POST /token (signed JWT, system scopes)
+  pb->>client: access token
+  client->>pb: $export · $member-match · $submit
+  pb->>client: Bundle · ClaimResponse · 202 + Content-Location
 ```
 
 ## Data flow per API surface

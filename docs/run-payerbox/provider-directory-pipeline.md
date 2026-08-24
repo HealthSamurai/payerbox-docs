@@ -11,15 +11,23 @@ An optional module of the [FHIR App Portal](../fhir-app-portal/README.md), built
 Data flow:
 
 ```mermaid
-graph LR
-    T(scheduler):::yellow2 --> S(portal<br/>sync endpoint):::violet2
-    S --> A(FHIR engine<br/>/$export):::blue2
-    A --> SRC(source bucket):::green2
-    SRC --> B(portal<br/>scope filter):::violet2
-    B --> C(bundles + index.json):::violet2
-    C --> PUB(storage bucket):::green2
-    PUB --> E(portal<br/>public endpoint):::violet2
-    E --> F(CMS crawler):::yellow2
+flowchart TB
+  sched(Scheduler · daily CronJob):::neutral2
+  subgraph s1 [1 · Export]
+    direction LR
+    sync(Sync endpoint):::red2 --> exp($export):::red2 --> src(Source bucket):::red2
+  end
+  subgraph s2 [2 · Build]
+    direction LR
+    filt(Scope filter):::red2 --> bun(Bundles + index.json):::red2 --> pub(Storage bucket):::red2
+  end
+  subgraph s3 [3 · Serve]
+    direction LR
+    ep(Public endpoint):::red2 --> cms(CMS crawler):::neutral2
+  end
+  sched --> s1
+  s1 --> s2
+  s2 --> s3
 ```
 
 All bucket access goes through Aidbox-signed URLs, so neither bucket needs to be public. The pipeline is triggered over HTTP, typically by a daily Kubernetes CronJob. A production-scale run takes upwards of half an hour. Endpoint details live in the [API reference](../api-reference/operations/mpf-pipeline-api.md).

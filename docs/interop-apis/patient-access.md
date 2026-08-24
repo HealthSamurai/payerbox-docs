@@ -4,7 +4,7 @@ description: SMART-on-FHIR API a member authorizes a third-party app to read the
 
 # Patient Access API
 
-![Patient Access flow: Member's third-party app calls the Payerbox FHIR platform via SMART App Launch and reads FHIR data; Health Plan data sources feed Payerbox with members' data; Member discovers and launches apps from the Member portal app gallery.](../../assets/interop-apis/patient-access-flow.svg)
+![Patient Access flow: a member with a third-party app calls Payerbox — SMART launch and FHIR R4 read against the FHIR platform, and app discovery and launch through the Member portal. Health plan data sources (claims, clinical, eligibility, prior authorization) feed Payerbox.](../../assets/interop-apis/patient-access-flow.svg)
 
 The Patient Access API lets a member authorize a third-party app to read their own claims, clinical, encounter, formulary, and prior-authorization data over FHIR R4. Established by [CMS-9115-F](../compliance/cms-9115.md), in production since January 1, 2021; [CMS-0057-F](../compliance/cms-0057.md) adds prior-authorization data effective January 1, 2027.
 
