@@ -10,9 +10,9 @@ description: >-
 |---|---|---|---|
 | 1 | `patients` | [Patient Demographics](patient-demographics.md#patients) | Patient (+ race, ethnicity, sex, tribal extensions) |
 | 2 | `related_persons` | [Patient Demographics (Related Person)](patient-demographics.md#related-persons) | RelatedPerson |
-| 3 | `practitioners` | [Care Team Members](care-team.md#practitioners) (ref), may come from [Provider Directory](../provider-directory/README.md) | Practitioner; PractitionerRole |
-| 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md) | Organization |
-| 5 | `locations` | Encounter (ref), may come from [Provider Directory](../provider-directory/README.md) | Location |
+| 3 | `practitioners` | [Care Team Members](care-team.md#practitioners) (ref), may come from [Provider Directory](../provider-directory/README.md#providers) | Practitioner; PractitionerRole |
+| 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Organization |
+| 5 | `locations` | Encounter (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Location |
 | 6 | `allergies` | Allergies and Intolerances | AllergyIntolerance |
 | 7 | `conditions` | Problems, Encounter Diagnosis, Health Concerns, SDOH | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
 | 8 | `medications` | Medications | MedicationRequest (+ Medication) |

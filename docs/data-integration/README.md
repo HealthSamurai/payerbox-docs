@@ -33,4 +33,4 @@ graph LR
 | Feed | Built on | Datasets |
 |---|---|---|
 | [Clinical Data](clinical/README.md) | US Core 6.1.0 | 24 |
-| [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.1.0 | 4 |
+| [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.2.0 | 4 |
