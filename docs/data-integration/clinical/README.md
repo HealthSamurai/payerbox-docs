@@ -10,7 +10,7 @@ description: >-
 |---|---|---|---|
 | 1 | `patients` | [Patient Demographics](patient-demographics.md#patients) | Patient (+ race, ethnicity, sex, tribal extensions) |
 | 2 | `related_persons` | [Patient Demographics (Related Person)](patient-demographics.md#related-persons) | RelatedPerson |
-| 3 | `practitioners` | Care Team Members (ref), may come from [Provider Directory](../provider-directory/README.md) | Practitioner; PractitionerRole |
+| 3 | `practitioners` | [Care Team Members](care-team.md#practitioners) (ref), may come from [Provider Directory](../provider-directory/README.md) | Practitioner; PractitionerRole |
 | 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md) | Organization |
 | 5 | `locations` | Encounter (ref), may come from [Provider Directory](../provider-directory/README.md) | Location |
 | 6 | `allergies` | Allergies and Intolerances | AllergyIntolerance |
@@ -21,7 +21,7 @@ description: >-
 | 11 | `procedures` | Procedures | Procedure |
 | 12 | `service_requests` | Procedures (Referral), SDOH Interventions | ServiceRequest |
 | 13 | `encounters` | Encounter Information | Encounter |
-| 14 | `care_team` | Care Team Members | CareTeam |
+| 14 | `care_team` | [Care Team Members](care-team.md#care-team) | CareTeam |
 | 15 | `care_plans` | Assessment and Plan of Treatment | CarePlan |
 | 16 | `goals` | Goals | Goal |
 | 17 | `coverage` | [Health Insurance Information](health-insurance.md#coverage) | Coverage |
