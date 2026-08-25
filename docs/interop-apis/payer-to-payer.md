@@ -1,6 +1,6 @@
 # Payer-to-Payer
 
-![Payer-to-Payer in two roles. Role 1, available today: Payerbox as the responding plan — another payer calls $bulk-member-match and receives the member's history via $davinci-data-export, with consent validated and ExplanationOfBenefit floored to a five-year window. Role 2, on the roadmap: Payerbox as the requesting plan — the outbound client that calls a prior payer for an arriving member's history is planned. CMS-0057-F requires the plan in both roles.](../../assets/interop-apis/payer-to-payer-flow.svg)
+![Payer-to-Payer in two roles. Role 1, available today: Payerbox as the responding plan — another payer calls $bulk-member-match and receives the member's history via $davinci-data-export, with consent validated and ExplanationOfBenefit floored to a five-year window. Role 2, on the roadmap: Payerbox as the requesting plan — the outbound client that calls a prior payer for an arriving member's history is planned. CMS-0057-F requires the plan in both roles.](../../assets/interop-apis/payer-to-payer-flow-v2.svg)
 
 The Payer-to-Payer API lets a receiving payer (new plan) pull a member's clinical, claims, encounter, and prior-authorization history from a previous payer when the member changes coverage. Established by CMS-0057-F, effective January 1, 2027. Replaces the suspended 9115 P2P provision.
 
