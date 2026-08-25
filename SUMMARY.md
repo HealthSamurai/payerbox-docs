@@ -65,5 +65,6 @@
   * [Clinical Data](data-integration/clinical/README.md)
     * [Patient Demographics/Information](data-integration/clinical/patient-demographics.md)
     * [Health Insurance Information](data-integration/clinical/health-insurance.md)
+    * [Care Team Members](data-integration/clinical/care-team.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)
