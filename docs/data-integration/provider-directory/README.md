@@ -16,18 +16,6 @@ description: >-
 | [`networks`](#networks) | [Network](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Network.html) |
 | [`plans`](#plans) | [InsurancePlan](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan.html) |
 
-## Data conventions
-
-| Rule | Detail |
-|---|---|
-| Scope | Current, in-network only. No terminated or historical records; Payerbox sets `active = true` on every resource. |
-| Delivery | Full snapshot each extract, not deltas. |
-| Freshness | No record stale beyond 30 days of a known change. |
-| Codes | Send the NUCC or Plan-Net code, not the display name. Payerbox derives the label. |
-| Multiple values | `;`-separated, as in `specialty_nucc` and `languages`. |
-| Dates | `YYYY-MM-DD`. |
-| Not PHI | The directory is served publicly and unauthenticated, so it carries no patient information. |
-
 ## providers
 
 One row per unique NPI, practice location, plan and specialty. A provider at two locations in two plans produces several rows.
