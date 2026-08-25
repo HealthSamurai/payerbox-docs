@@ -8,7 +8,7 @@ description: >-
 
 ## File index
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR. You send flat columns; Payerbox builds the FHIR resources against these profiles ([Implementation Guides](../api-reference/implementation-guides.md)).
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR. You send flat columns; Payerbox builds the FHIR resources against these profiles ([Implementation Guides](../../api-reference/implementation-guides.md)).
 
 | File | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -32,4 +32,4 @@ One row per coverage. A member with more than one plan, or a plan year that chan
 | `period_start` | Recommended | date | `2026-01-01` |
 | `period_end` | Recommended | date | `2026-12-31` |
 
-These resources are served by [Patient Access](../interop-apis/patient-access.md), [Provider Access](../interop-apis/provider-access.md), [Payer-to-Payer](../interop-apis/payer-to-payer.md), and [Prior Auth](../prior-auth/README.md).
+These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).

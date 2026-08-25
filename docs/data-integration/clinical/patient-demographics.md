@@ -8,7 +8,7 @@ description: >-
 
 ## File index
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR. You send flat columns; Payerbox builds the FHIR resources against these profiles ([Implementation Guides](../api-reference/implementation-guides.md)).
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR. You send flat columns; Payerbox builds the FHIR resources against these profiles ([Implementation Guides](../../api-reference/implementation-guides.md)).
 
 | File | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -100,4 +100,4 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `phone` | If available | 10 digits | `5559876543` |
 | `preferred_language` | If available | BCP 47 [simple-language](https://hl7.org/fhir/us/core/STU6.1/ValueSet-simple-language.html) | `en` |
 
-These resources are served by [Patient Access](../interop-apis/patient-access.md), [Provider Access](../interop-apis/provider-access.md), and [Payer-to-Payer](../interop-apis/payer-to-payer.md).
+These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
