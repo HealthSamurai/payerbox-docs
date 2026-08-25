@@ -17,14 +17,16 @@ description: >-
 
 ## practitioners
 
-The clinicians clinical rows reference by NPI. If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the ones missing from it, such as an external ordering physician.
+One row per practitioner, organization, and location: each row becomes one PractitionerRole, so a clinician practising at two locations produces two rows. Multiple specialties at the same location share a row.
+
+If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `npi` | Yes | 10 digits | `1407006835` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
-| `specialty_nucc` | Recommended | NUCC taxonomy code(s) [Healthcare Provider Taxonomy](https://vsac.nlm.nih.gov/valueset/2.16.840.1.114222.4.11.1066/expansion) | `207R00000X` |
+| `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://vsac.nlm.nih.gov/valueset/2.16.840.1.114222.4.11.1066/expansion) | `207R00000X` |
 | `primary_org_npi` | Recommended | 10 digits | `1234567893` |
 | `practitioner_role_code` | Recommended | role code [Care Team Member Function](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1099.30/expansion) | `doctor` |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
