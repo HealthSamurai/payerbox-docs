@@ -7,7 +7,7 @@ description: >-
 
 ## Datasets
 
-[Plan-Net STU 1.2.0](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/) is the target for every line of business the plan offers: MA, D-SNP/I-SNP, Medicaid managed care, commercial. One feed serves all of them; each row is tagged by plan.
+Built to [Plan-Net STU 1.2.0](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/).
 
 | Dataset | Plan-Net STU 1.2.0 target profile(s) |
 |---|---|
