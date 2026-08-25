@@ -21,7 +21,7 @@ One row per substance per patient. A substance with several reaction manifestati
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `substance_code` | Yes | RxNorm, SNOMED CT, or UNII code, with `substance_system` [code system URIs](https://hl7.org/fhir/R4/terminologies-systems.html); RxNorm if omitted | `7980` penicillin G |
+| `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system`; RxNorm if omitted | `7980` penicillin G |
 | `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://hl7.org/fhir/R4/valueset-allergyintolerance-clinical.html) | `active` |
 | `verification_status` | Recommended | `unconfirmed`, `confirmed`, `refuted`, `entered-in-error` [allergyintolerance-verification](https://hl7.org/fhir/R4/valueset-allergyintolerance-verification.html) | `confirmed` |
 | `category` | If available | `food`, `medication`, `environment`, `biologic` [allergy-intolerance-category](https://hl7.org/fhir/R4/valueset-allergy-intolerance-category.html) | `medication` |
@@ -29,18 +29,26 @@ One row per substance per patient. A substance with several reaction manifestati
 | `reaction_manifestation_code` | If a reaction is recorded | SNOMED CT code(s), `;`-separated [SNOMED CT Clinical Findings](https://hl7.org/fhir/R4/valueset-clinical-findings.html) | `247472004` Wheal |
 | `onset_date` | If available | datetime | `2019-05-02` |
 
-- `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` for RxNorm, `http://snomed.info/sct` for SNOMED CT, or `http://fdasis.nlm.nih.gov` for UNII. US Core binds the field to the VSAC value set "Common substances for allergy and intolerance documentation including refutations" (OID `2.16.840.1.113762.1.4.1186.8`), which holds RxNorm and SNOMED CT substances plus the negation codes below. Browsing it at VSAC needs a UMLS account.
+- `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` or `http://snomed.info/sct`.
+- US Core binds the field to a VSAC grouping value set, "Common substances for allergy and intolerance documentation including refutations", covering drug, dietary, and environmental substances plus the negation codes below. Its canonical URI is `http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8`. Expand that URI against your Payerbox instance to get the exact list it validates against; the copy at VSAC needs a free UMLS account to browse.
+- **Roll RxNorm codes up to the ingredient.** Every RxNorm member of the value set is an ingredient (`IN`) or multi-ingredient (`MIN`) concept. Pharmacy-claim codes at drug or pack level, whether NDC, `SCD`, or `SBD`, are not members, so map them to the ingredient before sending.
 - A row that carries a reaction needs at least one `reaction_manifestation_code`. Manifestation is mandatory inside a reaction.
 - `clinical_status` and `verification_status` are coupled: FHIR requires `clinical_status` on every row whose `verification_status` is not `entered-in-error`, and forbids it on rows that are. A row that leaves both empty is rejected. Sending `active` on live rows and `resolved` or `inactive` on closed ones satisfies this.
 
 ### No known allergies
 
-An empty file is ambiguous: it does not separate "we asked, the member has no allergies" from "we never asked". US Core states both as a row with a negation code.
+An empty file is ambiguous: it does not separate "we asked, the member has no allergies" from "we never asked". US Core states either case as a row carrying a negation code, and the value set holds one per substance class.
 
 | Meaning | `substance_code` | `clinical_status` | `verification_status` |
 |---|---|---|---|
-| Member has no known allergies | `716186003` No known allergy | `active` | `confirmed` |
+| No known allergies at all | `716186003` No known allergy | `active` | `confirmed` |
+| No known drug allergies | `409137002` No known drug allergy | `active` | `confirmed` |
+| No known food allergies | `429625007` No known food allergy | `active` | `confirmed` |
+| No known environmental allergies | `428607008` No known environmental allergy | `active` | `confirmed` |
+| No known latex allergy | `1003774007` No known latex allergy | `active` | `confirmed` |
 | Member was not asked | `1631000175102` Patient not asked | `active` | `unconfirmed`, or empty |
+
+Use the narrowest code your source supports: a plan that only knows "no drug allergies" should send `409137002`, not `716186003`.
 
 Both codes are SNOMED CT, so send `substance_system` as `http://snomed.info/sct`.
 
