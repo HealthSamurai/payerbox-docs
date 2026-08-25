@@ -30,7 +30,7 @@ One row per unique NPI, practice location, plan and specialty. A provider at two
 | `name_suffix` | No | Jr. / Sr. / II / III | `Jr.` |
 | `sex` | No | `Male`, `Female` | `Female` |
 | `languages` | Recommended | BCP 47 or English name, `;`-separated. Add `:level` per language for Plan-Net proficiency | `en;es` |
-| `specialty_nucc` | Yes | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://vsac.nlm.nih.gov/valueset/2.16.840.1.114222.4.11.1066/expansion) | `207RI0200X` |
+| `specialty_nucc` | Yes | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://tx.fhir.org/r4/ValueSet/2.16.840.1.114222.4.11.1066-20240606?_format=html) | `207RI0200X` |
 | `provider_role` | Recommended | `physician`, `NP`, `PA`, `nurse`, `dentist` [PractitionerRoleVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-PractitionerRoleVS.html) | `physician` |
 | `board_certification` | If available | qualification code or name | `Board Certified, Cardiology` |
 | `plan_id` | Yes | key from `plans`; one plan per row | `PLAN-DSNP` |
