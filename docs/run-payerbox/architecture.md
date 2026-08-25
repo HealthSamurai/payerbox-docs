@@ -4,7 +4,7 @@ Payerbox is the CMS-0057-F compliance layer for a US health plan. It sits betwee
 
 ## Context
 
-![Architecture. Four consumer groups on top, one per API surface: members reach Patient Access, payers reach Payer-to-Payer, providers reach Provider Access, and provider EHRs reach Prior Authorization. Payerbox is the boundary of what ships: those four API surfaces over a FHIR R4 datastore on PostgreSQL. Your systems below — claims, formulary and PBM, clinical data, eligibility, UM and prior auth — feed Payerbox over X12 270/271, FHIR Bundle ingest, ETL, direct SQL and Plan-Net ingest.](../../assets/run-payerbox/architecture.svg)
+![Architecture. Four consumer groups on top, one per API surface: members reach Patient Access, payers reach Payer-to-Payer, providers reach Provider Access, and provider EHRs reach Prior Authorization. Payerbox is the boundary of what ships: those four API surfaces over a FHIR R4 datastore on PostgreSQL. Your systems below — claims, formulary and PBM, clinical data, eligibility, UM and prior auth — feed Payerbox over X12 270/271, FHIR Bundle ingest, ETL, direct SQL and Plan-Net ingest.](../../assets/run-payerbox/architecture-v2.svg)
 
 ## Internal composition
 
