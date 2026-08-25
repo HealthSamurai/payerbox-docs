@@ -50,7 +50,7 @@ graph LR
 | 14 | `care_team.csv` | Care Team Members | CareTeam |
 | 15 | `care_plans.csv` | Assessment and Plan of Treatment | CarePlan |
 | 16 | `goals.csv` | Goals | Goal |
-| 17 | `coverage.csv` | Health Insurance Information | Coverage |
+| 17 | `coverage.csv` | [Health Insurance Information](health-insurance.md#coverage-csv) | Coverage |
 | 18 | `documents.csv` | Clinical Notes | DocumentReference |
 | 19 | `diagnostic_reports.csv` | Clinical Notes, Laboratory, Diagnostic Imaging (report level) | DiagnosticReport (Lab + Report/Note) |
 | 20 | `devices.csv` | Unique Device Identifier(s) | Implantable Device |

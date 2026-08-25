@@ -63,5 +63,6 @@
     * [MPF Endpoints](api-reference/operations/mpf-pipeline-api.md)
 * [Data Integration Reference](data-integration/README.md)
   * [Patient Demographics/Information](data-integration/patient-demographics.md)
+  * [Health Insurance Information](data-integration/health-insurance.md)
   * [Provider Directory](data-integration/provider-directory.md)
 * [Releases](releases.md)
