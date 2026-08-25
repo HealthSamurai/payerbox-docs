@@ -23,7 +23,7 @@ If you already send the [Provider Directory](../provider-directory/README.md) fe
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `1407006835` |
+| `npi` | Yes | 10 digits | `1407006836` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://vsac.nlm.nih.gov/valueset/2.16.840.1.114222.4.11.1066/expansion) | `207R00000X` |
@@ -42,7 +42,7 @@ One row per patient and team member.
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `member_npi` | Yes | 10 digits; send this or `member_related_person_id` | `1407006835` |
+| `member_npi` | Yes | 10 digits; send this or `member_related_person_id` | `1407006836` |
 | `member_related_person_id` | Yes | `related_persons` key, for non-clinicians; send this or `member_npi` | |
 | `role_code` | Yes | SNOMED or NUCC code [Care Team Member Function](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1099.30/expansion) | `223366009` |
 | `status` | Recommended | `active`, `proposed`, `inactive` [care-team-status](https://hl7.org/fhir/R4/valueset-care-team-status.html) | `active` |

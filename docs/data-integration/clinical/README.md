@@ -1,6 +1,6 @@
 ---
 description: >-
-  The 24 clinical CSV files, by USCDI v3.1 data class and the US Core 6.1.0
+  The 24 clinical datasets, by USCDI v3.1 data class and the US Core 6.1.0
   profile each becomes.
 ---
 

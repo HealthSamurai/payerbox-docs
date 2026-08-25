@@ -14,7 +14,7 @@
   * [Patient Access](interop-apis/patient-access.md)
   * [Provider Access](interop-apis/provider-access.md)
   * [Payer-to-Payer](interop-apis/payer-to-payer.md)
-  * [Provider Directory](interop-apis/provider-directory.md)
+  * [Provider Directory API](interop-apis/provider-directory.md)
 * [Prior Auth (ePA) APIs](prior-auth/README.md)
   * [CRD](prior-auth/crd.md)
   * [DTR](prior-auth/dtr/README.md)

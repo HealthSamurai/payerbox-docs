@@ -61,7 +61,7 @@ One row per member. The sections below group its columns.
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `gender` | Yes | `male`, `female`, `other`, `unknown` [AdministrativeGender](https://hl7.org/fhir/R4/valueset-administrative-gender.html) | `female` |
-| `sex` | Recommended | `248152002` Female, `248153007` Male [US Core Sex](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-sex.html) | `248152002` |
+| `sex` | Recommended | `248152002` Female, `248153007` Male [Sex value set](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1240.3/expansion) | `248152002` |
 | `birth_date` | Recommended | YYYY-MM-DD | `1957-03-11` |
 | `deceased_date` | If applicable | datetime | |
 | `race_omb_code` | Recommended | `2106-3` White, `2054-5` Black or African American, `2028-9` Asian, `1002-5` American Indian or Alaska Native, `2076-8` Native Hawaiian or Other Pacific Islander; `;`-separated [OMB race categories](https://hl7.org/fhir/us/core/STU6.1/ValueSet-omb-race-category.html) | `2106-3` |
@@ -107,7 +107,7 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `final`, `amended`, `corrected`, `entered-in-error` [observation-status](https://hl7.org/fhir/R4/valueset-observation-status.html) | `final` |
-| `value_code` | Yes | O*NET-SOC occupation code, with `value_system` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `29-1141.00` |
+| `value_code` | Yes | with `value_system`. SNOMED CT for `smoking-status`, `pregnancy-status`, `pregnancy-intent`; O*NET-SOC for `occupation` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `266919005` smoking, `29-1141.00` occupation |
 | `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
 
