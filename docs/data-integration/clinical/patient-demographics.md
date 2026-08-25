@@ -1,22 +1,22 @@
 ---
 description: >-
-  Columns for patients.csv and related_persons.csv, mapped from the USCDI v3.1
+  Columns for patients and related_persons, mapped from the USCDI v3.1
   Patient Demographics/Information data class to US Core 6.1.0 FHIR.
 ---
 
 # Patient Demographics/Information
 
-## File index
+## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR. You send flat columns; Payerbox builds the FHIR resources against these profiles ([Implementation Guides](../../api-reference/implementation-guides.md)).
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR ([Implementation Guides](../../api-reference/implementation-guides.md)).
 
-| File | US Core 6.1.0 target profile(s) |
+| Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
-| [`patients.csv`](#patients-csv) | [US Core Patient](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-patient.html) |
-| [`related_persons.csv`](#related-persons-csv) | [US Core RelatedPerson](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-relatedperson.html) |
-| `social_history.csv` | [US Core Observation Occupation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-occupation.html) |
+| [`patients`](#patients) | [US Core Patient](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-patient.html) |
+| [`related_persons`](#related-persons) | [US Core RelatedPerson](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-relatedperson.html) |
+| `social_history` | [US Core Observation Occupation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-occupation.html) |
 
-## patients.csv
+## patients
 
 One row per member.
 
@@ -87,7 +87,7 @@ One row per member.
 | `previous_address` | Recommended | `line, city, state, zip` | `12 Elm St, Bronx, NY, 10453` |
 | `previous_address_end` | If available | date | `2024-08-31` |
 
-## related_persons.csv
+## related_persons
 
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 

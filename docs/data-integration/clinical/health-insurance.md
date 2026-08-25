@@ -1,20 +1,20 @@
 ---
 description: >-
-  Columns for coverage.csv, mapped from the USCDI v3.1 Health Insurance
+  Columns for coverage, mapped from the USCDI v3.1 Health Insurance
   Information data class to US Core 6.1.0 FHIR.
 ---
 
 # Health Insurance Information
 
-## File index
+## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR. You send flat columns; Payerbox builds the FHIR resources against these profiles ([Implementation Guides](../../api-reference/implementation-guides.md)).
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi) element to FHIR ([Implementation Guides](../../api-reference/implementation-guides.md)).
 
-| File | US Core 6.1.0 target profile(s) |
+| Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
-| [`coverage.csv`](#coverage-csv) | [US Core Coverage](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-coverage.html) |
+| [`coverage`](#coverage) | [US Core Coverage](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-coverage.html) |
 
-## coverage.csv
+## coverage
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
