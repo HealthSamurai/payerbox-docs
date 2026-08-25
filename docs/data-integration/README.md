@@ -22,7 +22,7 @@ graph LR
 |---|---|
 | Format | Agreed per engagement. If you deliver CSV: UTF-8, comma-delimited, RFC 4180 quoting, first row is the headers, named exactly as in the tables. |
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
-| History (clinical feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
+| History (USCDI feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
 
 ## Built on US Core
 
@@ -32,5 +32,5 @@ graph LR
 
 | Feed | Built on | Datasets |
 |---|---|---|
-| [Clinical Data](clinical/README.md) | US Core 6.1.0 | 24 |
+| [USCDI v3.1 Data](uscdi/README.md) | US Core 6.1.0 | 24 |
 | [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.2.0 | 4 |
