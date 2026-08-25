@@ -111,8 +111,7 @@ Content-Type: application/json
 }
 ```
 
-Look the Library up by name first (the package installs with
-generated ids), for example
+Look the Library up by name first, for example
 `GET /fhir/Library?url=https://example.org/Library/metric-07-time-to-final-result`.
 
 For dashboards, wrap each metric's compiled SQL in a Postgres view
