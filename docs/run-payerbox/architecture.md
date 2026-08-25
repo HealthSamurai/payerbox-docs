@@ -14,7 +14,7 @@ Payerbox is composed of four Docker images plus Postgres. Each image is independ
 |---|---|---|
 | **Aidbox** | FHIR engine | FHIR R4 storage, search, validation, terminology, SMART App Launch and Backend Services auth, audit log, CapabilityStatement, bulk export, Plan-Net REST endpoints, Multibox multi-tenancy |
 | **Interop** | CMS APIs application layer | Provider Access, Payer-to-Payer named operations: `$provider-member-match`, `$bulk-member-match`, `$davinci-data-export`. Owns the kick-off / status / cancel endpoints; the actual bulk export and Plan-Net REST are served by Aidbox |
-| **Prior Auth** | ePA application layer | CRD CDS Hooks endpoints, PAS `Claim/$submit` / `Claim/$inquire` / `$submit-attachment`. DTR `$questionnaire-package` is served by Aidbox (the DTR FHIR package is loaded). X12 278 mapping happens inside Prior Auth |
+| **Prior Auth** | ePA application layer | CRD CDS Hooks endpoints, PAS `Claim/$submit` / `Claim/$inquire` / `$submit-attachment`. DTR `$questionnaire-package` is served by Aidbox (the DTR FHIR package is loaded). Forwarding to the payer's UM system happens inside Prior Auth |
 | **Portals** | Web UIs | Admin Portal, Developer Portal, FHIR App Gallery. Single Docker image with Nginx domain-based routing |
 
 External dependencies:
@@ -25,7 +25,7 @@ External dependencies:
 | Identity provider | Member sign-in (SMART App Launch) and Admin Portal sign-in. Keycloak ships with the dev bundle and can stay; deployments commonly point at the payer's own IdP instead. |
 | Object storage (S3-compatible) | NDJSON manifests for bulk export |
 | External decision service | CRD coverage rules (configured via `CDS_DECISION_SERVICE_URL`) |
-| External UM system | Authoritative authorization decision; receives X12 278 from Prior Auth |
+| External UM system | Authoritative authorization decision; receives the forwarded PAS request from Prior Auth over the configured connector — Da Vinci PAS or GuidingCare REST, see [UM System Integration](../prior-auth/um-integration.md) |
 
 ## Authentication chain
 
@@ -65,13 +65,13 @@ sequenceDiagram
 | API | Caller | Path |
 |---|---|---|
 | Patient Access | Member app (SMART) | App → Aidbox /authorize → Interop FHIR endpoints → Aidbox storage |
-| Provider Access (payer-attributed) | Provider system (Backend Services) | Provider → Aidbox /token → Interop `Group/$export` on the payer's attribution roster Group → response excludes members who have opted out |
-| Provider Access (provider-attributed) | Provider system (Backend Services) | Provider → Aidbox /token → Interop `$provider-member-match` (provider submits member list; Interop matches and creates a Group) → Interop `Group/$export` on that Group → response excludes members who have opted out |
+| Provider Access (payer-attributed) | Provider system (Backend Services) | Provider → Aidbox /token → Interop `Group/[id]/$davinci-data-export` on the payer's attribution roster Group → response excludes members who have opted out |
+| Provider Access (provider-attributed) | Provider system (Backend Services) | Provider → Aidbox /token → Interop `$provider-member-match` (provider submits member list; Interop matches and creates a Group) → Interop `Group/[id]/$davinci-data-export` on that Group → response excludes members who have opted out |
 | Payer-to-Payer | Receiving payer (Backend Services) | Receiver → Aidbox /token → Interop `$bulk-member-match` (consent-asserted) → Interop `$davinci-data-export` on MatchedMembers Group → Aidbox storage |
 | Provider Directory | Anyone (public) | Caller → Aidbox public Plan-Net REST endpoints (Aidbox access policy allows unauthenticated `GET` on Plan-Net resource types) |
 | CRD | EHR (CDS Hooks) | EHR → Prior Auth CDS Hooks endpoint → Aidbox (validate + persist request resources) → fetch missing references from the EHR's `fhirServer` → proxy to external decision service → response cards |
 | DTR | EHR (SMART app) | EHR → Aidbox `$questionnaire-package` (DTR FHIR package loaded; CQL runs in the DTR client, not on Aidbox) |
-| PAS | EHR / UM vendor (Backend Services) | Client → Aidbox `/auth/token` → Prior Auth `Claim/$submit` → ClaimResponse stored in Aidbox; X12 278 mapping happens inside Prior Auth |
+| PAS | EHR / UM vendor (Backend Services) | Client → Aidbox `/auth/token` → Prior Auth `Claim/$submit` → ClaimResponse stored in Aidbox; Prior Auth forwards the request to the payer's UM system and writes the decision back onto the same ClaimResponse |
 
 ## Ingestion from payer internal systems
 
@@ -82,7 +82,7 @@ Payerbox is the destination, not the source, of payer reference data. The payer 
 | Claims data warehouse | Scheduled ETL (FHIR Bundle ingest or direct SQL) |
 | Clinical data | ETL pipeline |
 | Eligibility | X12 270/271 or FHIR Coverage push |
-| UM (prior auth) | X12 278 bidirectional |
+| UM (prior auth) | Da Vinci PAS or GuidingCare REST, bidirectional |
 | Provider data management | FHIR Bundle push or Plan Net ingest |
 
 ## What's built on top
@@ -100,7 +100,7 @@ Payerbox does not provide these capabilities itself; it provides the FHIR founda
 
 ## Storage
 
-All FHIR resources live in Postgres, accessed through Aidbox. Interop and Prior Auth do not maintain their own state — they translate requests, apply business rules (attribution, consent, X12 mapping), and forward to Aidbox.
+All FHIR resources live in Postgres, accessed through Aidbox. Interop and Prior Auth do not maintain their own state — they translate requests, apply business rules (attribution, consent, UM forwarding), and forward to Aidbox.
 
 Multi-tenancy uses Aidbox **Multibox** mode when one Payerbox deployment serves multiple legal entities (for example, a TPA running APIs for several plans).
 
