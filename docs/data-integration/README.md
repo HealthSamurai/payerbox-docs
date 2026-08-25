@@ -1,7 +1,7 @@
 ---
 description: >-
-  The inbound data contract. What a payer delivers to Payerbox, file by file and
-  column by column, so Payerbox can build the FHIR its APIs serve.
+  The inbound data contract. What a payer delivers to Payerbox, dataset by
+  dataset and column by column, so Payerbox can build the FHIR its APIs serve.
 ---
 
 # Data Integration Reference
@@ -10,17 +10,17 @@ What you send Payerbox. For each USCDI data class, the columns to deliver and th
 
 ```mermaid
 graph LR
-    A(your source<br/>systems):::neutral1 --> B(flat file feed):::yellow2
+    A(your source<br/>systems):::neutral1 --> B(flat feed):::yellow2
     B --> C(Payerbox<br/>transform):::red2
     C --> D(FHIR<br/>in Aidbox):::violet2
     D --> E(Patient Access<br/>Provider Access<br/>Payer-to-Payer):::blue2
 ```
 
-## File conventions
+## Data conventions
 
 | Rule | Detail |
 |---|---|
-| Format | UTF-8, comma-delimited, RFC 4180 quoting. First row is the headers, named exactly as in the tables. |
+| Format (CSV) | UTF-8, comma-delimited, RFC 4180 quoting. First row is the headers, named exactly as in the tables. |
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
 | History (clinical feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
 
@@ -30,7 +30,7 @@ graph LR
 
 ## Feeds
 
-| Feed | Built on | Files |
+| Feed | Built on | Datasets |
 |---|---|---|
 | [Clinical Data](clinical/README.md) | US Core 6.1.0 | 24 |
 | [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.1.0 | 4 |
