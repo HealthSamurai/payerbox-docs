@@ -150,6 +150,17 @@ Place images in `assets/` directory (use subdirectories to organize, e.g. `asset
 - CI automatically converts images to AVIF and updates references — commit as PNG/JPG, optimization happens on push
 - To optimize locally before pushing: `bun images:optimize`
 
+#### Updating an image that is already published
+
+The docs site serves every asset with `Cache-Control: public, max-age=31536000, immutable` and no `ETag`, on a URL carrying no version (`src/docs/handler.ts` in the website repo). Editing a file in place therefore reaches nobody who has opened the page before: their browser, and the CDN edge in front of it, keep the old bytes for up to a year.
+
+So when the content of a published image changes, **rename the file** and update the reference — `architecture.svg` → `architecture-v2.svg`, next change `-v3`. A new filename is a new cache key.
+
+- A `?v=2` query on the reference would do the same and read better, but the `broken-links` check resolves the whole string as a file path and fails on `architecture.svg?v=2`. The pre-push hook blocks it, so this is not an option until `docs-tools` learns to strip the query.
+- No redirect is needed: `redirects.yaml` values must be `.md` files, and nothing references the old asset once the page is updated.
+- A brand-new image needs no suffix. Nothing stale is cached under a name that was never published.
+- Renaming does not help readers who already loaded the old name from a direct link. Only a CDN invalidation of `/docs/payerbox/assets/*` fixes that, and it needs access to the website's GCP project.
+
 ### Mermaid Diagrams
 
 Mermaid diagrams are supported via ` ```mermaid ` code blocks. They are rendered server-side to SVG (light + dark themes). Use round rectangles `(Node Name)` instead of `[Node Name]` for nodes. No custom CSS classes or inline styles — only the built-in color classes below.
