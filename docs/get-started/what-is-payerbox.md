@@ -53,6 +53,6 @@ Payerbox preconfigures the CMS-recommended IGs (FHIR R4, US Core, CARIN Blue But
 | Role | Where to start |
 |---|---|
 | Platform engineer | [Quickstart: Run locally](quickstart-run-locally.md) → [Run Payerbox](../run-payerbox/README.md) |
-| Third-party app developer | [Demo: FHIR App Portal](demo/fhir-app-portal.md) → [FHIR App Portal / Developer Portal](../fhir-app-portal/developer-portal.md) → [API Reference / Authentication](../api-reference/authentication.md) |
+| Third-party app developer | [FHIR App Portal / Developer Portal](../fhir-app-portal/developer-portal.md) → [API Reference / Authentication](../api-reference/authentication.md) |
 | Provider / EHR integrator | [Interop APIs / Provider Access](../interop-apis/provider-access.md) and [Prior Auth (ePA) APIs](../prior-auth/README.md) |
 | Compliance officer | [Compliance](../compliance/README.md) |

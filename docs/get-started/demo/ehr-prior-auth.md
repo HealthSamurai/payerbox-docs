@@ -1,3 +1,0 @@
-# EHR (Prior Auth)
-
-WIP

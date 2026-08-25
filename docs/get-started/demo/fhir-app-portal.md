@@ -1,3 +1,0 @@
-# FHIR App Portal
-
-WIP

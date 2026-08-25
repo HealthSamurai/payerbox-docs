@@ -349,14 +349,6 @@ docker compose down -v   # stop and delete PostgreSQL and MinIO volumes
 
 ## Next steps
 
-{% content-ref url="demo/fhir-app-portal.md" %}
-[Demo: FHIR App Portal](demo/fhir-app-portal.md)
-{% endcontent-ref %}
-
-{% content-ref url="demo/ehr-prior-auth.md" %}
-[Demo: EHR (Prior Auth)](demo/ehr-prior-auth.md)
-{% endcontent-ref %}
-
 {% content-ref url="../prior-auth/README.md" %}
 [Prior Auth (ePA) APIs](../prior-auth/README.md)
 {% endcontent-ref %}

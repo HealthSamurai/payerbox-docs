@@ -5,3 +5,6 @@ redirects:
   fhir-app-portal/developer-portal#example-growth-chart-app: fhir-app-portal/smart-app.md#example-growth-chart-app
   fhir-app-portal/developer-portal#submit-for-review: fhir-app-portal/smart-app.md#submit-for-review
   fhir-app-portal/developer-portal#app-status: fhir-app-portal/smart-app.md#app-status
+  get-started/demo/README.md: get-started/README.md
+  get-started/demo/fhir-app-portal.md: fhir-app-portal/README.md
+  get-started/demo/ehr-prior-auth.md: prior-auth/README.md
