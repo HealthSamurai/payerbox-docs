@@ -8,7 +8,7 @@ description: >-
 
 ## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) element to FHIR ([Implementation Guides](../../api-reference/implementation-guides.md)).
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) element to FHIR.
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -18,7 +18,7 @@ description: >-
 
 ## patients
 
-One row per member.
+One row per member. The sections below group its columns.
 
 ### Identity
 
@@ -102,8 +102,6 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 
 ## social_history
 
-Carries the USCDI Occupation and Occupation Industry elements. Smoking and pregnancy rows live in the same dataset but belong to Health Status/Assessments.
-
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
@@ -112,7 +110,5 @@ Carries the USCDI Occupation and Occupation Industry elements. Smoking and pregn
 | `value_code` | Yes | O*NET-SOC occupation code, with `value_system` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `29-1141.00` |
 | `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
-
-Payerbox assigns the LOINC codes: occupation `11341-5`, industry component `86188-0`.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
