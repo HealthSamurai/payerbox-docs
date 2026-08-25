@@ -21,7 +21,7 @@ One row per substance per patient. A substance with several reaction manifestati
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system`; RxNorm if omitted | `7980` penicillin G |
+| `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system`; RxNorm if omitted [Common substances for allergy and intolerance documentation including refutations](https://tx.fhir.org/r4/ValueSet/2.16.840.1.113762.1.4.1186.8-20240625) | `7980` penicillin G |
 | `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://hl7.org/fhir/R4/valueset-allergyintolerance-clinical.html) | `active` |
 | `verification_status` | Recommended | `unconfirmed`, `confirmed`, `refuted`, `entered-in-error` [allergyintolerance-verification](https://hl7.org/fhir/R4/valueset-allergyintolerance-verification.html) | `confirmed` |
 | `category` | If available | `food`, `medication`, `environment`, `biologic` [allergy-intolerance-category](https://hl7.org/fhir/R4/valueset-allergy-intolerance-category.html) | `medication` |
@@ -30,7 +30,7 @@ One row per substance per patient. A substance with several reaction manifestati
 | `onset_date` | If available | datetime | `2019-05-02` |
 
 - `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` or `http://snomed.info/sct`.
-- US Core binds the field to a VSAC grouping value set, "Common substances for allergy and intolerance documentation including refutations", covering drug, dietary, and environmental substances plus the negation codes below. Its canonical URI is `http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8`. Expand that URI against your Payerbox instance to get the exact list it validates against; the copy at VSAC needs a free UMLS account to browse.
+- The bound value set is a VSAC grouping of drug, dietary, and environmental substances plus the negation codes below. Its canonical URI is `http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8`. Expand that URI against your own Payerbox instance as well: the version a server carries can lag the public one, and it is the server copy that decides whether your row validates.
 - **Roll RxNorm codes up to the ingredient.** Every RxNorm member of the value set is an ingredient (`IN`) or multi-ingredient (`MIN`) concept. Pharmacy-claim codes at drug or pack level, whether NDC, `SCD`, or `SBD`, are not members, so map them to the ingredient before sending.
 - A row that carries a reaction needs at least one `reaction_manifestation_code`. Manifestation is mandatory inside a reaction.
 - `clinical_status` and `verification_status` are coupled: FHIR requires `clinical_status` on every row whose `verification_status` is not `entered-in-error`, and forbids it on rows that are. A row that leaves both empty is rejected. Sending `active` on live rows and `resolved` or `inactive` on closed ones satisfies this.
