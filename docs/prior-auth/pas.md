@@ -94,3 +94,7 @@ See [UM System Integration](um-integration.md) for the connectors, the delivery 
 ## Notifications
 
 Rather than polling `Claim/$inquire`, a downstream system can subscribe to decision events and be notified when a `ClaimResponse` is recorded. See [Event Notifications](event-notifications.md) for how to set up a FHIR topic-based subscription.
+
+## Metrics
+
+Payerbox ships with Da Vinci PAS Implementation Guide's suggested [PAS metrics](../analytics/pas-metrics.md) that are calculated directly from stored FHIR data. 
