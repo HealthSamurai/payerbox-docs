@@ -21,7 +21,7 @@ One row per substance per patient. A substance with several reaction manifestati
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `substance_code` | Yes | RxNorm, SNOMED CT, or UNII code, with `substance_system`; RxNorm if omitted [Common substances for allergy and intolerance documentation including refutations](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1186.8/expansion) | `7980` penicillin G |
+| `substance_code` | Yes | RxNorm, SNOMED CT, or UNII code, with `substance_system` [code system URIs](https://hl7.org/fhir/R4/terminologies-systems.html); RxNorm if omitted | `7980` penicillin G |
 | `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://hl7.org/fhir/R4/valueset-allergyintolerance-clinical.html) | `active` |
 | `verification_status` | Recommended | `unconfirmed`, `confirmed`, `refuted`, `entered-in-error` [allergyintolerance-verification](https://hl7.org/fhir/R4/valueset-allergyintolerance-verification.html) | `confirmed` |
 | `category` | If available | `food`, `medication`, `environment`, `biologic` [allergy-intolerance-category](https://hl7.org/fhir/R4/valueset-allergy-intolerance-category.html) | `medication` |
@@ -29,7 +29,7 @@ One row per substance per patient. A substance with several reaction manifestati
 | `reaction_manifestation_code` | If a reaction is recorded | SNOMED CT code(s), `;`-separated [SNOMED CT Clinical Findings](https://hl7.org/fhir/R4/valueset-clinical-findings.html) | `247472004` Wheal |
 | `onset_date` | If available | datetime | `2019-05-02` |
 
-- `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance.
+- `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` for RxNorm, `http://snomed.info/sct` for SNOMED CT, or `http://fdasis.nlm.nih.gov` for UNII. US Core binds the field to the VSAC value set "Common substances for allergy and intolerance documentation including refutations" (OID `2.16.840.1.113762.1.4.1186.8`), which holds RxNorm and SNOMED CT substances plus the negation codes below. Browsing it at VSAC needs a UMLS account.
 - A row that carries a reaction needs at least one `reaction_manifestation_code`. Manifestation is mandatory inside a reaction.
 - `clinical_status` and `verification_status` are coupled: FHIR requires `clinical_status` on every row whose `verification_status` is not `entered-in-error`, and forbids it on rows that are. A row that leaves both empty is rejected. Sending `active` on live rows and `resolved` or `inactive` on closed ones satisfies this.
 
