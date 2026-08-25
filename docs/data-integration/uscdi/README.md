@@ -13,7 +13,7 @@ description: >-
 | 3 | `practitioners` | [Care Team Members](care-team.md#practitioners) (ref), may come from [Provider Directory](../provider-directory/README.md#providers) | Practitioner; PractitionerRole |
 | 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Organization |
 | 5 | `locations` | Encounter (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Location |
-| 6 | `allergies` | Allergies and Intolerances | AllergyIntolerance |
+| 6 | `allergies` | [Allergies and Intolerances](allergies.md#allergies) | AllergyIntolerance |
 | 7 | `conditions` | Problems, Encounter Diagnosis, Health Concerns, SDOH | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
 | 8 | `medications` | Medications | MedicationRequest (+ Medication) |
 | 9 | `medication_dispenses` | Medications (Fill Status) | MedicationDispense |

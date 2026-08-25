@@ -66,5 +66,6 @@
     * [Patient Demographics/Information](data-integration/uscdi/patient-demographics.md)
     * [Health Insurance Information](data-integration/uscdi/health-insurance.md)
     * [Care Team Members](data-integration/uscdi/care-team.md)
+    * [Allergies and Intolerances](data-integration/uscdi/allergies.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)
