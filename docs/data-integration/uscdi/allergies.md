@@ -30,9 +30,7 @@ One row per substance per patient. A substance with several reaction manifestati
 | `onset_date` | If available | datetime | `2019-05-02` |
 
 - `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` or `http://snomed.info/sct`.
-- The bound value set is a VSAC grouping of drug, dietary, and environmental substances plus the negation codes below. Its canonical URI is `http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8`. Expand that URI against your own Payerbox instance too: the version a server carries can lag the public one, and it is the server copy that decides whether your row validates.
-- **That value set is retired, and it is still the one your rows are checked against.** It has taken no new concepts since 2018, and later US Core versions bind a maintained replacement, "Allergen Concepts (Medications, Foods, and Environmental Substances) including refutations" (`2.16.840.1.113762.1.4.1267.43`). US Core 6.1.0 binds the retired one, so that is what validates today. Build your substance mapping against the replacement where the two overlap and it survives the upgrade; the negation codes below sit in a component both sets include, so they need no rework either way.
-- **Roll RxNorm codes up to the ingredient.** Every RxNorm member of the value set is an ingredient (`IN`) or multi-ingredient (`MIN`) concept. Pharmacy-claim codes at drug or pack level, whether NDC, `SCD`, or `SBD`, are not members, so map them to the ingredient before sending.
+- **For a medication, send the ingredient.** Every RxNorm code the value set accepts is an ingredient, single or combination. A code for a specific product or pack, whether an NDC or an RxNorm drug-level code from a pharmacy claim, is not accepted, so roll it up to the ingredient first. For an allergy recorded against a whole drug class, send the SNOMED CT class code.
 - A row that carries a reaction needs at least one `reaction_manifestation_code`. Manifestation is mandatory inside a reaction.
 - `clinical_status` and `verification_status` are coupled: FHIR requires `clinical_status` on every row whose `verification_status` is not `entered-in-error`, and forbids it on rows that are. A row that leaves both empty is rejected. Sending `active` on live rows and `resolved` or `inactive` on closed ones satisfies this.
 
@@ -49,8 +47,6 @@ An empty file is ambiguous: it does not separate "we asked, the member has no al
 | No known latex allergy | `1003774007` No known latex allergy | `active` | `confirmed` |
 | Member was not asked | `1631000175102` Patient not asked | `active` | `unconfirmed`, or empty |
 
-Use the narrowest code your source supports: a plan that only knows "no drug allergies" should send `409137002`, not `716186003`.
-
-Both codes are SNOMED CT, so send `substance_system` as `http://snomed.info/sct`.
+All six are SNOMED CT. Use the narrowest one your source supports: a plan that only knows "no drug allergies" should send `409137002`, not `716186003`.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).
