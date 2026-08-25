@@ -61,4 +61,7 @@
     * [order-dispatch](api-reference/operations/cds-hook-order-dispatch.md)
     * [appointment-book](api-reference/operations/cds-hook-appointment-book.md)
     * [MPF Endpoints](api-reference/operations/mpf-pipeline-api.md)
+* [Data Integration Reference](data-integration/README.md)
+  * [Patient Demographics/Information](data-integration/patient-demographics.md)
+  * [Provider Directory](data-integration/provider-directory.md)
 * [Releases](releases.md)
