@@ -43,8 +43,8 @@ The request body must be a FHIR `Parameters` resource. Unsupported parameter nam
 </thead>
 <tbody>
 <tr><td>IN</td><td><code>exportType</code></td><td>canonical (<code>valueCanonical</code>)</td><td>0..1</td><td>Selects the PDex scenario (consent rule + data scope). Supported values: <code>hl7.fhir.us.davinci-pdex#provider-download</code> and <code>hl7.fhir.us.davinci-pdex#payertopayer</code>. See <a href="#exporttype-values"><code>exportType</code> values</a>.</td></tr>
-<tr><td>IN</td><td><code>_since</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated since this time.</td></tr>
-<tr><td>IN</td><td><code>_until</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated up to this time.</td></tr>
+<tr><td>IN</td><td><code>_since</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated since this time. Must not be after <code>_until</code>.</td></tr>
+<tr><td>IN</td><td><code>_until</code></td><td>instant (<code>valueInstant</code>)</td><td>0..1</td><td>Only resources updated up to this time. Must not be before <code>_since</code>.</td></tr>
 <tr><td>IN</td><td><code>_type</code></td><td>string (<code>valueString</code>)</td><td>0..1</td><td>Comma-separated FHIR resource types to include (e.g. <code>Patient,Coverage,ExplanationOfBenefit</code>).</td></tr>
 <tr><td>IN</td><td><code>_typeFilter</code></td><td>string (<code>valueString</code>)</td><td>0..*</td><td>Per-type FHIR search expression (e.g. <code>Observation?category=laboratory</code>). A caller clause naming <code>ExplanationOfBenefit</code> is rejected with <code>400</code>: it would OR-merge with the interop app's injected pharmacy/service-date EOB filter and re-admit excluded data.</td></tr>
 <tr><td>IN</td><td><code>_outputFormat</code></td><td>string (<code>valueString</code>)</td><td>0..1</td><td>Output format. <code>application/fhir+ndjson</code> is the default and only value supported in PDex 2.1.0.</td></tr>
@@ -122,6 +122,7 @@ Interop returns one of these diagnostics:
 - `Unsupported exportType: <value>`
 - `_outputFormat must be application/fhir+ndjson, got: <value>`
 - `Caller-supplied _typeFilter on ExplanationOfBenefit is not supported`
+- `Parameter _since must not be after _until, got _since="<value>" _until="<value>"`
 {% endtab %}
 {% tab title="Response (missing UDAP claim)" %}
 ```http
@@ -295,7 +296,7 @@ HTTP/1.1 202 Accepted
 
 | Status | Where | Cause |
 |---|---|---|
-| 400 | Kick-off (interop) | `Prefer: respond-async` missing; body not `Parameters`; unsupported parameter; `exportType` missing, repeated, not `valueCanonical`, or unknown; `_outputFormat` not `application/fhir+ndjson`; caller `_typeFilter` naming `ExplanationOfBenefit` |
+| 400 | Kick-off (interop) | `Prefer: respond-async` missing; body not `Parameters`; unsupported parameter; `exportType` missing, repeated, not `valueCanonical`, or unknown; `_outputFormat` not `application/fhir+ndjson`; caller `_typeFilter` naming `ExplanationOfBenefit`; `_since` after `_until` |
 | 401 | Kick-off (interop) | `payertopayer` export whose access token carries no UDAP HL7 B2B `organization_id` claim; the opt-in gate fails closed |
 | 422 | Kick-off (interop) | `exportType` is a recognized Da Vinci canonical this server does not yet translate; Group `meta.profile` incompatible with `exportType`; inactive Group |
 | 404 | Kick-off (Aidbox) | `Group/<id>` not found |
