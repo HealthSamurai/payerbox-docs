@@ -17,7 +17,7 @@ description: >-
 | 7 | `conditions` | Problems, Encounter Diagnosis, Health Concerns, SDOH | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
 | 8 | `medications` | Medications | MedicationRequest (+ Medication) |
 | 9 | `medication_dispenses` | Medications (Fill Status) | MedicationDispense |
-| 10 | `immunizations` | Immunizations | Immunization |
+| 10 | `immunizations` | [Immunizations](immunizations.md#immunizations) | Immunization |
 | 11 | `procedures` | Procedures | Procedure |
 | 12 | `service_requests` | Procedures (Referral), SDOH Interventions | ServiceRequest |
 | 13 | `encounters` | Encounter Information | Encounter |

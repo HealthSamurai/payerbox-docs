@@ -67,5 +67,6 @@
     * [Health Insurance Information](data-integration/uscdi/health-insurance.md)
     * [Care Team Members](data-integration/uscdi/care-team.md)
     * [Allergies and Intolerances](data-integration/uscdi/allergies.md)
+    * [Immunizations](data-integration/uscdi/immunizations.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)

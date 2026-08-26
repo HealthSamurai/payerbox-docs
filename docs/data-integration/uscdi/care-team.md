@@ -26,9 +26,9 @@ If you already send the [Provider Directory](../provider-directory/README.md) fe
 | `npi` | Yes | 10 digits | `1407006835` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
-| `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://vsac.nlm.nih.gov/valueset/2.16.840.1.114222.4.11.1066/expansion) | `207R00000X` |
+| `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
 | `primary_org_npi` | Recommended | 10 digits | `1234567893` |
-| `practitioner_role_code` | Recommended | role code [Care Team Member Function](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1099.30/expansion) | `doctor` |
+| `practitioner_role_code` | Recommended | role code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `doctor` |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `email` | If available | email address | |
@@ -44,7 +44,7 @@ One row per patient and team member.
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `member_npi` | Yes | 10 digits; send this or `member_related_person_id` | `1407006835` |
 | `member_related_person_id` | Yes | `related_persons` key, for non-clinicians; send this or `member_npi` | |
-| `role_code` | Yes | SNOMED or NUCC code [Care Team Member Function](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1099.30/expansion) | `223366009` |
-| `status` | Recommended | `active`, `proposed`, `inactive` [care-team-status](https://hl7.org/fhir/R4/valueset-care-team-status.html) | `active` |
+| `role_code` | Yes | SNOMED or NUCC code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `223366009` |
+| `status` | Recommended | `active`, `proposed`, `inactive` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status) | `active` |
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
