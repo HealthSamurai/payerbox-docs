@@ -26,24 +26,15 @@ One row per encounter. Several diagnoses or participants stay one row: list the 
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `planned`, `arrived`, `triaged`, `in-progress`, `onleave`, `finished`, `cancelled`, `entered-in-error`, `unknown` [encounter-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-status%7C4.0.1) | `finished` |
 | `class` | Yes | `AMB` ambulatory, `IMP` inpatient, `EMER` emergency, `OBSENC` observation [v3-ActEncounterCode](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-ActEncounterCode) | `AMB` |
-| `type_code` | Yes | CPT or SNOMED CT code(s), `;`-separated [US Core Encounter Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-encounter-type) | `99213` |
+| `type_code` | Yes | CPT or SNOMED CT code(s), `;`-separated, with `type_system`; CPT if omitted [US Core Encounter Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-encounter-type) | `99213` |
 | `period_start` | Recommended | datetime | `2026-04-18T09:00:00-04:00` |
 | `period_end` | Recommended | datetime | `2026-04-18T09:30:00-04:00` |
-| `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated [encounter-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-reason%7C4.0.1) | `29857009` chest pain |
+| `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [encounter-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-reason%7C4.0.1) | `29857009` chest pain |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `diagnosis_condition_id` | If available | `conditions` key(s), `;`-separated | `CND-4501` |
 | `participant_npi` | If available | 10 digits, `;`-separated | `1407006835` |
-| `discharge_disposition_code` | If applicable | NUBC patient discharge status code, as carried in UB-04 field 17 [AHA NUBC Patient Discharge Status](https://terminology.hl7.org/5.5.0/CodeSystem-AHANUBCPatientDischargeStatus.html) | `01` discharged to home or self-care |
+| `discharge_disposition_code` | If applicable | NUBC patient discharge status code, as carried in UB-04 field 17, with `discharge_disposition_system` [AHA NUBC Patient Discharge Status](https://terminology.hl7.org/5.5.0/CodeSystem-AHANUBCPatientDischargeStatus.html) | `01` discharged to home or self-care |
 | `service_provider_npi` | If available | 10 digits | `1234567893` |
-
-- A bare code uses the column's default system: CPT for `type_code`, SNOMED CT for `reason_code`, NUBC for `discharge_disposition_code`. For any other system, prefix it with a pipe. Several codes are `;`-separated, each carrying its own system:
-
-  ```csv
-  reason_code
-  29857009
-  29857009;25064002
-  http://snomed.info/sct|29857009;http://hl7.org/fhir/sid/icd-10-cm|R07.9
-  ```
 
 - `reason_code` is the presenting complaint, not the diagnosis (`diagnosis_condition_id`). Its binding is preferred, so an ICD-10-CM code off the claim is accepted.
 - NUBC is a billing code set, not clinical terminology: send the discharge status off the claim. AHA licenses the codes, so the linked page cannot list them.
