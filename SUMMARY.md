@@ -68,5 +68,6 @@
     * [Care Team Members](data-integration/uscdi/care-team.md)
     * [Allergies and Intolerances](data-integration/uscdi/allergies.md)
     * [Immunizations](data-integration/uscdi/immunizations.md)
+    * [Encounter Information](data-integration/uscdi/encounters.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)
