@@ -27,7 +27,7 @@ description: >-
 | 17 | `coverage` | [Health Insurance Information](health-insurance.md#coverage) | Coverage |
 | 18 | `documents` | Clinical Notes | DocumentReference |
 | 19 | `diagnostic_reports` | Clinical Notes, Laboratory, Diagnostic Imaging (report level) | DiagnosticReport (Lab + Report/Note) |
-| 20 | `devices` | Unique Device Identifier(s) | Implantable Device |
+| 20 | `devices` | [Unique Device Identifier(s)](device.md#devices) | Implantable Device |
 | 21 | `vital_signs` | Vital Signs | Observation (Vital Signs family) |
 | 22 | `labs` | Laboratory | Observation (Lab Result) + Specimen |
 | 23 | `social_history` | Health Status/Assessments (Smoking, Pregnancy) + Patient Demographics (Occupation) | Observation (Social History profiles) |
