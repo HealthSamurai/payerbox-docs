@@ -296,9 +296,18 @@ HTTP/1.1 202 Accepted
 
 | Status | Where | Cause |
 |---|---|---|
-| 400 | Kick-off (interop) | `Prefer: respond-async` missing; body not `Parameters`; unsupported parameter; `exportType` missing, repeated, not `valueCanonical`, or unknown; `_outputFormat` not `application/fhir+ndjson`; caller `_typeFilter` naming `ExplanationOfBenefit`; `_since` after `_until` |
+| 400 | Kick-off (interop) | `Prefer: respond-async` missing |
+| 400 | Kick-off (interop) | Body is not a `Parameters` resource |
+| 400 | Kick-off (interop) | Unsupported parameter name |
+| 400 | Kick-off (interop) | `exportType` missing, repeated, or not `valueCanonical` |
+| 400 | Kick-off (interop) | `exportType` value unknown |
+| 400 | Kick-off (interop) | `_outputFormat` not `application/fhir+ndjson` |
+| 400 | Kick-off (interop) | Caller `_typeFilter` naming `ExplanationOfBenefit` |
+| 400 | Kick-off (interop) | `_since` after `_until` |
 | 401 | Kick-off (interop) | `payertopayer` export whose access token carries no UDAP HL7 B2B `organization_id` claim; the opt-in gate fails closed |
-| 422 | Kick-off (interop) | `exportType` is a recognized Da Vinci canonical this server does not yet translate; Group `meta.profile` incompatible with `exportType`; inactive Group |
+| 422 | Kick-off (interop) | `exportType` is a recognized Da Vinci canonical this server does not yet translate |
+| 422 | Kick-off (interop) | Group `meta.profile` incompatible with `exportType` |
+| 422 | Kick-off (interop) | Group is inactive |
 | 404 | Kick-off (Aidbox) | `Group/<id>` not found |
 | 404 | Status / cancel (Aidbox) | Unknown `<job-id>` or job expired |
 | 422 | Kick-off (Aidbox) | Body fails `BulkExportProfile` validation (for example empty `parameter[]`) |
