@@ -29,11 +29,17 @@ If you already send the [Provider Directory](../provider-directory/README.md) fe
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
 | `primary_org_npi` | Recommended | 10 digits | `1234567893` |
 | `practitioner_role_code` | Recommended | role code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `doctor` |
-| `location_id` | Recommended | `locations` key | `LOC-221` |
+| `address_line1` | Recommended | text | `225 Broadway` |
+| `address_line2` | If available | text | `Suite 400` |
+| `city` | Recommended | text | `New York` |
+| `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
+| `zip` | Recommended | 5 digits, as a string | `10007` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `email` | If available | email address | |
 | `role_period_start` | If available | date | `2021-04-01` |
 | `role_period_end` | If available | date | |
+
+Payerbox identifies the practice location by its address and deduplicates, so you assign it no id. Send the same address here that you send in the [Provider Directory](../provider-directory/README.md) feed for that site — matching addresses are the same Location.
 
 ## care_team
 

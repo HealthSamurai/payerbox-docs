@@ -1,7 +1,7 @@
 ---
 description: >-
-  Columns for encounters and locations, mapped from the USCDI v3.1 Encounter
-  Information data class to US Core 6.1.0 FHIR.
+  Columns for encounters, mapped from the USCDI v3.1 Encounter Information
+  data class to US Core 6.1.0 FHIR.
 ---
 
 # Encounter Information
@@ -12,8 +12,7 @@ description: >-
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
-| [`encounters`](#encounters) | [US Core Encounter](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-encounter.html) |
-| [`locations`](#locations) | [US Core Location](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-location.html) |
+| [`encounters`](#encounters) | [US Core Encounter](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-encounter.html), [US Core Location](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-location.html) |
 
 ## encounters
 
@@ -30,7 +29,12 @@ One row per encounter. Several diagnoses or participants stay one row: list the 
 | `period_start` | Recommended | datetime | `2026-04-18T09:00:00-04:00` |
 | `period_end` | Recommended | datetime | `2026-04-18T09:30:00-04:00` |
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [encounter-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-reason%7C4.0.1) | `29857009` chest pain |
-| `location_id` | Recommended | `locations` key | `LOC-221` |
+| `address_line1` | Recommended | text | `88 River Rd` |
+| `address_line2` | If available | text | `Suite 400` |
+| `city` | Recommended | text | `Yonkers` |
+| `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
+| `zip` | Recommended | 5 digits, as a string | `10701` |
+| `location_name` | If available | text | `Riverdale Family Practice` |
 | `diagnosis_condition_id` | If available | `conditions` key(s), `;`-separated | `CND-4501` |
 | `participant_npi` | If available | 10 digits, `;`-separated | `1407006835` |
 | `discharge_disposition_code` | If applicable | NUBC patient discharge status code, as carried in UB-04 field 17, with `discharge_disposition_system` [AHA NUBC Patient Discharge Status](https://terminology.hl7.org/5.5.0/CodeSystem-AHANUBCPatientDischargeStatus.html) | `01` discharged to home or self-care |
@@ -39,23 +43,8 @@ One row per encounter. Several diagnoses or participants stay one row: list the 
 - `reason_code` is the presenting complaint, not the diagnosis (`diagnosis_condition_id`). Its binding is preferred, so an ICD-10-CM code off the claim is accepted.
 - NUBC is a billing code set, not clinical terminology: send the discharge status off the claim. AHA licenses the codes, so the linked page cannot list them.
 
-## locations
+### Where the encounter happened
 
-One row per physical location: a clinic, a hospital ward, a lab draw station.
-
-If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the locations missing from it, such as a facility outside your network where a member was treated.
-
-| Column | Required | Format / values | Example |
-|---|---|---|---|
-| `location_id` | Yes | stable id; the key `encounters` references | `LOC-221` |
-| `location_name` | Yes | text | `Riverdale Family Practice` |
-| `managing_org_npi` | Recommended | 10 digits | `1234567893` |
-| `address_line1` | Recommended | text | `88 River Rd` |
-| `city` | Recommended | text | `Yonkers` |
-| `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
-| `zip` | Recommended | 5 or 9 digits, as a string | `10701` |
-
-- `location_name` is the one mandatory field: a row without it cannot become a Location.
-- `managing_org_npi` must match a row in your organizations dataset.
+**If a site also appears in your [Provider Directory](../provider-directory/README.md) feed, send its address the same way in both.** Payerbox identifies a Location by street, suite, city, state, and ZIP together, so one site described the same way in both feeds is one Location. Sending the suite in one and omitting it in the other describes two different places, as does splitting a street across two fields in one feed and combining them into one in the other.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).

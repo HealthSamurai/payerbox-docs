@@ -12,7 +12,7 @@ description: >-
 | 2 | `related_persons` | [Patient Demographics (Related Person)](patient-demographics.md#related-persons) | RelatedPerson |
 | 3 | `practitioners` | [Care Team Members](care-team.md#practitioners) (ref), may come from [Provider Directory](../provider-directory/README.md#providers) | Practitioner; PractitionerRole |
 | 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Organization |
-| 5 | `locations` | [Encounter Information](encounters.md#locations) (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Location |
+| 5 | `locations` | derived from the addresses on [Encounter Information](encounters.md#where-the-encounter-happened), or from [Provider Directory](../provider-directory/README.md#facilities) | Location |
 | 6 | `allergies` | [Allergies and Intolerances](allergies.md#allergies) | AllergyIntolerance |
 | 7 | `conditions` | Problems, Encounter Diagnosis, Health Concerns, SDOH | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
 | 8 | `medications` | Medications | MedicationRequest (+ Medication) |
