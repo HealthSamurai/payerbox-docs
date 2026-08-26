@@ -24,15 +24,15 @@ One row per administered (or refused) dose per patient. A member with three seas
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `completed`, `entered-in-error`, `not-done` [immunization-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status) | `completed` |
-| `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason) | `PATOBJ` patient objection |
-| `vaccine_code` | Yes | CVX code, with `vaccine_system`; CVX if omitted [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code) | `140` influenza, seasonal, injectable, preservative free |
+| `status_reason_code` | If `not-done` | v3 ActReason code; prefix `http://snomed.info/sct` for a SNOMED CT code [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason) | `PATOBJ` patient objection |
+| `vaccine_code` | Yes | CVX code; prefix `http://hl7.org/fhir/sid/ndc` for an NDC off a claim [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code) | `140` influenza, seasonal, injectable, preservative free |
 | `occurrence_date` | Yes | datetime | `2025-10-02` |
 | `performer_npi` | If available | 10 digits | `1407006835` |
 | `primary_source` | Recommended | `true` / `false` | `true` |
 
-- `vaccine_code` is the one coded field with no fallback: a row without it cannot become an Immunization. Send `vaccine_system` as `http://hl7.org/fhir/sid/cvx`. US Core requires the CVX coding, so a row sourced from a billed claim that only carries an NDC should send that NDC with `vaccine_system` as `http://hl7.org/fhir/sid/ndc`; Payerbox crosswalks it to CVX.
+- `vaccine_code` is the one coded field with no fallback: a row without it cannot become an Immunization. CVX is the default system. US Core requires the CVX coding, so a row sourced from a billed claim that only carries an NDC should send that NDC prefixed with `http://hl7.org/fhir/sid/ndc`; Payerbox crosswalks it to CVX.
 - `status` marks each row: `completed` for a dose that was given, `not-done` for one that was not, `entered-in-error` to retract a record that should never have existed.
-- `status_reason_code` belongs only on `not-done` rows: why the vaccine was not given — patient objection, medical precaution, out of stock, immunity, or a SNOMED CT refusal code. Send `status_reason_system` as `http://terminology.hl7.org/CodeSystem/v3-ActReason` or `http://snomed.info/sct`.
+- `status_reason_code` belongs only on `not-done` rows: why the vaccine was not given — patient objection, medical precaution, out of stock, immunity, or a SNOMED CT refusal code. v3 ActReason is the default system.
 - `occurrence_date` is the administration date (for `not-done` rows, the date the dose was due or refused). A date without a time is fine.
 - `performer_npi` identifies the administering practitioner and must match a row in [`practitioners`](care-team.md#practitioners).
 - `primary_source` is `true` when the record comes from the party that administered the vaccine, `false` for secondhand reports — member-reported doses or history imported from another system.

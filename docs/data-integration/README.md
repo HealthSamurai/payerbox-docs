@@ -23,6 +23,7 @@ graph LR
 | Format | Agreed per engagement. If you deliver CSV: UTF-8, comma-delimited, RFC 4180 quoting, first row is the headers, named exactly as in the tables. |
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
 | History (USCDI feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
+| Codes | A bare code uses the column's default system. For any other system, prefix it with a pipe: `http://snomed.info/sct\|29857009`. Several codes are `;`-separated, each carrying its own system. |
 
 ## Built on US Core
 

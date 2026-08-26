@@ -44,7 +44,7 @@ One row per patient and team member.
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `member_npi` | Yes | 10 digits; send this or `member_related_person_id` | `1407006835` |
 | `member_related_person_id` | Yes | `related_persons` key, for non-clinicians; send this or `member_npi` | |
-| `role_code` | Yes | SNOMED or NUCC code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `223366009` |
+| `role_code` | Yes | SNOMED CT code; prefix `http://nucc.org/provider-taxonomy` for a NUCC code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `223366009` |
 | `status` | Recommended | `active`, `proposed`, `inactive` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status) | `active` |
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

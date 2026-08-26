@@ -94,7 +94,7 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `NCH` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
+| `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `NCH` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html); prefix `http://terminology.hl7.org/CodeSystem/v2-0131` for a [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) code | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
 | `first_name` | Recommended | text | `Mary` |
 | `phone` | If available | 10 digits | `5559876543` |
@@ -107,7 +107,7 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `final`, `amended`, `corrected`, `entered-in-error` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status) | `final` |
-| `value_code` | Yes | O*NET-SOC occupation code, with `value_system` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `29-1141.00` |
+| `value_code` | Yes | O*NET-SOC code for `occupation`; SNOMED CT for the other observation types [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `29-1141.00` |
 | `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
 
