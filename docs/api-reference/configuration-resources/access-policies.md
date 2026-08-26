@@ -187,20 +187,21 @@ Read-only is not de-identified. The role reads every resource in the box, PHI in
 {% endstep %}
 
 {% step %}
-**Verify both directions.** With a token issued to that user, call one endpoint the role should reach and one it should not:
+**Verify both directions.** With a token issued to that user, call an endpoint the role should reach, expecting `200`:
 
-```bash
-# expected: 200
-curl -s -o /dev/null -w '%{http_code}\n' \
-  -H "Authorization: Bearer $TOKEN" \
-  "https://<base>/fhir/Patient?_count=1"
+```http
+GET /fhir/Patient?_count=1
+Authorization: Bearer <access-token>
+```
 
-# expected: 403
-curl -s -o /dev/null -w '%{http_code}\n' -X POST \
-  -H "Authorization: Bearer $TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{"resourceType": "Patient"}' \
-  "https://<base>/fhir/Patient"
+Then one it should not, expecting `403`:
+
+```http
+POST /fhir/Patient
+Authorization: Bearer <access-token>
+Content-Type: application/json
+
+{"resourceType": "Patient"}
 ```
 {% endstep %}
 
