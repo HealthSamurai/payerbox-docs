@@ -26,11 +26,11 @@ allergies.csv Data template with example rows
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system`; RxNorm if omitted [Common substances for allergy and intolerance documentation including refutations](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8) | `7980` penicillin G |
-| `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-clinical) | `active` |
-| `verification_status` | Recommended | `unconfirmed`, `confirmed`, `refuted`, `entered-in-error` [allergyintolerance-verification](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-verification) | `confirmed` |
-| `category` | If available | `food`, `medication`, `environment`, `biologic` [allergy-intolerance-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergy-intolerance-category) | `medication` |
-| `criticality` | If available | `low`, `high`, `unable-to-assess` [allergy-intolerance-criticality](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality) | `high` |
-| `reaction_manifestation_code` | If a reaction is recorded | SNOMED CT code(s), `;`-separated [SNOMED CT Clinical Findings](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/clinical-findings) | `247472004` Wheal |
+| `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-clinical%7C4.0.1) | `active` |
+| `verification_status` | Recommended | `unconfirmed`, `confirmed`, `refuted`, `entered-in-error` [allergyintolerance-verification](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-verification%7C4.0.1) | `confirmed` |
+| `category` | If available | `food`, `medication`, `environment`, `biologic` [allergy-intolerance-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergy-intolerance-category%7C4.0.1) | `medication` |
+| `criticality` | If available | `low`, `high`, `unable-to-assess` [allergy-intolerance-criticality](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality%7C4.0.1) | `high` |
+| `reaction_manifestation_code` | If a reaction is recorded | SNOMED CT code(s), `;`-separated [SNOMED CT Clinical Findings](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/clinical-findings%7C4.0.1) | `247472004` Wheal |
 | `onset_date` | If available | datetime | `2019-05-02` |
 
 - `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` or `http://snomed.info/sct`.

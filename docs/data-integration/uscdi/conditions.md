@@ -27,8 +27,8 @@ conditions.csv Data template with example rows
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `category` | Yes | one of seven values — see [Categories](#categories) | `problem-list-item` |
 | `code` | Yes | SNOMED CT or ICD-10-CM code, with `code_system` [us-core-condition-code](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `44054006` Type 2 diabetes mellitus |
-| `clinical_status` | Recommended | `active`, `recurrence`, `relapse`, `inactive`, `remission`, `resolved` [condition-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/condition-clinical) | `active` |
-| `verification_status` | Recommended | `unconfirmed`, `provisional`, `differential`, `confirmed`, `refuted`, `entered-in-error` [condition-ver-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/condition-ver-status) | `confirmed` |
+| `clinical_status` | Recommended | `active`, `recurrence`, `relapse`, `inactive`, `remission`, `resolved` [condition-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/condition-clinical%7C4.0.1) | `active` |
+| `verification_status` | Recommended | `unconfirmed`, `provisional`, `differential`, `confirmed`, `refuted`, `entered-in-error` [condition-ver-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/condition-ver-status%7C4.0.1) | `confirmed` |
 | `onset_date` | Recommended | datetime | `2021-08-14` |
 | `abatement_date` | If resolved | datetime | `2023-11-30` |
 | `recorded_date` | Recommended | datetime | `2021-08-15` |
@@ -49,7 +49,7 @@ conditions.csv Data template with example rows
 |---|---|---|---|
 | `problem-list-item` | an item managed over time on the problem list | Problems and Health Concerns | [us-core-problem-or-health-concern](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-problem-or-health-concern) |
 | `health-concern` | a concern not on the formal problem list | Problems and Health Concerns | [us-core-problem-or-health-concern](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-problem-or-health-concern) |
-| `encounter-diagnosis` | a diagnosis made during a visit | Encounter Diagnosis, tied to the encounter via `encounter_id` | [condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/condition-category), fixed by the profile |
+| `encounter-diagnosis` | a diagnosis made during a visit | Encounter Diagnosis, tied to the encounter via `encounter_id` | [condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/condition-category%7C4.0.1), fixed by the profile |
 | `sdoh` | social-determinants screening finding | health concern + `sdoh` screening category | [us-core-screening-assessment-condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-screening-assessment-condition-category) |
 | `functional-status` | functional-status screening finding | health concern + `functional-status` screening category | [us-core-screening-assessment-condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-screening-assessment-condition-category) |
 | `disability-status` | disability screening finding | health concern + `disability-status` screening category | [us-core-screening-assessment-condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-screening-assessment-condition-category) |

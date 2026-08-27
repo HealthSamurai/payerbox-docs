@@ -37,7 +37,7 @@ encounters.csv Data template with example rows
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `diagnosis_condition_id` | If available | `conditions` key(s), `;`-separated | `CND-4501` |
 | `participant_npi` | If available | 10 digits, `;`-separated | `1407006835` |
-| `participant_type_code` | If available | `ATND` attender, `ADM` admitter, `DIS` discharger, `CON` consultant, `REF` referrer, with `participant_type_system`; v3-ParticipationType if omitted [encounter-participant-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-participant-type) | `ATND` |
+| `participant_type_code` | If available | `ATND` attender, `ADM` admitter, `DIS` discharger, `CON` consultant, `REF` referrer, with `participant_type_system`; v3-ParticipationType if omitted [encounter-participant-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-participant-type%7C4.0.1) | `ATND` |
 | `discharge_disposition_code` | If applicable | NUBC patient discharge status code, as carried in UB-04 field 17, with `discharge_disposition_system` [AHA NUBC Patient Discharge Status](https://terminology.hl7.org/5.5.0/CodeSystem-AHANUBCPatientDischargeStatus.html) | `01` discharged to home or self-care |
 | `service_provider_npi` | If available | 10 digits | `1234567893` |
 
