@@ -44,7 +44,7 @@ documents.csv Data template with example rows
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
 | `record_id` | Recommended | your stable row key | `DOC-0001` |
 | `document_date` | Recommended | datetime | `2026-04-18T10:00:00-04:00` |
-| `author_npi` | Recommended | 10 digits | `1407006835` |
+| `author_npi` | Recommended | 10 digits | `9999999991` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 
 - `type_code` has a required binding, so the note type must come from that value set. It is large, but the four codes above cover most of what a payer holds.
@@ -69,7 +69,7 @@ diagnostic_reports.csv Data template with example rows
 | `category_code` | Recommended | `LAB`, `RAD` and the other v2-0074 service sections | `LAB` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18T08:40:00-04:00` |
 | `issued` | If available | datetime | `2026-04-18T12:00:00-04:00` |
-| `performer_npi` | If available | 10 digits | `1234567893` |
+| `performer_npi` | If available | 10 digits | `9999999993` |
 | `attachment_file` | If available | path relative to the delivery root | `attachments/DR-0771.pdf` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 

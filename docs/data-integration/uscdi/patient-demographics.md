@@ -32,7 +32,7 @@ patients.csv Data template with example rows
 | `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/mrns` |
 | `patient_identifier_type` | Recommended | `MR` medical record, `MB` member number, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MR` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
-| `patient_identifier_assigner_org_npi` | Recommended | 10 digits | `1234567893` |
+| `patient_identifier_assigner_org_npi` | Recommended | 10 digits | `9999999993` |
 
 ### Additional identifiers
 
@@ -44,7 +44,7 @@ patients.csv Data template with example rows
 | `identifier_<n>_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `identifier_<n>_period_start` | Recommended | date | `2024-01-01` |
 | `identifier_<n>_period_end` | Recommended | date | `2025-12-31` |
-| `identifier_<n>_assigner_org_npi` | Recommended | 10 digits | `1234567893` |
+| `identifier_<n>_assigner_org_npi` | Recommended | 10 digits | `9999999993` |
 
 - If you use a slot, fill both `value` and `system`. A value without a system is rejected. A slot left blank is ignored.
 - Number slots from 2 upward, contiguously. Never 2 and 4.

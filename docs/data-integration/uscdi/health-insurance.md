@@ -30,7 +30,7 @@ coverage.csv Data template with example rows
 | `subscriber_id` | Recommended | text | `HSX9930012` |
 | `relationship_code` | Yes | `self`, `spouse`, `child`, `other` [subscriber-relationship](https://terminology.hl7.org/CodeSystem-subscriber-relationship.html) | `self` |
 | `coverage_type_code` | Recommended | Source of Payment Typology [Payer Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591) | `1` Medicare |
-| `payer_org_npi` | Yes | 10 digits, or your payer id | `1234567893` |
+| `payer_org_npi` | Yes | 10 digits, or your payer id | `9999999993` |
 | `group_number` | If available | text | `GRP-4410` |
 | `group_name` | If available | text | `Acme Manufacturing` |
 | `plan_number` | If available | text | `H6776-001` |
