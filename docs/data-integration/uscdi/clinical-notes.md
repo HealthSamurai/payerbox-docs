@@ -65,7 +65,7 @@ diagnostic_reports.csv Data template with example rows
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `report_kind` | Yes | `lab` or `note` | `lab` |
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |
-| `code` | Yes | LOINC, with `code_system` | `24323-8` |
+| `code` | Yes | LOINC, from the value set the `report_kind` profile binds, with `code_system` | `24323-8` lab, `39053-4` note |
 | `category_code` | Recommended | `LAB`, `RAD` and the other v2-0074 service sections | `LAB` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18T08:40:00-04:00` |
 | `issued` | If available | datetime | `2026-04-18T12:00:00-04:00` |
@@ -73,7 +73,7 @@ diagnostic_reports.csv Data template with example rows
 | `attachment_file` | If available | path relative to the delivery root | `attachments/DR-0771.pdf` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 
-- `report_kind` picks the profile: `lab` for a laboratory report, `note` for everything else, including radiology and pathology narratives. The two differ in which codes and categories are accepted, so a wrong value here is not cosmetic.
+- `report_kind` picks the profile: `lab` for a laboratory report, `note` for everything else, including radiology and pathology narratives. The two bind `code` to different value sets, so a lab code on a `note` row is rejected and the reverse too. A wrong `report_kind` is not cosmetic.
 - `attachment_file` carries the narrative report as a file, the same way `documents` does. A lab report with structured results and no narrative needs none.
 - This dataset also serves the Laboratory and Diagnostic Imaging data classes, not only Clinical Notes.
 

@@ -59,6 +59,6 @@ vital_signs.csv Data template with example rows
 | `59576-9` | Body mass index percentile | `%` |
 | `77606-2` | Weight for length percentile | `%` |
 
-The last four are the paediatric percentiles. The binding also accepts `2708-6`, `3150-0`, `3151-8`, `8478-0` and `85353-1` for oxygen and panel reporting.
+The last four are the paediatric percentiles. The binding also accepts `2708-6`, `3150-0` and `3151-8` for oxygen measures, `8478-0` for mean blood pressure, and `85353-1` for the full vital signs panel.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).

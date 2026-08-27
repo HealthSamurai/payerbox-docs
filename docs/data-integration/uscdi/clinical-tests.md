@@ -39,7 +39,7 @@ clinical_observations.csv Data template with example rows
 
 - Send exactly one of `value_quantity`, `value_string`, `value_code` or `data_absent_reason`. A row with a result and an absent reason contradicts itself; a row with neither cannot become an Observation.
 - `data_absent_reason` is how a screening question that was asked but not answered stays in the record. Leaving the row out instead loses the fact that it was asked.
-- `panel_id` builds a panel: the member rows point at the parent row's key, and Payerbox links them as panel members. A questionnaire with several answers is the common case.
+- `panel_id` builds a panel: the member rows point at the parent row's key, and Payerbox links them as panel members. Only the screening-assessment categories support it, which is the case that needs it: a questionnaire whose answers belong to one instrument.
 
 ### Categories
 
