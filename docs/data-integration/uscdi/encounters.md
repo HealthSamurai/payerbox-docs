@@ -19,13 +19,13 @@ description: >-
 
 One row per encounter. Several diagnoses or participants stay one row: list the keys `;`-separated.
 
-{% file src="../../assets/data-integration/encounters.csv" %}
+{% file src="../../assets/data-integration/encounters.aaaeceb4.csv" %}
 encounters.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `encounter_id` | Yes | stable encounter key; the key other datasets reference | `ENC-9912` |
+| `encounter_id` | Yes | your key for this encounter; other datasets reference it | `ENC-9912` |
 | `encounter_id_system` | Yes | URI of the identifier system; a URL you control or an OID | `urn:oid:2.16.840.1.113883.3.99.2` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `planned`, `arrived`, `triaged`, `in-progress`, `onleave`, `finished`, `cancelled`, `entered-in-error`, `unknown` [encounter-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-status%7C4.0.1) | `finished` |
@@ -51,13 +51,13 @@ One row per physical location: a clinic, a hospital ward, a lab draw station.
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the locations missing from it, such as a facility outside your network where a member was treated.
 
-{% file src="../../assets/data-integration/locations.csv" %}
+{% file src="../../assets/data-integration/locations.4d522842.csv" %}
 locations.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `location_id` | Yes | stable id; the key `encounters` references | `LOC-221` |
+| `record_id` | Yes | your key for this location; `encounters` and `practitioners` reference it | `LOC-221` |
 | `location_name` | Yes | text | `Anytown Family Practice` |
 | `managing_org_npi` | Recommended | 10 digits | `9999999993` |
 | `address_line1` | Recommended | text | `123 Main St` |

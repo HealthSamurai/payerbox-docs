@@ -33,35 +33,34 @@ delivery-2026-08-19/
 
 One row per note. The note itself is the file; this row is its index card.
 
-{% file src="../../assets/data-integration/documents.csv" %}
+{% file src="../../assets/data-integration/documents.121ef115.csv" %}
 documents.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your key for this note | `DOC-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `type_code` | Yes | LOINC note type, e.g. `11488-4` consult, `18842-5` discharge summary, `34117-2` history and physical, `11506-3` progress note [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `11488-4` |
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
-| `record_id` | Recommended | your stable row key | `DOC-0001` |
 | `document_date` | Recommended | datetime | `2026-04-18T10:00:00-04:00` |
 | `author_npi` | Recommended | 10 digits | `9999999991` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 
 - `type_code` has a required binding, so the note type must come from that value set. It is large, but the four codes above cover most of what a payer holds.
-- `record_id` is the upsert key. It is optional on this dataset alone, defaulting to `attachment_file` — so send it if your filenames change between exports, or a renamed file becomes a second note.
 - Payerbox sets the status to `current` and the category to `clinical-note`, and reads the attachment's content type and size from the stored file. None of those are columns.
 
 ## diagnostic_reports
 
 One row per report. The individual results live in `labs` and `clinical_observations` and point back with `diagnostic_report_id`.
 
-{% file src="../../assets/data-integration/diagnostic_reports.csv" %}
+{% file src="../../assets/data-integration/diagnostic_reports.0e3e56bc.csv" %}
 diagnostic_reports.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `report_id` | Yes | stable key; the key result rows reference | `DR-771` |
+| `record_id` | Yes | your key for this report; result rows reference it | `DR-771` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `report_kind` | Yes | `lab` or `note` | `lab` |
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |

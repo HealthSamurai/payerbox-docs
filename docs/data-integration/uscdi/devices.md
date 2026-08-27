@@ -18,12 +18,13 @@ description: >-
 
 One row per implanted device per patient. The USCDI data class covers implantable devices only — other equipment does not belong in this file.
 
-{% file src="../../assets/data-integration/devices.csv" %}
+{% file src="../../assets/data-integration/devices.80ff669f.csv" %}
 devices.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your key for this device row | `DV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `udi_device_identifier` | Yes | DI portion of the UDI | `00643169007222` |
 | `udi_carrier_hrf` | Recommended | full UDI barcode string, human-readable form | `(01)00643169007222(17)…` |

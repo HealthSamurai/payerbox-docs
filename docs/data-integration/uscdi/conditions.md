@@ -18,12 +18,13 @@ description: >-
 
 One file covers all four USCDI condition flavours — problems, health concerns, encounter diagnoses, and SDOH — one row per condition per patient; the `category` column tells them apart.
 
-{% file src="../../assets/data-integration/conditions.csv" %}
+{% file src="../../assets/data-integration/conditions.88f95a55.csv" %}
 conditions.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your key for this condition; `encounters` reference it | `CND-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `category` | Yes | one of seven values — see [Categories](#categories) | `problem-list-item` |
 | `code` | Yes | SNOMED CT or ICD-10-CM code, with `code_system` [us-core-condition-code](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `44054006` Type 2 diabetes mellitus |

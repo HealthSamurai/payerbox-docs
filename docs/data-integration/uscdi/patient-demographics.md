@@ -20,7 +20,7 @@ description: >-
 
 One row per member. The sections below group its columns.
 
-{% file src="../../assets/data-integration/patients.csv" %}
+{% file src="../../assets/data-integration/patients.4d87f019.csv" %}
 patients.csv Data template with example rows
 {% endfile %}
 
@@ -93,12 +93,13 @@ patients.csv Data template with example rows
 
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 
-{% file src="../../assets/data-integration/related_persons.csv" %}
+{% file src="../../assets/data-integration/related_persons.8c1bfb5d.csv" %}
 related_persons.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your key for this person; `care_team` references it | `RP-3310` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `CHILD` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
@@ -112,12 +113,13 @@ related_persons.csv Data template with example rows
 
 ## social_history
 
-{% file src="../../assets/data-integration/social_history.csv" %}
+{% file src="../../assets/data-integration/social_history.1d8b2b61.csv" %}
 social_history.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your key for this row | `SH-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
