@@ -29,7 +29,7 @@ One row per procedure performed. This dataset carries the **Procedures** element
 | `performer_npi` | If available | 10 digits | `1407006835` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `service_request_id` | If available | `service_requests` key, when the procedure fulfils a request | |
-| `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [US Core Condition Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `733423003` food insecurity |
+| `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [procedure-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/procedure-reason%7C4.0.1) | `733423003` food insecurity |
 
 - `performed_end` marks a procedure that spans time. Send it only then; a single `performed_start` is a point in time.
 - `service_request_id` links a performed procedure back to the request that ordered it, including an SDOH intervention recorded in `service_requests`.
