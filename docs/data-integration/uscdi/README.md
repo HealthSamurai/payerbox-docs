@@ -8,27 +8,27 @@ description: >-
 
 | # | Dataset | USCDI v3.1 data class | US Core 6.1.0 target profile(s) |
 |---|---|---|---|
-| 1 | `patients` | [Patient Demographics](patient-demographics.md#patients) | Patient (+ race, ethnicity, sex, tribal extensions) |
-| 2 | `related_persons` | [Patient Demographics (Related Person)](patient-demographics.md#related-persons) | RelatedPerson |
-| 3 | `practitioners` | [Care Team Members](care-team.md#practitioners) (ref), may come from [Provider Directory](../provider-directory/README.md#providers) | Practitioner; PractitionerRole |
-| 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Organization |
-| 5 | `locations` | [Encounter Information](encounters.md#locations) (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Location |
-| 6 | `allergies` | [Allergies and Intolerances](allergies.md#allergies) | AllergyIntolerance |
-| 7 | `conditions` | [Problems, Encounter Diagnosis, Health Concerns, SDOH](conditions.md#conditions) | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
-| 8 | `medications` | Medications | MedicationRequest (+ Medication) |
-| 9 | `medication_dispenses` | Medications (Fill Status) | MedicationDispense |
-| 10 | `immunizations` | [Immunizations](immunizations.md#immunizations) | Immunization |
-| 11 | `procedures` | [Procedures](procedures.md#procedures) | Procedure |
-| 12 | `service_requests` | [Procedures (Referral), SDOH Interventions](procedures.md#service-requests) | ServiceRequest |
-| 13 | `encounters` | [Encounter Information](encounters.md#encounters) | Encounter |
-| 14 | `care_team` | [Care Team Members](care-team.md#care-team) | CareTeam |
-| 15 | `care_plans` | [Assessment and Plan of Treatment](care-plans.md#care-plans) | CarePlan |
-| 16 | `goals` | [Goals](goals.md#goals) | Goal |
-| 17 | `coverage` | [Health Insurance Information](health-insurance.md#coverage) | Coverage |
-| 18 | `documents` | Clinical Notes | DocumentReference |
-| 19 | `diagnostic_reports` | Clinical Notes, Laboratory, Diagnostic Imaging (report level) | DiagnosticReport (Lab + Report/Note) |
-| 20 | `devices` | [Unique Device Identifier(s)](devices.md#devices) | Implantable Device |
-| 21 | `vital_signs` | Vital Signs | Observation (Vital Signs family) |
-| 22 | `labs` | Laboratory | Observation (Lab Result) + Specimen |
-| 23 | `social_history` | Health Status/Assessments (Smoking, Pregnancy) + Patient Demographics (Occupation) | Observation (Social History profiles) |
-| 24 | `clinical_observations` | Clinical Tests, Diagnostic Imaging (result), Health Status/Assessments, Screening/SDOH | Observation (Clinical Result / Screening Assessment / Simple) |
+| 1 | [`patients`](patient-demographics.md#patients) | [Patient Demographics/Information](https://isp.healthit.gov/taxonomy/term/3061#uscdi-v3) | [US Core Patient](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-patient.html) (+ race, ethnicity, sex, tribal extensions) |
+| 2 | [`related_persons`](patient-demographics.md#related-persons) | [Patient Demographics/Information](https://isp.healthit.gov/taxonomy/term/3061#uscdi-v3) | [US Core RelatedPerson](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-relatedperson.html) |
+| 3 | [`practitioners`](care-team.md#practitioners) | [Care Team Members](https://isp.healthit.gov/taxonomy/term/2956#uscdi-v3) (ref), may come from [Provider Directory](../provider-directory/README.md#providers) | [US Core Practitioner](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-practitioner.html), [US Core PractitionerRole](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-practitionerrole.html) |
+| 4 | `organizations` | [Care Team Members](https://isp.healthit.gov/taxonomy/term/2956#uscdi-v3) (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | [US Core Organization](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-organization.html) |
+| 5 | [`locations`](encounters.md#locations) | [Encounter Information](https://isp.healthit.gov/taxonomy/term/2986#uscdi-v3) (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | [US Core Location](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-location.html) |
+| 6 | [`allergies`](allergies.md#allergies) | [Allergies and Intolerances](https://isp.healthit.gov/taxonomy/term/2941#uscdi-v3) | [US Core AllergyIntolerance](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-allergyintolerance.html) |
+| 7 | [`conditions`](conditions.md#conditions) | [Problems](https://isp.healthit.gov/taxonomy/term/3066#uscdi-v3) | [US Core Condition Problems and Health Concerns](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-condition-problems-health-concerns.html), [US Core Condition Encounter Diagnosis](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-condition-encounter-diagnosis.html) |
+| 8 | `medications` | [Medications](https://isp.healthit.gov/taxonomy/term/3036#uscdi-v3) | [US Core MedicationRequest](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-medicationrequest.html), [US Core Medication](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-medication.html) |
+| 9 | `medication_dispenses` | [Medications](https://isp.healthit.gov/taxonomy/term/3036#uscdi-v3) (Fill Status) | [US Core MedicationDispense](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-medicationdispense.html) |
+| 10 | [`immunizations`](immunizations.md#immunizations) | [Immunizations](https://isp.healthit.gov/taxonomy/term/3021#uscdi-v3) | [US Core Immunization](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-immunization.html) |
+| 11 | [`procedures`](procedures.md#procedures) | [Procedures](https://isp.healthit.gov/taxonomy/term/3071#uscdi-v3) | [US Core Procedure](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-procedure.html) |
+| 12 | [`service_requests`](procedures.md#service-requests) | [Procedures](https://isp.healthit.gov/taxonomy/term/3071#uscdi-v3) (Referral, SDOH Interventions) | [US Core ServiceRequest](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-servicerequest.html) |
+| 13 | [`encounters`](encounters.md#encounters) | [Encounter Information](https://isp.healthit.gov/taxonomy/term/2986#uscdi-v3) | [US Core Encounter](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-encounter.html) |
+| 14 | [`care_team`](care-team.md#care-team) | [Care Team Members](https://isp.healthit.gov/taxonomy/term/2956#uscdi-v3) | [US Core CareTeam](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-careteam.html) |
+| 15 | [`care_plans`](care-plans.md#care-plans) | [Assessment and Plan of Treatment](https://isp.healthit.gov/taxonomy/term/2946#uscdi-v3) | [US Core CarePlan](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-careplan.html) |
+| 16 | [`goals`](goals.md#goals) | [Goals](https://isp.healthit.gov/taxonomy/term/3006#uscdi-v3) | [US Core Goal](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-goal.html) |
+| 17 | [`coverage`](health-insurance.md#coverage) | [Health Insurance Information](https://isp.healthit.gov/taxonomy/term/3016#uscdi-v3) | [US Core Coverage](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-coverage.html) |
+| 18 | `documents` | [Clinical Notes](https://isp.healthit.gov/taxonomy/term/2961#uscdi-v3) | [US Core DocumentReference](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-documentreference.html) |
+| 19 | `diagnostic_reports` | [Clinical Notes](https://isp.healthit.gov/taxonomy/term/2961#uscdi-v3), [Laboratory](https://isp.healthit.gov/taxonomy/term/3026#uscdi-v3), [Diagnostic Imaging](https://isp.healthit.gov/taxonomy/term/2971#uscdi-v3) | [US Core DiagnosticReport Lab](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-diagnosticreport-lab.html), [US Core DiagnosticReport Note](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-diagnosticreport-note.html) |
+| 20 | [`devices`](devices.md#devices) | [Unique Device Identifier(s)](https://isp.healthit.gov/taxonomy/term/3126#uscdi-v3) | [US Core Implantable Device](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-implantable-device.html) |
+| 21 | `vital_signs` | [Vital Signs](https://isp.healthit.gov/taxonomy/term/3131#uscdi-v3) | [US Core Vital Signs](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-vital-signs.html) |
+| 22 | `labs` | [Laboratory](https://isp.healthit.gov/taxonomy/term/3026#uscdi-v3) | [US Core Laboratory Result Observation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-lab.html), [US Core Specimen](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-specimen.html) |
+| 23 | [`social_history`](patient-demographics.md#social-history) | [Health Status Assessments](https://isp.healthit.gov/taxonomy/term/4401#uscdi-v3), [Patient Demographics/Information](https://isp.healthit.gov/taxonomy/term/3061#uscdi-v3) (Occupation) | [US Core Smoking Status](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-smokingstatus.html), [US Core Observation Occupation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-occupation.html), [US Core Observation Pregnancy Status](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-pregnancystatus.html) |
+| 24 | `clinical_observations` | [Clinical Tests](https://isp.healthit.gov/taxonomy/term/2976#uscdi-v3), [Diagnostic Imaging](https://isp.healthit.gov/taxonomy/term/2971#uscdi-v3), [Health Status Assessments](https://isp.healthit.gov/taxonomy/term/4401#uscdi-v3) | [US Core Observation Clinical Result](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-clinical-result.html), [US Core Observation Screening Assessment](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-screening-assessment.html), [US Core Simple Observation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-simple-observation.html) |
