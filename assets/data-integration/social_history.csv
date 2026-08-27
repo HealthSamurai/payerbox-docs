@@ -1,0 +1,2 @@
+patient_identifier,observation_type,status,value_code,industry_code,effective_datetime
+MRN-4471903,occupation,final,29-1141.00,622110,2026-04-18
