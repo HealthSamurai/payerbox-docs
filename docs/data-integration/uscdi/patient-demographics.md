@@ -64,7 +64,7 @@ patients.csv Data template with example rows
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `gender` | Yes | `male`, `female`, `other`, `unknown` [AdministrativeGender](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/administrative-gender) | `female` |
-| `sex` | Recommended | `248152002` Female, `248153007` Male [US Core Sex](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-sex.html) | `248152002` |
+| `sex` | Recommended | `248152002` Female, `248153007` Male, `184115007` unknown, `asked-declined` [US Core Sex](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1240.3) | `248152002` |
 | `birth_date` | Recommended | YYYY-MM-DD | `1957-03-11` |
 | `deceased_date` | If applicable | datetime | |
 | `race_omb_code` | Recommended | `2106-3` White, `2054-5` Black or African American, `2028-9` Asian, `1002-5` American Indian or Alaska Native, `2076-8` Native Hawaiian or Other Pacific Islander; `;`-separated [OMB race categories](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-race-category) | `2106-3` |
@@ -73,6 +73,8 @@ patients.csv Data template with example rows
 | `ethnicity_detailed_code` | If available | CDC ethnicity code(s) [detailed ethnicity](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/detailed-ethnicity) | |
 | `tribal_affiliation_code` | Recommended | tribal-entity code [TribalEntityUS](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-TribalEntityUS) | |
 | `preferred_language` | Recommended | BCP 47 [simple-language](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/simple-language) | `en` |
+
+- `gender` and `sex` are different elements with different bindings: `gender` carries administrative gender as text, `sex` a SNOMED CT code, and the `sex` binding is required.
 
 ### Address and contact
 
