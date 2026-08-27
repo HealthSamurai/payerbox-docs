@@ -93,6 +93,10 @@ patients.csv Data template with example row
 
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 
+{% file src="../../assets/data-integration/related_persons.csv" %}
+related_persons.csv Data template with example row
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
@@ -105,9 +109,12 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `state` | If available | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | If available | 5 digits, as a string | `12345` |
 | `active` | Recommended | `true` / `false`; `false` retires a contact without deleting them | `true` |
-| `preferred_language` | If available | BCP 47 [simple-language](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/simple-language) | `en` |
 
 ## social_history
+
+{% file src="../../assets/data-integration/social_history.csv" %}
+social_history.csv Data template with example row
+{% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
