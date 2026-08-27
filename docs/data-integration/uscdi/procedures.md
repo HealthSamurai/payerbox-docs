@@ -32,7 +32,7 @@ procedures.csv Data template with example rows
 | `performed_end` | If a period | date or datetime | |
 | `performer_npi` | If available | 10 digits | `1407006835` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
-| `service_request_id` | If available | `service_requests` key, when the procedure fulfils a request | |
+| `service_request_id` | If available | `record_id` of the `service_requests` row, when the procedure fulfils a request | `SR-2201` |
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [procedure-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/procedure-reason%7C4.0.1) | `733423003` food insecurity |
 
 - `performed_end` marks a procedure that spans time. Send it only then; a single `performed_start` is a point in time.
