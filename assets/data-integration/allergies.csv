@@ -1,0 +1,6 @@
+patient_identifier,substance_code,clinical_status,verification_status,category,criticality,reaction_manifestation_code,onset_date
+MRN-4471903,7980,active,confirmed,medication,high,247472004,2019-05-02
+MRN-5510042,7980,active,,,,,
+MRN-7782200,716186003,active,confirmed,,,,
+MRN-3391077,409137002,active,confirmed,,,,
+MRN-4471903,7980,,entered-in-error,,,,

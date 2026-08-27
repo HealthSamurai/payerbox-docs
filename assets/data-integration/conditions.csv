@@ -1,0 +1,6 @@
+patient_identifier,category,code,clinical_status,verification_status,onset_date,abatement_date,recorded_date,asserted_date,encounter_id
+MRN-4471903,problem-list-item,44054006,active,confirmed,2021-08-14,,2021-08-15,,
+MRN-4471903,problem-list-item,44054006,resolved,confirmed,2019-02-03,2023-11-30,2019-02-04,,
+MRN-7782200,encounter-diagnosis,44054006,active,confirmed,,,2026-04-18,,ENC-9912
+MRN-5510042,health-concern,44054006,active,,,,2026-01-09,,
+MRN-3391077,sdoh,44054006,active,,,,2026-03-02,,

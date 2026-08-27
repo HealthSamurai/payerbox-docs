@@ -1,0 +1,4 @@
+npi,last_name,first_name,specialty_nucc,primary_org_npi,practitioner_role_code,location_id,phone,email,role_period_start,role_period_end
+1407006835,Roe,Richard,207R00000X,1234567893,doctor,LOC-221,5551234567,,2021-04-01,
+1407006835,Roe,Richard,207R00000X,1234567893,doctor,LOC-884,5554445555,,,
+1932108107,Fox,Dana,,,,,,,,

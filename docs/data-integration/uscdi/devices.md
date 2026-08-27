@@ -18,6 +18,10 @@ description: >-
 
 One row per implanted device per patient. The USCDI data class covers implantable devices only — other equipment does not belong in this file.
 
+{% file src="../../assets/data-integration/devices.csv" %}
+devices.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |

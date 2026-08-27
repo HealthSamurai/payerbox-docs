@@ -19,6 +19,10 @@ description: >-
 
 One row per procedure performed. This dataset carries the **Procedures** element of the class.
 
+{% file src="../../assets/data-integration/procedures.csv" %}
+procedures.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
@@ -37,6 +41,10 @@ One row per procedure performed. This dataset carries the **Procedures** element
 ## service_requests
 
 One row per requested service: a referral, an order, or an SDOH intervention. This dataset carries the **Reason for Referral** and **SDOH Interventions** elements of the class; the services actually performed go in `procedures`.
+
+{% file src="../../assets/data-integration/service_requests.csv" %}
+service_requests.csv Data template with example rows
+{% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
