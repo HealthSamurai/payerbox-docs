@@ -4,7 +4,7 @@ description: >-
   and Encounter Diagnosis data classes to US Core 6.1.0 FHIR.
 ---
 
-# Conditions
+# Problems
 
 ## Datasets
 
