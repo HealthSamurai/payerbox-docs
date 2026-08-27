@@ -63,8 +63,8 @@ One row per facility NPI, plan and network.
 | `parent_org_npi` | If available | 10 digits, if part of a larger system | `1234567893` |
 | `plan_id` | Yes | key from `plans` | `PLAN-ISNP` |
 | `network_id` | Yes | key from `networks` | `NET-002` |
-| `ccn` | If Medicare-certified | 6 digits | `330123` |
-| `ncpdp_id` | If a pharmacy | 7 digits | `1234567` |
+| `ccn` | If Medicare-certified | 6 digits | `999999` |
+| `ncpdp_id` | If a pharmacy | 7 digits | `9999999` |
 | `location_name` | Recommended | text; defaults to `facility_name` if there is no distinct site name | `Example Hospital` |
 | `address_line1` | Yes | text | `123 Park Ave` |
 | `address_line2` | No | text | `Floor 3` |
