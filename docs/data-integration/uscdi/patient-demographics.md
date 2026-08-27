@@ -56,7 +56,6 @@ patients.csv Data template with example row
 | `last_name` | Yes | text | `Doe` |
 | `first_name` | Yes | text | `Jane` |
 | `middle_name` | Recommended | text | `L` |
-| `name_prefix` | No | Mr. / Mrs. / Ms. / Dr. | `Ms.` |
 | `name_suffix` | Recommended | Jr. / Sr. / III | |
 | `previous_name` | Recommended | `family, given` | `Smith, Jane` |
 
@@ -84,7 +83,6 @@ patients.csv Data template with example row
 | `city` | Recommended | text | `Anytown` |
 | `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | Recommended | 5 or 9 digits, as a string | `12345` |
-| `county` | If available | text | `Anytown County` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `phone_type` | Recommended | `home`, `work`, `mobile` [ContactPointUse](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-use) | `mobile` |
 | `email` | Recommended | email address | |
