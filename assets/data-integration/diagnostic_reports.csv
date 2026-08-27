@@ -1,0 +1,4 @@
+report_id,patient_identifier,report_kind,status,code,category_code,effective_datetime,issued,performer_npi,attachment_file,encounter_id
+DR-771,MRN-4471903,lab,final,24323-8,LAB,2026-04-18T08:40:00-04:00,2026-04-18T12:00:00-04:00,1234567893,,ENC-9912
+DR-772,MRN-7782200,note,final,24323-8,RAD,2026-02-03T09:15:00-05:00,,,attachments/DR-0772.pdf,ENC-9913
+DR-773,MRN-4471903,lab,preliminary,24323-8,LAB,2026-05-20T07:00:00-04:00,,,,
