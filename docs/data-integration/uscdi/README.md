@@ -18,7 +18,7 @@ description: >-
 | 8 | `medications` | Medications | MedicationRequest (+ Medication) |
 | 9 | `medication_dispenses` | Medications (Fill Status) | MedicationDispense |
 | 10 | `immunizations` | [Immunizations](immunizations.md#immunizations) | Immunization |
-| 11 | `procedures` | Procedures | Procedure |
+| 11 | `procedures` | [Procedures](procedures.md#procedures) | Procedure |
 | 12 | `service_requests` | [Procedures (Referral), SDOH Interventions](procedures.md#service-requests) | ServiceRequest |
 | 13 | `encounters` | [Encounter Information](encounters.md#encounters) | Encounter |
 | 14 | `care_team` | [Care Team Members](care-team.md#care-team) | CareTeam |
