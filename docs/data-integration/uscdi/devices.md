@@ -27,7 +27,7 @@ devices.csv Data template with example rows
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `udi_device_identifier` | Yes | DI portion of the UDI | `00643169007222` |
 | `udi_carrier_hrf` | Recommended | full UDI barcode string, human-readable form | `(01)00643169007222(17)…` |
-| `device_type_code` | Yes | SNOMED CT code, with `device_type_system` [device-kind](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/device-kind) | `468063009` Coated femoral stem prosthesis, modular |
+| `device_type_code` | Yes | SNOMED CT code, with `device_type_system` [device-kind](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/device-kind%7C4.0.1) | `468063009` Coated femoral stem prosthesis, modular |
 | `distinct_identifier` | If available | text | `456` |
 | `lot_number` | If available | text | `543211` |
 | `serial_number` | If available | text | `842026` |

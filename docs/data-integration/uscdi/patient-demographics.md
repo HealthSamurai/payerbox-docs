@@ -31,7 +31,7 @@ patients.csv Data template with example rows
 | `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another | `MRN-4471903` |
 | `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/mrns` |
 | `patient_identifier_type` | Recommended | `MR` medical record, `MB` member number, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MR` |
-| `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use) | `official` |
+| `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `patient_identifier_assigner_org_npi` | Recommended | 10 digits | `1234567893` |
 
 ### Additional identifiers
@@ -41,7 +41,7 @@ patients.csv Data template with example rows
 | `identifier_<n>_value` | Yes | the identifier as issued | `HSX9930012` |
 | `identifier_<n>_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/member-ids` |
 | `identifier_<n>_type` | Recommended | [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) code | `MB` |
-| `identifier_<n>_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use) | `official` |
+| `identifier_<n>_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `identifier_<n>_period_start` | Recommended | date | `2024-01-01` |
 | `identifier_<n>_period_end` | Recommended | date | `2025-12-31` |
 | `identifier_<n>_assigner_org_npi` | Recommended | 10 digits | `1234567893` |
@@ -63,7 +63,7 @@ patients.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `gender` | Yes | `male`, `female`, `other`, `unknown` [AdministrativeGender](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/administrative-gender) | `female` |
+| `gender` | Yes | `male`, `female`, `other`, `unknown` [AdministrativeGender](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/administrative-gender%7C4.0.1) | `female` |
 | `sex` | Recommended | `248152002` Female, `248153007` Male [US Core Sex](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-sex.html) | `248152002` |
 | `birth_date` | Recommended | YYYY-MM-DD | `1957-03-11` |
 | `deceased_date` | If applicable | datetime | |
@@ -84,7 +84,7 @@ patients.csv Data template with example rows
 | `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | Recommended | 5 or 9 digits, as a string | `12345` |
 | `phone` | Recommended | 10 digits | `5551234567` |
-| `phone_type` | Recommended | `home`, `work`, `mobile` [ContactPointUse](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-use) | `mobile` |
+| `phone_type` | Recommended | `home`, `work`, `mobile`, `temp`, `old` [ContactPointUse](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-use%7C4.0.1) | `mobile` |
 | `email` | Recommended | email address | |
 | `previous_address` | Recommended | `line, city, state, zip` | `45 Oak St, Anytown, NY, 12345` |
 | `previous_address_end` | If available | date | `2024-08-31` |
@@ -120,7 +120,7 @@ social_history.csv Data template with example rows
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
-| `status` | Yes | `final`, `amended`, `corrected`, `entered-in-error` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status) | `final` |
+| `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `value_code` | Yes | O*NET-SOC occupation code, with `value_system` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `29-1141.00` |
 | `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
