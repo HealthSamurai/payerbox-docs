@@ -73,5 +73,6 @@
     * [Unique Device Identifiers](data-integration/uscdi/devices.md)
     * [Encounter Information](data-integration/uscdi/encounters.md)
     * [Procedures](data-integration/uscdi/procedures.md)
+    * [Assessment and Plan of Treatment](data-integration/uscdi/care-plans.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)

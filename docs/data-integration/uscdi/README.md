@@ -22,7 +22,7 @@ description: >-
 | 12 | `service_requests` | [Procedures (Referral), SDOH Interventions](procedures.md#service-requests) | ServiceRequest |
 | 13 | `encounters` | [Encounter Information](encounters.md#encounters) | Encounter |
 | 14 | `care_team` | [Care Team Members](care-team.md#care-team) | CareTeam |
-| 15 | `care_plans` | Assessment and Plan of Treatment | CarePlan |
+| 15 | `care_plans` | [Assessment and Plan of Treatment](care-plans.md#care-plans) | CarePlan |
 | 16 | `goals` | [Goals](goals.md#goals) | Goal |
 | 17 | `coverage` | [Health Insurance Information](health-insurance.md#coverage) | Coverage |
 | 18 | `documents` | Clinical Notes | DocumentReference |
