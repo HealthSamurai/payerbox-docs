@@ -25,7 +25,7 @@ One row per administered (or refused) dose per patient. A member with three seas
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `completed`, `entered-in-error`, `not-done` [immunization-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status) | `completed` |
 | `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason) | `PATOBJ` patient objection |
-| `vaccine_code` | Yes | CVX code, with `vaccine_system`; CVX if omitted [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code) | `140` influenza, seasonal, injectable, preservative free |
+| `vaccine_code` | Yes | CVX code, with `vaccine_system` (CVX assumed when empty) [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code) | `140` influenza, seasonal, injectable, preservative free |
 | `occurrence_date` | Yes | datetime | `2025-10-02` |
 | `performer_npi` | If available | 10 digits | `1407006835` |
 | `primary_source` | Recommended | `true` / `false` | `true` |

@@ -50,7 +50,7 @@ If you already send the [Provider Directory](../provider-directory/README.md) fe
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `location_id` | Yes | stable id; the key `encounters` references | `LOC-221` |
-| `location_name` | Yes | text | `Riverdale Family Practice` |
+| `location_name` | Yes | text | `Family Practice Clinic` |
 | `managing_org_npi` | Recommended | 10 digits | `1234567893` |
 | `address_line1` | Recommended | text | `88 River Rd` |
 | `city` | Recommended | text | `Yonkers` |

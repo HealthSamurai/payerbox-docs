@@ -70,7 +70,7 @@
     * [Problems](data-integration/uscdi/conditions.md)
     * [Immunizations](data-integration/uscdi/immunizations.md)
     * [Goals](data-integration/uscdi/goals.md)
-    * [Unique Device Identifiers](data-integration/uscdi/devices.md)
+    * [Device](data-integration/uscdi/devices.md)
     * [Encounter Information](data-integration/uscdi/encounters.md)
     * [Procedures](data-integration/uscdi/procedures.md)
     * [Assessment and Plan of Treatment](data-integration/uscdi/care-plans.md)

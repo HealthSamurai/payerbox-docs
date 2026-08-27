@@ -22,11 +22,11 @@ One row per goal per patient.
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `lifecycle_status` | Yes | `proposed`, `planned`, `accepted`, `active`, `on-hold`, `completed`, `cancelled`, `entered-in-error`, `rejected` [goal-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/goal-status) | `active` |
-| `description_code` | Yes | SNOMED CT code, with `description_system`; or plain text [us-core-goal-description](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-goal-description) | `281004` |
+| `description_code` | Yes | SNOMED CT or LOINC code, with `description_system`; or plain text [us-core-goal-description](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-goal-description) | `281004` |
 | `start_date` | If available | date | `2026-04-18` |
 | `target_date` | If available | date | `2026-10-18` |
 
-- `description_code` is the one field with no fallback: a row without it cannot become a Goal. Send a SNOMED CT code with `description_system` as `http://snomed.info/sct`; the binding is extensible over a value set that spans essentially all of SNOMED CT. A source that records goals only as narrative may put the text itself in `description_code` and leave `description_system` empty.
+- `description_code` is the one field with no fallback: a row without it cannot become a Goal. Send a SNOMED CT code (`description_system` = `http://snomed.info/sct`) or a LOINC code (`description_system` = `http://loinc.org`); the binding's own value set spans essentially all of SNOMED CT, and LOINC comes in through its extensibility. A source that records goals only as narrative may put the text itself in `description_code` and leave `description_system` empty.
 - `lifecycle_status` marks each row: `active` for a goal being pursued, `completed`/`cancelled`/`rejected` for closed ones, `entered-in-error` to retract a record that should never have existed.
 - `target_date` is the USCDI "Goal Target Date". US Core requires supporting at least one of `Goal.startDate` and `Goal.target.dueDate`, so send whichever your source tracks — either or both are fine.
 
