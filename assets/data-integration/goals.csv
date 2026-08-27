@@ -1,4 +1,4 @@
-record_id,patient_identifier,lifecycle_status,description_code,description_system,start_date,target_date,source_system,last_updated,author_org_npi,is_deleted
-GL-0001,MRN-4471903,active,289169006,http://snomed.info/sct,2026-04-18,2026-10-18,,2026-08-19T02:00:00-04:00,,
-GL-0002,MRN-7782200,completed,289169006,http://snomed.info/sct,2025-03-01,2025-09-01,,2026-08-19T02:00:00-04:00,,
-GL-0003,MRN-5510042,proposed,289169006,http://snomed.info/sct,,,,2026-08-19T02:00:00-04:00,,
+record_id,patient_identifier,lifecycle_status,description_code,description_system,start_date,target_date,is_deleted
+GL-0001,MRN-4471903,active,289169006,http://snomed.info/sct,2026-04-18,2026-10-18,
+GL-0002,MRN-7782200,completed,289169006,http://snomed.info/sct,2025-03-01,2025-09-01,
+GL-0003,MRN-5510042,proposed,289169006,http://snomed.info/sct,,,

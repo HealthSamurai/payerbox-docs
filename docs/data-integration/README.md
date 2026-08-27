@@ -24,7 +24,6 @@ graph LR
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
 | History (USCDI feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
 | Row keys | Every row carries `record_id`, your stable key for it. It is what an upload updates in place, so keep it stable across deliveries. `is_deleted` set to `true` retracts the row it names. |
-| Provenance | Every row carries `source_system` (which system it came from), `last_updated` (when the record last changed at the source, not when the file was written) and `author_org_npi` where known. Payerbox builds the Provenance resource from these; there is no provenance dataset to send. |
 | Code systems | Every coded column has a companion `_system` column holding the code system URI: `substance_code` with `substance_system`, `vaccine_code` with `vaccine_system`, and so on. Leave it blank to accept the default named in that column's row. |
 
 ## Built on US Core
