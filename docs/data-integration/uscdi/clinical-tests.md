@@ -18,13 +18,13 @@ description: >-
 
 One row per observation. This dataset carries every USCDI observation that is not a lab result, a vital sign or a social history row: non-lab test results, imaging findings, functional, disability and cognitive status, and SDOH screening answers.
 
-{% file src="../../assets/data-integration/clinical_observations.9984386b.csv" %}
+{% file src="../../assets/data-integration/clinical_observations.62d1ab2a.csv" %}
 clinical_observations.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `observation_id` | Yes | your key for this observation; panel members reference it | `CO-1200` |
+| `record_id` | Yes | your key for this observation; panel members reference it | `CO-1200` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `category` | Yes | one of the [categories](#categories) below | `sdoh` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
@@ -36,8 +36,8 @@ clinical_observations.csv Data template with example rows
 | `data_absent_reason` | If there is no result | `unknown`, `asked-declined`, `not-performed` [data-absent-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/data-absent-reason%7C4.0.1) | |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
 | `performer_npi` | If available | 10 digits | `9999999991` |
-| `panel_id` | If available | `observation_id` of the parent `clinical_observations` row | `CO-1200` |
-| `diagnostic_report_id` | If applicable | `report_id` of the `diagnostic_reports` row this result belongs to | `DR-771` |
+| `panel_id` | If available | `record_id` of the parent `clinical_observations` row | `CO-1200` |
+| `diagnostic_report_id` | If applicable | `record_id` of the `diagnostic_reports` row this result belongs to | `DR-771` |
 
 - Send exactly one of `value_quantity`, `value_string`, `value_code` or `data_absent_reason`. A row with a result and an absent reason contradicts itself; a row with neither cannot become an Observation.
 - `data_absent_reason` is how a screening question that was asked but not answered stays in the record. Leaving the row out instead loses the fact that it was asked.

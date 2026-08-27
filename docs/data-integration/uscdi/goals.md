@@ -18,13 +18,13 @@ description: >-
 
 One row per goal per patient.
 
-{% file src="../../assets/data-integration/goals.7ce937f2.csv" %}
+{% file src="../../assets/data-integration/goals.f393bfdf.csv" %}
 goals.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `goal_id` | Yes | your key for this goal | `GL-0001` |
+| `record_id` | Yes | your key for this goal | `GL-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `lifecycle_status` | Yes | `proposed`, `planned`, `accepted`, `active`, `on-hold`, `completed`, `cancelled`, `entered-in-error`, `rejected` [goal-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/goal-status%7C4.0.1) | `active` |
 | `description_code` | Yes | SNOMED CT code, with `description_system`; or plain text [us-core-goal-description](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-goal-description) | `289169006` exercising to lose weight |

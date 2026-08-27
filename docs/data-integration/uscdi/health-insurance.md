@@ -18,13 +18,13 @@ description: >-
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
-{% file src="../../assets/data-integration/coverage.4d9e6894.csv" %}
+{% file src="../../assets/data-integration/coverage.45cd4f72.csv" %}
 coverage.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `coverage_id` | Yes | your key for this coverage | `COV-0001` |
+| `record_id` | Yes | your key for this coverage | `COV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `active`, `cancelled`, `draft`, `entered-in-error` [fm-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/fm-status%7C4.0.1) | `active` |
 | `member_id` | Yes, unless `subscriber_id` is sent | plan member id | `HSX9930012` |

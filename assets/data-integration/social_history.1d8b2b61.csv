@@ -1,4 +1,4 @@
-social_history_id,patient_identifier,observation_type,status,value_code,value_system,industry_code,effective_datetime,is_deleted
+record_id,patient_identifier,observation_type,status,value_code,value_system,industry_code,effective_datetime,is_deleted
 SH-0001,MRN-4471903,occupation,final,29-1141.00,,622110,2026-04-18,
 SH-0002,MRN-4471903,smoking-status,final,266919005,http://snomed.info/sct,,2026-04-18,
 SH-0003,MRN-7782200,smoking-status,final,8517006,http://snomed.info/sct,,2026-02-11,

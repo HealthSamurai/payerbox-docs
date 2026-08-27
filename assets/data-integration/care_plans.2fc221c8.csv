@@ -1,4 +1,4 @@
-care_plan_id,patient_identifier,narrative_text,status,intent,period_start,period_end,is_deleted
+record_id,patient_identifier,narrative_text,status,intent,period_start,period_end,is_deleted
 CP-0001,MRN-4471903,Assessment: … Plan: …,active,plan,2026-04-18,,
 CP-0002,MRN-7782200,Assessment: … Plan: …,completed,plan,2025-01-06,2025-12-31,
 CP-0003,MRN-5510042,Assessment: … Plan: …,draft,proposal,,,

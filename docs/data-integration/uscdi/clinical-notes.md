@@ -33,13 +33,13 @@ delivery-2026-08-19/
 
 One row per note. The note itself is the file; this row is its index card.
 
-{% file src="../../assets/data-integration/documents.4c460535.csv" %}
+{% file src="../../assets/data-integration/documents.121ef115.csv" %}
 documents.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `document_id` | Yes | your key for this note | `DOC-0001` |
+| `record_id` | Yes | your key for this note | `DOC-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `type_code` | Yes | LOINC note type, e.g. `11488-4` consult, `18842-5` discharge summary, `34117-2` history and physical, `11506-3` progress note [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `11488-4` |
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
@@ -54,13 +54,13 @@ documents.csv Data template with example rows
 
 One row per report. The individual results live in `labs` and `clinical_observations` and point back with `diagnostic_report_id`.
 
-{% file src="../../assets/data-integration/diagnostic_reports.f5a3daa0.csv" %}
+{% file src="../../assets/data-integration/diagnostic_reports.0e3e56bc.csv" %}
 diagnostic_reports.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `report_id` | Yes | your key for this report; result rows reference it | `DR-771` |
+| `record_id` | Yes | your key for this report; result rows reference it | `DR-771` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `report_kind` | Yes | `lab` or `note` | `lab` |
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |

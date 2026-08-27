@@ -21,13 +21,12 @@ One row per practitioner, organization, and location: each row becomes one Pract
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
-{% file src="../../assets/data-integration/practitioners.961c4aea.csv" %}
+{% file src="../../assets/data-integration/practitioners.8d3ebf30.csv" %}
 practitioners.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `practitioner_role_id` | Yes | your key for this practitioner-at-location row; `care_team` and `encounters` reference the `npi` | `PRC-0001` |
 | `npi` | Yes | 10 digits | `9999999991` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
@@ -40,21 +39,24 @@ practitioners.csv Data template with example rows
 | `role_period_start` | If available | date | `2021-04-01` |
 | `role_period_end` | If available | date | |
 
+- A row is keyed by `npi`, `location_id` and `practitioner_role_code` together — the roster has no key of its own, so do not mint one. Keep those three stable and the role updates in place.
+
 ## care_team
 
 One row per patient and team member.
 
-{% file src="../../assets/data-integration/care_team.50c89a77.csv" %}
+{% file src="../../assets/data-integration/care_team.b875e2b2.csv" %}
 care_team.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `care_team_id` | Yes | your key for this care team row | `CT-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `member_npi` | Yes, unless `member_related_person_id` is sent | 10 digits | `9999999991` |
-| `member_related_person_id` | Yes, unless `member_npi` is sent | `related_person_id` of the `related_persons` row, for non-clinicians | `RP-3310` |
+| `member_related_person_id` | Yes, unless `member_npi` is sent | `record_id` of the `related_persons` row, for non-clinicians | `RP-3310` |
 | `role_code` | Yes | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `446050000` primary care physician |
 | `status` | Recommended | `proposed`, `active`, `suspended`, `inactive`, `entered-in-error` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status%7C4.0.1) | `active` |
+
+- A row is keyed by `patient_identifier`, the member (`member_npi` or `member_related_person_id`) and `role_code` together — a roster has no key of its own for a membership, so do not mint one.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

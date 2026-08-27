@@ -18,13 +18,13 @@ description: >-
 
 One row per care plan. This dataset carries the **Assessment and Plan of Treatment** narrative; the SDOH Assessment element of the same class comes from `clinical_observations`.
 
-{% file src="../../assets/data-integration/care_plans.a7a2d06d.csv" %}
+{% file src="../../assets/data-integration/care_plans.2fc221c8.csv" %}
 care_plans.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `care_plan_id` | Yes | your key for this care plan | `CP-0001` |
+| `record_id` | Yes | your key for this care plan | `CP-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `narrative_text` | Yes | text or HTML; the assessment and plan itself | `Assessment: … Plan: …` |
 | `status` | Yes | `draft`, `active`, `on-hold`, `revoked`, `completed`, `entered-in-error`, `unknown` [request-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-status%7C4.0.1) | `active` |

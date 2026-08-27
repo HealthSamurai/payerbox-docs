@@ -23,7 +23,7 @@ graph LR
 | Format | Agreed per engagement. If you deliver CSV: UTF-8, comma-delimited, RFC 4180 quoting, first row is the headers, named exactly as in the tables. |
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
 | History (USCDI feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
-| Keys (USCDI feed) | Each dataset names its own key column, listed first in its table. Payerbox derives the resource id from it, so keep it stable across deliveries: the same value updates the row in place, a new one creates a second resource. `is_deleted` set to `true` retracts the row it names. |
+| Keys (USCDI feed) | Each dataset's table says what keys its rows: a key column listed first, or — where a row is a relationship rather than a record, as in `practitioners` and `care_team` — the columns that together identify it. Payerbox derives the resource id from that key, so keep it stable across deliveries: the same value updates the row in place, a new one creates a second resource. `is_deleted` set to `true` retracts the row it names. |
 | Code systems | Every coded column has a companion `_system` column holding the code system URI: `substance_code` with `substance_system`, `vaccine_code` with `vaccine_system`, and so on. Leave it blank to accept the default named in that column's row. |
 
 ## Built on US Core

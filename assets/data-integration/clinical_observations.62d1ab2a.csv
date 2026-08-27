@@ -1,4 +1,4 @@
-observation_id,patient_identifier,category,status,loinc_code,loinc_system,value_quantity,unit,value_string,value_code,value_system,data_absent_reason,effective_datetime,performer_npi,panel_id,diagnostic_report_id,is_deleted
+record_id,patient_identifier,category,status,loinc_code,loinc_system,value_quantity,unit,value_string,value_code,value_system,data_absent_reason,effective_datetime,performer_npi,panel_id,diagnostic_report_id,is_deleted
 CO-1200,MRN-3391077,sdoh,final,76504-0,http://loinc.org,3,{score},,,,,2026-04-18,,,,
 CO-0002,MRN-3391077,sdoh,final,76504-0,http://loinc.org,,,,,,asked-declined,2026-04-18,,CO-1200,,
 CO-0003,MRN-4471903,exam,final,76504-0,http://loinc.org,,,No abnormality detected,,,,2026-04-18,,,,
