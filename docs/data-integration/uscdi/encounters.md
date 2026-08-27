@@ -25,7 +25,7 @@ encounters.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `encounter_id` | Yes | your key for this encounter; other datasets reference it | `ENC-9912` |
+| `encounter_id` | Yes | your stable key for this encounter; other datasets reference it | `ENC-9912` |
 | `encounter_id_system` | Yes | URI of the identifier system; a URL you control or an OID | `urn:oid:2.16.840.1.113883.3.99.2` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `planned`, `arrived`, `triaged`, `in-progress`, `onleave`, `finished`, `cancelled`, `entered-in-error`, `unknown` [encounter-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-status%7C4.0.1) | `finished` |
@@ -40,6 +40,7 @@ encounters.csv Data template with example rows
 | `participant_type_code` | If available | `ATND` attender, `ADM` admitter, `DIS` discharger, `CON` consultant, `REF` referrer, with `participant_type_system`; v3-ParticipationType if omitted [encounter-participant-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-participant-type%7C4.0.1) | `ATND` |
 | `discharge_disposition_code` | If applicable | NUBC patient discharge status code, as carried in UB-04 field 17, with `discharge_disposition_system` [AHA NUBC Patient Discharge Status](https://terminology.hl7.org/5.5.0/CodeSystem-AHANUBCPatientDischargeStatus.html) | `01` discharged to home or self-care |
 | `service_provider_npi` | If available | 10 digits | `9999999993` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `reason_code` is the presenting complaint, not the diagnosis (`diagnosis_condition_id`). Its binding is preferred, so an ICD-10-CM code off the claim is accepted.
 - `participant_type_code` is each clinician's role at the visit. Send one per `participant_npi`, in the same order.
@@ -57,13 +58,14 @@ locations.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this location; `encounters` and `practitioners` reference it | `LOC-221` |
+| `record_id` | Yes | your stable key for this location; `encounters` and `practitioners` reference it | `LOC-221` |
 | `location_name` | Yes | text | `Anytown Family Practice` |
 | `managing_org_npi` | Recommended | 10 digits | `9999999993` |
 | `address_line1` | Recommended | text | `123 Main St` |
 | `city` | Recommended | text | `Anytown` |
 | `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | Recommended | 5 or 9 digits, as a string | `12345` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `location_name` is the one mandatory field: a row without it cannot become a Location.
 - `managing_org_npi` must match a row in your organizations dataset.

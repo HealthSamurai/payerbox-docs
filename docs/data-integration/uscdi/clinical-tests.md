@@ -24,7 +24,7 @@ clinical_observations.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this observation; panel members reference it | `CO-1200` |
+| `record_id` | Yes | your stable key for this observation; panel members reference it | `CO-1200` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `category` | Yes | one of the [categories](#categories) below | `sdoh` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
@@ -38,6 +38,7 @@ clinical_observations.csv Data template with example rows
 | `performer_npi` | If available | 10 digits | `9999999991` |
 | `panel_id` | If available | `record_id` of the parent `clinical_observations` row | `CO-1200` |
 | `diagnostic_report_id` | If applicable | `record_id` of the `diagnostic_reports` row this result belongs to | `DR-771` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - Send exactly one of `value_quantity`, `value_string`, `value_code` or `data_absent_reason`. A row with a result and an absent reason contradicts itself; a row with neither cannot become an Observation.
 - `data_absent_reason` is how a screening question that was asked but not answered stays in the record. Leaving the row out instead loses the fact that it was asked.

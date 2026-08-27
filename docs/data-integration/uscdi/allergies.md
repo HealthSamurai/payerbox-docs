@@ -24,7 +24,7 @@ allergies.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this allergy | `AL-0001` |
+| `record_id` | Yes | your stable key for this allergy | `AL-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system`; RxNorm if omitted [Common substances for allergy and intolerance documentation including refutations](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8) | `7980` penicillin G |
 | `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-clinical%7C4.0.1) | `active` |
@@ -33,6 +33,7 @@ allergies.csv Data template with example rows
 | `criticality` | If available | `low`, `high`, `unable-to-assess` [allergy-intolerance-criticality](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality%7C4.0.1) | `high` |
 | `reaction_manifestation_code` | If a reaction is recorded | SNOMED CT code(s), `;`-separated [SNOMED CT Clinical Findings](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/clinical-findings%7C4.0.1) | `247472004` Wheal |
 | `onset_date` | If available | datetime | `2019-05-02` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `substance_code` is the one coded field with no fallback: a row without it cannot become an AllergyIntolerance. Send `substance_system` as `http://www.nlm.nih.gov/research/umls/rxnorm` or `http://snomed.info/sct`.
 - **For a medication, send the ingredient (`substance_code`).** Every RxNorm code the value set accepts is an ingredient, single or combination. A code for a specific product or pack, whether an NDC or an RxNorm drug-level code from a pharmacy claim, is not accepted, so roll it up to the ingredient first. For an allergy recorded against a whole drug class, send the SNOMED CT class code.

@@ -24,7 +24,7 @@ vital_signs.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this reading | `VS-0001` |
+| `record_id` | Yes | your stable key for this reading | `VS-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `loinc_code` | Yes | one of the [vital sign codes](#vital-sign-codes) below [US Core Vital Signs](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-vital-signs) | `8867-4` |
@@ -35,6 +35,7 @@ vital_signs.csv Data template with example rows
 | `component_diastolic` | Blood pressure only | decimal | `82` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `performer_npi` | If available | 10 digits | `9999999991` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `effective_datetime` is mandatory on this profile: a vital sign without a time is not a conformant reading. Smoking status and pregnancy status require one too.
 - A quantitative vital needs both `value` and `unit`, and the unit must be UCUM. `/min` for heart and respiratory rate, `cm` for height, `kg` for weight, `Cel` for temperature, `%` for oxygen saturation, `kg/m2` for BMI.

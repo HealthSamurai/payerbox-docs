@@ -24,7 +24,7 @@ coverage.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this coverage | `COV-0001` |
+| `record_id` | Yes | your stable key for this coverage | `COV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `active`, `cancelled`, `draft`, `entered-in-error` [fm-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/fm-status%7C4.0.1) | `active` |
 | `member_id` | Yes, unless `subscriber_id` is sent | plan member id | `HSX9930012` |
@@ -38,6 +38,7 @@ coverage.csv Data template with example rows
 | `plan_name` | If available | text | `Gold PPO` |
 | `period_start` | Recommended | date | `2026-01-01` |
 | `period_end` | Recommended | date | `2026-12-31` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - Send at least one of `member_id` and `subscriber_id`. US Core requires a member id or a subscriber id on every Coverage, so a row with neither cannot become one.
 - A group or plan name travels with its number: send `group_number` with `group_name`, and `plan_number` with `plan_name`.

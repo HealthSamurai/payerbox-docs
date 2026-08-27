@@ -24,7 +24,7 @@ conditions.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this condition; `encounters` reference it | `CND-0001` |
+| `record_id` | Yes | your stable key for this condition; `encounters` reference it | `CND-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `category` | Yes | one of seven values — see [Categories](#categories) | `problem-list-item` |
 | `code` | Yes | SNOMED CT or ICD-10-CM code, with `code_system` [us-core-condition-code](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `44054006` Type 2 diabetes mellitus |
@@ -35,6 +35,7 @@ conditions.csv Data template with example rows
 | `recorded_date` | Recommended | datetime | `2021-08-15` |
 | `asserted_date` | If available | datetime | `2021-08-15` |
 | `encounter_id` | If `encounter-diagnosis` | encounter key | `ENC-9912` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `code` is the one coded field with no fallback: a row without it cannot become a Condition. The value set spans SNOMED CT, ICD-10-CM, and ICD-9-CM, so send problems and health concerns as SNOMED CT (`code_system` = `http://snomed.info/sct`) and claims-sourced encounter diagnoses as ICD-10-CM (`code_system` = `http://hl7.org/fhir/sid/icd-10-cm`) — no crosswalk needed. ICD-9-CM (`http://hl7.org/fhir/sid/icd-9-cm`) exists in the value set for historical records only.
 - `clinical_status` and `verification_status` are coupled: FHIR requires `clinical_status` on every `problem-list-item` row whose `verification_status` is not `entered-in-error`, and forbids it on any row that is `entered-in-error`. Sending `active` on live rows and `resolved` or `inactive` on closed ones satisfies this.
