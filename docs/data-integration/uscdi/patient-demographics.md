@@ -21,7 +21,7 @@ description: >-
 One row per member. The sections below group its columns.
 
 {% file src="../../assets/data-integration/patients.csv" %}
-patients.csv Data template with example row
+patients.csv Data template with example rows
 {% endfile %}
 
 ### Identity
@@ -94,13 +94,13 @@ patients.csv Data template with example row
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 
 {% file src="../../assets/data-integration/related_persons.csv" %}
-related_persons.csv Data template with example row
+related_persons.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `NCH` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
+| `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `CHILD` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
 | `first_name` | Recommended | text | `Mary` |
 | `phone` | If available | 10 digits | `5559876543` |
@@ -113,7 +113,7 @@ related_persons.csv Data template with example row
 ## social_history
 
 {% file src="../../assets/data-integration/social_history.csv" %}
-social_history.csv Data template with example row
+social_history.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |

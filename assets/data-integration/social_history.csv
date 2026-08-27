@@ -1,2 +1,6 @@
 patient_identifier,observation_type,status,value_code,industry_code,effective_datetime
 MRN-4471903,occupation,final,29-1141.00,622110,2026-04-18
+MRN-4471903,smoking-status,final,266919005,,2026-04-18
+MRN-7782200,smoking-status,final,8517006,,2026-02-11
+MRN-3391077,pregnancy-status,final,77386006,,2026-03-02
+MRN-3391077,pregnancy-status,corrected,60001007,,2026-05-20

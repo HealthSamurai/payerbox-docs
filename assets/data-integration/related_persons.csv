@@ -1,2 +1,5 @@
 patient_identifier,relationship_code,last_name,first_name,phone,address_line1,city,state,zip,active
 MRN-4471903,DAU,Doe,Mary,5559876543,45 Oak St,Anytown,NY,12345,true
+MRN-4471903,SPS,Doe,Robert,,,,,,true
+MRN-7782200,GUARD,Poe,Alan,5552223333,,,,,false
+MRN-3391077,CHILD,Fox,Lee,,,,,,true
