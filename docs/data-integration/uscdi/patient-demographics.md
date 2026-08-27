@@ -8,7 +8,7 @@ description: >-
 
 ## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) element to FHIR.
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) data element onto a FHIR element.
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -21,7 +21,7 @@ description: >-
 One row per member. The sections below group its columns.
 
 {% file src="../../assets/data-integration/patients.csv" %}
-patients.csv Data template with example row
+patients.csv Data template with example rows
 {% endfile %}
 
 ### Identity
@@ -93,10 +93,14 @@ patients.csv Data template with example row
 
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 
+{% file src="../../assets/data-integration/related_persons.csv" %}
+related_persons.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `NCH` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
+| `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `CHILD` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
 | `first_name` | Recommended | text | `Mary` |
 | `phone` | If available | 10 digits | `5559876543` |
@@ -105,9 +109,12 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `state` | If available | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | If available | 5 digits, as a string | `12345` |
 | `active` | Recommended | `true` / `false`; `false` retires a contact without deleting them | `true` |
-| `preferred_language` | If available | BCP 47 [simple-language](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/simple-language) | `en` |
 
 ## social_history
+
+{% file src="../../assets/data-integration/social_history.csv" %}
+social_history.csv Data template with example rows
+{% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
