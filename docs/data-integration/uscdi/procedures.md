@@ -12,7 +12,27 @@ description: >-
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
+| [`procedures`](#procedures) | [US Core Procedure](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-procedure.html) |
 | [`service_requests`](#service-requests) | [US Core ServiceRequest](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-servicerequest.html) |
+
+## procedures
+
+One row per procedure performed. This dataset carries the **Procedures** element of the class.
+
+| Column | Required | Format / values | Example |
+|---|---|---|---|
+| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `status` | Yes | `preparation`, `in-progress`, `on-hold`, `stopped`, `completed`, `not-done`, `entered-in-error`, `unknown` [event-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/event-status%7C4.0.1) | `completed` |
+| `code` | Yes | CPT, HCPCS, ICD-10-PCS, or SNOMED CT code, with `code_system`; CPT if omitted [US Core Procedure Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-procedure-code) | `80146002` appendectomy |
+| `performed_start` | Recommended | date or datetime | `2026-04-18` |
+| `performed_end` | If a period | date or datetime | |
+| `performer_npi` | If available | 10 digits | `1407006835` |
+| `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
+| `service_request_id` | If available | `service_requests` key, when the procedure fulfils a request | |
+| `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [procedure-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/procedure-reason%7C4.0.1) | `733423003` food insecurity |
+
+- `performed_end` marks a procedure that spans time. Send it only then; a single `performed_start` is a point in time.
+- `service_request_id` links a performed procedure back to the request that ordered it, including an SDOH intervention recorded in `service_requests`.
 
 ## service_requests
 
