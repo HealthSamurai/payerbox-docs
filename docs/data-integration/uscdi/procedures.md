@@ -30,7 +30,7 @@ procedures.csv Data template with example rows
 | `code` | Yes | CPT, HCPCS, ICD-10-PCS, or SNOMED CT code, with `code_system`; CPT if omitted [US Core Procedure Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-procedure-code) | `80146002` appendectomy |
 | `performed_start` | Recommended | date or datetime | `2026-04-18` |
 | `performed_end` | If a period | date or datetime | |
-| `performer_npi` | If available | 10 digits | `1407006835` |
+| `performer_npi` | If available | 10 digits | `9999999991` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `service_request_id` | If available | `record_id` of the `service_requests` row, when the procedure fulfils a request | `SR-2201` |
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [procedure-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/procedure-reason%7C4.0.1) | `733423003` food insecurity |
@@ -56,7 +56,7 @@ service_requests.csv Data template with example rows
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [US Core Condition Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `733423003` food insecurity |
 | `authored_on` | If available | datetime | `2026-05-10` |
 | `occurrence_date` | If available | datetime | `2026-05-24` |
-| `requester_npi` | If available | 10 digits | `1407006835` |
+| `requester_npi` | If available | 10 digits | `9999999991` |
 
 - `status` and `intent` are both required bindings, so a value outside these lists is rejected. A referral a payer holds is normally `active` with intent `order`.
 - `code` says what was requested. It is the one coded field with no fallback: a row without it cannot become a ServiceRequest. Its value set is deliberately broad, so use the system your domain uses — LOINC for a lab order, CPT or HCPCS off a claim.

@@ -33,7 +33,7 @@ vital_signs.csv Data template with example rows
 | `component_systolic` | Blood pressure only | decimal | `128` |
 | `component_diastolic` | Blood pressure only | decimal | `82` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
-| `performer_npi` | If available | 10 digits | `1407006835` |
+| `performer_npi` | If available | 10 digits | `9999999991` |
 
 - `effective_datetime` is required here, unlike every other observation in the feed. A vital sign without a time is not a conformant reading.
 - A quantitative vital needs both `value` and `unit`, and the unit must be UCUM. `/min` for heart and respiratory rate, `cm` for height, `kg` for weight, `Cel` for temperature, `%` for oxygen saturation, `kg/m2` for BMI.

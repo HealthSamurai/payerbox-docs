@@ -31,7 +31,7 @@ immunizations.csv Data template with example rows
 | `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason%7C4.0.1) | `PATOBJ` patient objection |
 | `vaccine_code` | Yes | CVX code, with `vaccine_system`; CVX if omitted [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code%7C4.0.1) | `140` influenza, seasonal, injectable, preservative free |
 | `occurrence_date` | Yes | datetime | `2025-10-02` |
-| `performer_npi` | If available | 10 digits | `1407006835` |
+| `performer_npi` | If available | 10 digits | `9999999991` |
 | `primary_source` | Recommended | `true` / `false` | `true` |
 
 - `vaccine_code` is the one coded field with no fallback: a row without it cannot become an Immunization. Send `vaccine_system` as `http://hl7.org/fhir/sid/cvx`. US Core requires the CVX coding, so a row sourced from a billed claim that only carries an NDC should send that NDC with `vaccine_system` as `http://hl7.org/fhir/sid/ndc`; Payerbox crosswalks it to CVX.
