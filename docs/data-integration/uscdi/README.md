@@ -14,7 +14,7 @@ description: >-
 | 4 | `organizations` | Care Team / Provenance (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Organization |
 | 5 | `locations` | [Encounter Information](encounters.md#locations) (ref), may come from [Provider Directory](../provider-directory/README.md#facilities) | Location |
 | 6 | `allergies` | [Allergies and Intolerances](allergies.md#allergies) | AllergyIntolerance |
-| 7 | `conditions` | Problems, Encounter Diagnosis, Health Concerns, SDOH | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
+| 7 | `conditions` | [Problems, Encounter Diagnosis, Health Concerns, SDOH](conditions.md#conditions) | Condition (Problems/Health-Concerns + Encounter-Diagnosis) |
 | 8 | `medications` | Medications | MedicationRequest (+ Medication) |
 | 9 | `medication_dispenses` | Medications (Fill Status) | MedicationDispense |
 | 10 | `immunizations` | [Immunizations](immunizations.md#immunizations) | Immunization |
@@ -23,11 +23,11 @@ description: >-
 | 13 | `encounters` | [Encounter Information](encounters.md#encounters) | Encounter |
 | 14 | `care_team` | [Care Team Members](care-team.md#care-team) | CareTeam |
 | 15 | `care_plans` | Assessment and Plan of Treatment | CarePlan |
-| 16 | `goals` | Goals | Goal |
+| 16 | `goals` | [Goals](goals.md#goals) | Goal |
 | 17 | `coverage` | [Health Insurance Information](health-insurance.md#coverage) | Coverage |
 | 18 | `documents` | Clinical Notes | DocumentReference |
 | 19 | `diagnostic_reports` | Clinical Notes, Laboratory, Diagnostic Imaging (report level) | DiagnosticReport (Lab + Report/Note) |
-| 20 | `devices` | Unique Device Identifier(s) | Implantable Device |
+| 20 | `devices` | [Unique Device Identifier(s)](devices.md#devices) | Implantable Device |
 | 21 | `vital_signs` | Vital Signs | Observation (Vital Signs family) |
 | 22 | `labs` | Laboratory | Observation (Lab Result) + Specimen |
 | 23 | `social_history` | Health Status/Assessments (Smoking, Pregnancy) + Patient Demographics (Occupation) | Observation (Social History profiles) |
