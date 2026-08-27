@@ -98,6 +98,11 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `last_name` | Recommended | text | `Doe` |
 | `first_name` | Recommended | text | `Mary` |
 | `phone` | If available | 10 digits | `5559876543` |
+| `address_line1` | If available | text | `12 Elm St` |
+| `city` | If available | text | `Bronx` |
+| `state` | If available | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
+| `zip` | If available | 5 digits, as a string | `10453` |
+| `active` | Recommended | `true` / `false`; `false` retires a contact without deleting them | `true` |
 | `preferred_language` | If available | BCP 47 [simple-language](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/simple-language) | `en` |
 
 ## social_history
