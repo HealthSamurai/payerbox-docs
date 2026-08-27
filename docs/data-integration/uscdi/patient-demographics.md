@@ -20,12 +20,16 @@ description: >-
 
 One row per member. The sections below group its columns.
 
+{% file src="../../assets/data-integration/patients.csv" %}
+patients.csv Data template with example row
+{% endfile %}
+
 ### Identity
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another | `MRN-4471903` |
-| `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://acme.org/mrns` |
+| `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/mrns` |
 | `patient_identifier_type` | Recommended | `MR` medical record, `MB` member number, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MR` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use) | `official` |
 | `patient_identifier_assigner_org_npi` | Recommended | 10 digits | `1234567893` |
@@ -35,7 +39,7 @@ One row per member. The sections below group its columns.
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `identifier_<n>_value` | Yes | the identifier as issued | `HSX9930012` |
-| `identifier_<n>_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://acme.org/member-ids` |
+| `identifier_<n>_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/member-ids` |
 | `identifier_<n>_type` | Recommended | [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) code | `MB` |
 | `identifier_<n>_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use) | `official` |
 | `identifier_<n>_period_start` | Recommended | date | `2024-01-01` |
@@ -52,7 +56,6 @@ One row per member. The sections below group its columns.
 | `last_name` | Yes | text | `Doe` |
 | `first_name` | Yes | text | `Jane` |
 | `middle_name` | Recommended | text | `L` |
-| `name_prefix` | No | Mr. / Mrs. / Ms. / Dr. | `Ms.` |
 | `name_suffix` | Recommended | Jr. / Sr. / III | |
 | `previous_name` | Recommended | `family, given` | `Smith, Jane` |
 
@@ -75,16 +78,15 @@ One row per member. The sections below group its columns.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `address_line1` | Recommended | text | `88 River Rd` |
+| `address_line1` | Recommended | text | `123 Main St` |
 | `address_line2` | No | text | `Apt 3` |
-| `city` | Recommended | text | `Yonkers` |
+| `city` | Recommended | text | `Anytown` |
 | `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
-| `zip` | Recommended | 5 or 9 digits, as a string | `10701` |
-| `county` | If available | text | `Westchester` |
+| `zip` | Recommended | 5 or 9 digits, as a string | `12345` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `phone_type` | Recommended | `home`, `work`, `mobile` [ContactPointUse](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-use) | `mobile` |
 | `email` | Recommended | email address | |
-| `previous_address` | Recommended | `line, city, state, zip` | `12 Elm St, Bronx, NY, 10453` |
+| `previous_address` | Recommended | `line, city, state, zip` | `45 Oak St, Anytown, NY, 12345` |
 | `previous_address_end` | If available | date | `2024-08-31` |
 
 ## related_persons
@@ -98,10 +100,10 @@ Contacts and non-clinician care-team members, such as a daughter, spouse, or gua
 | `last_name` | Recommended | text | `Doe` |
 | `first_name` | Recommended | text | `Mary` |
 | `phone` | If available | 10 digits | `5559876543` |
-| `address_line1` | If available | text | `12 Elm St` |
-| `city` | If available | text | `Bronx` |
+| `address_line1` | If available | text | `45 Oak St` |
+| `city` | If available | text | `Anytown` |
 | `state` | If available | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
-| `zip` | If available | 5 digits, as a string | `10453` |
+| `zip` | If available | 5 digits, as a string | `12345` |
 | `active` | Recommended | `true` / `false`; `false` retires a contact without deleting them | `true` |
 | `preferred_language` | If available | BCP 47 [simple-language](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/simple-language) | `en` |
 
