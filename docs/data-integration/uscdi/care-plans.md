@@ -24,6 +24,7 @@ care_plans.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `care_plan_id` | Yes | your key for this care plan | `CP-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `narrative_text` | Yes | text or HTML; the assessment and plan itself | `Assessment: … Plan: …` |
 | `status` | Yes | `draft`, `active`, `on-hold`, `revoked`, `completed`, `entered-in-error`, `unknown` [request-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-status%7C4.0.1) | `active` |

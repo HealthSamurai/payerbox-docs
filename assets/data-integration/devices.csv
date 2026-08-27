@@ -1,3 +1,3 @@
-record_id,patient_identifier,udi_device_identifier,udi_carrier_hrf,device_type_code,device_type_system,distinct_identifier,lot_number,serial_number,manufacture_date,expiration_date,is_deleted
+device_id,patient_identifier,udi_device_identifier,udi_carrier_hrf,device_type_code,device_type_system,distinct_identifier,lot_number,serial_number,manufacture_date,expiration_date,is_deleted
 DV-0001,MRN-4471903,00643169007222,(01)00643169007222(17)…,468063009,http://snomed.info/sct,456,543211,842026,2019-03-01,2029-03-01,
 DV-0002,MRN-7782200,00643169007222,,468063009,http://snomed.info/sct,,,,,,

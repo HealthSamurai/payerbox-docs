@@ -1,4 +1,4 @@
-record_id,patient_identifier,relationship_code,last_name,first_name,phone,address_line1,city,state,zip,active,is_deleted
+related_person_id,patient_identifier,relationship_code,last_name,first_name,phone,address_line1,city,state,zip,active,is_deleted
 RP-3310,MRN-4471903,DAU,Doe,Mary,5559876543,45 Oak St,Anytown,NY,12345,true,
 RP-0002,MRN-4471903,SPS,Doe,Robert,,,,,,true,
 RP-0003,MRN-7782200,GUARD,Poe,Alan,5552223333,,,,,false,

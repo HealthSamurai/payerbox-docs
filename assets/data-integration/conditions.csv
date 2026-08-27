@@ -1,4 +1,4 @@
-record_id,patient_identifier,category,code,code_system,clinical_status,verification_status,onset_date,abatement_date,recorded_date,asserted_date,encounter_id,is_deleted
+condition_id,patient_identifier,category,code,code_system,clinical_status,verification_status,onset_date,abatement_date,recorded_date,asserted_date,encounter_id,is_deleted
 CND-0001,MRN-4471903,problem-list-item,44054006,http://snomed.info/sct,active,confirmed,2021-08-14,,2021-08-15,,,
 CND-0002,MRN-4471903,problem-list-item,44054006,http://snomed.info/sct,resolved,confirmed,2019-02-03,2023-11-30,2019-02-04,,,
 CND-4501,MRN-7782200,encounter-diagnosis,44054006,http://snomed.info/sct,active,confirmed,,,2026-04-18,,ENC-9913,

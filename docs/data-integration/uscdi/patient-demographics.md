@@ -99,6 +99,7 @@ related_persons.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `related_person_id` | Yes | your key for this person; `care_team` references it | `RP-3310` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `CHILD` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
@@ -118,6 +119,7 @@ social_history.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `social_history_id` | Yes | your key for this row | `SH-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |

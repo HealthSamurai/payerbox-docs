@@ -1,4 +1,4 @@
-record_id,patient_identifier,status,status_reason_code,status_reason_system,vaccine_code,vaccine_system,occurrence_date,performer_npi,primary_source,is_deleted
+immunization_id,patient_identifier,status,status_reason_code,status_reason_system,vaccine_code,vaccine_system,occurrence_date,performer_npi,primary_source,is_deleted
 IM-0001,MRN-4471903,completed,,,140,,2025-10-02,9999999991,true,
 IM-0002,MRN-7782200,not-done,PATOBJ,http://terminology.hl7.org/CodeSystem/v3-ActReason,140,,2025-11-14,,,
 IM-0003,MRN-5510042,completed,,,140,,2019-09-30,,false,

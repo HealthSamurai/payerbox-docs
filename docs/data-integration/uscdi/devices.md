@@ -24,6 +24,7 @@ devices.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `device_id` | Yes | your key for this device row | `DV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `udi_device_identifier` | Yes | DI portion of the UDI | `00643169007222` |
 | `udi_carrier_hrf` | Recommended | full UDI barcode string, human-readable form | `(01)00643169007222(17)…` |

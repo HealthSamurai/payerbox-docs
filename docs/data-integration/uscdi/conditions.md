@@ -24,6 +24,7 @@ conditions.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `condition_id` | Yes | your key for this condition; `encounters` reference it | `CND-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `category` | Yes | one of seven values — see [Categories](#categories) | `problem-list-item` |
 | `code` | Yes | SNOMED CT or ICD-10-CM code, with `code_system` [us-core-condition-code](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `44054006` Type 2 diabetes mellitus |

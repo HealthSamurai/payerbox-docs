@@ -24,6 +24,7 @@ coverage.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `coverage_id` | Yes | your key for this coverage | `COV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `active`, `cancelled`, `draft`, `entered-in-error` [fm-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/fm-status%7C4.0.1) | `active` |
 | `member_id` | Yes, unless `subscriber_id` is sent | plan member id | `HSX9930012` |

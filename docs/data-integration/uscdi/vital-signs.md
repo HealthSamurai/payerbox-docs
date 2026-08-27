@@ -24,6 +24,7 @@ vital_signs.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `vital_sign_id` | Yes | your key for this reading | `VS-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `loinc_code` | Yes | one of the [vital sign codes](#vital-sign-codes) below [US Core Vital Signs](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-vital-signs) | `8867-4` |

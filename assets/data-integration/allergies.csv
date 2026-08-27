@@ -1,4 +1,4 @@
-record_id,patient_identifier,substance_code,substance_system,clinical_status,verification_status,category,criticality,reaction_manifestation_code,onset_date,is_deleted
+allergy_id,patient_identifier,substance_code,substance_system,clinical_status,verification_status,category,criticality,reaction_manifestation_code,onset_date,is_deleted
 AL-0001,MRN-4471903,7980,,active,confirmed,medication,high,247472004,2019-05-02,
 AL-0002,MRN-5510042,7980,,active,,,,,,
 AL-0003,MRN-7782200,716186003,http://snomed.info/sct,active,confirmed,,,,,

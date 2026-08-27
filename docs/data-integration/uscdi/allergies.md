@@ -24,6 +24,7 @@ allergies.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `allergy_id` | Yes | your key for this allergy | `AL-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system`; RxNorm if omitted [Common substances for allergy and intolerance documentation including refutations](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1186.8) | `7980` penicillin G |
 | `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-clinical%7C4.0.1) | `active` |

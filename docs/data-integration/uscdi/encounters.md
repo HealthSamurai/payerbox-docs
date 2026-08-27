@@ -25,7 +25,7 @@ encounters.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `encounter_id` | Yes | stable encounter key; the key other datasets reference | `ENC-9912` |
+| `encounter_id` | Yes | your key for this encounter; other datasets reference it | `ENC-9912` |
 | `encounter_id_system` | Yes | URI of the identifier system; a URL you control or an OID | `urn:oid:2.16.840.1.113883.3.99.2` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `planned`, `arrived`, `triaged`, `in-progress`, `onleave`, `finished`, `cancelled`, `entered-in-error`, `unknown` [encounter-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-status%7C4.0.1) | `finished` |
@@ -35,7 +35,7 @@ encounters.csv Data template with example rows
 | `period_end` | Recommended | datetime | `2026-04-18T09:30:00-04:00` |
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [encounter-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-reason%7C4.0.1) | `29857009` chest pain |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
-| `diagnosis_condition_id` | If available | `record_id` of the `conditions` row(s), `;`-separated | `CND-4501` |
+| `diagnosis_condition_id` | If available | `condition_id` of the `conditions` row(s), `;`-separated | `CND-4501` |
 | `participant_npi` | If available | 10 digits, `;`-separated | `9999999991` |
 | `participant_type_code` | If available | `ATND` attender, `ADM` admitter, `DIS` discharger, `CON` consultant, `REF` referrer, with `participant_type_system`; v3-ParticipationType if omitted [encounter-participant-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-participant-type%7C4.0.1) | `ATND` |
 | `discharge_disposition_code` | If applicable | NUBC patient discharge status code, as carried in UB-04 field 17, with `discharge_disposition_system` [AHA NUBC Patient Discharge Status](https://terminology.hl7.org/5.5.0/CodeSystem-AHANUBCPatientDischargeStatus.html) | `01` discharged to home or self-care |
@@ -57,7 +57,7 @@ locations.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `location_id` | Yes | stable id; the key `encounters` references | `LOC-221` |
+| `location_id` | Yes | your key for this location; `encounters` and `practitioners` reference it | `LOC-221` |
 | `location_name` | Yes | text | `Anytown Family Practice` |
 | `managing_org_npi` | Recommended | 10 digits | `9999999993` |
 | `address_line1` | Recommended | text | `123 Main St` |
