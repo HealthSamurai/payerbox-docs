@@ -71,5 +71,7 @@
     * [Immunizations](data-integration/uscdi/immunizations.md)
     * [Goals](data-integration/uscdi/goals.md)
     * [Unique Device Identifiers](data-integration/uscdi/devices.md)
+    * [Encounter Information](data-integration/uscdi/encounters.md)
+    * [Reason for Referral and SDOH Interventions](data-integration/uscdi/service-requests.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)
