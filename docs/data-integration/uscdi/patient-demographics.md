@@ -33,6 +33,7 @@ patients.csv Data template with example rows
 | `patient_identifier_type` | Recommended | `MR` medical record, `MB` member number, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MR` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `patient_identifier_assigner_org_npi` | Recommended | 10 digits | `9999999993` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 ### Additional identifiers
 
@@ -99,7 +100,7 @@ related_persons.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this person; `care_team` references it | `RP-3310` |
+| `record_id` | Yes | your stable key for this person; `care_team` references it | `RP-3310` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `CHILD` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
@@ -110,6 +111,7 @@ related_persons.csv Data template with example rows
 | `state` | If available | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | If available | 5 digits, as a string | `12345` |
 | `active` | Yes | `true` / `false`; `false` retires a contact without deleting them | `true` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 ## social_history
 
@@ -119,12 +121,13 @@ social_history.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this row | `SH-0001` |
+| `record_id` | Yes | your stable key for this row | `SH-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `value_code` | Yes | the value for this `observation_type`, with `value_system`: O*NET-SOC for `occupation` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901), SNOMED CT for `smoking-status`, `pregnancy-status` and `pregnancy-intent` | `29-1141.00`, `266919005` |
 | `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
 | `effective_datetime` | Yes, except on `occupation` rows | datetime | `2026-04-18` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

@@ -24,13 +24,14 @@ care_plans.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this care plan | `CP-0001` |
+| `record_id` | Yes | your stable key for this care plan | `CP-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `narrative_text` | Yes | text or HTML; the assessment and plan itself | `Assessment: … Plan: …` |
 | `status` | Yes | `draft`, `active`, `on-hold`, `revoked`, `completed`, `entered-in-error`, `unknown` [request-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-status%7C4.0.1) | `active` |
 | `intent` | Yes | `proposal`, `plan`, `order`, `option` [care-plan-intent](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-plan-intent%7C4.0.1) | `plan` |
 | `period_start` | If available | datetime | `2026-04-18` |
 | `period_end` | If available | datetime | |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `narrative_text` is the payload of this dataset, not a summary of it. US Core must-supports the narrative and requires `text.div` whenever `text` is present, so a row without it produces a CarePlan with nothing to read. Send the assessment and the plan as your source holds them; HTML is preserved, plain text is wrapped.
 - Payerbox sets the `assess-plan` category and the narrative status on every row. Both are fixed by the profile, so there is nothing for you to send.

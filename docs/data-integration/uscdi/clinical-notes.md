@@ -39,13 +39,14 @@ documents.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this note | `DOC-0001` |
+| `record_id` | Yes | your stable key for this note | `DOC-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `type_code` | Yes | LOINC note type, e.g. `11488-4` consult, `18842-5` discharge summary, `34117-2` history and physical, `11506-3` progress note [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `11488-4` |
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
 | `document_date` | Recommended | datetime | `2026-04-18T10:00:00-04:00` |
 | `author_npi` | Recommended | 10 digits | `9999999991` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `type_code` has a required binding, so the note type must come from that value set. It is large, but the four codes above cover most of what a payer holds.
 - Payerbox sets the status to `current` and the category to `clinical-note`, and reads the attachment's content type and size from the stored file. None of those are columns.
@@ -60,7 +61,7 @@ diagnostic_reports.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this report; result rows reference it | `DR-771` |
+| `record_id` | Yes | your stable key for this report; result rows reference it | `DR-771` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `report_kind` | Yes | `lab` or `note` | `lab` |
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |
@@ -71,6 +72,7 @@ diagnostic_reports.csv Data template with example rows
 | `performer_npi` | If available | 10 digits | `9999999993` |
 | `attachment_file` | If available | path relative to the delivery root | `attachments/DR-0771.pdf` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `report_kind` picks the profile: `lab` for a laboratory report, `note` for everything else, including radiology and pathology narratives. The two bind `code` to different value sets, so a lab code on a `note` row falls outside the binding and the reverse too. Both bindings are extensible, so the code is not rejected, but a wrong `report_kind` silently produces the wrong profile.
 - `attachment_file` carries the narrative report as a file, the same way `documents` does. A lab report with structured results and no narrative needs none.

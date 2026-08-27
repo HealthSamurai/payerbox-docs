@@ -24,12 +24,13 @@ goals.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this goal | `GL-0001` |
+| `record_id` | Yes | your stable key for this goal | `GL-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `lifecycle_status` | Yes | `proposed`, `planned`, `accepted`, `active`, `on-hold`, `completed`, `cancelled`, `entered-in-error`, `rejected` [goal-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/goal-status%7C4.0.1) | `active` |
 | `description_code` | Yes | SNOMED CT code, with `description_system`; or plain text [us-core-goal-description](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-goal-description) | `289169006` exercising to lose weight |
 | `start_date` | If available | date | `2026-04-18` |
 | `target_date` | If available | date | `2026-10-18` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `description_code` is the one field with no fallback: a row without it cannot become a Goal. Send a SNOMED CT code with `description_system` as `http://snomed.info/sct`; the binding is extensible over a value set that spans essentially all of SNOMED CT. A source that records goals only as narrative may put the text itself in `description_code` and leave `description_system` empty.
 - `lifecycle_status` marks each row: `active` for a goal being pursued, `completed`/`cancelled`/`rejected` for closed ones, `entered-in-error` to retract a record that should never have existed.

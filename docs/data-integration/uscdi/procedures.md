@@ -25,7 +25,7 @@ procedures.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this procedure | `PRO-0001` |
+| `record_id` | Yes | your stable key for this procedure | `PRO-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `preparation`, `in-progress`, `on-hold`, `stopped`, `completed`, `not-done`, `entered-in-error`, `unknown` [event-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/event-status%7C4.0.1) | `completed` |
 | `code` | Yes | CPT, HCPCS, ICD-10-PCS, or SNOMED CT code, with `code_system`; CPT if omitted [US Core Procedure Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-procedure-code) | `80146002` appendectomy |
@@ -35,6 +35,7 @@ procedures.csv Data template with example rows
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `service_request_id` | If available | `record_id` of the `service_requests` row, when the procedure fulfils a request | `SR-2201` |
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [procedure-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/procedure-reason%7C4.0.1) | `733423003` food insecurity |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `performed_end` marks a procedure that spans time. Send it only then; a single `performed_start` is a point in time.
 - `service_request_id` links a performed procedure back to the request that ordered it, including an SDOH intervention recorded in `service_requests`.
@@ -49,7 +50,7 @@ service_requests.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this request; `procedures` reference it | `SR-2201` |
+| `record_id` | Yes | your stable key for this request; `procedures` reference it | `SR-2201` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `status` | Yes | `draft`, `active`, `on-hold`, `completed`, `revoked`, `entered-in-error`, `unknown` [request-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-status%7C4.0.1) | `active` |
 | `intent` | Yes | `proposal`, `plan`, `directive`, `order`, `original-order`, `reflex-order`, `filler-order`, `instance-order`, `option` [request-intent](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-intent%7C4.0.1) | `order` |
@@ -59,6 +60,7 @@ service_requests.csv Data template with example rows
 | `authored_on` | If available | datetime | `2026-05-10` |
 | `occurrence_date` | If available | datetime | `2026-05-24` |
 | `requester_npi` | If available | 10 digits | `9999999991` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `status` and `intent` are both required bindings, so a value outside these lists is rejected. A referral a payer holds is normally `active` with intent `order`.
 - `code` says what was requested. It is the one coded field with no fallback: a row without it cannot become a ServiceRequest. Its value set is deliberately broad, so use the system your domain uses — LOINC for a lab order, CPT or HCPCS off a claim.

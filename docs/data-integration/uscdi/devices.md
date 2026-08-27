@@ -24,7 +24,7 @@ devices.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `record_id` | Yes | your key for this device row | `DV-0001` |
+| `record_id` | Yes | your stable key for this device row | `DV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `udi_device_identifier` | Yes | DI portion of the UDI | `00643169007222` |
 | `udi_carrier_hrf` | Recommended | full UDI barcode string, human-readable form | `(01)00643169007222(17)…` |
@@ -34,6 +34,7 @@ devices.csv Data template with example rows
 | `serial_number` | If available | text | `842026` |
 | `manufacture_date` | If available | datetime | `2019-03-01` |
 | `expiration_date` | If available | datetime | `2029-03-01` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `udi_device_identifier` is the device identifier (DI): the fixed portion of the UDI that names the make and model. It is the element this data class exists for, so a row without it fails the USCDI intent even though FHIR itself would accept one.
 - `udi_carrier_hrf` is the full barcode string in human-readable form: the DI plus the production identifiers — lot, serial, expiration and manufacture dates. US Core exchanges the HRF, and the FDA AccessGUDID and Parse UDI APIs can decompose it. Send it whole when you have it; if your source already stores the parsed parts, the production-identifier columns carry them individually.
