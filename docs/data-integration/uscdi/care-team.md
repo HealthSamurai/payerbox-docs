@@ -32,7 +32,7 @@ practitioners.csv Data template with example rows
 | `first_name` | Recommended | text | `Richard` |
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
 | `primary_org_npi` | Recommended | 10 digits | `9999999993` |
-| `practitioner_role_code` | Recommended | role code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `doctor` |
+| `practitioner_role_code` | Recommended | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `PCP` primary care physician |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `email` | If available | email address | |
@@ -50,9 +50,9 @@ care_team.csv Data template with example rows
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `member_npi` | Yes | 10 digits; send this or `member_related_person_id` | `9999999991` |
-| `member_related_person_id` | Yes | `record_id` of the `related_persons` row, for non-clinicians; send this or `member_npi` | `RP-3310` |
-| `role_code` | Yes | SNOMED or NUCC code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `223366009` |
+| `member_npi` | Yes, unless `member_related_person_id` is sent | 10 digits | `9999999991` |
+| `member_related_person_id` | Yes, unless `member_npi` is sent | `record_id` of the `related_persons` row, for non-clinicians | `RP-3310` |
+| `role_code` | Yes | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `446050000` primary care physician |
 | `status` | Recommended | `proposed`, `active`, `suspended`, `inactive`, `entered-in-error` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status%7C4.0.1) | `active` |
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

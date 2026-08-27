@@ -26,7 +26,7 @@ goals.csv Data template with example rows
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `lifecycle_status` | Yes | `proposed`, `planned`, `accepted`, `active`, `on-hold`, `completed`, `cancelled`, `entered-in-error`, `rejected` [goal-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/goal-status%7C4.0.1) | `active` |
-| `description_code` | Yes | SNOMED CT code, with `description_system`; or plain text [us-core-goal-description](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-goal-description) | `281004` |
+| `description_code` | Yes | SNOMED CT code, with `description_system`; or plain text [us-core-goal-description](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-goal-description) | `289169006` exercising to lose weight |
 | `start_date` | If available | date | `2026-04-18` |
 | `target_date` | If available | date | `2026-10-18` |
 
