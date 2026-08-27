@@ -44,7 +44,7 @@ documents.csv Data template with example rows
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
 | `record_id` | Recommended | your stable row key | `DOC-0001` |
 | `document_date` | Recommended | datetime | `2026-04-18T10:00:00-04:00` |
-| `author_npi` | Recommended | 10 digits | `1407006835` |
+| `author_npi` | Recommended | 10 digits | `1999999992` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 
 - `type_code` has a required binding, so the note type must come from that value set. It is large, but the four codes above cover most of what a payer holds.

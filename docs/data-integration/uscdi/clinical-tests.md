@@ -34,7 +34,7 @@ clinical_observations.csv Data template with example rows
 | `value_code` | If coded | SNOMED CT or LOINC code, with `value_system` | |
 | `data_absent_reason` | If there is no result | `unknown`, `asked-declined`, `not-performed` [data-absent-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/data-absent-reason%7C4.0.1) | |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
-| `performer_npi` | If available | 10 digits | `1407006835` |
+| `performer_npi` | If available | 10 digits | `1999999992` |
 | `panel_id` | If available | `record_id` of the parent `clinical_observations` row | `CO-1200` |
 
 - Send exactly one of `value_quantity`, `value_string`, `value_code` or `data_absent_reason`. A row with a result and an absent reason contradicts itself; a row with neither cannot become an Observation.

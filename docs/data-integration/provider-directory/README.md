@@ -22,7 +22,7 @@ One row per unique NPI, practice location, plan and specialty. A provider at two
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `1234567893` |
+| `npi` | Yes | 10 digits | `1999999992` |
 | `first_name` | Yes | text | `Jane` |
 | `last_name` | Yes | text | `Smith` |
 | `middle_name` | No | text | `G` |
@@ -35,7 +35,7 @@ One row per unique NPI, practice location, plan and specialty. A provider at two
 | `board_certification` | If available | qualification code or name | `Board Certified, Cardiology` |
 | `plan_id` | Yes | key from `plans`; one plan per row | `PLAN-DSNP` |
 | `network_id` | Yes | key from `networks` | `NET-001` |
-| `organization_npi` | If applicable | 10 digits; blank for a solo practitioner with no group NPI | `1407006835` |
+| `organization_npi` | If applicable | 10 digits; blank for a solo practitioner with no group NPI | `1234567893` |
 | `accepting_new_patients` | Recommended | `accepting`, `not-accepting`, `existing-only`, `existing+family` [AcceptingPatientsVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-AcceptingPatientsVS.html) | `accepting` |
 | `location_name` | Yes | text; Plan-Net requires a name on every location | `Riverdale Family Practice` |
 | `address_line1` | Yes | text | `225 Broadway` |
@@ -56,11 +56,11 @@ One row per facility NPI, plan and network.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `1407006835` |
+| `npi` | Yes | 10 digits | `1234567893` |
 | `facility_name` | Yes | text | `Example Hospital` |
 | `facility_type_nucc` | Yes | NUCC organization taxonomy code(s), `;`-separated [OrgTypeVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-OrgTypeVS.html) | `282N00000X` |
 | `affiliation_type` | Recommended | `provider`, `pharmacy`, `lab`, `dme`, `urgent`, `hospice` [OrganizationAffiliationRoleVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-OrganizationAffiliationRoleVS.html) | `provider` |
-| `parent_org_npi` | If available | 10 digits, if part of a larger system | `1234567893` |
+| `parent_org_npi` | If available | 10 digits, if part of a larger system | `1666666668` |
 | `plan_id` | Yes | key from `plans` | `PLAN-ISNP` |
 | `network_id` | Yes | key from `networks` | `NET-002` |
 | `location_name` | Recommended | text; defaults to `facility_name` if there is no distinct site name | `Example Hospital` |
