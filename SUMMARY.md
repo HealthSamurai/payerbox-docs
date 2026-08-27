@@ -69,6 +69,6 @@
     * [Allergies and Intolerances](data-integration/uscdi/allergies.md)
     * [Immunizations](data-integration/uscdi/immunizations.md)
     * [Encounter Information](data-integration/uscdi/encounters.md)
-    * [Reason for Referral and SDOH Interventions](data-integration/uscdi/service-requests.md)
+    * [Procedures](data-integration/uscdi/procedures.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)

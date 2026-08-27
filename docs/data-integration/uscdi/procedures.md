@@ -4,7 +4,7 @@ description: >-
   class to US Core 6.1.0 FHIR.
 ---
 
-# Reason for Referral and SDOH Interventions
+# Procedures
 
 ## Datasets
 
@@ -16,7 +16,7 @@ description: >-
 
 ## service_requests
 
-One row per requested service: a referral, an order, or an SDOH intervention. This dataset carries the Reason for Referral and SDOH Interventions elements of the Procedures data class; the services actually performed go in `procedures`.
+One row per requested service: a referral, an order, or an SDOH intervention. This dataset carries the **Reason for Referral** and **SDOH Interventions** elements of the class; the services actually performed go in `procedures`.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
