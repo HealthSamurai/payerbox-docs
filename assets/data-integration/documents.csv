@@ -1,0 +1,4 @@
+patient_identifier,type_code,attachment_file,record_id,document_date,author_npi,encounter_id
+MRN-4471903,11488-4,attachments/DOC-0001.pdf,DOC-0001,2026-04-18T10:00:00-04:00,1407006835,ENC-9912
+MRN-7782200,18842-5,attachments/DOC-0002.pdf,DOC-0002,2026-02-06T11:30:00-05:00,1407006835,ENC-9913
+MRN-5510042,11506-3,attachments/DOC-0003.pdf,DOC-0003,2026-01-09T15:05:00-05:00,,

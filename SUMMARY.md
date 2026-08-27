@@ -74,5 +74,8 @@
     * [Encounter Information](data-integration/uscdi/encounters.md)
     * [Procedures](data-integration/uscdi/procedures.md)
     * [Assessment and Plan of Treatment](data-integration/uscdi/care-plans.md)
+    * [Clinical Notes](data-integration/uscdi/clinical-notes.md)
+    * [Vital Signs](data-integration/uscdi/vital-signs.md)
+    * [Clinical Tests](data-integration/uscdi/clinical-tests.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
 * [Releases](releases.md)
