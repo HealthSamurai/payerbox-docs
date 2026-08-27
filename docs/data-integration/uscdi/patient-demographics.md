@@ -20,6 +20,10 @@ description: >-
 
 One row per member. The sections below group its columns.
 
+{% file src="../../assets/data-integration/patients.csv" %}
+patients.csv — every column below, in order, with one example row to delete before you send it
+{% endfile %}
+
 ### Identity
 
 | Column | Required | Format / values | Example |
