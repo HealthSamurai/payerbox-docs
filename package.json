@@ -6,6 +6,7 @@
     "lint": "docs-lint",
     "lint:check": "docs-lint --check",
     "lint:json": "docs-lint --json",
+    "assets:hash": "bun scripts/hash-assets.ts",
     "images:check": "docs-images check",
     "images:optimize": "docs-images optimize",
     "images:dry-run": "docs-images optimize --dry-run"

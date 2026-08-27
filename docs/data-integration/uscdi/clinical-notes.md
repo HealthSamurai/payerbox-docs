@@ -33,7 +33,7 @@ delivery-2026-08-19/
 
 One row per note. The note itself is the file; this row is its index card.
 
-{% file src="../../assets/data-integration/documents.csv" %}
+{% file src="../../assets/data-integration/documents.4c460535.csv" %}
 documents.csv Data template with example rows
 {% endfile %}
 
@@ -54,7 +54,7 @@ documents.csv Data template with example rows
 
 One row per report. The individual results live in `labs` and `clinical_observations` and point back with `diagnostic_report_id`.
 
-{% file src="../../assets/data-integration/diagnostic_reports.csv" %}
+{% file src="../../assets/data-integration/diagnostic_reports.f5a3daa0.csv" %}
 diagnostic_reports.csv Data template with example rows
 {% endfile %}
 

@@ -18,7 +18,7 @@ description: >-
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
-{% file src="../../assets/data-integration/coverage.csv" %}
+{% file src="../../assets/data-integration/coverage.4d9e6894.csv" %}
 coverage.csv Data template with example rows
 {% endfile %}
 

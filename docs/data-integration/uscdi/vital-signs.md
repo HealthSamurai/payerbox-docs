@@ -18,7 +18,7 @@ description: >-
 
 One row per measurement, except blood pressure: systolic and diastolic are two components of a single reading, so they share a row.
 
-{% file src="../../assets/data-integration/vital_signs.csv" %}
+{% file src="../../assets/data-integration/vital_signs.a2c1821b.csv" %}
 vital_signs.csv Data template with example rows
 {% endfile %}
 

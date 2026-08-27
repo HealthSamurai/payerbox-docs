@@ -18,7 +18,7 @@ description: >-
 
 One row per goal per patient.
 
-{% file src="../../assets/data-integration/goals.csv" %}
+{% file src="../../assets/data-integration/goals.7ce937f2.csv" %}
 goals.csv Data template with example rows
 {% endfile %}
 

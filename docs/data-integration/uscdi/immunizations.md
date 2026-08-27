@@ -20,7 +20,7 @@ description: >-
 
 One row per administered (or refused) dose per patient. A member with three seasonal flu shots is three rows.
 
-{% file src="../../assets/data-integration/immunizations.csv" %}
+{% file src="../../assets/data-integration/immunizations.908bf32d.csv" %}
 immunizations.csv Data template with example rows
 {% endfile %}
 

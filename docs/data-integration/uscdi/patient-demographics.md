@@ -20,7 +20,7 @@ description: >-
 
 One row per member. The sections below group its columns.
 
-{% file src="../../assets/data-integration/patients.csv" %}
+{% file src="../../assets/data-integration/patients.4d87f019.csv" %}
 patients.csv Data template with example rows
 {% endfile %}
 
@@ -93,7 +93,7 @@ patients.csv Data template with example rows
 
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 
-{% file src="../../assets/data-integration/related_persons.csv" %}
+{% file src="../../assets/data-integration/related_persons.9ea0a20e.csv" %}
 related_persons.csv Data template with example rows
 {% endfile %}
 
@@ -113,7 +113,7 @@ related_persons.csv Data template with example rows
 
 ## social_history
 
-{% file src="../../assets/data-integration/social_history.csv" %}
+{% file src="../../assets/data-integration/social_history.d2f5c741.csv" %}
 social_history.csv Data template with example rows
 {% endfile %}
 

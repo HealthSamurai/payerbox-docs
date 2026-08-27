@@ -18,7 +18,7 @@ description: >-
 
 One file covers all four USCDI condition flavours — problems, health concerns, encounter diagnoses, and SDOH — one row per condition per patient; the `category` column tells them apart.
 
-{% file src="../../assets/data-integration/conditions.csv" %}
+{% file src="../../assets/data-integration/conditions.eb153b88.csv" %}
 conditions.csv Data template with example rows
 {% endfile %}
 

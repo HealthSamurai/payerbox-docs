@@ -18,7 +18,7 @@ description: >-
 
 One row per substance per patient. A substance with several reaction manifestations stays one row: list the manifestation codes `;`-separated.
 
-{% file src="../../assets/data-integration/allergies.csv" %}
+{% file src="../../assets/data-integration/allergies.4a0f3db1.csv" %}
 allergies.csv Data template with example rows
 {% endfile %}
 

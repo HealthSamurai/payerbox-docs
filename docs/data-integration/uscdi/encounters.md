@@ -19,7 +19,7 @@ description: >-
 
 One row per encounter. Several diagnoses or participants stay one row: list the keys `;`-separated.
 
-{% file src="../../assets/data-integration/encounters.csv" %}
+{% file src="../../assets/data-integration/encounters.aaaeceb4.csv" %}
 encounters.csv Data template with example rows
 {% endfile %}
 
@@ -51,7 +51,7 @@ One row per physical location: a clinic, a hospital ward, a lab draw station.
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the locations missing from it, such as a facility outside your network where a member was treated.
 
-{% file src="../../assets/data-integration/locations.csv" %}
+{% file src="../../assets/data-integration/locations.8fd5cc92.csv" %}
 locations.csv Data template with example rows
 {% endfile %}
 

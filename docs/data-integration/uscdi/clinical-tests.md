@@ -18,7 +18,7 @@ description: >-
 
 One row per observation. This dataset carries every USCDI observation that is not a lab result, a vital sign or a social history row: non-lab test results, imaging findings, functional, disability and cognitive status, and SDOH screening answers.
 
-{% file src="../../assets/data-integration/clinical_observations.csv" %}
+{% file src="../../assets/data-integration/clinical_observations.9984386b.csv" %}
 clinical_observations.csv Data template with example rows
 {% endfile %}
 
