@@ -31,7 +31,7 @@ care_plans.csv Data template with example rows
 | `period_start` | If available | datetime | `2026-04-18` |
 | `period_end` | If available | datetime | |
 
-- `narrative_text` is the payload of this dataset, not a summary of it. US Core requires the narrative on every CarePlan, so a row without it cannot become one. Send the assessment and the plan as your source holds them; HTML is preserved, plain text is wrapped.
+- `narrative_text` is the payload of this dataset, not a summary of it. US Core must-supports the narrative and requires `text.div` whenever `text` is present, so a row without it produces a CarePlan with nothing to read. Send the assessment and the plan as your source holds them; HTML is preserved, plain text is wrapped.
 - Payerbox sets the `assess-plan` category and the narrative status on every row. Both are fixed by the profile, so there is nothing for you to send.
 - `status` and `intent` are required bindings, so a value outside these lists is rejected. A plan a payer holds is normally `active` with intent `plan`.
 

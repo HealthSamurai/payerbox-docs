@@ -73,7 +73,7 @@ diagnostic_reports.csv Data template with example rows
 | `attachment_file` | If available | path relative to the delivery root | `attachments/DR-0771.pdf` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 
-- `report_kind` picks the profile: `lab` for a laboratory report, `note` for everything else, including radiology and pathology narratives. The two bind `code` to different value sets, so a lab code on a `note` row is rejected and the reverse too. A wrong `report_kind` is not cosmetic.
+- `report_kind` picks the profile: `lab` for a laboratory report, `note` for everything else, including radiology and pathology narratives. The two bind `code` to different value sets, so a lab code on a `note` row falls outside the binding and the reverse too. Both bindings are extensible, so the code is not rejected, but a wrong `report_kind` silently produces the wrong profile.
 - `attachment_file` carries the narrative report as a file, the same way `documents` does. A lab report with structured results and no narrative needs none.
 - This dataset also serves the Laboratory and Diagnostic Imaging data classes, not only Clinical Notes.
 

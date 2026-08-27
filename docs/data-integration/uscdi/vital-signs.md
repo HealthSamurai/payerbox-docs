@@ -35,7 +35,7 @@ vital_signs.csv Data template with example rows
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `performer_npi` | If available | 10 digits | `9999999991` |
 
-- `effective_datetime` is required here, unlike every other observation in the feed. A vital sign without a time is not a conformant reading.
+- `effective_datetime` is mandatory on this profile: a vital sign without a time is not a conformant reading. Smoking status and pregnancy status require one too.
 - A quantitative vital needs both `value` and `unit`, and the unit must be UCUM. `/min` for heart and respiratory rate, `cm` for height, `kg` for weight, `Cel` for temperature, `%` for oxygen saturation, `kg/m2` for BMI.
 - Blood pressure is the exception: leave `value` and `unit` empty and send `component_systolic` and `component_diastolic` on the same row with `loinc_code` `85354-9`. Both components are required, so a row with only one is rejected.
 - Payerbox sets the `vital-signs` category on every row.

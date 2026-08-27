@@ -14,7 +14,7 @@ description: >-
 |---|---|
 | [`patients`](#patients) | [US Core Patient](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-patient.html) |
 | [`related_persons`](#related-persons) | [US Core RelatedPerson](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-relatedperson.html) |
-| [`social_history`](#social-history) | [US Core Observation Occupation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-occupation.html) |
+| [`social_history`](#social-history) | [US Core Observation Occupation](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-occupation.html), [US Core Smoking Status](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-smokingstatus.html), [US Core Observation Pregnancy Status](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-pregnancystatus.html), [US Core Observation Pregnancy Intent](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-observation-pregnancyintent.html) |
 
 ## patients
 
@@ -67,9 +67,9 @@ patients.csv Data template with example rows
 | `sex` | Recommended | `248152002` Female, `248153007` Male [US Core Sex](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-sex.html) | `248152002` |
 | `birth_date` | Recommended | YYYY-MM-DD | `1957-03-11` |
 | `deceased_date` | If applicable | datetime | |
-| `race_omb_code` | Recommended | `2106-3` White, `2054-5` Black or African American, `2028-9` Asian, `1002-5` American Indian or Alaska Native, `2076-8` Native Hawaiian or Other Pacific Islander; `;`-separated [OMB race categories](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-race-category) | `2106-3` |
+| `race_omb_code` | Recommended | `2106-3` White, `2054-5` Black or African American, `2028-9` Asian, `1002-5` American Indian or Alaska Native, `2076-8` Native Hawaiian or Other Pacific Islander, `UNK` unknown, `ASKU` asked but declined; `;`-separated [OMB race categories](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-race-category) | `2106-3` |
 | `race_detailed_code` | If available | CDC race code(s), `;`-separated [detailed race](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/detailed-race) | `2108-9` |
-| `ethnicity_omb_code` | Recommended | `2135-2` Hispanic or Latino, `2186-5` Not Hispanic or Latino [OMB ethnicity categories](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category) | `2186-5` |
+| `ethnicity_omb_code` | Recommended | `2135-2` Hispanic or Latino, `2186-5` Not Hispanic or Latino, `UNK` unknown, `ASKU` asked but declined [OMB ethnicity categories](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category) | `2186-5` |
 | `ethnicity_detailed_code` | If available | CDC ethnicity code(s) [detailed ethnicity](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/detailed-ethnicity) | |
 | `tribal_affiliation_code` | Recommended | tribal-entity code [TribalEntityUS](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-TribalEntityUS) | |
 | `preferred_language` | Recommended | BCP 47 [simple-language](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/simple-language) | `en` |
@@ -108,7 +108,7 @@ related_persons.csv Data template with example rows
 | `city` | If available | text | `Anytown` |
 | `state` | If available | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | If available | 5 digits, as a string | `12345` |
-| `active` | Recommended | `true` / `false`; `false` retires a contact without deleting them | `true` |
+| `active` | Yes | `true` / `false`; `false` retires a contact without deleting them | `true` |
 
 ## social_history
 
@@ -121,8 +121,8 @@ social_history.csv Data template with example rows
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
-| `value_code` | Yes | O*NET-SOC occupation code, with `value_system` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901) | `29-1141.00` |
+| `value_code` | Yes | the value for this `observation_type`, with `value_system`: O*NET-SOC for `occupation` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901), SNOMED CT for `smoking-status`, `pregnancy-status` and `pregnancy-intent` | `29-1141.00`, `266919005` |
 | `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
-| `effective_datetime` | Recommended | datetime | `2026-04-18` |
+| `effective_datetime` | Yes, except on `occupation` rows | datetime | `2026-04-18` |
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
