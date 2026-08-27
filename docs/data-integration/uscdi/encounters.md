@@ -19,6 +19,10 @@ description: >-
 
 One row per encounter. Several diagnoses or participants stay one row: list the keys `;`-separated.
 
+{% file src="../../assets/data-integration/encounters.csv" %}
+encounters.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `encounter_id` | Yes | stable encounter key; the key other datasets reference | `ENC-9912` |
@@ -47,15 +51,19 @@ One row per physical location: a clinic, a hospital ward, a lab draw station.
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the locations missing from it, such as a facility outside your network where a member was treated.
 
+{% file src="../../assets/data-integration/locations.csv" %}
+locations.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `location_id` | Yes | stable id; the key `encounters` references | `LOC-221` |
-| `location_name` | Yes | text | `Riverdale Family Practice` |
+| `location_name` | Yes | text | `Anytown Family Practice` |
 | `managing_org_npi` | Recommended | 10 digits | `1234567893` |
-| `address_line1` | Recommended | text | `88 River Rd` |
-| `city` | Recommended | text | `Yonkers` |
+| `address_line1` | Recommended | text | `123 Main St` |
+| `city` | Recommended | text | `Anytown` |
 | `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
-| `zip` | Recommended | 5 or 9 digits, as a string | `10701` |
+| `zip` | Recommended | 5 or 9 digits, as a string | `12345` |
 
 - `location_name` is the one mandatory field: a row without it cannot become a Location.
 - `managing_org_npi` must match a row in your organizations dataset.

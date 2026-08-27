@@ -18,6 +18,10 @@ description: >-
 
 One row per goal per patient.
 
+{% file src="../../assets/data-integration/goals.csv" %}
+goals.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |

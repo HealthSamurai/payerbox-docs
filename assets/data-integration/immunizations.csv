@@ -1,0 +1,4 @@
+patient_identifier,status,status_reason_code,vaccine_code,occurrence_date,performer_npi,primary_source
+MRN-4471903,completed,,140,2025-10-02,1407006835,true
+MRN-7782200,not-done,PATOBJ,140,2025-11-14,,
+MRN-5510042,completed,,140,2019-09-30,,false

@@ -18,6 +18,10 @@ description: >-
 
 One row per care plan. This dataset carries the **Assessment and Plan of Treatment** narrative; the SDOH Assessment element of the same class comes from `clinical_observations`.
 
+{% file src="../../assets/data-integration/care_plans.csv" %}
+care_plans.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |

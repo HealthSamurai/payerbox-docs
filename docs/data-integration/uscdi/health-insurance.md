@@ -18,6 +18,10 @@ description: >-
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
+{% file src="../../assets/data-integration/coverage.csv" %}
+coverage.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |

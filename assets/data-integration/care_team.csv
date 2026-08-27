@@ -1,0 +1,4 @@
+patient_identifier,member_npi,member_related_person_id,role_code,status
+MRN-4471903,1407006835,,223366009,active
+MRN-4471903,,RP-3310,223366009,active
+MRN-7782200,1932108107,,223366009,inactive

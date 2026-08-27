@@ -1,0 +1,4 @@
+patient_identifier,lifecycle_status,description_code,start_date,target_date
+MRN-4471903,active,281004,2026-04-18,2026-10-18
+MRN-7782200,completed,281004,2025-03-01,2025-09-01
+MRN-5510042,proposed,281004,,

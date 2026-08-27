@@ -20,6 +20,10 @@ description: >-
 
 One row per administered (or refused) dose per patient. A member with three seasonal flu shots is three rows.
 
+{% file src="../../assets/data-integration/immunizations.csv" %}
+immunizations.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |

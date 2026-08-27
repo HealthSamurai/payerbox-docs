@@ -18,6 +18,10 @@ description: >-
 
 One row per substance per patient. A substance with several reaction manifestations stays one row: list the manifestation codes `;`-separated.
 
+{% file src="../../assets/data-integration/allergies.csv" %}
+allergies.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |

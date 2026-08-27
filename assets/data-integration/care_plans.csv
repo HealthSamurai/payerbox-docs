@@ -1,0 +1,4 @@
+patient_identifier,narrative_text,status,intent,period_start,period_end
+MRN-4471903,Assessment: … Plan: …,active,plan,2026-04-18,
+MRN-7782200,Assessment: … Plan: …,completed,plan,2025-01-06,2025-12-31
+MRN-5510042,Assessment: … Plan: …,draft,proposal,,
