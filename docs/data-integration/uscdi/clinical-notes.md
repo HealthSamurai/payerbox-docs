@@ -61,7 +61,6 @@ diagnostic_reports.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `report_id` | Yes | stable key; the key result rows reference | `DR-771` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `report_kind` | Yes | `lab` or `note` | `lab` |
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |

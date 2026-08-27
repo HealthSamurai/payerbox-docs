@@ -36,7 +36,7 @@ clinical_observations.csv Data template with example rows
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
 | `performer_npi` | If available | 10 digits | `9999999991` |
 | `panel_id` | If available | `record_id` of the parent `clinical_observations` row | `CO-1200` |
-| `diagnostic_report_id` | If applicable | `report_id` of the `diagnostic_reports` row this result belongs to | `DR-771` |
+| `diagnostic_report_id` | If applicable | `record_id` of the `diagnostic_reports` row this result belongs to | `DR-771` |
 
 - Send exactly one of `value_quantity`, `value_string`, `value_code` or `data_absent_reason`. A row with a result and an absent reason contradicts itself; a row with neither cannot become an Observation.
 - `data_absent_reason` is how a screening question that was asked but not answered stays in the record. Leaving the row out instead loses the fact that it was asked.

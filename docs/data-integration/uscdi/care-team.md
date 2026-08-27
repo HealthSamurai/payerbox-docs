@@ -33,7 +33,7 @@ practitioners.csv Data template with example rows
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
 | `primary_org_npi` | Recommended | 10 digits | `9999999993` |
 | `practitioner_role_code` | Recommended | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `PCP` primary care physician |
-| `location_id` | Recommended | `locations` key | `LOC-221` |
+| `location_id` | Recommended | `record_id` of the `locations` row | `LOC-221` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `email` | If available | email address | |
 | `role_period_start` | If available | date | `2021-04-01` |

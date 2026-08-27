@@ -23,7 +23,8 @@ graph LR
 | Format | Agreed per engagement. If you deliver CSV: UTF-8, comma-delimited, RFC 4180 quoting, first row is the headers, named exactly as in the tables. |
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
 | History (USCDI feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
-| Row keys | Every row carries `record_id`, your stable key for it. It is what an upload updates in place, so keep it stable across deliveries. `is_deleted` set to `true` retracts the row it names. |
+| Row keys (USCDI feed) | Every row carries `record_id`, your stable key for it. It is what an upload updates in place, so keep it stable across deliveries. `is_deleted` set to `true` retracts the row it names. |
+| References (USCDI feed) | A column that points at a row in another dataset holds that row's `record_id`: `location_id`, `panel_id`, `diagnostic_report_id` and the rest. Two carry the target's own identifier instead, because the FHIR resource is identified by it too: `patient_identifier` and `encounter_id`. |
 | Code systems | Every coded column has a companion `_system` column holding the code system URI: `substance_code` with `substance_system`, `vaccine_code` with `vaccine_system`, and so on. Leave it blank to accept the default named in that column's row. |
 
 ## Built on US Core
