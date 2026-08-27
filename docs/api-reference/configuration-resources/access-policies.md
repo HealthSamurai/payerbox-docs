@@ -52,12 +52,11 @@ Everything outside the table is denied, including every clinical and financial r
 
 ## Example: read-only data engineer role
 
-The role below is an **example**, not something Payerbox ships. It gives an analyst read access to the admin Aidbox over the FHIR API and over SQL, and nothing else.
+The role below is an **example**, not something Payerbox ships. It gives a data engineer read access to the admin Aidbox over the FHIR API and over SQL, and nothing else.
 
 | Surface | Granted | Denied |
 |---|---|---|
 | FHIR API (`/fhir/…`) | Read, vread, search (`GET` and `POST`), history, `metadata` | Create, update, patch, delete, transaction and batch |
-| SQL API (`POST /$sql`) | Statements that pass the keyword blocklist | Everything the blocklist rejects |
 | DB Console (`POST /$psql`) | Statements that pass the keyword blocklist | Everything the blocklist rejects |
 
 The role works **only through the FHIR API**. Aidbox also exposes each resource type in its own format at the base endpoint (`GET /Patient` alongside `GET /fhir/Patient`), and the example grants FHIR interactions only, so those endpoints answer `403`. `Client`, `User`, `Organization`, `AccessPolicy` and the settings API are out of reach on both endpoints.
