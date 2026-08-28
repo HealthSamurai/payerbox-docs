@@ -45,6 +45,7 @@
   * [Authentication](api-reference/authentication.md)
   * [Resources](api-reference/resources.md)
   * [Configuration resources](api-reference/configuration-resources/README.md)
+    * [Access policies](api-reference/configuration-resources/access-policies.md)
     * [UMTenantConfig](api-reference/configuration-resources/um-tenant-config.md)
   * [Operations](api-reference/operations/README.md)
     * [FHIR RESTful API](api-reference/operations/fhir-restful-api.md)
