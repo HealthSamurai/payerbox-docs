@@ -56,12 +56,12 @@ The role below is an **example**, not something Payerbox ships. It gives a data 
 
 | Surface | Granted | Denied |
 |---|---|---|
-| FHIR API (`/fhir/…`) | Read, vread, search (`GET` and `POST`), history, `metadata` | Create, update, patch, delete, transaction and batch |
-| DB Console (`POST /$psql`) | Statements that pass the keyword blocklist | Everything the blocklist rejects |
+| FHIR API (`/fhir/…`) | Read, vread, search (`GET` and `POST`), instance and type history | Create, update, patch, delete, transaction and batch |
+| DB Console (`POST /$psql`) | A single `SELECT` or read-only `WITH` statement | Everything else, including any statement the pattern does not recognise |
 
-The role works **only through the FHIR API**. Aidbox also exposes each resource type in its own format at the base endpoint (`GET /Patient` alongside `GET /fhir/Patient`), and the example grants FHIR interactions only, so those endpoints answer `403`. `Client`, `User`, `Organization`, `AccessPolicy` and the settings API are out of reach on both endpoints.
+The role works **only through the FHIR API**. Aidbox also exposes each resource type in its own format at the base endpoint (`GET /Patient` alongside `GET /fhir/Patient`), and the example grants FHIR interactions only, so those endpoints answer `403`. `Client`, `User`, `Organization`, `AccessPolicy` and the settings API are out of reach on both endpoints. The capability statement needs no grant at all: `/fhir/metadata` is public.
 
-Two `/$psql` policies are needed because the DB Console sends its body either as an object or as a single-element array, and each policy pins one shape.
+The SQL policy matches the query text with a positive pattern rather than a list of forbidden words. Anything that is not a recognised read is denied, so a body Aidbox accepts in another shape, such as the jdbc array `["SELECT …", param]` that `$sql` takes, matches nothing and is rejected.
 
 <details>
 
@@ -88,33 +88,13 @@ Content-Type: application/json
             "id": {
               "$one-of": [
                 "FhirRead",
-                "FhirVRead",
+                "FhirVread",
                 "FhirSearch",
                 "FhirPostSearch",
-                "FhirSearchSystem",
-                "FhirHistoryInstance",
-                "FhirHistoryType",
-                "FhirHistorySystem",
-                "FhirCapabilities"
+                "FhirHistory",
+                "FhirHistoryType"
               ]
             }
-          }
-        }
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/AccessPolicy/data-engineer-sql-read"},
-      "resource": {
-        "resourceType": "AccessPolicy",
-        "id": "data-engineer-sql-read",
-        "engine": "matcho",
-        "description": "Data engineer role: read-only SQL API",
-        "matcho": {
-          "user": {"roles": {"$contains": {"type": "data-engineer"}}},
-          "uri": "/$sql",
-          "request-method": "post",
-          "body": {
-            "$not": "#(?i)\\b(alter|copy|create|delete|drop|grant|insert|into|lock|merge|program|refresh|reindex|revoke|set|truncate|update|vacuum)\\b"
           }
         }
       }
@@ -125,37 +105,14 @@ Content-Type: application/json
         "resourceType": "AccessPolicy",
         "id": "data-engineer-psql-read",
         "engine": "matcho",
-        "description": "Data engineer role: read-only DB Console, object body",
+        "description": "Data engineer role: read-only DB Console",
         "matcho": {
           "user": {"roles": {"$contains": {"type": "data-engineer"}}},
           "uri": "/$psql",
           "request-method": "post",
           "body": {
-            "query": {
-              "$not": "#(?i)\\b(alter|copy|create|delete|drop|grant|insert|into|lock|merge|program|refresh|reindex|revoke|set|truncate|update|vacuum)\\b"
-            }
+            "query": "#(?is)^\\s*(select|with)\\b(?!.*;)(?!.*(--|/\\*))(?!.*\\binto\\b)(?!.*\\bdelete\\s+from\\b)(?!.*\\bdo\\b\\s*(\\$|'|language))(?!.*\\b(alter|analyze|call|checkpoint|cluster|copy|create|drop|execute|grant|import|insert|load|lock|merge|prepare|reassign|refresh|reindex|revoke|set|truncate|update|vacuum)\\b).*$"
           }
-        }
-      }
-    },
-    {
-      "request": {"method": "PUT", "url": "/AccessPolicy/data-engineer-psql-read-arr"},
-      "resource": {
-        "resourceType": "AccessPolicy",
-        "id": "data-engineer-psql-read-arr",
-        "engine": "matcho",
-        "description": "Data engineer role: read-only DB Console, array body",
-        "matcho": {
-          "user": {"roles": {"$contains": {"type": "data-engineer"}}},
-          "uri": "/$psql",
-          "request-method": "post",
-          "body": [
-            {
-              "query": {
-                "$not": "#(?i)\\b(alter|copy|create|delete|drop|grant|insert|into|lock|merge|program|refresh|reindex|revoke|set|truncate|update|vacuum)\\b"
-              }
-            }
-          ]
         }
       }
     }
@@ -167,7 +124,9 @@ Content-Type: application/json
 
 ### Limitations
 
-The SQL guard is a **keyword blocklist, not a SQL parser**. It rejects any statement containing one of the listed words, so legitimate reads such as `... WHERE status = 'delete'` are refused too, and it is no sandbox. Back it with a read-only PostgreSQL role or a read replica.
+The SQL pattern is **not a SQL parser**. It allows a statement that starts with `SELECT` or `WITH` and carries no statement separator, no comment, and no write keyword. That shape covers ordinary analytics, and it rejects stacked statements, data-modifying CTEs and `SELECT … INTO`. It cannot see inside a function, so `SELECT some_function()` runs whatever that function does, and Aidbox connects to PostgreSQL as a superuser. Two consequences worth stating plainly: the pattern refuses a few valid reads, such as `SELECT … FOR UPDATE`, and it is not a sandbox. The boundary for read-only analytics is a non-privileged PostgreSQL role or a read replica, with the policy as the filter in front of it.
+
+Aidbox itself treats `$psql` as superuser-equivalent and logs every statement to `pg_stat_activity`, the query log and `AuditEvent`. Grant it only to roles you would trust with the database.
 
 {% hint style="warning" %}
 Read-only is not de-identified. The role reads every resource in the box, PHI included, with no filter by patient, organization or purpose of use.
