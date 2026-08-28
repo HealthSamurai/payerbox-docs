@@ -1,0 +1,4 @@
+record_id,patient_identifier,status,intent,code,code_system,category,category_system,reason_code,reason_system,authored_on,occurrence_date,requester_npi,is_deleted
+SR-2201,MRN-3391077,active,order,103696004,http://snomed.info/sct,sdoh,http://hl7.org/fhir/us/core/CodeSystem/us-core-category,733423003,,2026-05-10,2026-05-24,9999999991,
+SR-0002,MRN-4471903,active,order,103696004,http://snomed.info/sct,,,,,2026-04-18,,9999999991,
+SR-0003,MRN-7782200,completed,plan,103696004,http://snomed.info/sct,,,,,2025-12-01,,,

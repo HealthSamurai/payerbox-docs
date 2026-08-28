@@ -20,22 +20,24 @@ One row per analyte result. A panel flattens: each member analyte is its own row
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your stable key for this result | `LAB-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status) | `final` |
+| `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `loinc_code` | Yes | LOINC [us-core-laboratory-test-codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-laboratory-test-codes) | `2339-0` glucose [mass/volume] in blood |
 | `value_quantity` | If numeric | decimal | `104` |
-| `unit` | If `value_quantity` | UCUM [ucum-common](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/ucum-common) | `mg/dL` |
-| `value_comparator` | If censored | `<`, `<=`, `>=`, `>` [quantity-comparator](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/quantity-comparator) | |
+| `unit` | If `value_quantity` | UCUM [ucum-common](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/ucum-common%7C4.0.1) | `mg/dL` |
+| `value_comparator` | If censored | `<`, `<=`, `>=`, `>` [quantity-comparator](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/quantity-comparator%7C4.0.1) | |
 | `value_string` | If non-numeric | text | `POSITIVE` |
 | `value_code` | If coded | SNOMED CT code, with `value_system` (SNOMED CT assumed when empty) | |
-| `data_absent_reason` | If no value | `unknown`, `not-performed`, `error`, etc. [data-absent-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/data-absent-reason) | |
-| `interpretation` | If available | `H` high, `L` low, `N` normal, `A` abnormal [observation-interpretation](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-interpretation) | `H` |
+| `data_absent_reason` | If no value | `unknown`, `not-performed`, `error`, etc. [data-absent-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/data-absent-reason%7C4.0.1) | |
+| `interpretation` | If available | `H` high, `L` low, `N` normal, `A` abnormal [observation-interpretation](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-interpretation%7C4.0.1) | `H` |
 | `reference_range_low` | If available | decimal | `70` |
 | `reference_range_high` | If available | decimal | `99` |
 | `effective_datetime` | Recommended | datetime, at least to the day | `2026-04-18T08:40:00-04:00` |
 | `specimen_type_code` | If available | SNOMED CT specimen code [Specimen Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.54&server=https://tx.fhir.org/r4) | `119297000` blood specimen |
-| `diagnostic_report_id` | If available | `diagnostic_reports` key | `DR-771` |
-| `performer_npi` | If available | 10 digits | `1407006835` |
+| `diagnostic_report_id` | If available | `record_id` of the `diagnostic_reports` row | `DR-771` |
+| `performer_npi` | If available | 10 digits | `9999999991` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `loinc_code` is the USCDI Tests element and the one coded field with no fallback: a row without it cannot become an Observation. The binding accepts any laboratory LOINC code (`http://loinc.org` assumed).
 - **Every row needs a result or a reason it is missing.** Send exactly one of `value_quantity` (+ `unit`), `value_string`, or `value_code`; when the source has none — the test was cancelled, the specimen was unsatisfactory — `data_absent_reason` becomes required. A row with neither is rejected.

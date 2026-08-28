@@ -8,7 +8,7 @@ description: >-
 
 ## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) element to FHIR.
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) data element onto a FHIR element.
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -22,19 +22,26 @@ One row per practitioner, organization, and location: each row becomes one Pract
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
+{% file src="../../assets/data-integration/practitioners.8d3ebf30.csv" %}
+practitioners.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `1407006835` |
+| `npi` | Yes | 10 digits | `9999999991` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
-| `primary_org_npi` | Recommended | 10 digits | `1234567893` |
-| `practitioner_role_code` | Recommended | role code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `doctor` |
+| `primary_org_npi` | Recommended | 10 digits | `9999999993` |
+| `practitioner_role_code` | Recommended | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `PCP` primary care physician |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `phone` | Recommended | 10 digits | `5551234567` |
 | `email` | If available | email address | |
 | `role_period_start` | If available | date | `2021-04-01` |
 | `role_period_end` | If available | date | |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- A row is keyed by `npi`, `location_id` and `practitioner_role_code` together — the roster has no key of its own, so do not mint one. Keep those three stable and the role updates in place.
 
 ## organizations
 
@@ -44,17 +51,18 @@ If you already send the [Provider Directory](../provider-directory/README.md#fac
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `org_npi` | Yes | 10 digits, or another stable id with `org_identifier_system` | `1234567893` |
+| `org_npi` | Yes | 10 digits, or another stable id with `org_identifier_system` | `9999999993` |
 | `org_identifier_system` | If `org_npi` is not an NPI | URI of the issuing system, a URL you control or an OID; NPI (`http://hl7.org/fhir/sid/us-npi`) assumed when empty | `http://acme.org/org-ids` |
 | `org_name` | Yes | text | `Family Medical Group` |
 | `active` | Recommended | `true` / `false` (`true` assumed when empty); `false` retires an organization without deleting it | `true` |
-| `org_type_code` | If available | `prov` provider, `pay` payer, `ins` insurance company, `dept` hospital department, `bus` non-healthcare business [organization-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/organization-type) | `prov` |
-| `telecom_code` | Recommended | `phone`, `fax`, `email`, `pager`, `url`, `sms`, `other` [contact-point-system](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-system) | `phone` |
+| `org_type_code` | If available | `prov` provider, `pay` payer, `ins` insurance company, `dept` hospital department, `bus` non-healthcare business [organization-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/organization-type%7C4.0.1) | `prov` |
+| `telecom_code` | Recommended | `phone`, `fax`, `email`, `pager`, `url`, `sms`, `other` [contact-point-system](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-system%7C4.0.1) | `phone` |
 | `telecom_value` | Recommended | the number, address, or URL itself | `5551234567` |
 | `address_line1` | Recommended | text | `225 Broadway` |
 | `city` | Recommended | text | `New York` |
 | `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
 | `zip` | Recommended | 5 or 9 digits, as a string | `10007` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `org_npi` is the key every other dataset uses to point at an organization. Send the NPI whenever the organization has one — US Core requires systems to support NPIs on organizations. An organization without an NPI, such as a community group a referral points to, may use another identifier that stays stable across deliveries; then `org_identifier_system` names who issued it, the same way `patient_identifier_system` does for members.
 - `telecom_code` and `telecom_value` travel together: FHIR requires the system code whenever a contact value is sent, so a `telecom_value` with an empty `telecom_code` is rejected.
@@ -64,12 +72,19 @@ If you already send the [Provider Directory](../provider-directory/README.md#fac
 
 One row per patient and team member.
 
+{% file src="../../assets/data-integration/care_team.b875e2b2.csv" %}
+care_team.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `member_npi` | Yes | 10 digits; send this or `member_related_person_id` | `1407006835` |
-| `member_related_person_id` | Yes | `related_persons` key, for non-clinicians; send this or `member_npi` | |
-| `role_code` | Yes | SNOMED or NUCC code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `223366009` |
-| `status` | Recommended | `active`, `proposed`, `inactive` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status) | `active` |
+| `member_npi` | Yes, unless `member_related_person_id` is sent | 10 digits | `9999999991` |
+| `member_related_person_id` | Yes, unless `member_npi` is sent | `record_id` of the `related_persons` row, for non-clinicians | `RP-3310` |
+| `role_code` | Yes | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `446050000` primary care physician |
+| `status` | Recommended | `proposed`, `active`, `suspended`, `inactive`, `entered-in-error` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status%7C4.0.1) | `active` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- A row is keyed by `patient_identifier`, the member (`member_npi` or `member_related_person_id`) and `role_code` together — a roster has no key of its own for a membership, so do not mint one. Keep those stable and the membership updates in place.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

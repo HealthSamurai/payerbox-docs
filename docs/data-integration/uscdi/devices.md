@@ -8,7 +8,7 @@ description: >-
 
 ## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) element to FHIR.
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) data element onto a FHIR element.
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -18,17 +18,23 @@ description: >-
 
 One row per implanted device per patient. The USCDI data class covers implantable devices only — other equipment does not belong in this file.
 
+{% file src="../../assets/data-integration/devices.80ff669f.csv" %}
+devices.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your stable key for this device row | `DV-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `udi_device_identifier` | Yes | DI portion of the UDI | `00643169007222` |
 | `udi_carrier_hrf` | Recommended | full UDI barcode string, human-readable form | `(01)00643169007222(17)…` |
-| `device_type_code` | Yes | SNOMED CT code, with `device_type_system` [device-kind](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/device-kind) | `468063009` Coated femoral stem prosthesis, modular |
+| `device_type_code` | Yes | SNOMED CT code, with `device_type_system` [device-kind](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/device-kind%7C4.0.1) | `468063009` Coated femoral stem prosthesis, modular |
 | `distinct_identifier` | If available | text | `456` |
 | `lot_number` | If available | text | `543211` |
 | `serial_number` | If available | text | `842026` |
 | `manufacture_date` | If available | datetime | `2019-03-01` |
 | `expiration_date` | If available | datetime | `2029-03-01` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `udi_device_identifier` is the device identifier (DI): the fixed portion of the UDI that names the make and model. It is the element this data class exists for, so a row without it fails the USCDI intent even though FHIR itself would accept one.
 - `udi_carrier_hrf` is the full barcode string in human-readable form: the DI plus the production identifiers — lot, serial, expiration and manufacture dates. US Core exchanges the HRF, and the FDA AccessGUDID and Parse UDI APIs can decompose it. Send it whole when you have it; if your source already stores the parsed parts, the production-identifier columns carry them individually.

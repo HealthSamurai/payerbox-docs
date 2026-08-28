@@ -10,7 +10,7 @@ description: >-
 
 ## Datasets
 
-[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) element to FHIR.
+[US Core 6.1.0](https://hl7.org/fhir/us/core/STU6.1/) maps each [USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) data element onto a FHIR element.
 
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
@@ -20,15 +20,21 @@ description: >-
 
 One row per administered (or refused) dose per patient. A member with three seasonal flu shots is three rows.
 
+{% file src="../../assets/data-integration/immunizations.763fe971.csv" %}
+immunizations.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
+| `record_id` | Yes | your stable key for this dose | `IM-0001` |
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `status` | Yes | `completed`, `entered-in-error`, `not-done` [immunization-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status) | `completed` |
-| `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason) | `PATOBJ` patient objection |
-| `vaccine_code` | Yes | CVX code, with `vaccine_system` (CVX assumed when empty) [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code) | `140` influenza, seasonal, injectable, preservative free |
+| `status` | Yes | `completed`, `entered-in-error`, `not-done` [immunization-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status%7C4.0.1) | `completed` |
+| `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason%7C4.0.1) | `PATOBJ` patient objection |
+| `vaccine_code` | Yes | CVX code, with `vaccine_system` (CVX assumed when empty) [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code%7C4.0.1) | `140` influenza, seasonal, injectable, preservative free |
 | `occurrence_date` | Yes | datetime | `2025-10-02` |
-| `performer_npi` | If available | 10 digits | `1407006835` |
+| `performer_npi` | If available | 10 digits | `9999999991` |
 | `primary_source` | Recommended | `true` / `false` | `true` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `vaccine_code` is the one coded field with no fallback: a row without it cannot become an Immunization. Send `vaccine_system` as `http://hl7.org/fhir/sid/cvx`. US Core requires the CVX coding, so a row sourced from a billed claim that only carries an NDC should send that NDC with `vaccine_system` as `http://hl7.org/fhir/sid/ndc`; Payerbox crosswalks it to CVX.
 - `status` marks each row: `completed` for a dose that was given, `not-done` for one that was not, `entered-in-error` to retract a record that should never have existed.
