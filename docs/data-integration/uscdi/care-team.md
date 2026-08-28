@@ -1,7 +1,7 @@
 ---
 description: >-
-  Columns for practitioners and care_team, mapped from the USCDI v3.1 Care Team
-  Member(s) data class to US Core 6.1.0 FHIR.
+  Columns for practitioners, organizations, and care_team, mapped from the
+  USCDI v3.1 Care Team Member(s) data class to US Core 6.1.0 FHIR.
 ---
 
 # Care Team Members
@@ -13,6 +13,7 @@ description: >-
 | Dataset | US Core 6.1.0 target profile(s) |
 |---|---|
 | [`practitioners`](#practitioners) | [US Core Practitioner](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-practitioner.html), [US Core PractitionerRole](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-practitionerrole.html) |
+| [`organizations`](#organizations) | [US Core Organization](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-organization.html) |
 | [`care_team`](#care-team) | [US Core CareTeam](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-careteam.html) |
 
 ## practitioners
@@ -34,6 +35,30 @@ If you already send the [Provider Directory](../provider-directory/README.md) fe
 | `email` | If available | email address | |
 | `role_period_start` | If available | date | `2021-04-01` |
 | `role_period_end` | If available | date | |
+
+## organizations
+
+One row per organization: a practice, hospital, pharmacy, or payer that other rows reference by NPI — [`practitioners`](#practitioners) via `primary_org_npi`, `encounters` via `service_provider_npi`, `medication_dispenses` via `pharmacy_org_npi`.
+
+If you already send the [Provider Directory](../provider-directory/README.md#facilities) feed, list here only the organizations missing from it.
+
+| Column | Required | Format / values | Example |
+|---|---|---|---|
+| `org_npi` | Yes | 10 digits, or another stable id with `org_identifier_system` | `1234567893` |
+| `org_identifier_system` | If `org_npi` is not an NPI | URI of the issuing system, a URL you control or an OID; NPI (`http://hl7.org/fhir/sid/us-npi`) assumed when empty | `http://acme.org/org-ids` |
+| `org_name` | Yes | text | `Family Medical Group` |
+| `active` | Recommended | `true` / `false` (`true` assumed when empty); `false` retires an organization without deleting it | `true` |
+| `org_type_code` | If available | `prov` provider, `pay` payer, `ins` insurance company, `dept` hospital department, `bus` non-healthcare business [organization-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/organization-type) | `prov` |
+| `telecom_code` | Recommended | `phone`, `fax`, `email`, `pager`, `url`, `sms`, `other` [contact-point-system](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-system) | `phone` |
+| `telecom_value` | Recommended | the number, address, or URL itself | `5551234567` |
+| `address_line1` | Recommended | text | `225 Broadway` |
+| `city` | Recommended | text | `New York` |
+| `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
+| `zip` | Recommended | 5 or 9 digits, as a string | `10007` |
+
+- `org_npi` is the key every other dataset uses to point at an organization. Send the NPI whenever the organization has one — US Core requires systems to support NPIs on organizations. An organization without an NPI, such as a community group a referral points to, may use another identifier that stays stable across deliveries; then `org_identifier_system` names who issued it, the same way `patient_identifier_system` does for members.
+- `telecom_code` and `telecom_value` travel together: FHIR requires the system code whenever a contact value is sent, so a `telecom_value` with an empty `telecom_code` is rejected.
+- FHIR requires `name` and `active` on every Organization, so a row without `org_name` is rejected, and an empty `active` is taken as `true`.
 
 ## care_team
 

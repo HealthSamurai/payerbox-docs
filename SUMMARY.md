@@ -68,6 +68,8 @@
     * [Care Team Members](data-integration/uscdi/care-team.md)
     * [Allergies and Intolerances](data-integration/uscdi/allergies.md)
     * [Problems](data-integration/uscdi/conditions.md)
+    * [Medications](data-integration/uscdi/medications.md)
+    * [Laboratory](data-integration/uscdi/labs.md)
     * [Immunizations](data-integration/uscdi/immunizations.md)
     * [Goals](data-integration/uscdi/goals.md)
     * [Device](data-integration/uscdi/devices.md)
