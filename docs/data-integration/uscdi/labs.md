@@ -18,6 +18,10 @@ description: >-
 
 One row per analyte result. A panel flattens: each member analyte is its own row, grouped back together by a shared `diagnostic_report_id`. The FHIR category is fixed to `laboratory` — non-lab test results belong in `clinical_observations`.
 
+{% file src="../../assets/data-integration/labs.6ba78b10.csv" %}
+labs.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this result | `LAB-0001` |

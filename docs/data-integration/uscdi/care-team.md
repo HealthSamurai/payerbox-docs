@@ -49,6 +49,10 @@ One row per organization: a practice, hospital, pharmacy, or payer that other ro
 
 If you already send the [Provider Directory](../provider-directory/README.md#facilities) feed, list here only the organizations missing from it.
 
+{% file src="../../assets/data-integration/organizations.310ca7b1.csv" %}
+organizations.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `org_npi` | Yes | 10 digits, or another stable id with `org_identifier_system` | `9999999993` |

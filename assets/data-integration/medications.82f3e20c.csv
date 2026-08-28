@@ -1,0 +1,4 @@
+record_id,patient_identifier,status,intent,medication_code,medication_system,category,reported,authored_on,requester_npi,encounter_id,dosage_text,dose_value,dose_unit,refills_allowed,dispense_quantity_value,dispense_quantity_unit,indication_code,indication_system,is_deleted
+MED-77120,MRN-4471903,active,order,310965,,outpatient,false,2026-05-30,9999999991,ENC-9912,1 tab PO daily,200,mg,3,30,{tbl},38341003,,
+MED-77121,MRN-7782200,completed,order,310965,,community,true,2025-11-02,9999999991,,,,,,,,,,
+MED-77122,MRN-5510042,stopped,order,310965,,outpatient,false,2026-01-15,9999999991,,1 tab PO daily,200,mg,0,,,38341003,,
