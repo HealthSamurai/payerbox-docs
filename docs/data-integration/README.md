@@ -20,7 +20,7 @@ graph LR
 
 | Rule | Detail |
 |---|---|
-| Format | Agreed per engagement. If you deliver CSV: UTF-8, comma-delimited, RFC 4180 quoting, first row is the headers, named exactly as in the tables. |
+| Format | Agreed per engagement. If you deliver CSV: UTF-8, comma-delimited, first row is the headers, named exactly as in the tables. |
 | Delivery | Arranged per engagement. PHI: encrypted in transit and at rest under the executed BAA. |
 | History (USCDI feed) | Date of service on or after January 1, 2016. Send active and historical records; the status columns mark which is which. |
 | Code systems | Every coded column has a companion `_system` column holding the code system URI: `substance_code` with `substance_system`, `vaccine_code` with `vaccine_system`, and so on. Leave it blank to accept the default named in that column's row. |

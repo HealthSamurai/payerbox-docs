@@ -67,7 +67,7 @@ service_requests.csv Data template with example rows
 - `reason_code` is why it was requested — the Reason for Referral element. For an SDOH intervention this is the need being addressed, such as food insecurity or lack of transport.
 - `authored_on` is when the request was written; `occurrence_date` is when the service should happen.
 - `requester_npi` must match a row in [`practitioners`](care-team.md#practitioners).
-- `category` is what marks a row as an SDOH intervention, whatever the service is. The APIs that report on SDOH read it, not `code`.
+- `category` set to `sdoh` is what makes a row count as an SDOH intervention. The service in `code` can be anything — a food-bank referral, a transport arrangement — because downstream SDOH reporting selects rows by this category value, not by the service code. Without it, the row is treated as a plain referral or order.
 
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).

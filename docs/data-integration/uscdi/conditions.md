@@ -57,4 +57,4 @@ conditions.csv Data template with example rows
 | `disability-status` | disability screening finding | health concern + `disability-status` screening category | [us-core-screening-assessment-condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-screening-assessment-condition-category) |
 | `cognitive-status` | cognitive screening finding | health concern + `cognitive-status` screening category | [us-core-screening-assessment-condition-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-screening-assessment-condition-category) |
 
-These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).
+These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

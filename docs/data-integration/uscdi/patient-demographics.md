@@ -18,7 +18,15 @@ description: >-
 
 ## patients
 
-One row per member. The sections below group its columns.
+One row per member, and all the tables in this section describe that same single row: each table is one group of its columns, split up only for readability. Send every column you maintain from every group together in the one `patients` file.
+
+| Column group | What it carries |
+|---|---|
+| [Identity](#identity) | the primary key your other rows reference, and how it is issued |
+| [Additional identifiers](#additional-identifiers) | other identifiers the member is known by — member number, Medicare or Medicaid ID |
+| [Name](#name) | current and previous names |
+| [Demographics](#demographics) | gender, sex, birth date, race, ethnicity, tribal affiliation, language |
+| [Address and contact](#address-and-contact) | current and previous address, phone, email |
 
 {% file src="../../assets/data-integration/patients.4d87f019.csv" %}
 patients.csv Data template with example rows
@@ -48,7 +56,7 @@ patients.csv Data template with example rows
 | `identifier_<n>_assigner_org_npi` | Recommended | 10 digits | `9999999993` |
 
 - If you use a slot, fill both `value` and `system`. A value without a system is rejected. A slot left blank is ignored.
-- Number slots from 2 upward, contiguously. Never 2 and 4.
+- `<n>` is a slot number starting at 2, because the [Identity](#identity) columns are slot 1: the first extra identifier goes in `identifier_2_value` + `identifier_2_system`, the next in `identifier_3_…`, and so on. Keep the numbers consecutive — three extra identifiers use slots 2, 3, and 4; skipping a number (2 and 4 with no 3) is invalid.
 
 ### Name
 

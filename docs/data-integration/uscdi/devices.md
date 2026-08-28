@@ -4,7 +4,7 @@ description: >-
   Identifier(s) data class to US Core 6.1.0 FHIR.
 ---
 
-# Unique Device Identifiers
+# Device
 
 ## Datasets
 
