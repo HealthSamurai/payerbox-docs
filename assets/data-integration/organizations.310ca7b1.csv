@@ -1,0 +1,4 @@
+org_npi,org_identifier_system,org_name,active,org_type_code,telecom_code,telecom_value,address_line1,city,state,zip,is_deleted
+9999999993,,Anytown Medical Group,true,prov,phone,5551234567,123 Main St,Anytown,NY,12345,
+9999999994,,Anytown Pharmacy,true,prov,phone,5559876543,45 Oak St,Anytown,NY,12345,
+FB-001,http://acme.org/org-ids,Anytown Food Bank,true,cg,,,,,,,

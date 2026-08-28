@@ -19,6 +19,10 @@ description: >-
 
 One row per medication order: the prescriber's intent, with drug, dose, and indication. **For most payers this file is sparse or empty** — orders live in EHR and e-prescribing systems, not in claims. If your medication data comes from pharmacy claims, it belongs in [`medication_dispenses`](#medication-dispenses); populate this file only with order-level data you actually hold.
 
+{% file src="../../assets/data-integration/medications.82f3e20c.csv" %}
+medications.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this order; `medication_dispenses` reference it | `MED-77120` |
@@ -50,6 +54,10 @@ One row per medication order: the prescriber's intent, with drug, dose, and indi
 ## medication_dispenses
 
 One row per fill: what the pharmacy actually handed over. **For a payer this is usually the primary medication file** — pharmacy claims are fill records. It carries the USCDI Medications (Fill Status) element and stays distinct from the order in [`medications`](#medications).
+
+{% file src="../../assets/data-integration/medication_dispenses.cb765d16.csv" %}
+medication_dispenses.csv Data template with example rows
+{% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
