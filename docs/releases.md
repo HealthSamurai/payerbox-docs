@@ -8,21 +8,21 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 ## August 2026 (`2608`)
 
-The Interop and Prior Auth reference stacks now load CARIN BB 2.1.0 and PDex Plan-Net 1.2.0 (previously 2.0.0 and 1.1.0). CARIN BB 2.1.0 adds the Non-Financial Basis profiles used by the Payer-to-Payer and Provider Access exports. See [Implementation Guides](api-reference/implementation-guides.md).
+- Published the [Data Integration Reference](data-integration/README.md): the inbound data contract for 24 [USCDI v3.1 datasets](data-integration/uscdi/README.md) mapped to US Core 6.1.0 and 4 [Provider Directory datasets](data-integration/provider-directory/README.md) mapped to Plan-Net 1.2.0, each with a downloadable CSV template. Coded columns link to their value sets, e.g. [OMB Ethnicity Categories ValueSet](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category).
+- Payerbox now targets CARIN BB 2.1.0 and PDex Plan-Net 1.2.0 (previously 2.0.0 and 1.1.0). CARIN BB 2.1.0 adds the Non-Financial Basis profiles used by the Payer-to-Payer and Provider Access exports. See [Implementation Guides](api-reference/implementation-guides.md).
 
 ### Interop APIs [`2608`](https://hub.docker.com/r/healthsamurai/interop)
 
 **Payer-to-Payer and Provider Access**
 
-- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) accepts kick-off parameters on the query string (`POST Group/{id}/$davinci-data-export?_type=Patient&_until=<instant>`) and rejects with `400` an inverted `_since`/`_until` window and consent parameters that would weaken the mandated consent gate (`consentStrategy=opt-out` on a `payertopayer` export, a non-HRex `consentProfile`).
+- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) accepts kick-off parameters on the query string (`POST Group/{id}/$davinci-data-export?_type=Patient&_until=<instant>`) and rejects with `400` an inverted `_since`/`_until` window. 
 - [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) and [`$provider-member-match`](api-reference/operations/provider-member-match.md) no longer fail when a `MemberBundle` references resources that exist only on the requesting side (`Coverage.beneficiary`, `Consent.patient`, `Consent.sourceReference`). Requires `BOX_FHIR_VALIDATION_SKIP_REFERENCE=true` on Aidbox; see [Deploy](run-payerbox/deploy.md).
-- Malformed `Parameters` bodies on the three operations above return `400` instead of `500`.
 
 ### Prior Auth (ePA) APIs [`2608`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
 **PAS**
 
-- Updates to a denied prior authorization are rejected regardless of how the UM system wrote the decision back. The deny-update guard reads `reviewAction` from `item.adjudication` (the PAS IG placement) as well as the legacy `item.extension` placement, and accepts `extension-reviewActionCode`, `reviewActionCode`, and `code` as the sub-extension name. 
+- Updates to a denied prior authorization are rejected regardless of how the UM system wrote the decision back. 
 - [`$submit-attachment`](api-reference/operations/submit-attachment.md) sets `supportingInfo.category` from the PAS `PASTempCodes` code system. The previous `PASSupportingInfoType` system URL does not exist in the IG and failed terminology validation.
 
 **CRD**
@@ -31,22 +31,14 @@ The Interop and Prior Auth reference stacks now load CARIN BB 2.1.0 and PDex Pla
 
 **Analytics**
 
-- The PAS metrics package is now published for download (`io.healthsamurai.pas-metrics` 0.1.6), together with an Aidbox Notebook that charts each metric. Changes since 0.1.2: conformant PAS 2.1.0 cancels (`certificationType` 3) and versioned `meta.profile` values are classified correctly (0.1.3); per-item decisions are derived from the X12 306 `reviewActionCode` rather than `adjudication.category`, so Metrics 5–10 populate on real data (0.1.4); Metric 7 ranks the slowest 100 items per payer (0.1.5); Metric 4 counts exchanges rather than service items (0.1.6). See [PAS Metrics](analytics/pas-metrics.md).
+- The PAS metrics package is now published for download (`io.healthsamurai.pas-metrics` 0.1.6), together with an Aidbox Notebook that charts each metric. See [PAS Metrics](analytics/pas-metrics.md).
 
 ### FHIR App Portal [`2608`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
 
 **MPF pipeline**
 
-- Publications are per contract year: `InsurancePlan.period` is stamped with the published year, and provider and affiliation rows not in force in that year are dropped, so a 2026 and a 2027 directory can be generated from the same source data. See [MPF Pipeline](run-payerbox/provider-directory-pipeline.md).
+- The directory is published per contract year: `InsurancePlan.period` carries the published year, and providers not in network during that year are excluded. See [MPF Pipeline](run-payerbox/provider-directory-pipeline.md).
 - Network scope is derived from the configured plans: admins configure `InsurancePlan` ids only, and the in-scope network `Organization` ids are taken from each plan's `network[]` on every run. The **Network Organization IDs** setting was removed from **Settings → MPF**; previously stored values are ignored.
-
-**Admin Portal**
-
-- Creating an admin user also creates a per-admin Aidbox `AccessPolicy` (same id as the user, for example `admin-jane-doe`) granting full access to the admin Aidbox, and mirrors the user and policy to the developer (sandbox) Aidbox. 
-
-**Developer Portal**
-
-- The **API Information** card on the Developer Portal home shows the production endpoints — FHIR base URL, `.well-known/smart-configuration`, and JWKS URL (from `ADMIN_AIDBOX_PUBLIC_URL`) — instead of the sandbox ones.
 
 ## July 2026 (`2607`)
 
