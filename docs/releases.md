@@ -22,7 +22,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **PAS**
 
-- Updates to a denied prior authorization are rejected regardless of how the UM system wrote the decision back. 
+- Updates to a denied prior authorization are rejected regardless of how the UM system wrote the decision back. See [Update flow](api-reference/operations/claim-submit.md#update-flow).
 - [`$submit-attachment`](api-reference/operations/submit-attachment.md) sets `supportingInfo.category` from the PAS `PASTempCodes` code system. The previous `PASSupportingInfoType` system URL does not exist in the IG and failed terminology validation.
 
 **CRD**
