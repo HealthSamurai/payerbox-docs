@@ -20,7 +20,7 @@ description: >-
 
 One row per administered (or refused) dose per patient. A member with three seasonal flu shots is three rows.
 
-{% file src="../../assets/data-integration/immunizations.763fe971.csv" %}
+{% file src="../../assets/data-integration/immunizations.83f9e53a.csv" %}
 immunizations.csv Data template with example rows
 {% endfile %}
 
@@ -32,7 +32,7 @@ immunizations.csv Data template with example rows
 | `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason%7C4.0.1) | `PATOBJ` patient objection |
 | `vaccine_code` | Yes | CVX code, with `vaccine_system` (CVX assumed when empty) [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code%7C4.0.1) | `140` influenza, seasonal, injectable, preservative free |
 | `occurrence_date` | Yes | datetime | `2025-10-02` |
-| `performer_npi` | If available | 10 digits | `9999999991` |
+| `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `primary_source` | Recommended | `true` / `false` | `true` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 

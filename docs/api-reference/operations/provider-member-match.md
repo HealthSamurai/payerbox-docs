@@ -52,7 +52,7 @@ Content-Type: application/fhir+json
         "resourceType": "Organization",
         "id": "other-payer-001",
         "name": "Other Payer (not the requester)",
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "9999999999"}]
+        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "9999999946"}]
       }
     },
     {

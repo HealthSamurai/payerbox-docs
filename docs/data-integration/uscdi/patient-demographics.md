@@ -28,7 +28,7 @@ One row per member, and all the tables in this section describe that same single
 | [Demographics](#demographics) | gender, sex, birth date, race, ethnicity, tribal affiliation, language |
 | [Address and contact](#address-and-contact) | current and previous address, phone, email |
 
-{% file src="../../assets/data-integration/patients.4d87f019.csv" %}
+{% file src="../../assets/data-integration/patients.7fb3d72c.csv" %}
 patients.csv Data template with example rows
 {% endfile %}
 
@@ -40,7 +40,7 @@ patients.csv Data template with example rows
 | `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/mrns` |
 | `patient_identifier_type` | Recommended | `MR` medical record, `MB` member number, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MR` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
-| `patient_identifier_assigner_org_npi` | Recommended | 10 digits | `9999999993` |
+| `patient_identifier_assigner_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 ### Additional identifiers
@@ -53,7 +53,7 @@ patients.csv Data template with example rows
 | `identifier_<n>_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `identifier_<n>_period_start` | Recommended | date | `2024-01-01` |
 | `identifier_<n>_period_end` | Recommended | date | `2025-12-31` |
-| `identifier_<n>_assigner_org_npi` | Recommended | 10 digits | `9999999993` |
+| `identifier_<n>_assigner_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 
 - If you use a slot, fill both `value` and `system`. A value without a system is rejected. A slot left blank is ignored.
 - `<n>` is a slot number starting at 2, because the [Identity](#identity) columns are slot 1: the first extra identifier goes in `identifier_2_value` + `identifier_2_system`, the next in `identifier_3_…`, and so on. Keep the numbers consecutive — three extra identifiers use slots 2, 3, and 4; skipping a number (2 and 4 with no 3) is invalid.

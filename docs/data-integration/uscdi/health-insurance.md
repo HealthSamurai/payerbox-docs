@@ -18,7 +18,7 @@ description: >-
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
-{% file src="../../assets/data-integration/coverage.45cd4f72.csv" %}
+{% file src="../../assets/data-integration/coverage.170a1241.csv" %}
 coverage.csv Data template with example rows
 {% endfile %}
 
@@ -31,7 +31,7 @@ coverage.csv Data template with example rows
 | `subscriber_id` | Yes, unless `member_id` is sent | text | `HSX9930012` |
 | `relationship_code` | Yes | `self`, `spouse`, `child`, `other` [subscriber-relationship](https://terminology.hl7.org/CodeSystem-subscriber-relationship.html) | `self` |
 | `coverage_type_code` | Recommended | Source of Payment Typology [Payer Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591) | `1` Medicare |
-| `payer_org_npi` | Yes | 10 digits, or your payer id | `9999999993` |
+| `payer_org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, or your payer id | `9999999979` |
 | `group_number` | If available | text | `GRP-4410` |
 | `group_name` | If available | text | `Acme Manufacturing` |
 | `plan_number` | If available | text | `H6776-001` |

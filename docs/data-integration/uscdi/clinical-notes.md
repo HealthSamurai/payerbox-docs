@@ -33,7 +33,7 @@ delivery-2026-08-19/
 
 One row per note. The note itself is the file; this row is its index card.
 
-{% file src="../../assets/data-integration/documents.121ef115.csv" %}
+{% file src="../../assets/data-integration/documents.56055b45.csv" %}
 documents.csv Data template with example rows
 {% endfile %}
 
@@ -44,7 +44,7 @@ documents.csv Data template with example rows
 | `type_code` | Yes | LOINC note type, e.g. `11488-4` consult, `18842-5` discharge summary, `34117-2` history and physical, `11506-3` progress note [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `11488-4` |
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
 | `document_date` | Recommended | datetime | `2026-04-18T10:00:00-04:00` |
-| `author_npi` | Recommended | 10 digits | `9999999991` |
+| `author_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
@@ -55,7 +55,7 @@ documents.csv Data template with example rows
 
 One row per report. The individual results live in `labs` and `clinical_observations` and point back with `diagnostic_report_id`.
 
-{% file src="../../assets/data-integration/diagnostic_reports.0e3e56bc.csv" %}
+{% file src="../../assets/data-integration/diagnostic_reports.a059e996.csv" %}
 diagnostic_reports.csv Data template with example rows
 {% endfile %}
 
@@ -69,7 +69,7 @@ diagnostic_reports.csv Data template with example rows
 | `category_code` | Recommended | `LAB`, `RAD` and the other v2-0074 service sections | `LAB` |
 | `effective_datetime` | Recommended | datetime | `2026-04-18T08:40:00-04:00` |
 | `issued` | If available | datetime | `2026-04-18T12:00:00-04:00` |
-| `performer_npi` | If available | 10 digits | `9999999993` |
+| `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 | `attachment_file` | If available | path relative to the delivery root | `attachments/DR-0771.pdf` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |

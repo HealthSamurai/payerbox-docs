@@ -19,7 +19,7 @@ description: >-
 
 One row per medication order: the prescriber's intent, with drug, dose, and indication. **For most payers this file is sparse or empty** — orders live in EHR and e-prescribing systems, not in claims. If your medication data comes from pharmacy claims, it belongs in [`medication_dispenses`](#medication-dispenses); populate this file only with order-level data you actually hold.
 
-{% file src="../../assets/data-integration/medications.82f3e20c.csv" %}
+{% file src="../../assets/data-integration/medications.7b8e5544.csv" %}
 medications.csv Data template with example rows
 {% endfile %}
 
@@ -33,7 +33,7 @@ medications.csv Data template with example rows
 | `category` | If available | `inpatient`, `outpatient`, `community`, `discharge` [medicationrequest-category](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/medicationrequest-category%7C4.0.1) | `outpatient` |
 | `reported` | Recommended | `true` / `false` | `false` |
 | `authored_on` | Recommended | datetime | `2026-05-30` |
-| `requester_npi` | Recommended | 10 digits | `9999999991` |
+| `requester_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `dosage_text` | Recommended | the sig, free text | `1 tab PO daily` |
 | `dose_value` | If available | decimal | `200` |
@@ -55,7 +55,7 @@ medications.csv Data template with example rows
 
 One row per fill: what the pharmacy actually handed over. **For a payer this is usually the primary medication file** — pharmacy claims are fill records. It carries the USCDI Medications (Fill Status) element and stays distinct from the order in [`medications`](#medications).
 
-{% file src="../../assets/data-integration/medication_dispenses.cb765d16.csv" %}
+{% file src="../../assets/data-integration/medication_dispenses.972672c6.csv" %}
 medication_dispenses.csv Data template with example rows
 {% endfile %}
 
@@ -66,8 +66,8 @@ medication_dispenses.csv Data template with example rows
 | `status` | Yes | `preparation`, `in-progress`, `cancelled`, `on-hold`, `completed`, `entered-in-error`, `stopped`, `declined`, `unknown` [medicationdispense-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/medicationdispense-status%7C4.0.1) | `completed` |
 | `medication_code` | Yes | RxNorm drug-level code, with `medication_system` (RxNorm assumed when empty) [Medication Clinical Drug](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1010.4/expansion) | `310965` ibuprofen 200 MG oral tablet |
 | `type_code` | If available | fill type: `FF` first fill, `RF` refill, `EM` emergency supply, `UD` unit dose [ActPharmacySupplyType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-ActPharmacySupplyType) | `RF` |
-| `pharmacy_org_npi` | Recommended | 10 digits | `9999999993` |
-| `performer_npi` | If available | 10 digits, the dispensing pharmacist | `9999999991` |
+| `pharmacy_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
+| `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix, the dispensing pharmacist | `9999999995` |
 | `authorizing_prescription_id` | If available | `record_id` of the `medications` row | `MED-77120` |
 | `quantity_value` | If available | decimal | `30` |
 | `quantity_unit` | If `quantity_value` | UCUM [ucum-common](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/ucum-common%7C4.0.1) | `{tbl}` |

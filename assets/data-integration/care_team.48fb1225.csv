@@ -1,4 +1,4 @@
 patient_identifier,member_npi,member_related_person_id,role_code,status,is_deleted
-MRN-4471903,9999999991,,446050000,active,
+MRN-4471903,9999999995,,446050000,active,
 MRN-4471903,,RP-3310,446050000,active,
-MRN-7782200,9999999992,,446050000,inactive,
+MRN-7782200,9999999987,,446050000,inactive,

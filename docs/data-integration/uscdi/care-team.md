@@ -22,17 +22,17 @@ One row per practitioner, organization, and location: each row becomes one Pract
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
-{% file src="../../assets/data-integration/practitioners.8d3ebf30.csv" %}
+{% file src="../../assets/data-integration/practitioners.603c00bd.csv" %}
 practitioners.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `9999999991` |
+| `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
-| `primary_org_npi` | Recommended | 10 digits | `9999999993` |
+| `primary_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 | `practitioner_role_code` | Recommended | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `PCP` primary care physician |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `phone` | Recommended | 10 digits | `5551234567` |
@@ -49,13 +49,13 @@ One row per organization: a practice, hospital, pharmacy, or payer that other ro
 
 If you already send the [Provider Directory](../provider-directory/README.md#facilities) feed, list here only the organizations missing from it.
 
-{% file src="../../assets/data-integration/organizations.310ca7b1.csv" %}
+{% file src="../../assets/data-integration/organizations.e4730cf9.csv" %}
 organizations.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `org_npi` | Yes | 10 digits, or another stable id with `org_identifier_system` | `9999999993` |
+| `org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, or another stable id with `org_identifier_system` | `9999999979` |
 | `org_identifier_system` | If `org_npi` is not an NPI | URI of the issuing system, a URL you control or an OID; NPI (`http://hl7.org/fhir/sid/us-npi`) assumed when empty | `http://acme.org/org-ids` |
 | `org_name` | Yes | text | `Family Medical Group` |
 | `active` | Recommended | `true` / `false` (`true` assumed when empty); `false` retires an organization without deleting it | `true` |
@@ -76,14 +76,14 @@ organizations.csv Data template with example rows
 
 One row per patient and team member.
 
-{% file src="../../assets/data-integration/care_team.b875e2b2.csv" %}
+{% file src="../../assets/data-integration/care_team.48fb1225.csv" %}
 care_team.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
-| `member_npi` | Yes, unless `member_related_person_id` is sent | 10 digits | `9999999991` |
+| `member_npi` | Yes, unless `member_related_person_id` is sent | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `member_related_person_id` | Yes, unless `member_npi` is sent | `record_id` of the `related_persons` row, for non-clinicians | `RP-3310` |
 | `role_code` | Yes | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `446050000` primary care physician |
 | `status` | Recommended | `proposed`, `active`, `suspended`, `inactive`, `entered-in-error` [care-team-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/care-team-status%7C4.0.1) | `active` |
