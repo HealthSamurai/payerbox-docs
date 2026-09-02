@@ -16,6 +16,8 @@ PAS supports three operations forming a typical flow:
 
 The Da Vinci PAS Request Bundle profile requires exactly one focal `Claim` per Bundle — the underlying X12 278 transaction carries one prior authorization per BHT. Submit multiple requests with multiple `Claim/$submit` calls.
 
+Changing or cancelling an authorization is another `Claim/$submit` call with a new `Claim` pointing at the previous one through `Claim.related`. Under PAS 2.1.0 it reuses the original `ClaimResponse` instead of creating a second one, and an update to an already denied authorization is rejected. See [Update flow](../api-reference/operations/claim-submit.md#update-flow).
+
 ## Authentication
 
 PAS uses **SMART Backend Services Authorization**. The payer admin provisions Client credentials per partner integration (EHR vendor, UM vendor, integrator). See [API Reference / Authentication](../api-reference/authentication.md) for the onboarding and token exchange flow.
