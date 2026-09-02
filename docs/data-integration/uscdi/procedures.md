@@ -19,7 +19,7 @@ description: >-
 
 One row per procedure performed. This dataset carries the **Procedures** element of the class.
 
-{% file src="../../assets/data-integration/procedures.f61e2bc0.csv" %}
+{% file src="../../assets/data-integration/procedures.f8a0f753.csv" %}
 procedures.csv Data template with example rows
 {% endfile %}
 
@@ -31,7 +31,7 @@ procedures.csv Data template with example rows
 | `code` | Yes | CPT, HCPCS, ICD-10-PCS, or SNOMED CT code, with `code_system`; CPT if omitted [US Core Procedure Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-procedure-code) | `80146002` appendectomy |
 | `performed_start` | Recommended | date or datetime | `2026-04-18` |
 | `performed_end` | If a period | date or datetime | |
-| `performer_npi` | If available | 10 digits | `9999999991` |
+| `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
 | `service_request_id` | If available | `record_id` of the `service_requests` row, when the procedure fulfils a request | `SR-2201` |
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [procedure-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/procedure-reason%7C4.0.1) | `733423003` food insecurity |
@@ -44,7 +44,7 @@ procedures.csv Data template with example rows
 
 One row per requested service: a referral, an order, or an SDOH intervention. This dataset carries the **Reason for Referral** and **SDOH Interventions** elements of the class; the services actually performed go in `procedures`.
 
-{% file src="../../assets/data-integration/service_requests.82e88e26.csv" %}
+{% file src="../../assets/data-integration/service_requests.9d58ea47.csv" %}
 service_requests.csv Data template with example rows
 {% endfile %}
 
@@ -59,7 +59,7 @@ service_requests.csv Data template with example rows
 | `reason_code` | If available | SNOMED CT or ICD-10-CM code(s), `;`-separated, with `reason_system`; SNOMED CT if omitted [US Core Condition Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-condition-code) | `733423003` food insecurity |
 | `authored_on` | If available | datetime | `2026-05-10` |
 | `occurrence_date` | If available | datetime | `2026-05-24` |
-| `requester_npi` | If available | 10 digits | `9999999991` |
+| `requester_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `status` and `intent` are both required bindings, so a value outside these lists is rejected. A referral a payer holds is normally `active` with intent `order`.

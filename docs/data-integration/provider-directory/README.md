@@ -34,7 +34,7 @@ One row per unique NPI, practice location, plan and specialty. A provider at two
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `9999999991` |
+| `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `first_name` | Yes | text | `Jane` |
 | `last_name` | Yes | text | `Smith` |
 | `middle_name` | No | text | `G` |
@@ -47,7 +47,7 @@ One row per unique NPI, practice location, plan and specialty. A provider at two
 | `board_certification` | If available | qualification code or name | `Board Certified, Cardiology` |
 | `plan_id` | Yes | key from `plans`; one plan per row | `PLAN-DSNP` |
 | `network_id` | Yes | key from `networks` | `NET-001` |
-| `organization_npi` | If applicable | 10 digits; blank for a solo practitioner with no group NPI | `9999999991` |
+| `organization_npi` | If applicable | 10 digits, Luhn-valid over the `80840` prefix; blank for a solo practitioner with no group NPI | `9999999995` |
 | `accepting_new_patients` | Recommended | `newpt` accepting, `nopt` not accepting, `existptonly` existing patients only, `existptfam` existing patients and their families [AcceptingPatientsVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-AcceptingPatientsVS.html) | `newpt` |
 | `location_name` | Yes | text; Plan-Net requires a name on every location | `Riverdale Family Practice` |
 | `address_line1` | Yes | text | `225 Broadway` |
@@ -70,11 +70,11 @@ One row per facility NPI, plan and network.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits | `9999999991` |
+| `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `facility_name` | Yes | text | `Example Hospital` |
 | `facility_type_nucc` | Yes | NUCC organization taxonomy code(s), `;`-separated [IndividualAndGroupSpecialtiesVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-IndividualAndGroupSpecialtiesVS.html) | `282N00000X` |
 | `affiliation_type` | Recommended | `group` medical group, `hospital`, `outpatient` clinic, `pharmacy`, `laboratory`, `dme`, `urgent` urgent care, `hospice` [OrganizationAffiliationRoleVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-OrganizationAffiliationRoleVS.html) | `group` |
-| `parent_org_npi` | If available | 10 digits, if part of a larger system | `9999999994` |
+| `parent_org_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix, if part of a larger system | `9999999961` |
 | `plan_id` | Yes | key from `plans` | `PLAN-ISNP` |
 | `network_id` | Yes | key from `networks` | `NET-002` |
 | `location_name` | Recommended | text; defaults to `facility_name` if there is no distinct site name | `Example Hospital` |
@@ -112,7 +112,7 @@ Defines each plan once, so provider and facility rows carry only `plan_id`. One 
 | `plan_identifier` | If MA | `H#####-###-###`, contract-plan-segment; blank for non-MA plans | `H6776-001-000` |
 | `contract_year` | If applicable | YYYY | `2027` |
 | `network_id` | Yes | one or more keys from `networks`, `;`-separated | `NET-001;NET-002` |
-| `owned_by_org_npi` | Yes | 10 digits, the plan sponsor | `9999999993` |
-| `administered_by_org_npi` | Yes | 10 digits | `9999999993` |
+| `owned_by_org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, the plan sponsor | `9999999979` |
+| `administered_by_org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 
 These resources are served by the [Provider Directory API](../../interop-apis/provider-directory.md).

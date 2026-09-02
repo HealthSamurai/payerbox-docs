@@ -2,5 +2,5 @@ record_id,patient_identifier,category,status,loinc_code,loinc_system,value_quant
 CO-1200,MRN-3391077,sdoh,final,76504-0,http://loinc.org,3,{score},,,,,2026-04-18,,,,
 CO-0002,MRN-3391077,sdoh,final,76504-0,http://loinc.org,,,,,,asked-declined,2026-04-18,,CO-1200,,
 CO-0003,MRN-4471903,exam,final,76504-0,http://loinc.org,,,No abnormality detected,,,,2026-04-18,,,,
-CO-0004,MRN-7782200,imaging,final,76504-0,http://loinc.org,,,,44054006,http://snomed.info/sct,,2026-02-03,9999999993,,,
+CO-0004,MRN-7782200,imaging,final,76504-0,http://loinc.org,,,,44054006,http://snomed.info/sct,,2026-02-03,9999999979,,,
 CO-0005,MRN-5510042,functional-status,final,76504-0,http://loinc.org,18,{score},,,,,2026-01-09,,,,
