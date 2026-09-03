@@ -23,13 +23,13 @@ The full run: export, filter, bundle, publish. CMS crawls the registered URLs da
 
 ### Body
 
-All fields are optional. Both only set the publish path, and the export scope stays the one baked into the image.
+All fields are optional. Together they select which of the publications configured under **Settings → MPF** (see [Configure Publications](../../run-payerbox/provider-directory-pipeline/admin-ui.md)) to regenerate. An empty body regenerates all of them; a selector that matches no configured publication is rejected with `400`.
 
 <table>
 <thead><tr><th width="140">Field</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>contract</code></td><td>Publish path segment. Defaults to the contract baked into the image, so always pass the deployment's own contract.</td></tr>
-<tr><td><code>year</code></td><td>Publish path segment. Defaults to the current year. CMS reads one URL per contract and year. During open enrollment, run a second sync with next year's value.</td></tr>
+<tr><td><code>contract</code></td><td>Contract ID of a configured publication (<code>H</code> followed by digits). Omit to run every contract of the selected year(s).</td></tr>
+<tr><td><code>year</code></td><td>Contract year (2024–2099). Omit to run every configured year. CMS reads one URL per contract and year, so each pair is its own publication.</td></tr>
 </tbody>
 </table>
 
@@ -49,10 +49,10 @@ Content-Type: application/json
 ```json
 {
   "status": "accepted",
-  "contract": "H1234",
-  "year": 2026,
+  "publications": [{ "contract": "H1234", "year": 2026 }],
   "generationTime": "2026-06-12T06:15:00.000Z",
-  "message": "Sync started: Aidbox $export → poll → pipeline. Watch pod logs for progress."
+  "runLog": "_runlogs/2026-06-12T06-15-00-000Z_sync.log",
+  "message": "Sync started: Aidbox $export → poll → one pipeline per publication. Watch pod logs or GET /admin/mpf/runs."
 }
 ```
 {% endtab %}
