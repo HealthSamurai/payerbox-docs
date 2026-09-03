@@ -32,7 +32,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 ### FHIR App Portal [`2607`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
 
-- MPF pipeline configuration supports publishing the provider-directory `index.json` file. See [MPF Pipeline](run-payerbox/provider-directory-pipeline.md) and the [MPF endpoint reference](api-reference/operations/mpf-pipeline-api.md).
+- MPF pipeline configuration supports publishing the provider-directory `index.json` file. See [MPF Pipeline](run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md) and the [MPF endpoint reference](api-reference/operations/mpf-pipeline-api.md).
 - The app-detail page now includes a **Policies and legal links** card for the developer's privacy policy and terms of service. Missing values are marked **Not provided**, and apps requesting patient data without a privacy policy display a warning. See [Admin Portal](fhir-app-portal/admin-portal.md).
 - When declining an app, an administrator can add a free-text note alongside the preset reason; developers see both on the declined app. See [Admin Portal](fhir-app-portal/admin-portal.md).
 
@@ -49,7 +49,7 @@ A new `payerbox` umbrella Helm chart deploys the full stack (portals, Interop AP
 
 **Provider Directory**
 
-- The CMS Medicare Plan Finder (MPF) provider-directory pipeline now runs its scope filters inside the `$export` query and gzip-compresses the export output. A runnable reference implementation is public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder). See the [MPF Pipeline](run-payerbox/provider-directory-pipeline.md).
+- The CMS Medicare Plan Finder (MPF) provider-directory pipeline now runs its scope filters inside the `$export` query and gzip-compresses the export output. A runnable reference implementation is public in the [Aidbox examples](https://github.com/Aidbox/examples/tree/main/aidbox-features/medicare-plan-finder). See the [MPF Pipeline](run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md).
 
 ### Prior Auth (ePA) APIs [`2606`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
