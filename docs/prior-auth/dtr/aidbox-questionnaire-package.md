@@ -21,7 +21,16 @@ Accept: application/fhir+json
 {
   "resourceType": "Parameters",
   "parameter": [
-    { "name": "questionnaire", "valueCanonical": "http://example.org/Questionnaire/prior-auth-form|1.0" }
+    { "name": "questionnaire", "valueCanonical": "http://example.org/Questionnaire/prior-auth-form|1.0" },
+    {
+      "name": "coverage",
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "coverage-123",
+        "status": "active",
+        "beneficiary": { "reference": "Patient/patient-456" }
+      }
+    }
   ]
 }
 ```
@@ -58,8 +67,8 @@ Accept: application/fhir+json
 |---|---|---|
 | Who renders the questionnaire | The client (EHR, third-party DTR app) | Payerbox-shipped SMART app |
 | Launch mechanism | Direct API call | EHR SMART on FHIR launch |
-| Prefill execution | Client-side, by the DTR client | Client-side, inside the SMART app |
+| Prefill execution | Server-side, from the `coverage` and `order` parameters; the client may run its own pass on top | Hybrid — the server-populated draft is merged with the app's own populate against EHR context |
 
-The operation is implemented as a subset of Da Vinci DTR STU 2.0.1: it bundles the Questionnaire and its expanded ValueSets, and prefill uses the questionnaire's FHIRPath `initialExpression`s (no CQL). Full parameter list, limitations, and examples: [`$questionnaire-package`](../../api-reference/operations/questionnaire-package.md).
+The operation is implemented as a subset of Da Vinci DTR STU 2.1.0: it bundles the Questionnaire, its expanded ValueSets, and a draft QuestionnaireResponse populated from the launch context; prefill uses the questionnaire's FHIRPath `initialExpression`s (no CQL). Full parameter list, limitations, and examples: [`$questionnaire-package`](../../api-reference/operations/questionnaire-package.md).
 
 The QuestionnaireResponse produced by either path becomes the input to [PAS](../pas.md).
