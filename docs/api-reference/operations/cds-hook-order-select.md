@@ -39,6 +39,12 @@ SMART Backend Services. See [Authentication](../authentication.md).
 | fhirAuthorization | OPTIONAL | object | OAuth 2.0 bearer access token for FHIR server access |
 | prefetch | OPTIONAL | object | FHIR data that was prefetched by the CDS Client |
 
+## Response
+
+Coverage determinations for the selected orders are delivered as `systemActions[]` carrying the `ext-coverage-information` extension; cards are informational only. See [CRD / System actions](../../prior-auth/crd.md#system-actions).
+
+`order-select` is a secondary CRD hook: when the decision service cannot evaluate an order, the response carries only an explanatory card — no fallback coverage assertion is produced.
+
 ## Example
 
 {% hint style="info" %}
@@ -126,7 +132,7 @@ Accept: application/json
       "source": {
         "label": "CRD Decision Service",
         "url": "https://cds.example.org",
-        "topic": { "code": "coverage-info", "system": "http://hl7.org/fhir/us/davinci-crd/CodeSystem/cardType", "display": "Coverage Information" }
+        "topic": { "code": "coverage-info", "system": "http://hl7.org/fhir/us/davinci-crd/CodeSystem/temp" }
       }
     }
   ]

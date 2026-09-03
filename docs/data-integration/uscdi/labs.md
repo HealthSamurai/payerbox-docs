@@ -18,7 +18,7 @@ description: >-
 
 One row per analyte result. A panel flattens: each member analyte is its own row, grouped back together by a shared `diagnostic_report_id`. The FHIR category is fixed to `laboratory` — non-lab test results belong in `clinical_observations`.
 
-{% file src="../../assets/data-integration/labs.6ba78b10.csv" %}
+{% file src="../../assets/data-integration/labs.14af2063.csv" %}
 labs.csv Data template with example rows
 {% endfile %}
 
@@ -40,7 +40,7 @@ labs.csv Data template with example rows
 | `effective_datetime` | Recommended | datetime, at least to the day | `2026-04-18T08:40:00-04:00` |
 | `specimen_type_code` | If available | SNOMED CT specimen code [Specimen Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.54&server=https://tx.fhir.org/r4) | `119297000` blood specimen |
 | `diagnostic_report_id` | If available | `record_id` of the `diagnostic_reports` row | `DR-771` |
-| `performer_npi` | If available | 10 digits | `9999999991` |
+| `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - `loinc_code` is the USCDI Tests element and the one coded field with no fallback: a row without it cannot become an Observation. The binding accepts any laboratory LOINC code (`http://loinc.org` assumed).

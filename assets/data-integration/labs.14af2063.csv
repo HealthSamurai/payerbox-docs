@@ -1,6 +1,6 @@
 record_id,patient_identifier,status,loinc_code,value_quantity,unit,value_comparator,value_string,value_code,value_system,data_absent_reason,interpretation,reference_range_low,reference_range_high,effective_datetime,specimen_type_code,diagnostic_report_id,performer_npi,is_deleted
-LAB-0001,MRN-4471903,final,2339-0,104,mg/dL,,,,,,H,70,99,2026-04-18T08:40:00-04:00,119297000,DR-771,9999999991,
-LAB-0002,MRN-4471903,final,718-7,13.8,g/dL,,,,,,N,12,16,2026-04-18T08:40:00-04:00,119297000,DR-771,9999999991,
+LAB-0001,MRN-4471903,final,2339-0,104,mg/dL,,,,,,H,70,99,2026-04-18T08:40:00-04:00,119297000,DR-771,9999999995,
+LAB-0002,MRN-4471903,final,718-7,13.8,g/dL,,,,,,N,12,16,2026-04-18T08:40:00-04:00,119297000,DR-771,9999999995,
 LAB-0003,MRN-7782200,final,5195-3,,,,,260385009,http://snomed.info/sct,,,,,2026-02-02,,,,
 LAB-0004,MRN-5510042,final,10839-9,0.01,ng/mL,<,,,,,N,,,2026-03-10T14:00:00-04:00,,,,
 LAB-0005,MRN-3391077,cancelled,2339-0,,,,,,,not-performed,,,,2026-05-01,,,,

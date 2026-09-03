@@ -18,7 +18,7 @@ description: >-
 
 One row per observation. This dataset carries every USCDI observation that is not a lab result, a vital sign or a social history row: non-lab test results, imaging findings, functional, disability and cognitive status, and SDOH screening answers.
 
-{% file src="../../assets/data-integration/clinical_observations.62d1ab2a.csv" %}
+{% file src="../../assets/data-integration/clinical_observations.10560ba5.csv" %}
 clinical_observations.csv Data template with example rows
 {% endfile %}
 
@@ -35,7 +35,7 @@ clinical_observations.csv Data template with example rows
 | `value_code` | If coded | SNOMED CT or LOINC code, with `value_system` | |
 | `data_absent_reason` | If there is no result | `unknown`, `asked-declined`, `not-performed` [data-absent-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/data-absent-reason%7C4.0.1) | |
 | `effective_datetime` | Recommended | datetime | `2026-04-18` |
-| `performer_npi` | If available | 10 digits | `9999999991` |
+| `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `panel_id` | If available | `record_id` of the parent `clinical_observations` row | `CO-1200` |
 | `diagnostic_report_id` | If applicable | `record_id` of the `diagnostic_reports` row this result belongs to | `DR-771` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |

@@ -1,0 +1,4 @@
+npi,last_name,first_name,specialty_nucc,primary_org_npi,practitioner_role_code,location_id,phone,email,role_period_start,role_period_end,is_deleted
+9999999995,Roe,Richard,207R00000X,9999999979,PCP,LOC-221,5551234567,,2021-04-01,,
+9999999995,Roe,Richard,207R00000X,9999999979,PCP,LOC-884,5554445555,,,,
+9999999987,Fox,Dana,,,,,,,,,

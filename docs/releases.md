@@ -6,6 +6,40 @@ description: "Notable changes across Payerbox: the Interop APIs, the Prior Auth 
 
 This page tracks notable changes across Payerbox: the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal. Releases are listed newest first. The apps run on an Aidbox FHIR server; each component heading links to its image on Docker Hub.
 
+## August 2026 (`2608`)
+
+- Published the [Data Integration Reference](data-integration/README.md): the inbound data contract for 24 [USCDI v3.1 datasets](data-integration/uscdi/README.md) mapped to US Core 6.1.0 and 4 [Provider Directory datasets](data-integration/provider-directory/README.md) mapped to Plan-Net 1.2.0, each with a downloadable CSV template. Coded columns link to their value sets, e.g. [OMB Ethnicity Categories ValueSet](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category).
+- Payerbox now targets CARIN BB 2.1.0 and PDex Plan-Net 1.2.0 (previously 2.0.0 and 1.1.0). CARIN BB 2.1.0 adds the Non-Financial Basis profiles used by the Payer-to-Payer and Provider Access exports. See [Implementation Guides](api-reference/implementation-guides.md).
+
+### Interop APIs [`2608`](https://hub.docker.com/r/healthsamurai/interop)
+
+**Payer-to-Payer and Provider Access**
+
+- [`$davinci-data-export`](api-reference/operations/davinci-data-export.md) accepts kick-off parameters on the query string (`POST Group/{id}/$davinci-data-export?_type=Patient&_until=<instant>`) and rejects with `400` an inverted `_since`/`_until` window. 
+- [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) and [`$provider-member-match`](api-reference/operations/provider-member-match.md) no longer fail when a `MemberBundle` references resources that exist only on the requesting side (`Coverage.beneficiary`, `Consent.patient`, `Consent.sourceReference`). Requires `BOX_FHIR_VALIDATION_SKIP_REFERENCE=true` on Aidbox; see [Deploy](run-payerbox/deploy.md).
+
+### Prior Auth (ePA) APIs [`2608`](https://hub.docker.com/r/healthsamurai/prior-auth)
+
+**PAS**
+
+- Updates to a denied prior authorization are rejected regardless of how the UM system wrote the decision back. See [Update flow](api-reference/operations/claim-submit.md#update-flow).
+- [`$submit-attachment`](api-reference/operations/submit-attachment.md) sets `supportingInfo.category` from the PAS `PASTempCodes` code system. The previous `PASSupportingInfoType` system URL does not exist in the IG and failed terminology validation.
+
+**CRD**
+
+- When the decision service cannot determine coverage for an order, the [`order-sign`](api-reference/operations/cds-hook-order-sign.md), [`order-dispatch`](api-reference/operations/cds-hook-order-dispatch.md), and [`appointment-book`](api-reference/operations/cds-hook-appointment-book.md) hook responses now include a Coverage Information system action in addition to the explanatory card: the draft order is annotated with `covered=conditional`, `info-needed=OTH`, and a human-readable reason. Da Vinci CRD 2.1.0 requires a coverage assertion on these hooks even when coverage cannot be determined. [`order-select`](api-reference/operations/cds-hook-order-select.md) responses are unchanged and return the card only.
+
+**Analytics**
+
+- The PAS metrics package is now published for download (`io.healthsamurai.pas-metrics` 0.1.6), together with an Aidbox Notebook that charts each metric. See [PAS Metrics](analytics/pas-metrics.md).
+
+### FHIR App Portal [`2608`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
+
+**MPF pipeline**
+
+- The directory is published per contract year: `InsurancePlan.period` carries the published year, and providers not in network during that year are excluded. See [MPF Pipeline](run-payerbox/provider-directory-pipeline.md).
+- Network scope is derived from the configured plans: admins configure `InsurancePlan` ids only, and the in-scope network `Organization` ids are taken from each plan's `network[]` on every run. The **Network Organization IDs** setting was removed from **Settings → MPF**; previously stored values are ignored.
+
 ## July 2026 (`2607`)
 
 ### Interop APIs [`2607`](https://hub.docker.com/r/healthsamurai/interop)
