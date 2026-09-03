@@ -51,7 +51,7 @@ Accept: application/json
   "timestamp": "2025-12-08T16:48:02.531010Z",
   "entry": [
     {
-      "fullUrl": "urn:uuid:claim-5d4963ef-8cd8-4fa7-b002-a5c67fa2f1da",
+      "fullUrl": "urn:uuid:5d4963ef-8cd8-4fa7-b002-a5c67fa2f1da",
       "resource": {
         "resourceType": "Claim",
         "id": "claim-1765213116210",
@@ -96,7 +96,7 @@ Accept: application/json
   "timestamp": "2025-12-17T13:35:44.019420Z",
   "entry": [
     {
-      "fullUrl": "ClaimResponse/c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd",
+      "fullUrl": "<base>/fhir/ClaimResponse/c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd",
       "resource": {
         "resourceType": "ClaimResponse",
         "id": "c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd",
