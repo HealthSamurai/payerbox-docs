@@ -6,9 +6,9 @@ description: >-
 
 # MPF Publications
 
-The **Settings → MPF** tab of the Admin Portal controls what the [MPF Pipeline](../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md) publishes. A **publication** is one CMS contract in one contract year. Each publication is built into its own folder in the storage bucket, `<contract>/<year>/`, and has its own CMS crawler URL. The daily sync regenerates every publication configured on this page.
+The **Settings → MPF** tab of the Admin Portal controls what the [MPF Pipeline](../run-payerbox/provider-directory-pipeline.md) publishes. A **publication** is one CMS contract in one contract year. Each publication is built into its own folder in the storage bucket, `<contract>/<year>/`, and has its own CMS crawler URL. The daily sync regenerates every publication configured on this page.
 
-Open **Settings → MPF** (`/dashboard/settings/mpf`). The tab is shown only when the portal runs with the module enabled (see [Configure the environment](../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md#configure-the-environment)); otherwise the page says *MPF is not enabled on this installation*.
+Open **Settings → MPF** (`/dashboard/settings/mpf`). The tab is shown only when the portal runs with the module enabled (see [Configure the environment](../run-payerbox/provider-directory-pipeline.md#configure-the-environment)); otherwise the page says *MPF is not enabled on this installation*.
 
 Until something is saved, the page shows one built-in publication seeded from `MPF_DEFAULT_CONTRACT` and `MPF_DEFAULT_YEAR` and notes that it is *currently using the built-in defaults*. **Save** stores the whole page as an override in Aidbox (`DocumentReference/mpf-export-scope` on the admin box). The next sync reads it; no restart or redeploy is needed.
 
@@ -30,7 +30,7 @@ Limits: 10 contract years, 20 contracts per year, 500 plan ids per contract.
 1. In the year card, click **Add contract**.
 2. Fill in **Contract ID** and **InsurancePlan IDs**.
 3. Click **Save**. The toast *MPF publications updated* confirms the write.
-4. Wait for the daily sync, or have an operator [trigger one](../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md#sync-one-publication), then open the crawler URL and check that `index.json` lists bundle files.
+4. Wait for the daily sync, or have an operator [trigger one](../run-payerbox/provider-directory-pipeline.md#sync-one-publication), then open the crawler URL and check that `index.json` lists bundle files.
 5. Register the crawler URL with CMS.
 
 ## Add a contract year
@@ -47,7 +47,7 @@ Each year publishes into its own folder, so publishing 2027 never touches the 20
 
 ## Remove a contract or a year
 
-**Remove contract** and **Remove year** appear once there is more than one contract in the year, or more than one year. They take effect on **Save**. Removing a publication stops future syncs from regenerating it; the already-published files stay in the bucket, because CMS may still be crawling that URL. Deleting them is a manual operator step, see [Delete a retired publication's files](../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md#delete-a-retired-publications-files).
+**Remove contract** and **Remove year** appear once there is more than one contract in the year, or more than one year. They take effect on **Save**. Removing a publication stops future syncs from regenerating it; the already-published files stay in the bucket, because CMS may still be crawling that URL. Deleting them is a manual operator step, see [Delete a retired publication's files](../run-payerbox/provider-directory-pipeline.md#delete-a-retired-publications-files).
 
 ## Validation
 
@@ -59,12 +59,12 @@ Each year publishes into its own folder, so publishing 2027 never touches the 20
 - `H2168/2026: add at least one InsurancePlan id`
 - `"plan 1" is not a valid id (letters, digits, "-", ".", "_" — max 64 chars)`
 
-A save rejected with an access error is a deployment issue, not an input problem, see [Save fails with an access error](../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md#save-fails-with-an-access-error).
+A save rejected with an access error is a deployment issue, not an input problem, see [Save fails with an access error](../run-payerbox/provider-directory-pipeline.md#save-fails-with-an-access-error).
 
 ## Related
 
-{% content-ref url="../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md" %}
-[provider-directory-pipeline.md](../run-payerbox/provider-directory-pipeline/provider-directory-pipeline.md)
+{% content-ref url="../run-payerbox/provider-directory-pipeline.md" %}
+[provider-directory-pipeline.md](../run-payerbox/provider-directory-pipeline.md)
 {% endcontent-ref %}
 
 {% content-ref url="admin-portal.md" %}
