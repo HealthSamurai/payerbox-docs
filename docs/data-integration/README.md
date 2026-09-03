@@ -6,7 +6,7 @@ description: >-
 
 # Data Integration Reference
 
-What you send Payerbox. For each USCDI data class, the columns to deliver and the FHIR they become.
+What you send Payerbox. For each dataset, the columns to deliver and the FHIR they become.
 
 ```mermaid
 graph LR
@@ -35,3 +35,4 @@ graph LR
 |---|---|---|
 | [USCDI v3.1 Data](uscdi/README.md) | US Core 6.1.0 | 24 |
 | [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.2.0 | 4 |
+| [Claims and Encounters](carin-bb/README.md) | CARIN Blue Button STU 2.1.0 | 10 |
