@@ -12,7 +12,7 @@ In the Admin portal open **Settings → MPF** (`/dashboard/settings/mpf`). The t
 
 Until something is saved, the page shows one built-in publication seeded from `MPF_DEFAULT_CONTRACT` and `MPF_DEFAULT_YEAR` and notes that it is *currently using the built-in defaults*. **Save** stores the whole page as an override in Aidbox (`DocumentReference/mpf-export-scope` on the admin box). The next sync reads it; no restart or redeploy is needed.
 
-![MPF settings tab with one contract year card holding a single contract and its CMS crawler URL](../../../assets/run-payerbox/mpf-settings-publication.png)
+![MPF settings tab with one contract year card holding a single contract and its CMS crawler URL](../../../assets/run-payerbox/mpf-settings-publication.avif)
 
 ## Fields
 
@@ -43,7 +43,7 @@ The typical case: during open enrollment, publish next year's directory while th
 
 Each year publishes into its own folder, so publishing 2027 never touches the 2026 files.
 
-![A second contract year card with two contracts; the unsaved one shows its crawler URL as a preview, with Add contract year and Save below](../../../assets/run-payerbox/mpf-settings-add-year.png)
+![A second contract year card with two contracts; the unsaved one shows its crawler URL as a preview, with Add contract year and Save below](../../../assets/run-payerbox/mpf-settings-add-year.avif)
 
 ## Remove a contract or a year
 
