@@ -12,10 +12,10 @@ CRD uses [CDS Hooks 2.0](https://cds-hooks.hl7.org/2.0/) to invoke Payerbox at c
 
 1. **Receive Hook Request** — EHR sends a CDS Hooks request (e.g., `order-sign`, `order-select`) with context data and prefetch resources.
 2. **Validate request structure** — request body validated against the CDS Hooks schema.
-3. **Validate FHIR resources** — `draftOrders` and `prefetch` resources validated against Aidbox.
-4. **Persist resources** — the validated request-side resources are persisted to Aidbox for audit and reference.
-5. **Fetch missing resources** — references not present in `prefetch` are fetched recursively from the EHR's `fhirServer` using `fhirAuthorization`, then merged into the request's prefetch map for the decision call (not persisted).
-6. **Proxy to the Decision Service** — the enriched request is forwarded to the **Decision Service** (external to Payerbox), which returns Cards with coverage requirements, documentation needs, or prior-authorization information.
+3. **Validate FHIR resources** — `draftOrders` and `prefetch` resources validated against Aidbox. References missing from the request are fetched recursively from the EHR's `fhirServer` using `fhirAuthorization` and validated together with the rest.
+4. **Persist resources** — the whole validated set, including fetched resources, is stored in Aidbox (tagged as CRD hook context) for audit and later DTR use. Persistence is best-effort: a storage failure does not fail the hook.
+5. **Resolve prefetch** — prefetch templates the EHR did not fulfill are resolved, and the resulting resources are merged into the request's prefetch map for the decision call.
+6. **Proxy to the Decision Service** — the enriched request is forwarded to the **Decision Service** (external to Payerbox), whose determinations Payerbox renders as informational Cards and coverage-information system actions.
 
 ## Decision Service
 
@@ -70,6 +70,31 @@ In lenient mode, terminology display-name mismatches, referenced-resource profil
 
 The full list of services exposed by Payerbox is returned by [`GET /cds-services`](../api-reference/operations/cds-services-discovery.md).
 
+## System actions
+
+Per the Da Vinci CRD IG, coverage determinations are delivered as CDS Hooks `systemActions[]` — actions the EHR applies automatically, without presenting a suggestion for the user to accept. For each order the Decision Service evaluated, the response carries an `update` system action whose resource is the draft order with the `ext-coverage-information` extension appended. Cards are purely informational (summary, indicator, detail, links, source) — they never duplicate the coverage assertion and never carry suggestions.
+
+The extension's sub-extensions:
+
+| Sub-extension | Value | Notes |
+|---|---|---|
+| `coverage` | Reference to the patient's `Coverage` | Taken from the order's `insurance[0]`, falling back to `prefetch.coverage`. If neither is available, no system action is emitted for that order. |
+| `covered` | `covered` \| `conditional` | `conditional` when the determination names missing information |
+| `pa-needed` | `auth-needed` \| `no-auth` | Omitted on the undetermined fallback (see below) |
+| `date` | Date of the assertion | Always present |
+| `coverage-assertion-id` | Unique id for this assertion | Always present |
+| `info-needed` | What is missing | Present iff `covered` is `conditional` |
+| `doc-needed` | `clinical` | Present when documentation or a questionnaire is required |
+| `questionnaire` | Canonical URL of the Questionnaire | Present when documentation must be collected via [DTR](dtr/README.md) |
+
+The `questionnaire` sub-extension is the DTR launch mechanism: the EHR reads the canonical from the applied extension and launches DTR itself. CRD 2.1.0 retires launching DTR via a card link, so Payerbox does not return `type: "smart"` DTR launch links on cards.
+
+Payerbox does not repeat an assertion the order already carries: when the draft order already has an identical `ext-coverage-information` for the same Coverage, no system action is emitted for it.
+
+### Undetermined coverage
+
+Da Vinci CRD 2.1.0 requires a coverage assertion on `order-sign`, `order-dispatch`, and `appointment-book` responses even when coverage cannot be determined. On these hooks, when the Decision Service fails to evaluate an order, Payerbox still returns a coverage-information system action with `covered` = `conditional`, `info-needed` = `OTH`, and a human-readable `reason` — and no `pa-needed` claim — alongside an explanatory card. On `order-select` only the explanatory card is returned.
+
 ## Authentication
 
 CRD CDS Hooks endpoints use **SMART Backend Services Authorization**. The payer admin provisions Client credentials per EHR integration. The EHR may also include `fhirAuthorization` (OAuth bearer token) in each hook request, used by Payerbox to call back into the EHR's FHIR endpoint when prefetch is incomplete.
@@ -100,6 +125,9 @@ Accept: application/json
         { "resource": { "resourceType": "MedicationRequest", "id": "mr-103", "status": "draft", "intent": "order" } }
       ]
     }
+  },
+  "prefetch": {
+    "coverage": { "resourceType": "Coverage", "id": "cov-001", "status": "active", "beneficiary": { "reference": "Patient/1288992" } }
   }
 }
 ```
@@ -111,13 +139,41 @@ Accept: application/json
 {
   "cards": [
     {
-      "summary": "Prior Authorization required for this medication",
-      "detail": "Follow the attached link for documentation.",
-      "indicator": "warning",
-      "source": { "label": "CRD Decision Service" },
+      "summary": "Documentation and policy resources",
+      "indicator": "info",
+      "source": {
+        "label": "CRD Decision Service",
+        "topic": { "system": "http://hl7.org/fhir/us/davinci-crd/CodeSystem/temp", "code": "external-reference" }
+      },
       "links": [
-        { "label": "Launch DTR to complete Questionnaire", "url": "https://dtr.example.org/launch", "type": "smart" }
+        { "label": "Medication policy", "url": "https://example.org/policies/medication-pa", "type": "absolute" }
       ]
+    }
+  ],
+  "systemActions": [
+    {
+      "type": "update",
+      "description": "Update the draft MedicationRequest with CRD coverage information.",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "mr-103",
+        "status": "draft",
+        "intent": "order",
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/davinci-crd/StructureDefinition/ext-coverage-information",
+            "extension": [
+              { "url": "coverage", "valueReference": { "reference": "Coverage/cov-001" } },
+              { "url": "covered", "valueCode": "covered" },
+              { "url": "pa-needed", "valueCode": "auth-needed" },
+              { "url": "date", "valueDate": "2026-09-03" },
+              { "url": "coverage-assertion-id", "valueString": "3f8d2c1a-6b7e-4a2f-9c0d-1e2f3a4b5c6d" },
+              { "url": "doc-needed", "valueCode": "clinical" },
+              { "url": "questionnaire", "valueCanonical": "https://example.org/fhir/Questionnaire/medication-pa" }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
