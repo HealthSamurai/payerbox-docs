@@ -27,7 +27,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **CRD**
 
-- On the primary hooks (`order-sign`, `order-dispatch`, `appointment-book`), a `FAILED` result from the decision service now produces the undetermined coverage assertion CRD 2.1.0 requires — `covered=conditional`, `info-needed=OTH`, and a reason — on the draft order, alongside the explanatory card. `order-select` keeps returning the card only.
+- When the decision service cannot determine coverage for an order, the [`order-sign`](api-reference/operations/cds-hook-order-sign.md), [`order-dispatch`](api-reference/operations/cds-hook-order-dispatch.md), and [`appointment-book`](api-reference/operations/cds-hook-appointment-book.md) hook responses now include a Coverage Information system action in addition to the explanatory card: the draft order is annotated with `covered=conditional`, `info-needed=OTH`, and a human-readable reason. Da Vinci CRD 2.1.0 requires a coverage assertion on these hooks even when coverage cannot be determined. [`order-select`](api-reference/operations/cds-hook-order-select.md) responses are unchanged and return the card only.
 
 **Analytics**
 
