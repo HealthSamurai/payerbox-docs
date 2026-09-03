@@ -4,7 +4,7 @@ description: $questionnaire-package operation reference — Da Vinci DTR.
 
 # $questionnaire-package
 
-Operation defined by the [Da Vinci DTR IG](https://hl7.org/fhir/us/davinci-dtr/) for packaging a Questionnaire together with its referenced ValueSets and a pre-populated draft QuestionnaireResponse, returned as a single Bundle.
+Operation defined by the [Da Vinci DTR IG](https://hl7.org/fhir/us/davinci-dtr/) (STU 2.1.0) for packaging a Questionnaire together with its referenced ValueSets and a pre-populated draft QuestionnaireResponse, returned as a single Bundle.
 
 A DTR client calls this operation to retrieve everything needed to render a payer's questionnaire — Questionnaire definition, expanded ValueSets, and a draft QuestionnaireResponse with prefilled answers — without making additional requests to the server.
 
@@ -304,7 +304,7 @@ When some ValueSets cannot be included:
 
 ## Using Population Expressions
 
-Questionnaires can include population expressions that reference the launch context. For example:
+Questionnaires can include population expressions that reference the launch context. Expression variables must match a declared launch context variable (`%coverage`, `%order` — see [Launch Context](#launch-context)); an undeclared variable does not fail the operation, it silently yields no answer. For example:
 
 ```json
 {
@@ -334,13 +334,13 @@ Questionnaires can include population expressions that reference the launch cont
       ]
     },
     {
-      "linkId": "patient-name",
+      "linkId": "procedure-code",
       "type": "string",
-      "text": "Patient Name",
+      "text": "Requested Procedure Code",
       "extension": [
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-          "valueExpression": { "language": "text/fhirpath", "expression": "%subject.name.first().given.first()" }
+          "valueExpression": { "language": "text/fhirpath", "expression": "%order.code.coding.first().code" }
         }
       ]
     }
@@ -358,7 +358,7 @@ When this questionnaire is requested with `coverage` and `order` parameters, the
   "item": [
     { "linkId": "coverage-id", "answer": [{ "valueString": "coverage-123" }] },
     { "linkId": "order-status", "answer": [{ "valueString": "active" }] },
-    { "linkId": "patient-name", "answer": [{ "valueString": "John" }] }
+    { "linkId": "procedure-code", "answer": [{ "valueString": "12345" }] }
   ]
 }
 ```
