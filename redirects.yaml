@@ -13,3 +13,4 @@ redirects:
   data-integration/clinical/patient-demographics: data-integration/uscdi/patient-demographics.md
   data-integration/clinical/health-insurance: data-integration/uscdi/health-insurance.md
   data-integration/clinical/care-team: data-integration/uscdi/care-team.md
+  run-payerbox/provider-directory-pipeline/admin-ui: fhir-app-portal/mpf-publications.md

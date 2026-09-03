@@ -23,7 +23,7 @@ The full run: export, filter, bundle, publish. CMS crawls the registered URLs da
 
 ### Body
 
-All fields are optional. Together they select which of the publications configured under **Settings → MPF** (see [Configure Publications](../../run-payerbox/provider-directory-pipeline/admin-ui.md)) to regenerate. An empty body regenerates all of them; a selector that matches no configured publication is rejected with `400`.
+All fields are optional. Together they select which of the publications configured under **Settings → MPF** (see [MPF Publications](../../fhir-app-portal/mpf-publications.md)) to regenerate. An empty body regenerates all of them; a selector that matches no configured publication is rejected with `400`.
 
 <table>
 <thead><tr><th width="140">Field</th><th>Description</th></tr></thead>

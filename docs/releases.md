@@ -37,7 +37,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **MPF pipeline**
 
-- The directory is published per contract year: `InsurancePlan.period` carries the published year, and providers not in network during that year are excluded. See [Configure Publications](run-payerbox/provider-directory-pipeline/admin-ui.md).
+- The directory is published per contract year: `InsurancePlan.period` carries the published year, and providers not in network during that year are excluded. See [MPF Publications](fhir-app-portal/mpf-publications.md).
 - Network scope is derived from the configured plans: admins configure `InsurancePlan` ids only, and the in-scope network `Organization` ids are taken from each plan's `network[]` on every run. The **Network Organization IDs** setting was removed from **Settings → MPF**; previously stored values are ignored.
 
 ## July 2026 (`2607`)
