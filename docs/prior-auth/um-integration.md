@@ -54,6 +54,8 @@ Update and cancel deliveries wait until the prior authorization's own delivery h
 
 By default `Claim/$inquire` answers from the stored `ClaimResponse`. With `inquireRefresh: true`, Payerbox queries the UM system for a live decision when the stored outcome is still `queued`, persists anything it gets back, and falls through to the stored response on any failure.
 
+The refresh also requires the stored `ClaimResponse` to already carry the UM system's authorization id — a `preAuthRef`, or an identifier typed `authorization ID`. Until the delivery leg has obtained one, no UM query is made and `$inquire` answers from the stored response.
+
 ## Operating
 
 `GET /health` reports every tenant config and whether it is usable:

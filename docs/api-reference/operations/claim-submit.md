@@ -35,7 +35,7 @@ Matching uses only the identifier. Changed `item[]` content does not create a ne
 
 ### Update flow
 
-To change a prior authorization, submit a new `Claim` pointing at the previous one. A submission counts as an update when the `Claim` declares [`profile-claim-update`](https://hl7.org/fhir/us/davinci-pas/STU2.1/StructureDefinition-profile-claim-update.html) in `meta.profile`, or when `Claim.related` carries relationship code `prior` (PAS 2.1.0) or `replaces` (2.0.1). Both are then required: without either, the submission is rejected with `422`.
+To change a prior authorization, submit a new `Claim` pointing at the previous one. A submission counts as an update when the `Claim` declares [`profile-claim-update`](https://hl7.org/fhir/us/davinci-pas/STU2.1/StructureDefinition-profile-claim-update.html) in `meta.profile`, or when `Claim.related` carries relationship code `prior`, or the legacy `replaces` (the only signal recognized under a PAS 2.0.1 deployment). Both are then required: without either, the submission is rejected with `422`.
 
 Under PAS 2.1.0 the update reuses the prior authorization's original `ClaimResponse`: the same `ClaimResponse.id` comes back, no second one is created, and the original `Claim` is left as it was. See [Update chains](claim-inquire.md#update-chains) for how `Claim/$inquire` resolves the chain.
 
@@ -85,7 +85,7 @@ Accept: application/json
   "timestamp": "2025-12-08T16:48:02.531010Z",
   "entry": [
     {
-      "fullUrl": "urn:uuid:claim-1765213116210",
+      "fullUrl": "urn:uuid:576809ec-b898-4e6b-96fe-6bb44d1f4daf",
       "resource": {
         "resourceType": "Claim",
         "id": "claim-1765213116210",
@@ -121,7 +121,7 @@ Accept: application/json
       }
     },
     {
-      "fullUrl": "urn:uuid:patient-patient-1",
+      "fullUrl": "urn:uuid:e6e3f547-7e29-4c79-9543-20df01323c98",
       "resource": {
         "resourceType": "Patient",
         "id": "patient-1",
@@ -136,7 +136,7 @@ Accept: application/json
       }
     },
     {
-      "fullUrl": "urn:uuid:coverage-coverage-1",
+      "fullUrl": "urn:uuid:6e5e2bc0-399d-4dab-a0d6-b4bc8231144d",
       "resource": {
         "resourceType": "Coverage",
         "id": "coverage-1",
@@ -158,7 +158,7 @@ Accept: application/json
       }
     },
     {
-      "fullUrl": "urn:uuid:org-requesting-org-1",
+      "fullUrl": "urn:uuid:05c7986f-b008-4463-bc6b-e6ac20f1d6d5",
       "resource": {
         "resourceType": "Organization",
         "id": "requesting-org-1",
@@ -169,7 +169,7 @@ Accept: application/json
       }
     },
     {
-      "fullUrl": "urn:uuid:org-payer-org-1",
+      "fullUrl": "urn:uuid:29833cc9-8de9-4dfc-af4f-0c7e23e31fe0",
       "resource": {
         "resourceType": "Organization",
         "id": "payer-org-1",
@@ -248,7 +248,7 @@ Accept: application/json
   "timestamp": "2025-12-18T09:12:44.118000Z",
   "entry": [
     {
-      "fullUrl": "urn:uuid:claim-1765299164118",
+      "fullUrl": "urn:uuid:7e86ce1d-8ec6-45fe-b6d3-b242ccc6a6a2",
       "resource": {
         "resourceType": "Claim",
         "id": "claim-1765299164118",

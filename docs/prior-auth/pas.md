@@ -24,10 +24,10 @@ PAS uses **SMART Backend Services Authorization**. The payer admin provisions Cl
 
 ## Example
 
-Submit a prior authorization:
+Submit a prior authorization. The payloads below are abbreviated to show the shape — elements the PAS profiles require (`Claim.identifier`, `Claim.item`, the MB-typed member identifier on `Patient`, entry `fullUrl`s, the referenced `Organization` resources, and more) are elided, so this exact Bundle would be rejected by [validation](#validation-strictness). For a complete request that passes strict validation, see [Claim/$submit](../api-reference/operations/claim-submit.md#initial-submit).
 
 {% tabs %}
-{% tab title="Request" %}
+{% tab title="Request (abbreviated)" %}
 
 ```http
 POST /fhir/Claim/$submit
@@ -38,6 +38,8 @@ Accept: application/json
   "resourceType": "Bundle",
   "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-pas-request-bundle"] },
   "type": "collection",
+  "identifier": { "system": "http://example.org/PATIENT_EVENT_TRACE_NUMBER", "value": "trace-0001" },
+  "timestamp": "2025-12-08T16:48:02Z",
   "entry": [
     { "resource": { "resourceType": "Claim", "id": "claim-1", "status": "active", "use": "preauthorization", "patient": { "reference": "Patient/patient-1" }, "insurer": { "reference": "Organization/payer-org-1" } } },
     { "resource": { "resourceType": "Patient", "id": "patient-1", "name": [{ "family": "Smith", "given": ["John"] }] } },
@@ -47,17 +49,21 @@ Accept: application/json
 ```
 
 {% endtab %}
-{% tab title="Response" %}
+{% tab title="Response (abbreviated)" %}
 
 ```json
 {
   "resourceType": "Bundle",
+  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-pas-response-bundle"] },
   "type": "collection",
+  "identifier": { "system": "http://example.org/PATIENT_EVENT_TRACE_NUMBER", "value": "trace-0001" },
+  "timestamp": "2025-12-08T16:48:03Z",
   "entry": [
     {
+      "fullUrl": "<base>/fhir/ClaimResponse/62424909-3c59-4a09-be78-2032c4e081f5",
       "resource": {
         "resourceType": "ClaimResponse",
-        "id": "response-1",
+        "id": "62424909-3c59-4a09-be78-2032c4e081f5",
         "status": "active",
         "use": "preauthorization",
         "outcome": "queued",
@@ -67,6 +73,8 @@ Accept: application/json
   ]
 }
 ```
+
+The real response Bundle carries the `ClaimResponse` first, followed by the resources it references, each with an absolute `fullUrl` under the deployment's FHIR base URL.
 
 {% endtab %}
 {% endtabs %}
