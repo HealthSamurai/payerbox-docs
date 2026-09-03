@@ -12,11 +12,11 @@ Built to the [CARIN IG for Blue Button STU 2.1.0](https://hl7.org/fhir/us/carin-
 
 | Claim type | Datasets | CARIN BB STU 2.1.0 target profile |
 |---|---|---|
-| Inpatient institutional | `claims_inpatient`, `claims_inpatient_lines` | [C4BB ExplanationOfBenefit Inpatient Institutional](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Inpatient-Institutional.html) |
-| Outpatient institutional | `claims_outpatient`, `claims_outpatient_lines` | [C4BB ExplanationOfBenefit Outpatient Institutional](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Outpatient-Institutional.html) |
-| Professional and non-clinician | `claims_professional`, `claims_professional_lines` | [C4BB ExplanationOfBenefit Professional NonClinician](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Professional-NonClinician.html) |
-| Pharmacy | `claims_pharmacy`, `claims_pharmacy_lines` | [C4BB ExplanationOfBenefit Pharmacy](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Pharmacy.html) |
-| Oral | `claims_oral`, `claims_oral_lines` | [C4BB ExplanationOfBenefit Oral](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Oral.html) |
+| [Inpatient institutional](inpatient-institutional.md) | `claims_inpatient`, `claims_inpatient_lines` | [C4BB ExplanationOfBenefit Inpatient Institutional](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Inpatient-Institutional.html) |
+| [Outpatient institutional](outpatient-institutional.md) | `claims_outpatient`, `claims_outpatient_lines` | [C4BB ExplanationOfBenefit Outpatient Institutional](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Outpatient-Institutional.html) |
+| [Professional and non-clinician](professional-nonclinician.md) | `claims_professional`, `claims_professional_lines` | [C4BB ExplanationOfBenefit Professional NonClinician](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Professional-NonClinician.html) |
+| [Pharmacy](pharmacy.md) | `claims_pharmacy`, `claims_pharmacy_lines` | [C4BB ExplanationOfBenefit Pharmacy](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Pharmacy.html) |
+| [Oral](oral.md) | `claims_oral`, `claims_oral_lines` | [C4BB ExplanationOfBenefit Oral](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit-Oral.html) |
 
 All five profiles derive from one abstract parent, [C4BB ExplanationOfBenefit](https://hl7.org/fhir/us/carin-bb/STU2.1/StructureDefinition-C4BB-ExplanationOfBenefit.html). The columns it fixes appear in every claim and every lines file and are documented once, on [Explanation of Benefit](explanation-of-benefit.md). Each claim-type page then lists only what that type adds.
 

@@ -1,0 +1,5 @@
+claim_record_id,line_number,service_code,service_code_system,service_date_start,service_date_end,quantity,quantity_unit,compound_ingredient_ndcs,compound_ingredient_quantities,reject_reason_code,note_numbers,submitted_amount,eligible_amount,deductible_amount,copay_amount,benefit_amount,coinsurance_amount,noncovered_amount,paid_to_provider_amount,paid_to_patient_amount,paid_by_patient_amount,paid_by_patient_cash_amount,paid_by_patient_other_amount,member_liability_amount,discount_amount,prior_payer_paid_amount,drug_cost_amount
+CLM-RX-0001,1,00093-1058-01,,2026-03-01,,30,EA,,,,,42.50,12.80,0.00,5.00,7.80,0.00,0.00,7.80,,5.00,,,5.00,29.70,,11.30
+CLM-RX-0002,1,0008-1222-30,,2026-04-18,,90,EA,,,,1,415.00,388.40,0.00,47.00,341.40,0.00,0.00,341.40,,47.00,,,47.00,26.60,,386.90
+CLM-RX-0003,1,,,2026-05-06,,45,GM,00093-1058-01;00054-0222-20,30;15,,,96.00,68.20,0.00,10.00,58.20,0.00,0.00,58.20,,10.00,,,10.00,27.80,,61.70
+CLM-RX-0004,1,0003-4222-16,,2026-06-11,,60,EA,,,75,1,210.00,0.00,,,0.00,,210.00,0.00,,,,,0.00,,,
