@@ -32,7 +32,7 @@ flowchart TB
 
 All bucket access goes through Aidbox-signed URLs, so neither bucket needs to be public. The pipeline is triggered over HTTP, typically by a daily Kubernetes CronJob. A production-scale run takes upwards of half an hour. Endpoint details live in the [API reference](../../api-reference/operations/mpf-pipeline-api.md).
 
-This page covers the one-time technical setup. Which contracts, contract years, and plans get published is configured afterwards in the Admin portal, see [Configure Publications](admin-ui.md).
+This page covers the one-time technical setup. Which contracts, contract years, and plans get published is configured afterwards in the Admin portal, see [MPF Publications](../../fhir-app-portal/mpf-publications.md).
 
 ## Prerequisites
 
@@ -122,7 +122,7 @@ On the **portal**:
 | `MPF_PUBLIC_BASE_URL` (required) | Prefix for the bundle links in `index.json`: the portal's public endpoint (`https://<portal>/mpf-provider-directory`) or a public bucket. |
 | `MPF_FULL_URL_BASE` (required) | FHIR base URL for bundle entries' `fullUrl`, e.g. `https://fhir.<payer-domain>/fhir`. |
 | `MPF_TRIGGER_CLIENT_IDS` (required) | Clients allowed to trigger runs. Set `admin-api,mpf-sync` (the default lacks `mpf-sync`). |
-| `MPF_DEFAULT_CONTRACT`, `MPF_DEFAULT_YEAR` | Seed for the single built-in publication the pipeline uses until publications are saved in the [Admin UI](admin-ui.md). Defaults: `H2168` and the current year. |
+| `MPF_DEFAULT_CONTRACT`, `MPF_DEFAULT_YEAR` | Seed for the single built-in publication the pipeline uses until publications are saved in the [Admin portal](../../fhir-app-portal/mpf-publications.md). Defaults: `H2168` and the current year. |
 | `MPF_BUCKET_PREFIX` | Source bucket root URL. Only `folder` refresh uses it. |
 | `MPF_ALERT_EMAIL_TO` | Failure-alert recipients via Aidbox `Notification` (needs its email provider configured). Unset: log-only. |
 | `MPF_STORAGE_ACCOUNT_ID` | On AWS: the `AwsAccount` resource id. On Azure: the storage account name. Not used on GCP. |
@@ -130,7 +130,7 @@ On the **portal**:
 | `MPF_MAX_BUNDLE_BYTES` | Max bytes per bundle before rolling to a new file. Default 250 MB. |
 | `MPF_OUTPUT_DIR` | Local directory where bundles are staged. Default `./mpf-output`. |
 
-Resource types and profile filters are fixed in the portal image. Changing them is a portal release (coordinate with Health Samurai), or use the [Custom export flow](#custom-export-flow). Contracts, contract years, and the `InsurancePlan` scope are configured in the [Admin UI](admin-ui.md).
+Resource types and profile filters are fixed in the portal image. Changing them is a portal release (coordinate with Health Samurai), or use the [Custom export flow](#custom-export-flow). Contracts, contract years, and the `InsurancePlan` scope are configured in the [Admin portal](../../fhir-app-portal/mpf-publications.md).
 
 {% endstep %}
 {% step %}
@@ -165,7 +165,7 @@ On AWS or Azure, the endpoint prefix is `/aws/storage/<account>/` or `/azure/wor
 
 ### Run and verify
 
-Trigger a sync as `mpf-sync` (listed in `MPF_TRIGGER_CLIENT_IDS`, [step 3](#configure-the-environment)). An empty body regenerates every publication configured in the [Admin UI](admin-ui.md); before the first save that is the one seeded from `MPF_DEFAULT_CONTRACT` and `MPF_DEFAULT_YEAR`.
+Trigger a sync as `mpf-sync` (listed in `MPF_TRIGGER_CLIENT_IDS`, [step 3](#configure-the-environment)). An empty body regenerates every publication configured in the [Admin portal](../../fhir-app-portal/mpf-publications.md); before the first save that is the one seeded from `MPF_DEFAULT_CONTRACT` and `MPF_DEFAULT_YEAR`.
 
 {% code title="First run" %}
 ```bash
@@ -192,14 +192,54 @@ The endpoint is asynchronous and the pipeline runs in the background. Verify, in
 {% endstep %}
 {% endstepper %}
 
+## Operate publications
+
+Day-to-day publication changes (contracts, contract years, plan scope) are made in the Admin portal, see [MPF Publications](../../fhir-app-portal/mpf-publications.md). The tasks below are the terminal-side counterparts.
+
+### Sync one publication
+
+
+The daily CronJob posts an empty body and regenerates every publication. To run a subset, pass a selector, using a token minted as in [step 5](#run-and-verify):
+
+{% code title="Sync a single publication" %}
+```bash
+curl -X POST https://<portal>/admin/mpf/sync \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"contract":"H2168","year":2027}'
+```
+{% endcode %}
+
+| Body | Runs |
+|---|---|
+| `{}` | Every configured publication. |
+| `{"year": 2027}` | Every contract of that year. |
+| `{"contract": "H2168", "year": 2027}` | That one publication. |
+
+A selector that matches nothing configured in [MPF Publications](../../fhir-app-portal/mpf-publications.md) is rejected with `400` and the message *Add the contract year under Settings → MPF first*. One `$export` covers all selected publications; each is then filtered, bundled, and published separately, so one failing publication does not block the others. Details in the [API reference](../../api-reference/operations/mpf-pipeline-api.md#post-adminmpfsync).
+
+### Delete a retired publication's files
+
+Removing a publication in the Admin portal stops future syncs from regenerating it, but deliberately leaves the already-published files in the storage bucket, because CMS may still be crawling that URL. Once CMS has been told the directory is retired, delete the folder by hand:
+
+```bash
+gsutil -m rm -r gs://<storage bucket>/<contract>/<year>/
+```
+
+On AWS or Azure use the equivalent `aws s3 rm --recursive` or `az storage blob delete-batch` command.
+
+### Save fails with an access error
+
+The Admin portal stores publications as `DocumentReference/mpf-export-scope` on the admin Aidbox, written by the portal's `admin-api` client. If **Save** is rejected by Aidbox with an access error, `AccessPolicy/admin-api-document-reference` does not list `mpf-export-scope` among the allowed `DocumentReference` ids. Add it to the admin init bundle and re-apply.
+
 ## Custom export flow
 
 The prebuilt pipeline covers the whole path out of the box. A custom flow (different scope, resource types, or post-processing) can reuse the same `$export`, client, policy, and storage setup. A runnable example lives in the [Aidbox examples repository](https://github.com/Aidbox/examples).
 
 ## Related
 
-{% content-ref url="admin-ui.md" %}
-[admin-ui.md](admin-ui.md)
+{% content-ref url="../../fhir-app-portal/mpf-publications.md" %}
+[mpf-publications.md](../../fhir-app-portal/mpf-publications.md)
 {% endcontent-ref %}
 
 {% content-ref url="../../api-reference/operations/mpf-pipeline-api.md" %}
