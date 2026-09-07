@@ -105,6 +105,24 @@ See [UM System Integration](um-integration.md) for the connectors, the delivery 
 
 Rather than polling `Claim/$inquire`, a downstream system can subscribe to decision events and be notified when a `ClaimResponse` is recorded. See [Event Notifications](event-notifications.md) for how to set up a FHIR topic-based subscription.
 
+## Recording inquiry exchanges
+
+`Claim/$inquire` is a read operation and stores nothing by default. Two of the [PAS metrics](../analytics/pas-metrics.md) — the query bucket of metric 2 and metric 3 — measure query exchanges, so they stay empty unless the deployment records them:
+
+```
+PAS_PERSIST_INQUIRIES=true
+```
+
+With the flag on, every successful `$inquire` stores a compact exchange record: a `Claim` whose only declared profile is `profile-claim-inquiry`, with a server-assigned id, `created` set to the time the request was received, the patient and coverage of the inquired claim, the inquiring provider resolved to a stored resource by NPI, and a `related` link (relationship `associated`) to the original `Claim`. These records never appear in `$inquire` responses, and a recording failure is logged without affecting the response. Each successful inquiry is one record of a few KB; unmatched inquiries are not recorded.
+
+Operator note: a [notification topic](event-notifications.md) that triggers on `Claim` create with `use = 'preauthorization'` fires for these records too. Exclude them in the topic's `fhirPathCriteria` before enabling the flag:
+
+```
+use = 'preauthorization' and meta.profile.where($this = 'http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-claim-inquiry').empty()
+```
+
+Default (unset) — off.
+
 ## Metrics
 
 Payerbox ships with Da Vinci PAS Implementation Guide's suggested [PAS metrics](../analytics/pas-metrics.md) that are calculated directly from stored FHIR data. 
