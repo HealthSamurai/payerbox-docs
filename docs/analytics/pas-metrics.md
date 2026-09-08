@@ -59,9 +59,9 @@ provider on the original claim.
 ## The package
 
 - **Download:**
-  [`io.healthsamurai.pas-metrics-0.1.7.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.7.tar.gz)
-- **Contents:** 25 SQL-on-FHIR resources - 10 `ViewDefinition`s and
-  15 `Library` resources (5 source/model wrappers plus one per
+  [`io.healthsamurai.pas-metrics-0.1.8.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.8.tar.gz)
+- **Contents:** 27 SQL-on-FHIR resources - 11 `ViewDefinition`s and
+  16 `Library` resources (6 source/model wrappers plus one per
   metric).
 - **Dependencies:** `hl7.fhir.r4.core` only. The package reads PAS
   extensions by their canonical URL, so it installs and runs on any
@@ -81,13 +81,13 @@ Content-Type: application/json
 {
   "resourceType": "Parameters",
   "parameter": [
-    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.7.tar.gz"}
+    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.8.tar.gz"}
   ]
 }
 ```
 
 Alternatively, serve it from a package registry and reference it by
-`io.healthsamurai.pas-metrics#0.1.7` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
+`io.healthsamurai.pas-metrics#0.1.8` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
 or an init bundle. Note that `BOX_BOOTSTRAP_FHIR_PACKAGES` only
 installs into an empty package store - on a live instance use
 `$fhir-package-install`. See

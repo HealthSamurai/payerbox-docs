@@ -113,13 +113,7 @@ Rather than polling `Claim/$inquire`, a downstream system can subscribe to decis
 PAS_PERSIST_INQUIRIES=true
 ```
 
-With the flag on, every successful `$inquire` stores a compact exchange record: a `Claim` whose only declared profile is `profile-claim-inquiry`, with a server-assigned id, `created` set to the time the request was received, the patient and coverage of the inquired claim, the inquiring provider resolved to a stored resource by NPI, and a `related` link (relationship `associated`) to the original `Claim`. These records never appear in `$inquire` responses, and a recording failure is logged without affecting the response. Each successful inquiry is one record of a few KB; unmatched inquiries are not recorded.
-
-Operator note: a [notification topic](event-notifications.md) that triggers on `Claim` create with `use = 'preauthorization'` fires for these records too. Exclude them in the topic's `fhirPathCriteria` before enabling the flag:
-
-```
-use = 'preauthorization' and meta.profile.where($this = 'http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-claim-inquiry').empty()
-```
+With the flag on, every successful `$inquire` stores a compact exchange record: an `AuditEvent` whose `subtype` carries the `http://prior-auth.example.org/CodeSystem/pas-exchange-type|query` coding, with `recorded` set to the time the request was received, `agent.who` pointing at the inquiring provider (resolved to a stored resource by NPI), and `entity.what` referencing the `Claim` the inquiry resolved to. The record is written by the prior-auth service itself, independent of the Aidbox audit log setting, and never appears in `$inquire` responses; a recording failure is logged without affecting the response. Each successful inquiry is one record of a couple of KB; unmatched inquiries are not recorded. [Notification topics](event-notifications.md) on `Claim` or `ClaimResponse` are unaffected.
 
 Default (unset) — off.
 
