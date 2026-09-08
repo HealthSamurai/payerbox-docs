@@ -30,7 +30,7 @@ claims_oral.csv Data template with example rows
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `claim_received_date` | Recommended | date the payer received the claim | `2026-03-18` |
-| `service_facility_npi` | If not the billing provider's place | 10 digits; key from `organizations`; where the service was rendered when it is neither the billing provider nor the patient's home | `9999999993` |
+| `service_facility_npi` | If not the billing provider's place | 10 digits; key from `organizations`; where the service was rendered when it is neither the billing provider nor the patient's home | `9999999979` |
 | `medical_record_number` | If available | the provider's medical record number on the claim | `MR-88213` |
 | `patient_account_number` | If available | the provider's patient account number on the claim | `ACC-530118` |
 | `orthodontics_months` | If orthodontics | decimal; months of orthodontic treatment, from the ADA claim form. Send `1` when your system only holds a yes/no orthodontics flag | `24` |
@@ -47,7 +47,7 @@ One column per role, bound to [C4BBClaimProfessionalAndNonClinicianCareTeamRole]
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `rendering_provider_npi` | Recommended | 10 digits; key from `practitioners`; the treating dentist | `9999999991` |
+| `rendering_provider_npi` | Recommended | 10 digits; key from `practitioners`; the treating dentist | `9999999987` |
 | `rendering_provider_taxonomy` | If available | NUCC taxonomy code the dentist billed under [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `122300000X` |
 | `referring_provider_npi` | If available | 10 digits; key from `practitioners` | |
 | `supervising_provider_npi` | If available | 10 digits; key from `practitioners` | |
@@ -90,6 +90,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) on the cla
 | `type` | `oral` |
 | `use` | `claim` |
 | `meta.profile` | the Oral canonical with version `2.1.0` |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence`, `item.informationSequence` | numbered from the columns and list positions |

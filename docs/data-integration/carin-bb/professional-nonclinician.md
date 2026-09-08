@@ -31,7 +31,7 @@ claims_professional.csv Data template with example rows
 |---|---|---|---|
 | `claim_type` | If vision | `vision` for a vision claim (`professional` assumed when empty) [C4BBProfessionalAndNonClinicianClaimType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBProfessionalAndNonClinicianClaimType%7C2.1.0) | `vision` |
 | `claim_received_date` | Recommended | date the payer received the claim | `2026-03-10` |
-| `service_facility_npi` | If not the billing provider's place | 10 digits; key from `organizations`; the facility where the service was rendered when it is neither the billing provider nor the patient's home | `9999999994` |
+| `service_facility_npi` | If not the billing provider's place | 10 digits; key from `organizations`; the facility where the service was rendered when it is neither the billing provider nor the patient's home | `9999999979` |
 | `medical_record_number` | If available | the provider's medical record number on the claim | `MR-88213` |
 | `patient_account_number` | If available | the provider's patient account number on the claim | `ACC-501377` |
 
@@ -45,9 +45,9 @@ One column per role, bound to [C4BBClaimProfessionalAndNonClinicianCareTeamRole]
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `rendering_provider_npi` | Recommended | 10 digits; key from `practitioners`; who performed the service | `9999999991` |
+| `rendering_provider_npi` | Recommended | 10 digits; key from `practitioners`; who performed the service | `9999999987` |
 | `rendering_provider_taxonomy` | If available | NUCC taxonomy code the rendering provider billed under [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
-| `referring_provider_npi` | If available | 10 digits; key from `practitioners` | `9999999991` |
+| `referring_provider_npi` | If available | 10 digits; key from `practitioners` | `9999999995` |
 | `supervising_provider_npi` | If available | 10 digits; key from `practitioners` | |
 | `primary_provider_npi` | If available | 10 digits; key from `practitioners` | |
 | `purchased_service_provider_npi` | If available | 10 digits; key from `practitioners` or `organizations`; the provider a service was purchased from, such as an outside laboratory | |
@@ -98,6 +98,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) on the cla
 | `type` | `professional`, or `vision` when `claim_type` says so |
 | `use` | `claim` |
 | `meta.profile` | the Professional NonClinician canonical with version `2.1.0` |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence`, `item.informationSequence` | numbered from the columns and list positions |

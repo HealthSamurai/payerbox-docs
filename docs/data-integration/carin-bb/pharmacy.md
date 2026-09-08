@@ -50,7 +50,7 @@ Bound to [C4BBClaimPharmacyTeamRole](https://healthsamurai.github.io/fhir-values
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `prescribing_provider_npi` | Recommended | 10 digits; key from `practitioners`; who wrote the prescription | `9999999991` |
+| `prescribing_provider_npi` | Recommended | 10 digits; key from `practitioners`; who wrote the prescription | `9999999995` |
 | `primary_provider_npi` | If available | 10 digits; key from `practitioners` | |
 
 - `billing_provider_npi` from the shared columns is the pharmacy, an organization. The profile also allows a practitioner there for the rare individually enrolled dispenser.
@@ -78,6 +78,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) on the cla
 | `type` | `pharmacy` |
 | `use` | `claim` |
 | `meta.profile` | the Pharmacy canonical with version `2.1.0` |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `item.productOrService` | the literal `compound` when `compound_code` is `2` |
@@ -97,7 +98,7 @@ claims_pharmacy_lines.csv Data template with example rows
 | `service_code_system` | No | `http://hl7.org/fhir/sid/ndc` is the only system here (assumed when empty) | |
 | `service_date_start` | Yes | date the prescription was filled | `2026-03-01` |
 | `quantity` | Recommended | decimal; quantity dispensed (NCPDP 442-E7) | `30` |
-| `quantity_unit` | If available | unit of the quantity: `EA`, `GM`, `ML` (NCPDP 600-28) | `EA` |
+| `quantity_unit` | If available | unit of the quantity, sent as free text into `item.quantity.unit`: `EA`, `GM`, `ML` (NCPDP 600-28) | `EA` |
 | `compound_ingredient_ndcs` | If `compound_code` is `2` | NDCs of the ingredients, `;`-separated [FDANationalDrugCode](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/FDANationalDrugCode%7C2.1.0) | `00093-1058-01;00054-0222-20` |
 | `compound_ingredient_quantities` | If `compound_code` is `2` | decimal quantities, `;`-separated, aligned with `compound_ingredient_ndcs` | `30;15` |
 | `reject_reason_code` | If rejected | NCPDP reject code (NCPDP 511-FB) [NCPDPRejectCode](https://hl7.org/fhir/us/carin-bb/STU2.1/ValueSet-NCPDPRejectCode.html) | `75` |

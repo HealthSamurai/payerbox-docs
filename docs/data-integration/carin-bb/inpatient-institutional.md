@@ -39,7 +39,7 @@ The admission, the bill and the discharge. In FHIR these are `supportingInfo` en
 | `admission_type` | Recommended | UB-04 FL 14 priority of admission [AHANUBCPriorityTypeOfAdmissionOrVisit](https://hl7.org/fhir/us/carin-bb/STU2.1/ValueSet-AHANUBCPriorityTypeOfAdmissionOrVisit.html) | `1` |
 | `discharge_status` | Recommended | UB-04 FL 17 [AHANUBCPatientDischargeStatus](https://hl7.org/fhir/us/carin-bb/STU2.1/ValueSet-AHANUBCPatientDischargeStatus.html) | `01` |
 | `drg_code` | Recommended | the DRG the stay was grouped to, with `drg_system` and `drg_version` [CMSMS3MAPAPRDRG](https://hl7.org/fhir/us/carin-bb/STU2.1/ValueSet-CMSMS3MAPAPRDRG.html) | `291` |
-| `drg_system` | If not MS-DRG | `http://uri.hddaccess.com/cs/apdrg` AP-DRG, `http://uri.hddaccess.com/cs/aprdrg` APR-DRG (MS-DRG assumed when empty) | |
+| `drg_system` | If not MS-DRG | `http://uri.hddaccess.com/cs/apdrg` AP-DRG, `http://uri.hddaccess.com/cs/aprdrg` APR-DRG (`http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/MS-DRG-Classifications-and-Software` assumed when empty) | |
 | `drg_version` | Recommended | grouper version the code belongs to | `43` |
 | `medical_record_number` | If available | the provider's medical record number on the claim | `MR-88213` |
 | `patient_account_number` | If available | the provider's patient account number on the claim | `ACC-448210` |
@@ -56,15 +56,17 @@ One column per role. The role is the column name, the value is the provider. Rol
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `attending_provider_npi` | Recommended | 10 digits; key from `practitioners` | `9999999991` |
+| `attending_provider_npi` | Recommended | 10 digits; key from `practitioners` | `9999999995` |
 | `referring_provider_npi` | If available | 10 digits; key from `practitioners` | |
-| `operating_provider_npi` | If a procedure | 10 digits; key from `practitioners` | `9999999991` |
+| `operating_provider_npi` | If a procedure | 10 digits; key from `practitioners` | `9999999995` |
 | `other_operating_provider_npi` | If available | 10 digits; key from `practitioners` | |
 | `rendering_provider_npi` | If available | 10 digits; key from `organizations` | |
+| `rendering_provider_taxonomy` | If `rendering_provider_npi` is sent | NUCC taxonomy code the facility billed under [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `282N00000X` |
 | `primary_provider_npi` | If available | 10 digits; key from `practitioners` | |
 
 - On an institutional claim the `billing_provider_npi` from the shared columns must be an organization, the facility that billed. CARIN restricts the inpatient profile's provider to an Organization, so a row whose billing NPI resolves to a practitioner is rejected.
 - CARIN fixes who each role can be: attending, referring and primary must resolve to a Practitioner, rendering to an Organization. Operating and other operating may be either. A role whose NPI is defined in the wrong dataset is reported.
+- `rendering_provider_taxonomy` becomes the care-team qualification. CARIN requires it whenever a rendering role is sent, whether it resolves to a facility or, in principle, an individual; send the taxonomy the claim was billed under even when the rendering party is an organization.
 
 ### Diagnoses
 
@@ -109,8 +111,8 @@ The claim-level adjudication decisions that are not amounts.
 
 The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, with two inpatient rules.
 
-- Totals are mandatory: at least one amount column on the claim row must be filled. Send every total your system holds; `submitted_amount`, `eligible_amount`, `benefit_amount`, `paid_to_provider_amount` and `paid_by_patient_amount` are the ones members look for.
-- CARIN allows an institutional claim to carry its adjudication amounts either on the lines or on the claim, never both. Fill the amount columns on the lines when your system adjudicates line by line. Leave every line amount blank when the claim was priced as a whole, as with a DRG payment, and Payerbox publishes the claim row's totals as the claim-level adjudication too. A delivery with amounts on both the claim row and its lines is rejected.
+- Totals are mandatory: at least one amount column on the claim row must be filled, and Payerbox always publishes them as the claim's `total` — regardless of what the lines carry. Send every total your system holds; `submitted_amount`, `eligible_amount`, `benefit_amount`, `paid_to_provider_amount` and `paid_by_patient_amount` are the ones members look for.
+- Fill the amount columns on the lines too when your system adjudicates line by line — they become that line's own `item.adjudication`, alongside the claim's own `total`. Leave every line amount blank when the claim was priced as a whole, as with a DRG payment; CARIN's own institutional rule (`EOB-institutional-item-or-header-adjudication`) is about a claim-level `adjudication` array Payerbox does not publish for this profile, not about `total`, so sending both totals and line amounts on the same claim is normal and expected, not a conflict.
 
 ### Set by Payerbox
 
@@ -122,6 +124,7 @@ These profile elements have no column. Payerbox fixes them from the dataset or d
 | `subType` | `inpatient` |
 | `use` | `claim` |
 | `meta.profile` | the Inpatient Institutional canonical with version `2.1.0` |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence`, `procedure.sequence` | numbered from the columns and list positions |

@@ -48,14 +48,16 @@ Same roles and same columns as the inpatient claim, bound to [C4BBClaimInstituti
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `attending_provider_npi` | Recommended | 10 digits; key from `practitioners` | `9999999991` |
+| `attending_provider_npi` | Recommended | 10 digits; key from `practitioners` | `9999999995` |
 | `referring_provider_npi` | If available | 10 digits; key from `practitioners` | |
 | `operating_provider_npi` | If a procedure | 10 digits; key from `practitioners` | |
 | `other_operating_provider_npi` | If available | 10 digits; key from `practitioners` | |
 | `rendering_provider_npi` | If available | 10 digits; key from `organizations` | |
+| `rendering_provider_taxonomy` | If `rendering_provider_npi` is sent | NUCC taxonomy code the facility billed under [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `282N00000X` |
 | `primary_provider_npi` | If available | 10 digits; key from `practitioners` | |
 
 - `billing_provider_npi` must be an organization, the facility that billed. Attending, referring and primary must resolve to a Practitioner and rendering to an Organization; operating and other operating may be either.
+- `rendering_provider_taxonomy` becomes the care-team qualification, the same as inpatient: CARIN requires it whenever a rendering role is sent, even though it resolves to an organization here.
 
 ### Diagnoses
 
@@ -83,7 +85,7 @@ Aligned `;`-separated lists, the position being the diagnosis sequence. Outpatie
 
 ### Amounts
 
-The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, with the same two institutional rules as inpatient: totals are mandatory, and adjudication amounts sit either on every line or on the claim row, never both. When the lines carry no amounts, Payerbox publishes the claim row's totals as the claim-level adjudication.
+The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, with the same rule as inpatient: totals are mandatory, and Payerbox always publishes them as the claim's `total`. Fill the line amounts too when your system adjudicates line by line — they become each line's own `item.adjudication` alongside the claim's `total`, and sending both is normal, not a conflict; see [inpatient's own note](inpatient-institutional.md#amounts) on the institutional invariant this satisfies.
 
 ### Set by Payerbox
 
@@ -93,6 +95,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, wit
 | `subType` | `outpatient` |
 | `use` | `claim` |
 | `meta.profile` | the Outpatient Institutional canonical with version `2.1.0` |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence` | numbered from the columns and list positions |
