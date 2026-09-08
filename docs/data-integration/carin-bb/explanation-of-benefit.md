@@ -30,15 +30,15 @@ claims.csv Data template with example rows
 | `record_id` | Yes | your claim control number, stable across adjustments to the same claim [C4BBClaimIdentifierType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBClaimIdentifierType%7C2.1.0) | `CLM-0001` |
 | `patient_identifier` | Yes | patient key from `patients` | `MRN-4471903` |
 | `coverage_id` | Yes | key from `coverage`, the plan the claim was adjudicated against | `COV-0001` |
-| `payer_org_npi` | Yes | 10 digits, or your payer id; the same payer named on that coverage | `9999999993` |
-| `billing_provider_npi` | Yes | 10 digits; key from `practitioners` or `organizations` | `9999999991` |
+| `payer_org_npi` | Yes | 10 digits, or your payer id; the same payer named on that coverage | `9999999979` |
+| `billing_provider_npi` | Yes | 10 digits; key from `practitioners` or `organizations` | `9999999995` |
 | `status` | Yes | `active`, `cancelled` [explanationofbenefit-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/explanationofbenefit-status%7C4.0.1) | `active` |
 | `outcome` | Yes | `complete`, `partial`, `error`, `queued` [remittance-outcome](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/remittance-outcome%7C4.0.1) | `complete` |
 | `billable_period_start` | Yes | date; statement covers from date | `2026-02-03` |
 | `billable_period_end` | Recommended | date; statement covers through date | `2026-02-09` |
 | `adjudication_date` | Yes | date the claim was adjudicated | `2026-02-20` |
 | `payee_type` | Recommended | `subscriber`, `provider`, `beneficiary`, `other` [C4BBPayeeType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBPayeeType%7C2.1.0) | `provider` |
-| `payee_npi` | If `payee_type` is `other` | 10 digits; key from `practitioners` or `organizations` | `9999999994` |
+| `payee_npi` | If `payee_type` is `other` | 10 digits; key from `practitioners` or `organizations` | `9999999987` |
 | `related_claim_ids` | If adjusted | `;`-separated `record_id` values of the claims this one adjusts or is adjusted by | `CLM-0000` |
 | `related_relationships` | If adjusted | `prior`, `replacedby`, `;`-separated, aligned with `related_claim_ids` [C4BBRelatedClaimRelationshipCodes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBRelatedClaimRelationshipCodes%7C2.1.0) | `prior` |
 | `payment_status` | Recommended | `paid`, `denied`, `partiallypaid` [C4BBPayerClaimPaymentStatusCode](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBPayerClaimPaymentStatusCode%7C2.1.0) | `paid` |
@@ -57,7 +57,7 @@ claims.csv Data template with example rows
 - `payee_type` says who was paid. `subscriber` and `provider` need no `payee_npi`; `beneficiary` resolves to the patient; `other` must name the party in `payee_npi`, or the row is rejected.
 - `related_relationships` are read from the current claim's point of view: `prior` means the claim in `related_claim_ids` is the one this claim adjusts; `replacedby` means this claim has itself been adjusted by that one. Name the immediately preceding or following claim, not the first or the last in a chain.
 - `payment_status` is the claim-level paid, denied or partially paid decision. It is separate from `outcome`, which says whether adjudication finished.
-- `last_updated` is mandatory on every claim: CARIN requires `meta.lastUpdated` on each resource, and it also builds the Provenance record.
+- `last_updated` is mandatory on every claim, but it does not become `meta.lastUpdated`: CARIN requires that element, and FHIR reserves it for the server that stores the resource, so Payerbox stamps it with the time the claim was ingested rather than taking your value. Send `last_updated` anyway: it is your own record of when the claim changed, independent of when we received it, and Payerbox intends to use it in the Provenance record built alongside the claim.
 - The template rows show the cases that matter: a paid two-line claim (`CLM-0001`), a denial with two process notes (`CLM-0002`), an adjustment pair where the cancelled original and its replacement name each other (`CLM-0003`, `CLM-0004`), a payment to a third party through `payee_type` = `other` (`CLM-0005`), and a retraction (`CLM-0006`). Their keys resolve against the `patients`, `coverage`, `practitioners` and `organizations` templates.
 
 ## claims lines
