@@ -85,7 +85,7 @@ Aligned `;`-separated lists, the position being the diagnosis sequence. Outpatie
 
 ### Amounts
 
-The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, with the same rule as inpatient: totals are mandatory, and Payerbox always publishes them as the claim's `total`. Fill the line amounts too when your system adjudicates line by line — they become each line's own `item.adjudication` alongside the claim's `total`, and sending both is normal, not a conflict; see [inpatient's own note](inpatient-institutional.md#amounts) on the institutional invariant this satisfies.
+The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, with the same rule as inpatient: totals are mandatory, and Payerbox always publishes them as the claim's `total`. Fill the line amounts too when your system adjudicates line by line: they become each line's own `item.adjudication` alongside the claim's `total`, and sending both is normal, not a conflict; see [inpatient's own note](inpatient-institutional.md#amounts) on the institutional invariant this satisfies.
 
 ### Set by Payerbox
 
@@ -95,7 +95,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, wit
 | `subType` | `outpatient` |
 | `use` | `claim` |
 | `meta.profile` | the Outpatient Institutional canonical with version `2.1.0` |
-| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value: FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence` | numbered from the columns and list positions |

@@ -78,7 +78,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) on the cla
 | `type` | `pharmacy` |
 | `use` | `claim` |
 | `meta.profile` | the Pharmacy canonical with version `2.1.0` |
-| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value: FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `item.productOrService` | the literal `compound` when `compound_code` is `2` |

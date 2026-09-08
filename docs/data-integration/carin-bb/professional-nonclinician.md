@@ -98,7 +98,7 @@ The shared [amount columns](explanation-of-benefit.md#amount-columns) on the cla
 | `type` | `professional`, or `vision` when `claim_type` says so |
 | `use` | `claim` |
 | `meta.profile` | the Professional NonClinician canonical with version `2.1.0` |
-| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value: FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence`, `item.informationSequence` | numbered from the columns and list positions |

@@ -111,8 +111,8 @@ The claim-level adjudication decisions that are not amounts.
 
 The shared [amount columns](explanation-of-benefit.md#amount-columns) apply, with two inpatient rules.
 
-- Totals are mandatory: at least one amount column on the claim row must be filled, and Payerbox always publishes them as the claim's `total` — regardless of what the lines carry. Send every total your system holds; `submitted_amount`, `eligible_amount`, `benefit_amount`, `paid_to_provider_amount` and `paid_by_patient_amount` are the ones members look for.
-- Fill the amount columns on the lines too when your system adjudicates line by line — they become that line's own `item.adjudication`, alongside the claim's own `total`. Leave every line amount blank when the claim was priced as a whole, as with a DRG payment; CARIN's own institutional rule (`EOB-institutional-item-or-header-adjudication`) is about a claim-level `adjudication` array Payerbox does not publish for this profile, not about `total`, so sending both totals and line amounts on the same claim is normal and expected, not a conflict.
+- Totals are mandatory: at least one amount column on the claim row must be filled, and Payerbox always publishes them as the claim's `total`, regardless of what the lines carry. Send every total your system holds; `submitted_amount`, `eligible_amount`, `benefit_amount`, `paid_to_provider_amount` and `paid_by_patient_amount` are the ones members look for.
+- Fill the amount columns on the lines too when your system adjudicates line by line: they become that line's own `item.adjudication`, alongside the claim's own `total`. Leave every line amount blank when the claim was priced as a whole, as with a DRG payment; CARIN's own institutional rule (`EOB-institutional-item-or-header-adjudication`) is about a claim-level `adjudication` array Payerbox does not publish for this profile, not about `total`, so sending both totals and line amounts on the same claim is normal and expected, not a conflict.
 
 ### Set by Payerbox
 
@@ -124,7 +124,7 @@ These profile elements have no column. Payerbox fixes them from the dataset or d
 | `subType` | `inpatient` |
 | `use` | `claim` |
 | `meta.profile` | the Inpatient Institutional canonical with version `2.1.0` |
-| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value — FHIR reserves this element for the server |
+| `meta.lastUpdated` | the time Payerbox ingested the claim, not your `last_updated` value: FHIR reserves this element for the server |
 | `identifier.type` | `uc` |
 | `insurance.focal` | `true` on the coverage from `coverage_id` |
 | `careTeam.sequence`, `supportingInfo.sequence`, `diagnosis.sequence`, `procedure.sequence` | numbered from the columns and list positions |
