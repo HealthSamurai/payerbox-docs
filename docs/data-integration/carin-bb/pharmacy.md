@@ -98,7 +98,7 @@ claims_pharmacy_lines.csv Data template with example rows
 | `service_code_system` | No | `http://hl7.org/fhir/sid/ndc` is the only system here (assumed when empty) | |
 | `service_date_start` | Yes | date the prescription was filled | `2026-03-01` |
 | `quantity` | Recommended | decimal; quantity dispensed (NCPDP 442-E7) | `30` |
-| `quantity_unit` | If available | unit of the quantity, sent as free text into `item.quantity.unit`: `EA`, `GM`, `ML` (NCPDP 600-28) | `EA` |
+| `quantity_unit` | If available | unit of the quantity, sent as text into `item.quantity.unit`: conventionally an NCPDP 600-28 unit code such as `EA`, `GM`, `ML`, but the profile does not bind or validate this element against that (or any) code system | `EA` |
 | `compound_ingredient_ndcs` | If `compound_code` is `2` | NDCs of the ingredients, `;`-separated [FDANationalDrugCode](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/FDANationalDrugCode%7C2.1.0) | `00093-1058-01;00054-0222-20` |
 | `compound_ingredient_quantities` | If `compound_code` is `2` | decimal quantities, `;`-separated, aligned with `compound_ingredient_ndcs` | `30;15` |
 | `reject_reason_code` | If rejected | NCPDP reject code (NCPDP 511-FB) [NCPDPRejectCode](https://hl7.org/fhir/us/carin-bb/STU2.1/ValueSet-NCPDPRejectCode.html) | `75` |
