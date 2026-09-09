@@ -1,0 +1,4 @@
+formulary_id,cms_formulary_id,formulary_name,formulary_aliases,status,period_start,period_end,owned_by_org_npi,administered_by_org_npi,network_ids,coverage_area_states,formulary_url,last_updated,is_deleted
+FORM-2027-A,00027113,Example Health 2027 Part D Formulary,,active,2027-01-01,2027-12-31,9999999993,,NET-001,NY,https://example.org/formularies/form-2027-a.pdf,2026-10-01T09:00:00-05:00,
+FORM-2027-B,00027114,Example Health 2027 I-SNP Formulary,,active,2027-01-01,2027-12-31,9999999993,9999999994,NET-001,NY,https://example.org/formularies/form-2027-b.pdf,2026-10-01T09:00:00-05:00,
+FORM-2026-A,00026113,Example Health 2026 Part D Formulary,Example Health 2026 Formulary,retired,2026-01-01,2026-12-31,9999999993,,NET-001,NY,https://example.org/formularies/form-2026-a.pdf,2026-12-31T23:59:00-05:00,
