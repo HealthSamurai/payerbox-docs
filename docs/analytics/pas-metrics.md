@@ -49,18 +49,19 @@ inquiry (`Claim/$inquire`) exchanges.
 
 The **query bucket of metric 2** and **metric 3** report on
 `Claim/$inquire` exchanges. `$inquire` is a read operation and
-persists nothing by default, so these views are populated only where
-the deployment chooses to store inquiries as `Claim` resources.
-Metric 3 additionally needs the identity of the inquiring provider
-captured on those stored inquiries to tell ordering from
-non-ordering queries.
+persists nothing by default; enable
+[`PAS_PERSIST_INQUIRIES=true`](../prior-auth/pas.md#recording-inquiry-exchanges)
+and every successful inquiry is stored as a query exchange record,
+lighting up both. Metric 3 tells ordering from non-ordering queries
+by comparing the inquiring provider's NPI with the NPI of the
+provider on the original claim.
 
 ## The package
 
 - **Download:**
-  [`io.healthsamurai.pas-metrics-0.1.6.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.6.tar.gz)
-- **Contents:** 25 SQL-on-FHIR resources - 10 `ViewDefinition`s and
-  15 `Library` resources (5 source/model wrappers plus one per
+  [`io.healthsamurai.pas-metrics-0.1.8.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.8.tar.gz)
+- **Contents:** 27 SQL-on-FHIR resources - 11 `ViewDefinition`s and
+  16 `Library` resources (6 source/model wrappers plus one per
   metric).
 - **Dependencies:** `hl7.fhir.r4.core` only. The package reads PAS
   extensions by their canonical URL, so it installs and runs on any
@@ -80,13 +81,13 @@ Content-Type: application/json
 {
   "resourceType": "Parameters",
   "parameter": [
-    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.6.tar.gz"}
+    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.8.tar.gz"}
   ]
 }
 ```
 
 Alternatively, serve it from a package registry and reference it by
-`io.healthsamurai.pas-metrics#0.1.6` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
+`io.healthsamurai.pas-metrics#0.1.8` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
 or an init bundle. Note that `BOX_BOOTSTRAP_FHIR_PACKAGES` only
 installs into an empty package store - on a live instance use
 `$fhir-package-install`. See
@@ -176,7 +177,7 @@ Here is an example of a notebook which would demonstrate metrics rendered as cha
       "id": "c02-md",
       "type": "markdown",
       "nb-title": "Metric 2 - updates, cancels, queries",
-      "value": "## Metric 2 - Updates, cancels and queries\n\nThe non-initial traffic, split by exchange type and stacked per day.\n\nA conformant 2.1.0 cancel is a `profile-claim-update` claim carrying certification type **3**, so it lands in the **cancel** bucket via that signal rather than `Claim.status`. The **query** bucket stays empty unless the deployment persists `$inquire` exchanges as `Claim` resources - `$inquire` is a read operation and stores nothing by default."
+      "value": "## Metric 2 - Updates, cancels and queries\n\nThe non-initial traffic, split by exchange type and stacked per day.\n\nA conformant 2.1.0 cancel is a `profile-claim-update` claim carrying certification type **3**, so it lands in the **cancel** bucket via that signal rather than `Claim.status`. The **query** bucket fills when the deployment records `$inquire` exchanges (`PAS_PERSIST_INQUIRIES=true`) - `$inquire` stores nothing by default."
     },
     {
       "id": "c02-chart",
@@ -188,7 +189,7 @@ Here is an example of a notebook which would demonstrate metrics rendered as cha
       "id": "c03-md",
       "type": "markdown",
       "nb-title": "Metric 3 - non-ordering provider queries",
-      "value": "## Metric 3 - Queries by a non-ordering provider\n\nOf all query exchanges, how many came from a provider other than the one who ordered the service.\n\n**Structurally zero in most deployments.** It needs two things the runtime does not capture by default: persisted inquiry exchanges (see metric 2) *and* the identity of the inquiring provider. Both light up together."
+      "value": "## Metric 3 - Queries by a non-ordering provider\n\nOf all query exchanges, how many came from a provider other than the one who ordered the service.\n\n**Empty unless inquiry recording is on** (`PAS_PERSIST_INQUIRIES=true`). A query counts as non-ordering when the inquiring provider's NPI differs from the NPI of the provider on the original claim."
     },
     {
       "id": "c03-chart",

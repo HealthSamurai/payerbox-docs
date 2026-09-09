@@ -105,6 +105,18 @@ See [UM System Integration](um-integration.md) for the connectors, the delivery 
 
 Rather than polling `Claim/$inquire`, a downstream system can subscribe to decision events and be notified when a `ClaimResponse` is recorded. See [Event Notifications](event-notifications.md) for how to set up a FHIR topic-based subscription.
 
+## Recording inquiry exchanges
+
+`Claim/$inquire` is a read operation and stores nothing by default. Two of the [PAS metrics](../analytics/pas-metrics.md) — the query bucket of metric 2 and metric 3 — measure query exchanges, so they stay empty unless the deployment records them:
+
+```
+PAS_PERSIST_INQUIRIES=true
+```
+
+With the flag on, every successful `$inquire` stores a compact exchange record: an `AuditEvent` whose `subtype` carries the `http://prior-auth.example.org/CodeSystem/pas-exchange-type|query` coding, with `recorded` set to the time the request was received, `agent.who` pointing at the inquiring provider (resolved to a stored resource by NPI), and `entity.what` referencing the `Claim` the inquiry resolved to. The record is written by the prior-auth service itself, independent of the Aidbox audit log setting, and never appears in `$inquire` responses; a recording failure is logged without affecting the response. Each successful inquiry is one record of a couple of KB; unmatched inquiries are not recorded. [Notification topics](event-notifications.md) on `Claim` or `ClaimResponse` are unaffected.
+
+Default (unset) — off.
+
 ## Metrics
 
 Payerbox ships with Da Vinci PAS Implementation Guide's suggested [PAS metrics](../analytics/pas-metrics.md) that are calculated directly from stored FHIR data. 
