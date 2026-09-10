@@ -1,0 +1,3 @@
+benefit_id,coverage_id,requirement,limit_values,limit_units,limit_codes,is_deleted
+BEN-DSNP-RX,COV-DSNP-RX,Part D covered drugs only,90,days,days-supply,
+BEN-ISNP-RX,COV-ISNP-RX,,,,,

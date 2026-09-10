@@ -1,0 +1,11 @@
+drug_plan_id,pharmacy_benefit_type,drug_tier,is_deleted
+DP-DSNP,1-month-in-retail,preferred-generic,
+DP-DSNP,1-month-in-retail,generic,
+DP-DSNP,1-month-in-retail,preferred-brand,
+DP-DSNP,1-month-in-retail,non-preferred-brand,
+DP-DSNP,1-month-in-retail,specialty,
+DP-DSNP,3-month-in-mail,preferred-generic,
+DP-DSNP,3-month-in-mail,generic,
+DP-DSNP,3-month-in-mail,preferred-brand,
+DP-ISNP,1-month-in-retail,preferred-generic,
+DP-ISNP,1-month-in-retail,preferred-brand,

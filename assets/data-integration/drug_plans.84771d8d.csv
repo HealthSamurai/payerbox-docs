@@ -1,0 +1,3 @@
+drug_plan_id,plan_id,identifier_values,identifier_systems,coverage_area_ids,network_ids,is_deleted
+DP-DSNP,PLAN-DSNP,H6776-001-000,http://cms.gov/medicare/ma-plan-id,,NET-001,
+DP-ISNP,PLAN-ISNP,,,,NET-001,

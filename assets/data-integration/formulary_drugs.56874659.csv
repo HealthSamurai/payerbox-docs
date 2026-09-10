@@ -1,4 +1,4 @@
-drug_id,rxnorm_code,rxnorm_form_group_code,rxnorm_display,ndc_codes,gpi_code,status,dose_form_code,dose_form_text,last_updated,is_deleted
+drug_id,rxnorm_code,rxnorm_form_group_codes,rxnorm_display,ndc_codes,gpi_code,status,dose_form_code,dose_form_text,last_updated,is_deleted
 RX-1000091,1000091,1160770,,,,active,,,2026-10-01T09:00:00-05:00,
 RX-1049640,1049640,1185784,,,,active,,TABLET,2026-10-01T09:00:00-05:00,
 RX-209459,209459,1187315,,,,active,385055001,,2026-10-01T09:00:00-05:00,

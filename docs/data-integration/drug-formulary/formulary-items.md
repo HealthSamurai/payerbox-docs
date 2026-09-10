@@ -28,8 +28,8 @@ formulary_items.csv Data template with example rows
 | `availability_status` | Yes | `active` covered now, `retired` removed during the year, `draft` not yet effective [publication-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/publication-status%7C4.0.1) | `active` |
 | `availability_start` | Recommended | date coverage on this formulary began | `2027-01-01` |
 | `availability_end` | If retired | date coverage ended | `2027-06-30` |
-| `pharmacy_benefit_types` | Yes | one or more [pharmacy benefit types](payer-plans.md#pharmacy-benefit-types) the drug is available through, `;`-separated | `1-month-in-retail;3-month-in-mail` |
-| `drug_tier` | Yes | one [drug tier](payer-plans.md#drug-tiers) | `preferred-brand` |
+| `pharmacy_benefit_types` | Yes | one or more [pharmacy benefit types](payer-plans/drug-plan-specific-costs.md#pharmacy-benefit-types) the drug is available through, `;`-separated | `1-month-in-retail;3-month-in-mail` |
+| `drug_tier` | Yes | one [drug tier](payer-plans/drug-plan-tier-benefits.md#drug-tiers) | `preferred-brand` |
 | `prior_authorization` | Recommended | `true` or `false` | `true` |
 | `prior_authorization_new_starts_only` | If `prior_authorization` is `true` | `true` when only members starting the drug need authorization | `true` |
 | `step_therapy` | Recommended | `true` or `false`; another drug must be tried first | `false` |
@@ -45,7 +45,7 @@ formulary_items.csv Data template with example rows
 | `last_updated` | Yes | datetime the item last changed in your system | `2026-10-01T09:00:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
-- `pharmacy_benefit_types` and `drug_tier` are mandatory on every item and must be values the drug's plan defines in `payer_plans`. Together with the plan's cost table they are how a member's app computes what a fill costs.
+- `pharmacy_benefit_types` and `drug_tier` are mandatory on every item and must be values the drug's plan defines in `drug_plan_specific_costs` and `drug_plan_tier_benefits`. Together with the plan's cost table they are how a member's app computes what a fill costs.
 - The three requirement flags are must-support; send `false` rather than leaving them blank, so the resource states that no requirement applies. The two new-starts flags matter only when the parent flag is `true` and are dropped otherwise.
 - The quantity-limit detail columns are optional refinements of `quantity_limit`. Send the text always, and the numbers where your system holds them as data: a rolling limit is units per window, a daily maximum is units per day, a days-supply limit is one fill of at most that many days within the window. Payerbox writes them into the IG's quantity-limit detail extension.
 - `additional_coverage_information` is published as text a member reads. Do not put structured data there that the columns already carry.
