@@ -36,4 +36,4 @@ graph LR
 | [USCDI v3.1 Data](uscdi/README.md) | US Core 6.1.0 | 24 |
 | [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.2.0 | 4 |
 | [Claims and Encounters](carin-bb/README.md) | CARIN Blue Button STU 2.1.0 | 10 |
-| [Drug Formulary](drug-formulary/README.md) | PDex US Drug Formulary STU 2.1.0 | 4 |
+| [Drug Formulary](drug-formulary/README.md) | PDex US Drug Formulary STU 2.1.0 | 16 |

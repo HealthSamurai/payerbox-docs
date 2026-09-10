@@ -1,0 +1,7 @@
+contact_id,plan_id,contact_purpose,contact_name,phone,fax,email,url,address_line1,address_line2,city,state,zip,is_deleted
+CT-DSNP-MEMBERS,PLAN-DSNP,PATINF,Member Services,8885551002;8885551099,,members@example.org,,123 Main St,,Anytown,NY,12345,
+CT-DSNP-MARKETING,PLAN-DSNP,MARKETING,Example Health D-SNP plan page,,,,https://example.org/plans/dsnp,,,,,,
+CT-DSNP-SUMMARY,PLAN-DSNP,SUMMARY,Summary of drug benefits,,,,https://example.org/plans/dsnp/benefits,,,,,,
+CT-DSNP-FORMULARY,PLAN-DSNP,FORMULARY,2027 Part D formulary,,,,https://example.org/plans/dsnp/formulary,,,,,,
+CT-ISNP-MEMBERS,PLAN-ISNP,PATINF,Member Services,8885551003,,,,,,,,,
+CT-ISNP-FORMULARY,PLAN-ISNP,FORMULARY,2027 I-SNP formulary,,,,https://example.org/plans/isnp/formulary,,,,,,

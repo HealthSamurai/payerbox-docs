@@ -1,0 +1,3 @@
+coverage_id,plan_id,formulary_ids,network_ids,is_deleted
+COV-DSNP-RX,PLAN-DSNP,FORM-2027-A,NET-001,
+COV-ISNP-RX,PLAN-ISNP,FORM-2027-B,NET-001,

@@ -1,0 +1,3 @@
+contact_id,formulary_id,contact_purpose,contact_name,phone,fax,email,url,address_line1,address_line2,city,state,zip,is_deleted
+CT-FORM-2027-A-PDF,FORM-2027-A,FORMULARY,2027 Part D formulary,,,,https://example.org/formularies/form-2027-a.pdf,,,,,,
+CT-FORM-2027-B-PDF,FORM-2027-B,FORMULARY,2027 I-SNP formulary,,,,https://example.org/formularies/form-2027-b.pdf,,,,,,

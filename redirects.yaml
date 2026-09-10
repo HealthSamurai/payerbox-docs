@@ -15,3 +15,5 @@ redirects:
   data-integration/clinical/care-team: data-integration/uscdi/care-team.md
   run-payerbox/provider-directory-pipeline/admin-ui: fhir-app-portal/mpf-publications.md
   run-payerbox/provider-directory-pipeline/provider-directory-pipeline: run-payerbox/provider-directory-pipeline.md
+  data-integration/drug-formulary/plan-contacts: data-integration/drug-formulary/payer-plans/plan-contacts.md
+  data-integration/drug-formulary/coverage-areas: data-integration/drug-formulary/payer-plans/coverage-areas.md
