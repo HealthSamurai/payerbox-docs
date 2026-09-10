@@ -123,7 +123,7 @@ related_persons.csv Data template with example rows
 
 ## social_history
 
-{% file src="../../assets/data-integration/social_history.1d8b2b61.csv" %}
+{% file src="../../assets/data-integration/social_history.fed3cd52.csv" %}
 social_history.csv Data template with example rows
 {% endfile %}
 
@@ -133,9 +133,12 @@ social_history.csv Data template with example rows
 | `patient_identifier` | Yes | patient key | `MRN-4471903` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
-| `value_code` | Yes | the value for this `observation_type`, with `value_system`: O*NET-SOC for `occupation` [Occupation ONETSOC Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7901), SNOMED CT for `smoking-status`, `pregnancy-status` and `pregnancy-intent` | `29-1141.00`, `266919005` |
-| `industry_code` | occupation only | NAICS industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110` |
+| `value_code` | Yes | the value for this `observation_type`, with `value_system` | `29-1141.00.005678`, `266919005` |
+| `value_system` | Yes for `occupation`; blank means SNOMED CT for the others | `http://terminology.hl7.org/CodeSystem/PHOccupationalDataForHealthODH` for `occupation`, SNOMED CT for `smoking-status`, `pregnancy-status` and `pregnancy-intent` | `http://terminology.hl7.org/CodeSystem/PHOccupationalDataForHealthODH` |
+| `industry_code` | occupation only | Occupational Data for Health industry code [Industry NAICS Detail](https://phinvads.cdc.gov/vads/ViewValueSet.action?oid=2.16.840.1.114222.4.11.7900) | `622110.004411` |
 | `effective_datetime` | Yes, except on `occupation` rows | datetime | `2026-04-18` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- `occupation` is the one row shape with no default `value_system`: send the ODH system URI explicitly. A plain O*NET-SOC code (`29-1141.00`) is not the same code space as an ODH composite code (`29-1141.00.005678`) — sending the bare O*NET-SOC value or leaving `value_system` blank is rejected rather than guessed at.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

@@ -22,7 +22,7 @@ One row per practitioner, organization, and location: each row becomes one Pract
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
-{% file src="../../assets/data-integration/practitioners.603c00bd.csv" %}
+{% file src="../../assets/data-integration/practitioners.9b8978d9.csv" %}
 practitioners.csv Data template with example rows
 {% endfile %}
 
