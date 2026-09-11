@@ -55,7 +55,7 @@ documents.csv Data template with example rows
 
 One row per report. The individual results live in `labs` and `clinical_observations` and point back with `diagnostic_report_id`.
 
-{% file src="../../assets/data-integration/diagnostic_reports.a059e996.csv" %}
+{% file src="../../assets/data-integration/diagnostic_reports.596497e8.csv" %}
 diagnostic_reports.csv Data template with example rows
 {% endfile %}
 
@@ -67,8 +67,8 @@ diagnostic_reports.csv Data template with example rows
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |
 | `code` | Yes | LOINC, from the value set the `report_kind` profile binds, with `code_system` | `24323-8` lab, `39053-4` note |
 | `category_code` | Recommended | `LAB`, `RAD` and the other v2-0074 service sections | `LAB` |
-| `effective_datetime` | Recommended | datetime | `2026-04-18T08:40:00-04:00` |
-| `issued` | If available | datetime | `2026-04-18T12:00:00-04:00` |
+| `effective_datetime` | Required once `status` is `partial`, `preliminary`, `final`, `amended`, `corrected` or `appended` | datetime | `2026-04-18T08:40:00-04:00` |
+| `issued` | Required once `status` is `partial`, `preliminary`, `final`, `amended`, `corrected` or `appended` | datetime | `2026-04-18T12:00:00-04:00` |
 | `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 | `attachment_file` | If available | path relative to the delivery root | `attachments/DR-0771.pdf` |
 | `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
@@ -77,5 +77,6 @@ diagnostic_reports.csv Data template with example rows
 - `report_kind` picks the profile: `lab` for a laboratory report, `note` for everything else, including radiology and pathology narratives. The two bind `code` to different value sets, so a lab code on a `note` row falls outside the binding and the reverse too. Both bindings are extensible, so the code is not rejected, but a wrong `report_kind` silently produces the wrong profile.
 - `attachment_file` carries the narrative report as a file, the same way `documents` does. A lab report with structured results and no narrative needs none.
 - This dataset also serves the Laboratory and Diagnostic Imaging data classes, not only Clinical Notes.
+- `effective_datetime` and `issued` are not required on a `registered` or `cancelled` report, but US Core requires both once a report has results — send them on every `partial`, `preliminary`, `final`, `amended`, `corrected` or `appended` row, or that row is rejected.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).
