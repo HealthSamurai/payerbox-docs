@@ -1,0 +1,4 @@
+record_id,prior_auth_record_id,document_kind,type_code,attachment_file,document_date,author_npi,is_deleted
+DOC-77120,PA-2026-900001,unstructured,34133-9,attachments/DOC-77120.pdf,2026-09-01T10:00:00-04:00,9999999995,
+DOC-77121,PA-2026-900001,structured,74465-6,attachments/DOC-77121.json,2026-09-01T10:00:00-04:00,9999999995,
+DOC-77130,PA-2026-900002,unstructured,18842-5,attachments/DOC-77130.pdf,2026-09-02T09:30:00-04:00,9999999987,

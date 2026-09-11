@@ -1,0 +1,5 @@
+record_id,patient_identifier,coverage_id,payer_org_npi,requesting_provider_npi,enterer_npi,claim_type,drug_indicator,level_of_service,received_at,status,outcome,decision_date,review_action,denial_reason_code,denial_reason_text,auth_reference,auth_period_start,auth_period_end,last_updated,is_deleted
+PA-2026-900001,MRN-4471903,COV-0001,9999999979,9999999995,,professional,false,E,2026-09-01T09:31:00-04:00,active,complete,2026-09-03,A6,,,AUTH900001,2026-09-03,2026-12-02,2026-09-03T16:20:00-04:00,
+PA-2026-900002,MRN-5583017,COV-0002,9999999979,9999999987,,professional,false,E,2026-09-02T14:05:00-04:00,active,complete,2026-09-04,A3,50,Not medically necessary: conservative therapy not documented,AUTH900002,,,2026-09-04T11:40:00-04:00,
+PA-2026-900003,MRN-4471903,COV-0001,9999999979,9999999995,,professional,false,U,2026-09-08T08:12:00-04:00,active,partial,,,,,AUTH900003,,,2026-09-08T08:12:00-04:00,
+PA-2026-900004,MRN-5583017,COV-0002,9999999979,9999999995,,professional,false,,2026-08-20T09:00:00-04:00,active,,,,,,,,,2026-09-09T09:00:00-04:00,true

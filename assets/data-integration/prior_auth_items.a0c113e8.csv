@@ -1,0 +1,6 @@
+prior_auth_record_id,line_number,service_code,service_code_system,service_category,diagnosis_code,diagnosis_code_system,service_date_start,service_date_end,review_action,approved_units,consumed_units,denial_reason_code,denial_reason_text,issue_date,trace_number,admin_reference_number,prior_auth_number,servicing_provider_npi
+PA-2026-900001,1,27447,http://www.ama-assn.org/go/cpt,2,M17.11,,2026-09-03,2026-12-02,A1,1,,,,2026-09-03,TRN-2026-004182-1,,,9999999987
+PA-2026-900001,2,97110,http://www.ama-assn.org/go/cpt,1,M17.11,,2026-09-03,2026-10-17,A6,6,,,,2026-09-03,TRN-2026-004182-2,,,
+PA-2026-900001,3,97010,http://www.ama-assn.org/go/cpt,1,M17.11,,,,A3,,,50,Not medically necessary: modality not supported for this diagnosis,2026-09-03,TRN-2026-004182-3,,,
+PA-2026-900002,1,E1390,https://www.cms.gov/Medicare/Coding/HCPCSReleaseCodeSets,12,J44.9,,,,A3,,,50,Not medically necessary: oxygen saturation criteria not met,2026-09-04,TRN-2026-004201-1,,,
+PA-2026-900003,1,70553,http://www.ama-assn.org/go/cpt,4,G43.909,,,,A4,,0,,,,TRN-2026-004233-1,,,
