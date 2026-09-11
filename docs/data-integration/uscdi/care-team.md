@@ -22,13 +22,14 @@ One row per practitioner, organization, and location: each row becomes one Pract
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
-{% file src="../../assets/data-integration/practitioners.9b8978d9.csv" %}
+{% file src="../../assets/data-integration/practitioners.c3d34ffb.csv" %}
 practitioners.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
+| `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, or another stable id with `practitioner_identifier_system` | `9999999995` |
+| `practitioner_identifier_system` | If `npi` is not an NPI | URI of the issuing system, a URL you control or an OID; NPI (`http://hl7.org/fhir/sid/us-npi`) assumed when empty | `http://acme.org/provider-ids` |
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
@@ -41,6 +42,7 @@ practitioners.csv Data template with example rows
 | `role_period_end` | If available | date | |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
+- A clinician without an NPI, an out-of-state consultant or a reviewer a utilization-management vendor knows only internally, may be identified by another stable id; then `practitioner_identifier_system` names who issued it, the same way it works for organizations. US Core requires a Practitioner to carry an identifier and a family name, so a clinician sent as a bare name cannot be published.
 - A row is keyed by `npi`, `location_id` and `practitioner_role_code` together — the roster has no key of its own, so do not mint one. Keep those three stable and the role updates in place.
 
 ## organizations
@@ -49,7 +51,7 @@ One row per organization: a practice, hospital, pharmacy, or payer that other ro
 
 If you already send the [Provider Directory](../provider-directory/README.md#facilities) feed, list here only the organizations missing from it.
 
-{% file src="../../assets/data-integration/organizations.e4730cf9.csv" %}
+{% file src="../../assets/data-integration/organizations.4e83a034.csv" %}
 organizations.csv Data template with example rows
 {% endfile %}
 
