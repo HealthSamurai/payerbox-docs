@@ -51,4 +51,6 @@ drug_plan_tier_benefits.csv Data template with example rows
 | `zero-cost-share-preventative` | preventive drugs available at no cost |
 | `medical-service` | drugs administered by a clinician or in a facility, covered under the medical benefit |
 
+Medicare Part D plans report tiers to CMS as numbers, `1` to `7`, and many plans' documents name them that way. Send the number when that is what your plan uses; Payerbox registers the numeric tiers as plan-own codes and a formulary item's `drug_tier` then carries the same number. A plan with one tier for every drug still sends it.
+
 These resources are served by [Patient Access](../../../interop-apis/patient-access.md).

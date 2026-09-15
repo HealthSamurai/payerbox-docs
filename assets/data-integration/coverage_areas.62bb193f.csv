@@ -1,0 +1,4 @@
+coverage_area_id,name,aliases,status,type_codes,phone,fax,email,url,address_line1,address_line2,city,state,zip,latitude,longitude,region_geojson,managing_org_npi,last_updated,is_deleted
+AREA-NY,New York State,,active,,8885551002,,,https://example.org/areas/ny,,,,NY,,42.9538,-75.5268,,9999999979,2026-10-01T09:00:00-05:00,
+AREA-BRONX,Bronx County,,active,,,,,,,,Bronx,NY,,40.8448,-73.8648,"{""type"":""Polygon"",""coordinates"":[[[-73.933,40.785],[-73.748,40.785],[-73.748,40.916],[-73.933,40.916],[-73.933,40.785]]]}",9999999979,2026-10-01T09:00:00-05:00,
+AREA-US,United States,,active,,,,,,,,,,,,,"{""type"":""Polygon"",""coordinates"":[[[-125.0,24.5],[-66.9,24.5],[-66.9,49.4],[-125.0,49.4],[-125.0,24.5]]]}",9999999979,2026-10-01T09:00:00-05:00,

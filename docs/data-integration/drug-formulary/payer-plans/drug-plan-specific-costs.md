@@ -47,4 +47,16 @@ drug_plan_specific_costs.csv Data template with example rows
 | `3-month-in-mail` | 3-month supply, in-network mail order |
 | `3-month-out-mail` | 3-month supply, out-of-network mail order |
 
+Medicare Part D plans price preferred and standard network pharmacies differently, and some price a 2-month supply; the IG's set has neither. Where your plan does, send the codes your plan documents use, as they are spelled there. Payerbox publishes any code outside the IG's set under a code system registered for your plan at scoping, so the set is yours to define. A common shape, and the one the templates use:
+
+| Value | Meaning |
+|---|---|
+| `1-month-preferred-retail` | 1-month supply, preferred in-network retail pharmacy |
+| `1-month-standard-retail` | 1-month supply, standard in-network retail pharmacy |
+| `1-month-preferred-mail` | 1-month supply, preferred mail order |
+| `1-month-standard-mail` | 1-month supply, standard mail order |
+| `3-month-preferred-retail`, `3-month-standard-retail`, `3-month-preferred-mail`, `3-month-standard-mail` | the same for a 3-month supply |
+
+Other payers' live APIs use the same idea with their own spellings, such as `1-month-pref-retail`, `1-month-stand-mail` or `2-month-stand-retail`; those work as well. A plan without preferred pricing uses the IG codes above. Do not mix the IG's codes and your own within one drug plan.
+
 These resources are served by [Patient Access](../../../interop-apis/patient-access.md).

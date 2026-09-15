@@ -25,6 +25,7 @@ A repeating element is carried one of two ways. A structure with fields of its o
 | [`drug_plan_specific_costs`](drug-plan-specific-costs.md) | `plan:drug-plan.specificCost` | 1..* | `drug_plans` |
 | [`drug_plan_tier_benefits`](drug-plan-tier-benefits.md) | `plan:drug-plan.specificCost.benefit` | 1..* | `drug_plan_specific_costs` |
 | [`drug_plan_tier_costs`](drug-plan-tier-costs.md) | `plan:drug-plan.specificCost.benefit.cost` | 1..* | `drug_plan_tier_benefits` |
+| [`drug_plan_general_costs`](drug-plan-general-costs.md) | `plan:drug-plan.generalCost` | 0..* | `drug_plans` |
 
 Repeating references and codes that carry no fields of their own stay as `;`-separated lists on their parent row: `network_ids`, `coverage_area_ids`, `formulary_ids`, `plan_aliases`.
 
@@ -32,7 +33,7 @@ Repeating references and codes that carry no fields of their own stay as `;`-sep
 
 One row per plan: the elements of the InsurancePlan that occur once.
 
-{% file src="../../../assets/data-integration/payer_plans.b83c1465.csv" %}
+{% file src="../../../assets/data-integration/payer_plans.2c6ac72b.csv" %}
 payer_plans.csv Data template with example rows
 {% endfile %}
 
@@ -40,22 +41,23 @@ payer_plans.csv Data template with example rows
 |---|---|---|---|
 | `plan_id` | Yes | your stable key for the plan; every child dataset references it, and it is the same value as in Provider Directory `plans` | `PLAN-DSNP` |
 | `plan_name` | Recommended | text | `Example Health D-SNP` |
-| `plan_aliases` | If renamed | earlier names, `;`-separated | |
+| `plan_aliases` | If renamed | earlier names, `;`-separated, up to three | |
 | `status` | Yes | `active`, `draft`, `retired`, `unknown` [publication-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/publication-status%7C4.0.1) | `active` |
 | `plan_type` | Yes | `mediadv` Medicare Advantage, `mediadvhmo` MA HMO [InsuranceProductTypeVS](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/davinci-pdex-plan-net/ValueSet/InsuranceProductTypeVS%7C1.2.0) | `mediadv` |
 | `period_start` | Recommended | date the plan year begins | `2027-01-01` |
 | `period_end` | Recommended | date the plan year ends | `2027-12-31` |
 | `coverage_area_ids` | Recommended | keys from [`coverage_areas`](coverage-areas.md), `;`-separated | `AREA-NY` |
-| `owned_by_org_npi` | Recommended | 10 digits; the plan sponsor; key from `organizations` | `9999999993` |
-| `administered_by_org_npi` | If different | 10 digits; the administrator or PBM; key from `organizations` | |
-| `network_ids` | If available | networks of the product, keys from Provider Directory `networks`, `;`-separated | `NET-001` |
-| `last_updated` | Yes | datetime the plan last changed in your system | `2026-10-01T09:00:00-05:00` |
-| `is_deleted` | If retracting | `true` retracts the plan and every child row that references it | `true` |
+| `owned_by_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix; the plan sponsor; key from [`organizations`](../../uscdi/care-team.md#organizations) | `9999999979` |
+| `administered_by_org_npi` | If different | 10 digits, Luhn-valid over the `80840` prefix; the administrator or PBM; key from [`organizations`](../../uscdi/care-team.md#organizations) | |
+| `network_ids` | If available | networks of the product, keys from Provider Directory [`networks`](../../provider-directory/README.md#networks), `;`-separated; each must be a network that feed has published, or the plan waits for it | `NET-001` |
+| `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the plan last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
+| `is_deleted` | If retracting | `true` sets the published plan's `status` to `retired`; every child row that references it goes with it | `true` |
 
 - `plan_id` becomes the plan's first identifier, under the identifier namespace fixed for your engagement. Further identifiers, such as the CMS contract-plan-segment, are rows in [`plan_identifiers`](plan-identifiers.md).
 - A plan is complete only with its children. The profile requires at least one drug coverage and at least one drug plan with a cost table, so a `payer_plans` row with no `plan_drug_coverages` row or no `drug_plans` row is reported and not published.
 - `owned_by_org_npi`, `administered_by_org_npi` and `network_ids` reuse the Provider Directory keys, so the same plan described in both feeds names one sponsor and one set of networks.
-- `is_deleted` on the plan retracts the whole tree. Child rows have their own `is_deleted` for retracting one contact, one cost cell or one identifier.
+- `is_deleted` on the plan retracts the whole tree. Child rows have their own `is_deleted` for dropping one contact, one cost cell or one identifier from the plan; a child row absent from the snapshot is dropped the same way when the plan is next built.
+- An NPI that fails the check digit is reported as `invalid_npi` and the sponsor is left off; the plan still publishes.
 
 ### How the datasets become the resource
 
@@ -74,7 +76,8 @@ payer_plans.csv Data template with example rows
 | `plan:drug-plan.specificCost` | 1..*, must support | one per `drug_plan_specific_costs` row; `category` is the pharmacy benefit type |
 | `plan:drug-plan.specificCost.benefit` | 1..*, must support | one per `drug_plan_tier_benefits` row; `type` is the drug tier |
 | `plan:drug-plan.specificCost.benefit.cost` | 1..* | one per `drug_plan_tier_costs` row, into the `copay` or `coinsurance` slice by `cost_type` |
+| `plan:drug-plan.generalCost` | 0..* | one per `drug_plan_general_costs` row |
 
-Elements the profile leaves optional and this feed does not collect: `endpoint` and `plan.generalCost` (premiums).
+Every column maps to an element of the IG's own profiles; the feed defines no extensions. The one element the profile leaves optional and this feed does not collect is `endpoint`.
 
 These resources are served by [Patient Access](../../../interop-apis/patient-access.md).
