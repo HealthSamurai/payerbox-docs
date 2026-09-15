@@ -1,0 +1,4 @@
+prior_auth_record_id,document_record_id,line_number,category_code
+PA-0001,DOC-0001,,
+PA-0003,DOC-0001,1,
+PA-0003,DOC-0001,2,material
