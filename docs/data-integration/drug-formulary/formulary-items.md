@@ -42,8 +42,8 @@ formulary_items.csv Data template with example rows
 | `quantity_limit_days_supply_days` | If a days-supply limit | integer; maximum days' supply per fill | `180` |
 | `quantity_limit_days_supply_window_days` | If a days-supply limit | integer; the period in which one such fill is allowed | `365` |
 | `additional_coverage_information` | If available | free text; conditions the structured columns cannot say, such as a diagnosis prerequisite or age limit | `Covered for members 18 and older` |
-| `last_updated` | Yes | datetime the item last changed in your system | `2026-10-01T09:00:00-05:00` |
-| `is_deleted` | If retracting | `true` retracts this row | `true` |
+| `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the item last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
+| `is_deleted` | If sent in error | `true` leaves the row out of the build and reports it. It does not withdraw an item already published: the IG's item has no status of its own, so a drug taken off the formulary, or an item sent in error, is withdrawn with `availability_status` `retired` and an `availability_end` | `true` |
 
 - `pharmacy_benefit_types` and `drug_tier` are mandatory on every item and must be values the drug's plan defines in `drug_plan_specific_costs` and `drug_plan_tier_benefits`. Together with the plan's cost table they are how a member's app computes what a fill costs.
 - The three requirement flags are must-support; send `false` rather than leaving them blank, so the resource states that no requirement applies. The two new-starts flags matter only when the parent flag is `true` and are dropped otherwise.
@@ -63,6 +63,6 @@ Every coded value on a formulary item is published under a fixed code system; yo
 | `drug_id` | `subject`, a reference to the Formulary Drug | the RxNorm, NDC and GPI codes live on that resource, see [Formulary Drugs](formulary-drugs.md#codes) |
 
 - A formulary item identifies its drug only through `drug_id`. RxNorm, NDC and GPI codes are properties of the product, not of its place on one formulary, so they are columns of `formulary_drugs`. A source that keeps one table per formulary with the codes on every row splits it into the two files: each product once in `formulary_drugs`, and one `formulary_items` row per formulary it appears on.
-- The IG names the tier and benefit-type code systems temporary trial use, and both are extensible. A plan whose tiers do not match the IG list keeps its own codes; Payerbox publishes them under a code system registered for that plan.
+- The IG names the tier and benefit-type code systems temporary trial use, and both are extensible. A plan whose tiers or benefit types do not match the IG lists keeps its own codes, spelled as its documents spell them; Payerbox publishes them under a code system registered for that plan. The values here must be the ones the plan's `drug_plan_specific_costs` and `drug_plan_tier_benefits` rows define.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md).

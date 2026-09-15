@@ -1,3 +1,0 @@
-plan_id,plan_name,plan_aliases,status,plan_type,period_start,period_end,coverage_area_ids,owned_by_org_npi,administered_by_org_npi,network_ids,last_updated,is_deleted
-PLAN-DSNP,Example Health D-SNP,,active,mediadv,2027-01-01,2027-12-31,AREA-NY,9999999993,,NET-001,2026-10-01T09:00:00-05:00,
-PLAN-ISNP,Example Health I-SNP,,active,mediadvhmo,2027-01-01,2027-12-31,AREA-NY,9999999993,,NET-001,2026-10-01T09:00:00-05:00,

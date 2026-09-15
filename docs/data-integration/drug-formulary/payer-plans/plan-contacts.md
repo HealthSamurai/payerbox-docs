@@ -27,18 +27,18 @@ plan_contacts.csv Data template with example rows
 | `plan_id` | Yes | key from `payer_plans` | `PLAN-DSNP` |
 | `contact_purpose` | Yes | see [Purposes](#purposes) | `PATINF` |
 | `contact_name` | Recommended | text; the name of the office, site or document | `Member Services` |
-| `phone` | If available | 10 digits; several `;`-separated | `8885551002;8885551099` |
-| `fax` | If available | 10 digits; several `;`-separated | |
-| `email` | If available | email addresses, `;`-separated | `members@example.org` |
-| `url` | If available | web addresses, `;`-separated | `https://example.org/plans/dsnp` |
+| `phone` | If available | 10 digits; several `;`-separated, up to three | `8885551002;8885551099` |
+| `fax` | If available | 10 digits; several `;`-separated, up to two | |
+| `email` | If available | email addresses, `;`-separated, up to two | `members@example.org` |
+| `url` | If available | web addresses, `;`-separated, up to three | `https://example.org/plans/dsnp` |
 | `address_line1` | If available | text | `123 Main St` |
 | `address_line2` | If available | text | |
 | `city` | If available | text | `Anytown` |
 | `state` | If available | 2-letter USPS | `NY` |
 | `zip` | If available | 5 digits, as a string | `12345` |
-| `is_deleted` | If retracting | `true` retracts this row | `true` |
+| `is_deleted` | If retracting | `true` drops the contact from the plan | `true` |
 
-- A row needs a `contact_name` or at least one of `phone`, `fax`, `email`, `url`; otherwise it describes nothing and is rejected. `contact_name` becomes the contact's name text, each value in the telecom columns one telecom entry of its system, so a contact may list several numbers, and the address columns the contact's address.
+- A row needs a `contact_name` or at least one of `phone`, `fax`, `email`, `url`; otherwise it describes nothing and is rejected. A `contact_purpose` outside the list drops the contact and is reported; a phone that is not ten digits is reported and left off. `contact_name` becomes the contact's name text, each value in the telecom columns one telecom entry of its system, so a contact may list several numbers, and the address columns the contact's address.
 - The IG expects three document contacts on every drug plan: the marketing page, the benefit summary and the printable formulary. Members' apps look for them by purpose, so send each as its own row with a `url`.
 - Not collected: the contact's structured name parts (`family`, `given`, `prefix`, `suffix`); the profile marks only `name.text` must-support.
 - Several rows may share a purpose, for instance two member lines. They all become contacts; the profile does not rank them.
