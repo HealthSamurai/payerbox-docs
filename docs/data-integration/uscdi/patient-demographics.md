@@ -74,7 +74,7 @@ patients.csv Data template with example rows
 |---|---|---|---|
 | `gender` | Yes | `male`, `female`, `other`, `unknown` [AdministrativeGender](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/administrative-gender%7C4.0.1) | `female` |
 | `sex` | Recommended | `248152002` Female, `248153007` Male [US Core Sex](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-sex.html) | `248152002` |
-| `birth_date` | Recommended | YYYY-MM-DD | `1957-03-11` |
+| `birth_date` | Recommended; **required** for any member with a [prior authorization](../prior-auth/README.md) | YYYY-MM-DD | `1957-03-11` |
 | `deceased_date` | If applicable | datetime | |
 | `race_omb_code` | Recommended | `2106-3` White, `2054-5` Black or African American, `2028-9` Asian, `1002-5` American Indian or Alaska Native, `2076-8` Native Hawaiian or Other Pacific Islander, `UNK` unknown, `ASKU` asked but declined; `;`-separated [OMB race categories](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-race-category) | `2106-3` |
 | `race_detailed_code` | If available | CDC race code(s), `;`-separated [detailed race](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/detailed-race) | `2108-9` |
