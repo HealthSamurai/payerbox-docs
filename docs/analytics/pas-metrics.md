@@ -70,9 +70,10 @@ provider on the original claim.
 
 ## Install
 
-The package is a standard FHIR NPM package. Make the tarball
-reachable by the Aidbox process, then install it with
-`$fhir-package-install`:
+The package is a standard FHIR NPM package. `$fhir-package-install`
+takes the tarball's location, which can be the download URL itself -
+Aidbox fetches it directly, so there is nothing to download, mount or
+vendor first:
 
 ```http
 POST /fhir/$fhir-package-install
@@ -81,10 +82,19 @@ Content-Type: application/json
 {
   "resourceType": "Parameters",
   "parameter": [
-    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.9.tar.gz"}
+    {"name": "package", "valueString": "https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.9.tar.gz"}
   ]
 }
 ```
+
+The fetch is anonymous and happens from the Aidbox process, so this
+form needs the instance to reach the bucket. Where it cannot - an
+isolated or air-gapped deployment - download the tarball, put it where
+Aidbox can read it, and pass a `file:///path/to/io.healthsamurai.pas-metrics-0.1.9.tar.gz`
+location instead. Both forms take the same install path.
+
+Re-running either is safe: canonical resources upsert by URL, so
+installing the same version twice leaves one copy.
 
 Alternatively, serve it from a package registry and reference it by
 `io.healthsamurai.pas-metrics#0.1.9` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
