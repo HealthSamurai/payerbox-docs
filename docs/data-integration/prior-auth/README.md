@@ -84,7 +84,7 @@ prior_auths.csv Data template with example rows
 | `submitted_amount` | If available | decimal, US dollars; the amount requested | `1200.00` |
 | `eligible_amount` | If available | decimal, US dollars; the amount allowed | `840.00` |
 | `utilized_quantity` | If tracked, and `eligible_amount` is sent | decimal; how much of the authorization has been used to date | `2` |
-| `process_note_1` … `process_note_10` | If your system holds them | free text; the authorization as it reads to the member and the servicing provider, one note per slot, in the order they were written | `Authorized 5 days x 5 hours, Wed-Sun 2pm-7pm, effective 12/1/2025-11/30/2026` |
+| `process_note_1` … `process_note_10` | If your system holds them | free text; the authorization as it reads to the member and the servicing provider, one note per slot, in the order they were written | `Approved 12 established-patient visits, effective 03/05/2026-06/05/2026` |
 | `last_updated` | Yes | datetime the authorization last changed in your system | `2026-03-04T16:20:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts this authorization, its lines and its document links | `true` |
 
@@ -111,7 +111,7 @@ prior_auths.csv Data template with example rows
 - `denial_reason_codes` binds to the X12 CARC and RARC code lists, so a payer-defined reason code cannot travel in that column. Put the narrative in `denial_reason_text`, which is published with the coded reason rather than instead of it.
 - The amounts are optional, and an authorization decided on medical necessity alone carries none. Send them where you have them: Patient Access serves a member their own authorization amounts, and Provider Access and Payer-to-Payer drop them the same way they drop claim amounts.
 - `last_updated` does not become `meta.lastUpdated`: FHIR reserves that element for the server storing the resource, so Payerbox stamps it with the ingestion time rather than your value. Send it anyway — it is your own record of when the authorization changed, independent of when we received it, and Payerbox intends to use it in the Provenance record built alongside the authorization. It is the one column here that is collected rather than published today, the same as on the [claims feed](../carin-bb/explanation-of-benefit.md).
-- The `process_note_` columns carry what the structured columns cannot shape. An authorization for personal care is approved as a schedule — which days, which hours — and a line carries only a service code, a unit count and a period, so "5 hours a day, Wednesday to Sunday" and "25 hours a week, any day" arrive identical. Send the note as your system holds it. Ten slots, because an authorization accrues notes each time it is held, revised or reissued; fill them in order and leave the rest blank. A note is free text, so it is published as written and never parsed.
+- The `process_note_` columns carry what the structured columns cannot shape. A home-care authorization is approved as a schedule — how many hours, on which days — and a line carries only a service code, a unit count and a period, so a fixed weekly pattern and the same total spread over any days arrive identical. Send the note as your system holds it. Ten slots, because an authorization accrues notes each time it is held, revised or reissued; fill them in order and leave the rest blank. A note is free text, so it is published as written and never parsed.
 
 ## prior_auth_lines
 
