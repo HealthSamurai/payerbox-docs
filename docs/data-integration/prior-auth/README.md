@@ -178,6 +178,8 @@ Send these columns only where what was authorized differs from what was requeste
 
 One row per link between an authorization and a document behind it: the clinical notes, forms and letters a provider submitted with the request. The document itself travels in [`documents`](../uscdi/clinical-notes.md#documents), which carries the file; this row says which authorization it belongs to.
 
+FHIR leaves `supportingInfo` open to any supporting information, of any type. This feed uses it for one thing: a pointer to a delivered document.
+
 {% file src="../../assets/data-integration/prior_auth_documents.2b56aa04.csv" %}
 prior_auth_documents.csv Data template with example rows
 {% endfile %}
@@ -187,7 +189,7 @@ prior_auth_documents.csv Data template with example rows
 | `prior_auth_record_id` | Yes | the authorization's `record_id` | `PA-0001` |
 | `document_record_id` | Yes | the document's `record_id` in `documents` | `DOC-0001` |
 | `line_number` | If the document supports one line | that line's `line_number`; blank when the document supports the whole authorization. carried but not yet published; every link currently reaches the authorization as a whole | `1` |
-| `category_code` | If not an attachment | `info`, `material`, `related`, `other` and the rest of the claim information categories [claim-informationcategory](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/claim-informationcategory%7C4.0.1) (`attachment` assumed when empty) | `material` |
+| `category_code` | If not an attachment | the classification of the supplied information: `attachment` (assumed when empty), `info`, `material`, `related`, `other` | `material` |
 
 - A `document_record_id` is not checked against `documents` at ingest, so a link to a document that never arrives dangles. Deliver both in the same window.
 - One document can support several authorizations, and one authorization can have many documents. Send a row per pair.
