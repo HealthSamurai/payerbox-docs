@@ -1,10 +1,10 @@
 ---
 description: >-
-  Columns for the claims and encounter feed, mapped to the CARIN Blue Button
+  Columns for the claims feed, mapped to the CARIN Blue Button
   STU 2.1.0 ExplanationOfBenefit profiles, one dataset pair per claim type.
 ---
 
-# Claims and Encounters
+# Claims
 
 ## Datasets
 
