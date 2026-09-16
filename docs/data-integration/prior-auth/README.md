@@ -47,7 +47,7 @@ Each is recommended in its own feed and required for any member who has an autho
 
 One row per authorization.
 
-{% file src="../../assets/data-integration/prior_auths.4171f786.csv" %}
+{% file src="../../assets/data-integration/prior_auths.4a14d643.csv" %}
 prior_auths.csv Data template with example rows
 {% endfile %}
 
