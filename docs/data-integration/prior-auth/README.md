@@ -34,7 +34,7 @@ Prior authorization data often sits with a delegated utilization-management vend
 | Dates | `date` columns are `YYYY-MM-DD`. `datetime` columns are ISO 8601 with a timezone offset. |
 | PHI | Authorizations carry protected health information. Delivery is encrypted in transit and at rest under the executed BAA. |
 
-PDex points the authorization's insurance at the [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html) profile, whose beneficiary is in turn an HRex Patient. An authorization sends no coverage data of its own beyond `coverage_id`, and almost everything those two profiles demand is already required where it belongs — the member id and subscriber relationship in [`coverage`](../uscdi/health-insurance.md#coverage), the name in [`patients`](../uscdi/patient-demographics.md#name). The one exception is [`birth_date`](../uscdi/patient-demographics.md#demographics), recommended in the clinical feed and **required for any member who has an authorization**: a member missing it cannot have one published.
+PDex points the authorization's insurance at the [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html) profile, whose beneficiary is an HRex Patient. An authorization sends no coverage data of its own beyond `coverage_id`, and almost everything those two profiles demand is already required elsewhere: the member id and subscriber relationship in [`coverage`](../uscdi/health-insurance.md#coverage), the name in [`patients`](../uscdi/patient-demographics.md#name). The one exception is [`birth_date`](../uscdi/patient-demographics.md#demographics), recommended in the clinical feed and **required for any member who has an authorization**: a member missing it cannot have one published.
 
 ## prior_auths
 
@@ -95,16 +95,16 @@ prior_auths.csv Data template with example rows
 
 - An authorization whose period has run out is not a separate state. `status` stays `active`, `auth_period_end` is in the past, and the row keeps arriving until it falls out of the history window.
 - A partial approval is decided per line, so the authorization row carries `outcome` = `partial` and the reasons sit on the lines that were cut or refused. Send authorization-level denial columns only when the whole request was refused.
-- `claim_type` has no `pharmacy` value: drug authorizations are out of scope. Dental is `oral`, vision is `vision`. Blank reads as `professional` — it is not derived from the lines, so send `institutional` yourself for a facility authorization.
+- `claim_type` has no `pharmacy` value: drug authorizations are out of scope. Dental is `oral`, vision is `vision`. Blank reads as `professional`. It is not derived from the lines, so send `institutional` yourself for a facility authorization.
 - The provider columns take an NPI, or the identifier that provider is registered under in `practitioners` and `organizations`, which is where the issuing system is declared. Send the internal id where that is all the source holds. A person known only by a name cannot be published: US Core requires a Practitioner to carry an identifier and a family name.
 - `outcome` is about processing, not about the decision. FHIR defines `queued` as received but not yet begun and `complete` as processing finished without errors, so a cancelled authorization keeps the outcome it had reached and says it was cancelled in `status`. A consumer reads `status` to learn the authorization no longer stands.
 - `review_action_code` is where the decision itself lives, and it is not interchangeable with `outcome`. A request that was reviewed and sent back for more information is `queued` with a review action of pended: the review happened, the processing did not finish. Send both.
-- The decision columns — `review_action_code`, `review_number`, `review_reason_codes`, `second_surgical_opinion_flag`, `decision_date` — publish only on a row that also carries `denial_reason_codes` or `submitted_amount`. PDex hangs a review action on an adjudication entry, and an entry needs a reason or an amount. The same rule the lines carry.
+- `review_action_code`, `review_number`, `review_reason_codes`, `second_surgical_opinion_flag` and `decision_date` publish only on a row that also carries `denial_reason_codes` or `submitted_amount`. PDex hangs a review action on an adjudication entry, and an entry needs a reason or an amount. The lines carry the same rule.
 - `auth_period_end` is blank when the authorization ends on a circumstance rather than a date, the common case being a visit or unit allowance. `allowed_units` on the line is then what says when the authorization is exhausted, and both columns can be present.
 - `denial_reason_codes` binds to the X12 CARC and RARC code lists, so a payer-defined reason code cannot travel in that column. Put the narrative in `denial_reason_text`, which is published with the coded reason rather than instead of it.
 - The amounts are optional, and an authorization decided on medical necessity alone carries none. Send them where you have them: Patient Access serves a member their own authorization amounts, and Provider Access and Payer-to-Payer drop them the same way they drop claim amounts.
-- `last_updated` does not become `meta.lastUpdated` — FHIR reserves that for the storing server, so Payerbox stamps the ingestion time. Send it anyway: it is collected for the Provenance record, not published today.
-- A home-care authorization is approved as a schedule — how many hours, on which days — which a line's unit count cannot express. That belongs in `process_note_`. Fill the slots in order; a note is published as written and never parsed.
+- `last_updated` does not become `meta.lastUpdated`. FHIR reserves that for the storing server, so Payerbox stamps the ingestion time. Send it anyway: it is collected for the Provenance record, not published today.
+- A home-care authorization is approved as a schedule: how many hours, on which days. A line's unit count cannot express that, so it goes in `process_note_`. Fill the slots in order. A note is published as written and never parsed.
 
 ## prior_auth_lines
 
@@ -140,7 +140,7 @@ Send these columns only where what was authorized differs from what was requeste
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `authorized_service_code` | If different from requested | the code actually authorized, with `authorized_service_code_system` | `99213` |
-| `authorized_service_code_system` | If `authorized_service_code` | **not the same list as `service_code_system`** — see the note below | |
+| `authorized_service_code_system` | If `authorized_service_code` | **not the same list as `service_code_system`**; see the note below | |
 | `authorized_service_code_range_end` | If a range was authorized | the last code in the authorized range; `authorized_service_code` is then the first | |
 | `authorized_quantity_value` | If different from requested | decimal; units, visits or days authorized | `8` |
 | `authorized_quantity_unit` | If `authorized_quantity_value` | free text, unbound, as in `quantity_unit` | `visits` |
@@ -166,11 +166,11 @@ Send these columns only where what was authorized differs from what was requeste
 | `denial_reason_system` | If RARC | as on the authorization row | |
 | `denial_reason_text` | If denied or reduced | free text; the reason as the member reads it | `Requested visit count exceeds policy limit` |
 
-- A line is identified by `service_code` or by `revenue_code`. A revenue code cannot go in `service_code` — its binding is CPT, HCPCS and HIPPS — so send it in `revenue_code` and leave `service_code` empty. Facility authorizations in behavioral health, inpatient, skilled nursing and rehabilitation routinely carry only a revenue code.
+- A line is identified by `service_code` or by `revenue_code`. A revenue code cannot go in `service_code`, whose binding is CPT, HCPCS and HIPPS. Send it in `revenue_code` and leave `service_code` empty. Facility authorizations in behavioral health, inpatient, skilled nursing and rehabilitation routinely carry only a revenue code.
 - `service_description` is what carries meaning when the line has no procedure code. Send it on every line identified by `revenue_code` or `service_category_code`.
 - `service_category_code` comes from the X12 service type code list, the same list a 278 carries. Send the code; Payerbox stamps the system PDex requires.
 - The authorized columns are how a modified approval is expressed: what the provider asked for stays in `service_code` and `quantity_value`, and what the payer granted goes in `authorized_service_code` and `authorized_quantity_value`. Twelve visits requested and eight approved leaves both numbers on the line, and the member sees both.
-- The requested and authorized columns bind to different code lists. Send either spelling of HCPCS — Payerbox translates. CPT works in both; the authorized list also takes X12 1365, ICD-9-CM, ICD-10-PCS and NDC. HIPPS is accepted only as requested, so express a HIPPS change through `authorized_quantity_value`.
+- The requested and authorized columns bind to different code lists. Send either spelling of HCPCS; Payerbox translates. CPT works in both, and the authorized list also takes X12 1365, ICD-9-CM, ICD-10-PCS and NDC. HIPPS is accepted only as requested, so express a HIPPS change through `authorized_quantity_value`.
 - PDex allows authorized detail this contract gives no column for: procedure modifiers, unit price, revenue code, nursing-home level of care, the EPSDT indicator. The full set is in the [itemAuthorizedDetail](https://hl7.org/fhir/us/davinci-pas/STU2.1/StructureDefinition-extension-itemAuthorizedDetail.html) extension.
 - A review action is carried on an adjudication entry, and PDex requires every entry to state a unit count, a denial reason or an amount. A line with none of them cannot carry a review action. This is most often a pending line: send `review_action_code` there only when the line also carries `allowed_units`, `consumed_units`, a denial reason or an amount, and otherwise let `outcome` on the authorization report that the request is still in processing.
 - `allowed_units` and `consumed_units` are the utilization pair: what was granted, and how much of it is used. They are the only way a unit-limited authorization says how much is left, so send `consumed_units` whenever your system tracks it.
@@ -188,10 +188,10 @@ prior_auth_documents.csv Data template with example rows
 |---|---|---|---|
 | `prior_auth_record_id` | Yes | the authorization's `record_id` | `PA-0001` |
 | `document_record_id` | Yes | the document's `record_id` in `documents` | `DOC-0001` |
-| `line_number` | If the document supports one line | that line's `line_number`; blank when the document supports the whole authorization. Carried but not yet published — every link currently reaches the authorization as a whole | `1` |
+| `line_number` | If the document supports one line | that line's `line_number`; blank when the document supports the whole authorization. carried but not yet published; every link currently reaches the authorization as a whole | `1` |
 | `category_code` | If not an attachment | `info`, `material`, `related`, `other` and the rest of the claim information categories [claim-informationcategory](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/claim-informationcategory%7C4.0.1) (`attachment` assumed when empty) | `material` |
 
-- A `document_record_id` is not checked against `documents` at ingest — separate feeds, no ordering — so the link resolves once the document arrives, and dangles if it never does. Deliver both in the same window.
+- A `document_record_id` is not checked against `documents` at ingest: they are separate feeds with no ordering. The link resolves once the document arrives, and dangles if it never does. Deliver both in the same window.
 - One document can support several authorizations, and one authorization can have many documents. Send a row per pair.
 - Links have no `is_deleted`. They are replaced with the authorization, and retracting the authorization retracts them. Retracting the document itself is done in `documents`.
 - Documents are what the provider submitted, not what the payer wrote. A denial letter the plan issued is not a supporting document and does not belong here.
