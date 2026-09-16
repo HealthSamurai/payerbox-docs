@@ -6,6 +6,15 @@ When combined with [DTR](dtr/README.md) and [PAS](pas.md), CRD ensures providers
 
 Payerbox implements Da Vinci CRD STU 2.1.0. See [Compliance / CMS-0057](../compliance/cms-0057.md) for the regulatory context.
 
+## What Payerbox covers
+
+- **Four CRD hooks** — `order-sign`, `order-select`, `order-dispatch` and `appointment-book`, exposed as CDS Hooks 2.0 services with SMART Backend Services authorization.
+- **Hook context validated before it is used** — context and prefetch resources are checked against the FHIR profiles, and references the EHR did not send are fetched from its own FHIR server and validated with the rest.
+- **IG-conformant determinations** — the Decision Service's answers are returned as `ext-coverage-information` system actions the EHR applies automatically, including the assertion CRD 2.1.0 requires when coverage cannot be determined.
+- **The DTR handoff** — when documentation is required, the questionnaire's canonical URL travels in the assertion, so the EHR launches DTR itself.
+- **Operator controls** — which hooks are advertised, which HTTP headers are mandatory, and how strict validation is, all per deployment.
+- **No coverage rules of our own** — medical policy, formulary tiers, network status and member benefits stay in the payer's Decision Service.
+
 ## How CDS Hooks work in CRD
 
 CRD uses [CDS Hooks 2.0](https://cds-hooks.hl7.org/2.0/) to invoke Payerbox at clinically meaningful workflow events. All hooks follow the same processing pipeline:

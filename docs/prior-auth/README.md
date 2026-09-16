@@ -7,7 +7,7 @@ Da Vinci electronic Prior Authorization stack. [CMS-0057-F](../compliance/cms-00
 | Page | IG | Role |
 |---|---|---|
 | [CRD](crd.md) | Da Vinci CRD | Discover whether prior authorization is required at the point of order |
-| [DTR](dtr/README.md) | Da Vinci DTR | Collect required documentation via questionnaires driven by CQL |
+| [DTR](dtr/README.md) | Da Vinci DTR | Collect required documentation through questionnaires with FHIRPath-driven prefill |
 | [PAS](pas.md) | Da Vinci PAS | Submit the prior authorization request and receive the response |
 
 The three IGs compose: CRD identifies the rule, DTR collects the evidence, PAS submits the request.
