@@ -102,7 +102,6 @@ prior_auths.csv Data template with example rows
 - Leave `auth_period_end` blank when the authorization ends on a unit or visit allowance rather than a date. `allowed_units` on the line then says when it is exhausted. Both may be present.
 - `denial_reason_codes` takes CARC and RARC codes only, so a payer-defined code cannot go there. Put the wording in `denial_reason_text`; both are published.
 - The amounts are optional; an authorization decided on medical necessity alone carries none. Send them where you have them.
-- `last_updated` is your own record of when the authorization changed at source. Send it even though Payerbox timestamps ingestion itself.
 - A home-care authorization is approved as a schedule: how many hours, on which days. A line's unit count cannot express that, so it goes in `process_note_`. Fill the slots in order. A note is published as written and never parsed.
 
 ## prior_auth_lines
@@ -170,7 +169,7 @@ Send these columns only where what was authorized differs from what was requeste
 - `service_category_code` comes from the X12 service type code list, the same list a 278 carries. Send the code; Payerbox adds the system.
 - The authorized columns are how a modified approval is expressed: what the provider asked for stays in `service_code` and `quantity_value`, and what the payer granted goes in `authorized_service_code` and `authorized_quantity_value`. Twelve visits requested and eight approved leaves both numbers on the line, and the member sees both.
 - The requested and authorized columns bind to different code lists. Send either spelling of HCPCS; Payerbox translates. CPT works in both, and the authorized list also takes X12 1365, ICD-9-CM, ICD-10-PCS and NDC. HIPPS is accepted only as requested, so express a HIPPS change through `authorized_quantity_value`.
-- There is no column for procedure modifiers, unit price, revenue code, nursing-home level of care or the EPSDT indicator on an authorized line. Ask if you need one.
+- There is no column for procedure modifiers, unit price, revenue code, nursing-home level of care or the EPSDT indicator on an authorized line.
 - A line's review action needs a host, as the authorization's does: send `review_action_code` only where the line also carries `allowed_units`, `consumed_units`, a denial reason or an amount. A pending line with none of them lets `outcome` on the authorization report that the request is still in processing.
 - `allowed_units` and `consumed_units` are the utilization pair: what was granted, and how much of it is used. They are the only way a unit-limited authorization says how much is left, so send `consumed_units` whenever your system tracks it.
 - Amounts sit on the authorization, not the line: `submitted_amount` and `eligible_amount` on [`prior_auths`](#prior_auths). PDex allows them per line; this feed has no column for them.
