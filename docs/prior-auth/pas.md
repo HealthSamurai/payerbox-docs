@@ -6,6 +6,15 @@ When combined with [CRD](crd.md) and [DTR](dtr/README.md), PAS ensures authoriza
 
 Payerbox implements Da Vinci PAS STU 2.1.0. See [Compliance / CMS-0057](../compliance/cms-0057.md) for the regulatory context.
 
+## What Payerbox covers
+
+- **The three PAS operations** — `Claim/$submit`, `Claim/$inquire` and `$submit-attachment`, exposed as FHIR operations with SMART Backend Services authorization.
+- **Profile validation before anything is stored** — submissions are checked against the Da Vinci PAS profiles, strictly by default, with a lenient mode for onboarding environments.
+- **The full request lifecycle** — initial submissions, updates and cancellations, each with the 2.1.0 rules about what a change may do to an existing authorization.
+- **Forwarding to the payer's UM system** — asynchronous delivery with retries and reconciliation, through a conformant PAS delegate or the GuidingCare connector.
+- **Decisions delivered both ways** — pulled with `Claim/$inquire`, or pushed to a subscriber as the decision is recorded.
+- **Metrics out of the box** — the PAS IG's suggested metrics, computed from the stored FHIR data.
+
 ## Lifecycle
 
 PAS supports three operations forming a typical flow:
