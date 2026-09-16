@@ -70,6 +70,7 @@ With `Final = false` the `ClaimResponse` is left untouched — use it to stream 
 | 422 | Validation failure (missing required parameters, blank `TrackingId.value`, invalid structure, no matching Claim found) |
 | 422 | Finalized prior authorization — the Claim's latest `ClaimResponse` has `outcome = "complete"` (issue code `business-rule`) |
 | 422 | Attachment id collision — every attachment's `Content` resource `id` is already linked from the Claim's `supportingInfo` (issue code `duplicate`) |
+| 409 | The Claim could not be updated because another writer kept changing it. Payerbox retries the update a few times before giving up; the attachments themselves are already stored, and because their ids are reused, repeating the same call is safe |
 | 500 | Server error (content resource persistence or Claim update failed) |
 
 ## Example
