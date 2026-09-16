@@ -195,8 +195,7 @@ prior_auth_documents.csv Data template with example rows
 - One document can support several authorizations, and one authorization can have many documents. Send a row per pair.
 - Links have no `is_deleted`. They are replaced with the authorization, and retracting the authorization retracts them. Retracting the document itself is done in `documents`.
 - Documents are what the provider submitted, not what the payer wrote. A denial letter the plan issued is not a supporting document and does not belong here.
-- Narrative the payer wrote about the authorization itself goes in the `process_note_` columns on [`prior_auths`](#prior_auths), not here. Documents are what the provider submitted.
-- Documents are served through the same APIs as the authorization they support.
+- Narrative the payer wrote about the authorization itself goes in the `process_note_` columns on [`prior_auths`](#prior_auths), not here.
 - The link is per authorization, so a document store keyed only to the member cannot produce these rows. Those documents still travel in `documents` and are served as clinical documents, with nothing tying them to an authorization.
 - `documents` binds `type_code` to LOINC and the binding is required, so a document library typed by its own codes needs a crosswalk. It is short in practice: `11488-4` consult note, `18842-5` discharge summary, `96349-6` referral letter, `52036-1` home health prior authorization, `94118-7` medical records in response to authorization denial, and `34109-9` note for anything with no better match.
 
