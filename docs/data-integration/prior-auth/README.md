@@ -93,7 +93,7 @@ prior_auths.csv Data template with example rows
 | Partially approved | `active` | `partial` | the approved and the denied columns, per line |
 | Cancelled or withdrawn | `cancelled` | the value processing had reached | `queued` when no review had happened, `complete` when a decision was already on record |
 
-- An expired authorization is not a separate state: `status` stays `active` and the row keeps arriving until it leaves the history window.
+- An authorization that has run out of time stays `active`. `cancelled` means withdrawn, not lapsed. Keep sending the row for as long as History asks for it.
 - A partial approval is decided per line, so the authorization row carries `outcome` = `partial` and the reasons sit on the lines that were cut or refused. Send authorization-level denial columns only when the whole request was refused.
 - `claim_type` has no `pharmacy` value: drug authorizations are out of scope. Dental is `oral`, vision is `vision`. Blank reads as `professional`. It is not derived from the lines, so send `institutional` yourself for a facility authorization.
 - The provider columns take an NPI, or the id that provider is registered under in `practitioners` and `organizations`. A provider known only by a name cannot be published.
