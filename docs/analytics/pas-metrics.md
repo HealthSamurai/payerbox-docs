@@ -59,8 +59,8 @@ provider on the original claim.
 ## The package
 
 - **Download:**
-  [`io.healthsamurai.pas-metrics-0.1.8.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.8.tar.gz)
-- **Contents:** 27 SQL-on-FHIR resources - 11 `ViewDefinition`s and
+  [`io.healthsamurai.pas-metrics-0.1.9.tar.gz`](https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.9.tar.gz)
+- **Contents:** 26 SQL-on-FHIR resources - 10 `ViewDefinition`s and
   16 `Library` resources (6 source/model wrappers plus one per
   metric).
 - **Dependencies:** `hl7.fhir.r4.core` only. The package reads PAS
@@ -70,9 +70,10 @@ provider on the original claim.
 
 ## Install
 
-The package is a standard FHIR NPM package. Make the tarball
-reachable by the Aidbox process, then install it with
-`$fhir-package-install`:
+The package is a standard FHIR NPM package. `$fhir-package-install`
+takes the tarball's location, which can be the download URL itself -
+Aidbox fetches it directly, so there is nothing to download, mount or
+vendor first:
 
 ```http
 POST /fhir/$fhir-package-install
@@ -81,18 +82,44 @@ Content-Type: application/json
 {
   "resourceType": "Parameters",
   "parameter": [
-    {"name": "package", "valueString": "file:///path/to/io.healthsamurai.pas-metrics-0.1.8.tar.gz"}
+    {"name": "package", "valueString": "https://storage.googleapis.com/payerbox-public/io.healthsamurai.pas-metrics-0.1.9.tar.gz"}
   ]
 }
 ```
 
+The fetch is anonymous and happens from the Aidbox process, so this
+form needs the instance to reach the bucket. Where it cannot - an
+isolated or air-gapped deployment - download the tarball, put it where
+Aidbox can read it, and pass a `file:///path/to/io.healthsamurai.pas-metrics-0.1.9.tar.gz`
+location instead. Both forms take the same install path.
+
+Re-running either is safe: canonical resources upsert by URL, so
+installing the same version twice leaves one copy.
+
 Alternatively, serve it from a package registry and reference it by
-`io.healthsamurai.pas-metrics#0.1.8` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
+`io.healthsamurai.pas-metrics#0.1.9` in `BOX_BOOTSTRAP_FHIR_PACKAGES`
 or an init bundle. Note that `BOX_BOOTSTRAP_FHIR_PACKAGES` only
 installs into an empty package store - on a live instance use
 `$fhir-package-install`. See
 [FHIR packages](https://www.health-samurai.io/docs/aidbox/modules/fhir-package)
 in the Aidbox docs for the mechanics.
+
+### Large audit logs
+
+Query exchanges are stored in the `auditevent` table, which Payerbox
+shares with the platform audit log, so metrics 2 and 3 scan it directly.
+On a deployment with a large audit log, create the matching partial
+index once:
+
+```sql
+create index if not exists auditevent_pas_exchange_type
+  on auditevent (ts)
+  where resource @> '{"subtype":[{"system":"http://prior-auth.example.org/CodeSystem/pas-exchange-type"}]}'::jsonb;
+```
+
+The first `where` clause of the query is byte-identical to this
+predicate, which is what lets the partial index apply. Deployments that
+do not record inquiries do not need the index.
 
 ## Query the metrics
 
