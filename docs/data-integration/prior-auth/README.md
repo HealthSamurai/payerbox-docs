@@ -28,20 +28,13 @@ Prior authorization data often sits with a delegated utilization-management vend
 | Freshness | A new request is delivered within one business day of receipt, and a status change within one business day of the change. |
 | Delivery | One historical backfill, then deltas carrying only authorizations new or changed since your last successful load. An authorization is the unit of delivery: when it appears in a delta, send its row, all of its lines and all of its document links, and the previous sets are replaced. |
 | Keys | `record_id` is the authorization number the source system assigned, the one the provider and the member see. It stays stable as the authorization moves from pending to a decision: every later delivery is an update to the same record, not a new one. It must be unique across the whole feed, so numbering that restarts per plan is prefixed before delivery. |
-| References | Members, coverage, providers, locations and documents are keys into the other feeds, defined once there: `patient_identifier` from `patients`, `coverage_id` from `coverage`, `*_npi` from `practitioners` and `organizations`, `facility_id` from `locations`, `document_record_id` from `documents`. A provider named on an authorization must exist in those datasets even when out of network. |
+| References | Members, coverage, providers, locations and documents are keys into the other feeds, defined once there: `patient_identifier` from `patients`, `coverage_id` from `coverage`, every `*_npi` and `*_npis` column from `practitioners` and `organizations`, `facility_id` from `locations`, `document_record_id` from `documents`. A provider named on an authorization must exist in those datasets even when out of network. |
 | Codes | Send the code, not the description. Coded columns have a companion `_system` column; leave it blank to accept the default named in that column's row. Payerbox derives the label from its terminology service. The review, level-of-service and denial columns bind to licensed X12 code lists, and CPT and HCPCS are licensed too: hold the license for every code system you send. |
 | Multiple values | `;`-separated, positionally aligned across companion columns. **Aligned lists must be the same length**: the companion is read at each value's own position, so a short list leaves the values past its end without one. |
 | Dates | `date` columns are `YYYY-MM-DD`. `datetime` columns are ISO 8601 with a timezone offset. |
 | PHI | Authorizations carry protected health information. Delivery is encrypted in transit and at rest under the executed BAA. |
 
-PDex points the authorization's insurance at the [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html) profile. An authorization sends no coverage data of its own beyond `coverage_id`, but that reference reaches back into two other datasets, and a member missing any of it cannot have an authorization published:
-
-| Dataset | Columns that become required |
-|---|---|
-| [`coverage`](../uscdi/health-insurance.md#coverage) | the member id and the subscriber relationship, which HRex Coverage makes mandatory |
-| [`patients`](../uscdi/patient-demographics.md#patients) | `birth_date`, `last_name` **and** `first_name` — HRex Coverage's beneficiary targets HRex Patient Demographics, which makes all three mandatory |
-
-Each is recommended in its own feed and required for any member who has an authorization. Members who have none are unaffected.
+PDex points the authorization's insurance at the [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html) profile, whose beneficiary is in turn an HRex Patient. An authorization sends no coverage data of its own beyond `coverage_id`, and almost everything those two profiles demand is already required where it belongs — the member id and subscriber relationship in [`coverage`](../uscdi/health-insurance.md#coverage), the name in [`patients`](../uscdi/patient-demographics.md#name). The one exception is [`birth_date`](../uscdi/patient-demographics.md#demographics), recommended in the clinical feed and **required for any member who has an authorization**: a member missing it cannot have one published.
 
 ## prior_auths
 
