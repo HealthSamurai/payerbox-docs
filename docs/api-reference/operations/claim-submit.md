@@ -41,9 +41,9 @@ Under PAS 2.1.0 the update reuses the prior authorization's original `ClaimRespo
 
 An update is rejected once the prior authorization is denied, meaning every `ClaimResponse.item` carries a `reviewAction` extension with review action code `A3` (Not Certified) from `https://codesystem.x12.org/005010/306`. Items only partly `A3` do not block an update. Payerbox reads that extension both from `item.adjudication`, where the PAS IG places it, and from `item` itself, so a decision written back in either shape blocks the update.
 
-A cancel is the same request with certificationType `3` (Cancel), and its response has the same shape.
+A cancel is the same request carrying certificationType `3` (Cancel) from `https://codesystem.x12.org/005010/1322`, placed either on the `Claim` itself or on any item. Either placement cancels the whole authorization: Payerbox has no per-line cancellation, and the item-level `infoCancelledFlag` modifier extension is not read. A cancel is subject to the same denial rule as an update, so a cancel against a fully denied prior authorization is rejected.
 
-See [Update](#update) for the payloads.
+See [Update](#update) and [Cancel](#cancel) for the payloads.
 
 ## Auth
 
@@ -348,6 +348,117 @@ Accept: application/json
   ]
 }
 ```
+
+{% endtab %}
+{% endtabs %}
+
+### Cancel
+
+Withdraw an existing prior authorization. PAS carries no cancelled status: `Claim.status` is patterned to `active` in [`profile-claim-base`](https://hl7.org/fhir/us/davinci-pas/STU2.1/StructureDefinition-profile-claim-base.html) and every derived profile inherits it, so the withdrawal signal is `certificationType` `3` (Cancel) on an update request.
+
+{% tabs %}
+{% tab title="Cancel request" %}
+
+```http
+POST /fhir/Claim/$submit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "resourceType": "Bundle",
+  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-pas-request-bundle"] },
+  "type": "collection",
+  "identifier": { "system": "http://example.org/PATIENT_EVENT_TRACE_NUMBER", "value": "test-bundle-5" },
+  "timestamp": "2025-12-19T10:04:12.118000Z",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:3f1b0c7a-55d2-4a19-9f0e-5c1a2b8d7e33",
+      "resource": {
+        "resourceType": "Claim",
+        "id": "claim-1765385052118",
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-claim-update"] },
+        "identifier": [{ "system": "http://example.org/claim-id", "value": "claim-1765385052118" }],
+        "extension": [
+          { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-certificationType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1322", "code": "3", "display": "Cancel" }] } }
+        ],
+        "status": "active",
+        "type": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/claim-type", "code": "professional" }] },
+        "use": "preauthorization",
+        "patient": { "reference": "Patient/patient-1" },
+        "created": "2025-12-19T10:04:12.118Z",
+        "insurer": { "reference": "Organization/payer-org-1" },
+        "provider": { "reference": "Organization/requesting-org-1", "display": "Acme Care Clinic" },
+        "priority": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/processpriority", "code": "normal" }] },
+        "related": [
+          {
+            "claim": { "reference": "Claim/claim-1765213116210" },
+            "relationship": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/ex-relatedclaimrelationship", "code": "prior" }] }
+          }
+        ],
+        "insurance": [{ "sequence": 1, "focal": true, "coverage": { "reference": "Coverage/coverage-1" } }],
+        "item": [
+          {
+            "sequence": 1,
+            "extension": [
+              { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-serviceItemRequestType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1525", "code": "SC", "display": "Specialty Care Review" }] } },
+              { "url": "http://hl7.org/fhir/us/davinci-pas/StructureDefinition/extension-certificationType", "valueCodeableConcept": { "coding": [{ "system": "https://codesystem.x12.org/005010/1322", "code": "3", "display": "Cancel" }] } }
+            ],
+            "category": { "coding": [{ "system": "https://codesystem.x12.org/005010/1365", "code": "42", "display": "Home Health Care" }] },
+            "productOrService": { "coding": [{ "system": "http://www.ama-assn.org/go/cpt", "code": "99213", "display": "Established patient office visit" }] },
+            "locationCodeableConcept": { "coding": [{ "system": "https://www.cms.gov/Medicare/Coding/place-of-service-codes/Place_of_Service_Code_Set", "code": "11", "display": "Office" }] },
+            "servicedDate": "2025-12-22",
+            "quantity": { "value": 3 }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+The claim-level `certificationType` is what the PAS IG defines for cancelling a whole authorization. `profile-claim-update` requires at least one item, so the request still carries the lines it withdraws. Repeating code `3` on those items, as above, is what the IG's own [update example](https://hl7.org/fhir/us/davinci-pas/STU2.1/Claim-HomecareAuthorizationUpdateExample.html) shows for a cancelled line; Payerbox needs it in only one of the two places.
+
+{% endtab %}
+{% tab title="Cancel response" %}
+
+```json
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-pas-response-bundle"] },
+  "identifier": { "system": "http://example.org/PATIENT_EVENT_TRACE_NUMBER", "value": "test-bundle-5" },
+  "timestamp": "2025-12-19T10:04:12.902311Z",
+  "entry": [
+    {
+      "fullUrl": "<base>/fhir/ClaimResponse/c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd",
+      "resource": {
+        "resourceType": "ClaimResponse",
+        "id": "c0d73c37-12ee-4cde-bfc6-aa6ed216f4dd",
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-claimresponse"] },
+        "status": "active",
+        "type": { "coding": [{ "code": "professional", "system": "http://terminology.hl7.org/CodeSystem/claim-type" }] },
+        "use": "preauthorization",
+        "patient": { "reference": "Patient/patient-1" },
+        "insurer": { "reference": "Organization/payer-org-1" },
+        "request": { "reference": "Claim/claim-1765213116210" },
+        "created": "2025-12-17T13:34:24.316526Z",
+        "outcome": "queued",
+        "disposition": "Cancellation requested",
+        "item": [
+          {
+            "itemSequence": 1,
+            "adjudication": [
+              { "category": { "coding": [{ "code": "submitted", "system": "http://terminology.hl7.org/CodeSystem/adjudication" }] } }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Like an update, a cancel reuses the prior authorization's `ClaimResponse` rather than minting a new one, and leaves the original `Claim` untouched. `outcome` `queued` with `disposition` `Cancellation requested` is what Payerbox itself writes when no UM system handles the request. Where a UM system does handle it, the reused `ClaimResponse` comes back as it stood and the cancellation decision arrives through it later.
 
 {% endtab %}
 {% endtabs %}
