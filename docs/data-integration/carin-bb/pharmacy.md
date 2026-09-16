@@ -21,7 +21,7 @@ Both files carry every column from [Explanation of Benefit](explanation-of-benef
 
 One row per pharmacy claim.
 
-{% file src="../../assets/data-integration/claims_pharmacy.d8d6f730.csv" %}
+{% file src="../../assets/data-integration/claims_pharmacy.f2325e2f.csv" %}
 claims_pharmacy.csv Data template with example rows
 {% endfile %}
 

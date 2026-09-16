@@ -21,7 +21,7 @@ Both files carry every column from [Explanation of Benefit](explanation-of-benef
 
 One row per professional claim.
 
-{% file src="../../assets/data-integration/claims_professional.0111df8b.csv" %}
+{% file src="../../assets/data-integration/claims_professional.c1f88521.csv" %}
 claims_professional.csv Data template with example rows
 {% endfile %}
 

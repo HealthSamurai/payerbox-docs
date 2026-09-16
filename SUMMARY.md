@@ -89,6 +89,7 @@
     * [Professional NonClinician](data-integration/carin-bb/professional-nonclinician.md)
     * [Pharmacy](data-integration/carin-bb/pharmacy.md)
     * [Oral](data-integration/carin-bb/oral.md)
+  * [Prior Authorizations](data-integration/prior-auth/README.md)
   * [Drug Formulary](data-integration/drug-formulary/README.md)
     * [Payer Plans](data-integration/drug-formulary/payer-plans/README.md)
       * [Plan Identifiers](data-integration/drug-formulary/payer-plans/plan-identifiers.md)

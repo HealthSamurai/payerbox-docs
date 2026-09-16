@@ -21,7 +21,7 @@ The two templates below carry exactly these shared columns. Each claim-type page
 
 One row per adjudicated claim. The claim type and the profile are decided by which file the row is in, so there is no claim-type column: a row in `claims_pharmacy` becomes a Pharmacy ExplanationOfBenefit with `type` = `pharmacy` and `use` = `claim`.
 
-{% file src="../../assets/data-integration/claims.c41e8fab.csv" %}
+{% file src="../../assets/data-integration/claims.0473b5fc.csv" %}
 claims.csv Data template with example rows
 {% endfile %}
 
