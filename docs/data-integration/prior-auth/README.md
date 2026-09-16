@@ -87,8 +87,8 @@ prior_auths.csv Data template with example rows
 
 | State | `status` | `outcome` | Also required |
 |---|---|---|---|
-| Pending | `active` | `queued` | nothing beyond the request columns |
-| Approved | `active` | `complete` | `decision_date`, `auth_period_start`, and `allowed_units` on every line |
+| Pending | `active` | `queued` | nothing, unless you send `review_action_code` for a pended review — that needs `submitted_amount` with it |
+| Approved | `active` | `complete` | `decision_date`, `submitted_amount`, `auth_period_start`, and `allowed_units` on every line |
 | Denied | `active` | `complete` | `decision_date`, `denial_reason_codes`, `denial_reason_text` |
 | Partially approved | `active` | `partial` | the approved and the denied columns, per line |
 | Cancelled or withdrawn | `cancelled` | the value processing had reached | `queued` when no review had happened, `complete` when a decision was already on record |
