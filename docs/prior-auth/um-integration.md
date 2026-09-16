@@ -30,15 +30,7 @@ A UM system that speaks neither contract needs a new connector implementation.
 
 ## Delivery lifecycle
 
-One `Task` per Claim (`id = um-forward-<claim-id>`, `code = urn:prior-auth:um:task-code|um-forward`, `focus = Claim/<id>`) acts as the outbox and the delivery journal.
-
-| `Task.status` | Meaning |
-|---|---|
-| `requested` | Queued, due at the timestamp in the `next-retry-at` extension |
-| `in-progress` | Claimed by the worker; reclaimed automatically if the run dies |
-| `on-hold` | Ambiguous outcome, awaiting reconciliation (or parked for a human) |
-| `completed` | Decision persisted onto the `ClaimResponse` |
-| `failed` | Rejected or exhausted; `ClaimResponse.error[]` carries the reason |
+Delivery is asynchronous: a FHIR `Task` per Claim acts as the outbox and the delivery journal, so `$submit` latency never depends on the UM system. Its status tracks each attempt — queued, in flight, completed, held for reconciliation, or failed with the reason written to `ClaimResponse.error[]`.
 
 How a failed attempt is classified:
 
