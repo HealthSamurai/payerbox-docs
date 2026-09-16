@@ -13,7 +13,7 @@ CRD uses [CDS Hooks 2.0](https://cds-hooks.hl7.org/2.0/) to invoke Payerbox at c
 1. **Receive Hook Request** — EHR sends a CDS Hooks request (e.g., `order-sign`, `order-select`) with context data and prefetch resources.
 2. **Validate request structure** — request body validated against the CDS Hooks schema.
 3. **Validate FHIR resources** — `draftOrders` and `prefetch` resources validated against Aidbox. References missing from the request are fetched recursively from the EHR's `fhirServer` using `fhirAuthorization` and validated together with the rest.
-4. **Persist resources** — the whole validated set, including fetched resources, is stored in Aidbox (tagged as CRD hook context) for audit and later DTR use. Persistence is best-effort: a storage failure does not fail the hook.
+4. **Persist resources** — the whole validated set, including fetched resources, is stored in Aidbox for audit and later DTR use.
 5. **Resolve prefetch** — prefetch templates the EHR did not fulfill are resolved, and the resulting resources are merged into the request's prefetch map for the decision call.
 6. **Proxy to the Decision Service** — the enriched request is forwarded to the **Decision Service** (external to Payerbox), whose determinations Payerbox renders as informational Cards and coverage-information system actions.
 
@@ -81,11 +81,11 @@ The extension's sub-extensions:
 | `coverage` | Reference to the patient's `Coverage` | Taken from the order's `insurance[0]`, falling back to `prefetch.coverage`. If neither is available, no system action is emitted for that order. |
 | `covered` | `covered` \| `conditional` | `conditional` when the determination names missing information |
 | `pa-needed` | `auth-needed` \| `no-auth` | Omitted on the undetermined fallback (see below) |
-| `date` | Date of the assertion | Always present |
-| `coverage-assertion-id` | Unique id for this assertion | Always present |
 | `info-needed` | What is missing | Present iff `covered` is `conditional` |
 | `doc-needed` | `clinical` | Present when documentation or a questionnaire is required |
 | `questionnaire` | Canonical URL of the Questionnaire | Present when documentation must be collected via [DTR](dtr/README.md) |
+
+Every assertion also carries `date` and a unique `coverage-assertion-id`.
 
 The `questionnaire` sub-extension is the DTR launch mechanism: the EHR reads the canonical from the applied extension and launches DTR itself. CRD 2.1.0 retires launching DTR via a card link, so Payerbox does not return `type: "smart"` DTR launch links on cards.
 
@@ -93,7 +93,7 @@ Payerbox does not repeat an assertion the order already carries: when the draft 
 
 ### Undetermined coverage
 
-Da Vinci CRD 2.1.0 requires a coverage assertion on `order-sign`, `order-dispatch`, and `appointment-book` responses even when coverage cannot be determined. On these hooks, when the Decision Service fails to evaluate an order, Payerbox still returns a coverage-information system action with `covered` = `conditional`, `info-needed` = `OTH`, and a human-readable `reason` — and no `pa-needed` claim — alongside an explanatory card. On `order-select` only the explanatory card is returned.
+When the Decision Service cannot evaluate an order, `order-sign`, `order-dispatch` and `appointment-book` still return a coverage-information system action for it — `covered` = `conditional`, `info-needed` = `OTH`, a human-readable `reason`, and no `pa-needed` — alongside an explanatory card, because CRD 2.1.0 requires an assertion on these hooks. `order-select` returns the card only.
 
 ## Authentication
 

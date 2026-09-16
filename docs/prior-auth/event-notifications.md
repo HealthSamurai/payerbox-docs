@@ -65,24 +65,7 @@ A subscriber can instead create a standard FHIR R4B `Subscription` bound to the 
 
 ![Event notification chain: a FHIR write (create, update or delete) matches an AidboxSubscriptionTopic (trigger plus FHIRPath), which fans out to each Subscription on its rest-hook channel, which delivers to the subscriber's HTTPS endpoint.](../../assets/prior-auth/event-notifications.svg)
 
-### Delivery lifecycle
-
-A `Subscription` moves through a handshake before it delivers events:
-
-1. **`requested`** — the state a new `Subscription` is created in. Aidbox immediately POSTs a **handshake** notification (a bundle whose `SubscriptionStatus.type` is `handshake`) to the channel endpoint to validate it.
-2. **`active`** — the endpoint answered the handshake with an HTTP `2xx`. Only then does Aidbox begin delivering event notifications. A non-2xx leaves the subscription inactive.
-3. **`error` / `off`** — repeated delivery failures deactivate the subscription; it must be re-created or reset to resume.
-
-Each event notification is a `Bundle` containing a `SubscriptionStatus` resource (event metadata) followed by the triggering resource(s). If a heartbeat period is configured, Aidbox also sends periodic empty notifications during idle stretches so the subscriber can tell a quiet pipeline from a broken one.
-
-Create the resources below with admin credentials. In production they are usually provisioned from an init-bundle — see [Provisioning at deploy time](#provisioning-at-deploy-time).
-
-{% stepper %}
-{% step %}
-
-### Create the Subscription
-
-Create a standard FHIR R4B `Subscription` whose `criteria` is the topic `url` and whose `channel` is a rest-hook pointing at your endpoint. The R4B backport extensions select the payload content and an optional heartbeat.
+Create it with admin credentials, or provision it from an init-bundle (see [Provisioning at deploy time](#provisioning-at-deploy-time)). `criteria` is the topic's `url`, `channel` is a rest-hook pointing at your endpoint, and the R4B backport extensions select the payload content and an optional keep-alive heartbeat.
 
 {% code title="PUT /Subscription/pas-claimresponse-sub" %}
 ```json
@@ -112,33 +95,9 @@ Create a standard FHIR R4B `Subscription` whose `criteria` is the topic `url` an
 ```
 {% endcode %}
 
-| Field | Description |
-|---|---|
-| `criteria` (required) | The `AidboxSubscriptionTopic.url` to subscribe to. |
-| `channel.type` (required) | `rest-hook` — Aidbox POSTs each notification to the endpoint. |
-| `channel.endpoint` (required) | HTTPS URL that receives the notification bundle. Must answer the handshake with a `2xx`. |
-| `channel.payload` | MIME type of the delivered body, e.g. `application/fhir+json`. |
-| `channel.header` | Custom HTTP headers sent with every delivery — use for the subscriber's auth token. |
-| `backport-payload-content` | `full-resource` (whole resource), `id-only` (reference only), or `empty` (notification metadata only). |
-| `backport-heartbeat-period` | Seconds between empty keep-alive notifications during inactivity. Omit to disable. |
+A new `Subscription` starts in `requested` and delivers nothing until your endpoint answers Aidbox's handshake POST with a `2xx`; repeated delivery failures deactivate it again.
 
-{% hint style="warning" %}
-The endpoint must be reachable and return `2xx` to the handshake, or the subscription never leaves `requested` and no events are delivered.
-{% endhint %}
-
-{% endstep %}
-{% step %}
-
-### Verify
-
-On create, confirm the subscription reached `active` (`GET /Subscription/pas-claimresponse-sub` → `status`). Then trigger a matching write and confirm the bundle arrives at your endpoint — its first entry is a `SubscriptionStatus`, followed by the `ClaimResponse`.
-
-{% endstep %}
-{% endstepper %}
-
-### The notification bundle
-
-With `backport-payload-content: full-resource`, each delivery carries the complete triggering resource. For Prior Auth this is the `ClaimResponse` whose `reviewAction` extension conveys the decision (e.g. X12 `A1` = certified, `A3` = not certified, `A4` = pended — see [PAS](pas.md)). A subscriber that needs the full referenced context (Claim, Patient, Coverage) can resolve those references against the FHIR API, or use a [topic destination](#topic-destinations-recommended), which can ship them pre-resolved.
+Each delivery is a `Bundle` whose first entry is a `SubscriptionStatus`, followed by the triggering resource — for Prior Auth the `ClaimResponse` whose `reviewAction` extension conveys the decision (see [PAS](pas.md)). A subscriber that needs the full referenced context (Claim, Patient, Coverage) resolves those references against the FHIR API, or uses a [topic destination](#topic-destinations-recommended), which can ship them pre-resolved.
 
 A subscriber that triggers on `Claim` instead finds the `ClaimResponse` id in the `claim-response-reference` extension Payerbox adds to the stored `Claim` (see [Claim/$submit](../api-reference/operations/claim-submit.md#claimresponse-link)), so it correlates the pair without a separate lookup.
 
