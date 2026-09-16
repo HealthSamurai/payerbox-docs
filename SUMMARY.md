@@ -82,7 +82,7 @@
     * [Vital Signs](data-integration/uscdi/vital-signs.md)
     * [Clinical Tests](data-integration/uscdi/clinical-tests.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
-  * [Claims and Encounters](data-integration/carin-bb/README.md)
+  * [Claims](data-integration/carin-bb/README.md)
     * [Explanation of Benefit](data-integration/carin-bb/explanation-of-benefit.md)
     * [Inpatient Institutional](data-integration/carin-bb/inpatient-institutional.md)
     * [Outpatient Institutional](data-integration/carin-bb/outpatient-institutional.md)
