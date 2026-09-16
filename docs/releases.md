@@ -31,7 +31,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **Analytics**
 
-- The PAS metrics package is now published for download (`io.healthsamurai.pas-metrics` 0.1.6), together with an Aidbox Notebook that charts each metric. See [PAS Metrics](analytics/pas-metrics.md).
+- The PAS metrics package is now published for download (`io.healthsamurai.pas-metrics` 0.1.6). An Aidbox Notebook that charts each metric is published beside it. See [PAS Metrics](analytics/pas-metrics.md).
 
 ### FHIR App Portal [`2608`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
 
