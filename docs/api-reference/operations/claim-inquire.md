@@ -35,7 +35,7 @@ SMART Backend Services. Scope: `system/Claim.r system/ClaimResponse.r`. See [Aut
 
 `$inquire` is a read operation: by default it stores nothing and answers from the `ClaimResponse` already on file. Two deployment settings change that.
 
-**Inquiry recording.** With `PAS_PERSIST_INQUIRIES=true` every successful inquiry additionally stores one `AuditEvent` describing the exchange, so the query-based [PAS metrics](../../analytics/pas-metrics.md) have something to count. The record never appears in the response, and a failure to write it does not affect the response. See [Recording inquiry exchanges](../../prior-auth/pas.md#recording-inquiry-exchanges) for the record's shape.
+**Inquiry recording.** With `PAS_PERSIST_INQUIRIES=true` every successful inquiry additionally stores one `AuditEvent` describing the exchange, so the query-based [PAS metrics](../../analytics/pas-metrics.md) have something to count. The record never appears in the response, and a failure to write it does not affect the response. See [Recording inquiry exchanges](../../prior-auth/pas.md#recording-inquiry-exchanges) for the flag and what it stores.
 
 **Live status refresh.** When the payer's UM system is configured with `inquireRefresh`, an inquiry on a still-`queued` authorization queries that system for a fresh decision and persists whatever comes back, so a response can carry a decision that was not on file a moment earlier. Any failure falls through to the stored `ClaimResponse`. See [UM System Integration](../../prior-auth/um-integration.md#status-refresh-on-inquire).
 
