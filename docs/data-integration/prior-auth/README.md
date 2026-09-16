@@ -9,15 +9,16 @@ description: >-
 
 ## Datasets
 
-Built to [Da Vinci PDex STU 2.1.0](https://hl7.org/fhir/us/davinci-pdex/STU2.1/). An authorization becomes one ExplanationOfBenefit with `use` = `preauthorization`, not a Claim. Three files: the authorization and its decision, the items it covers, and the links from an authorization to the documents behind it.
+Built to [Da Vinci PDex STU 2.1.0](https://hl7.org/fhir/us/davinci-pdex/STU2.1/). An authorization becomes one ExplanationOfBenefit with `use` = `preauthorization`, not a Claim. Four files: the authorization and its decision, the items it covers, the links from an authorization to the documents behind it, and those documents with their files.
 
 | Dataset | PDex STU 2.1.0 target |
 |---|---|
 | [`prior_auths`](#prior_auths) | [PDex Prior Authorization](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-priorauthorization.html) |
 | [`prior_auth_lines`](#prior_auth_lines) | `ExplanationOfBenefit.item` of the same profile |
-| [`prior_auth_documents`](#prior_auth_documents) | `ExplanationOfBenefit.supportingInfo` of the same profile, pointing at the [US Core DocumentReference](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-documentreference.html) built from [`documents`](../uscdi/clinical-notes.md#documents) |
+| [`prior_auth_documents`](#prior_auth_documents) | `ExplanationOfBenefit.supportingInfo` of the same profile, pointing at a [US Core DocumentReference](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-documentreference.html) |
+| [`prior_auth_attachments`](#prior_auth_attachments) | [US Core DocumentReference](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-documentreference.html) |
 
-Prior authorization data often sits with a delegated utilization-management vendor rather than with the plan. Whoever holds it delivers this feed.
+Prior authorization data often sits with a delegated utilization-management vendor rather than with the plan. Whoever holds it delivers this feed, including the files providers submitted with their requests.
 
 ## Data conventions
 
@@ -26,9 +27,9 @@ Prior authorization data often sits with a delegated utilization-management vend
 | Scope | Medical prior authorizations in every state: pending, approved, denied, partially approved, cancelled. Drug prior authorizations are out of scope for the APIs this feed serves, so filter them out before delivery. |
 | History | Every authorization active now, plus every authorization whose status last changed within the past year. |
 | Freshness | A new request is delivered within one business day of receipt, and a status change within one business day of the change. |
-| Delivery | One historical backfill, then deltas carrying only authorizations new or changed since your last successful load. An authorization is the unit of delivery: when it appears in a delta, send its row, all of its lines and all of its document links, and the previous sets are replaced. |
+| Delivery | One historical backfill, then deltas carrying only authorizations new or changed since your last successful load. An authorization is the unit of delivery: when it appears in a delta, send its row, all of its lines and all of its document links, and the previous sets are replaced. Send a document in `prior_auth_attachments` when it is new or its file changed. |
 | Keys | `record_id` is the authorization number the source system assigned, the one the provider and the member see. It stays stable as the authorization moves from pending to a decision: every later delivery is an update to the same record, not a new one. It must be unique across the whole feed, so numbering that restarts per plan is prefixed before delivery. |
-| References | Members, coverage, providers, locations and documents are keys into the other feeds, defined once there: `patient_identifier` from `patients`, `coverage_id` from `coverage`, every `*_npi` and `*_npis` column from `practitioners` and `organizations`, `facility_id` from `locations`, `document_record_id` from `documents`. A provider named on an authorization must exist in those datasets even when out of network. |
+| References | Members, coverage, providers, locations and documents are keys into the other feeds, defined once there: `patient_identifier` from `patients`, `coverage_id` from `coverage`, every `*_npi` and `*_npis` column from `practitioners` and `organizations`, `facility_id` from `locations`. `document_record_id` names a document from `prior_auth_attachments` or from the clinical feed's `documents`. A provider named on an authorization must exist in those datasets even when out of network. |
 | Codes | Send the code, not the description. Coded columns have a companion `_system` column; leave it blank to accept the default named in that column's row. Payerbox derives the label from its terminology service. The review, level-of-service and denial columns bind to licensed X12 code lists, and CPT and HCPCS are licensed too: hold the license for every code system you send. |
 | Multiple values | `;`-separated, positionally aligned across companion columns. **Aligned lists must be the same length**: the companion is read at each value's own position, so a short list leaves the values past its end without one. |
 | Dates | `date` columns are `YYYY-MM-DD`. `datetime` columns are ISO 8601 with a timezone offset. |
@@ -176,23 +177,56 @@ Send these columns only where what was authorized differs from what was requeste
 
 ## prior_auth_documents
 
-One row per link between an authorization and a document behind it: the clinical notes, forms and letters a provider submitted with the request. The document itself travels in [`documents`](../uscdi/clinical-notes.md#documents), which carries the file; this row says which authorization it belongs to.
+One row per link between an authorization and a document behind it: the clinical notes, forms and letters a provider submitted with the request. The document itself travels in [`prior_auth_attachments`](#prior_auth_attachments) or in the clinical feed's [`documents`](../uscdi/clinical-notes.md#documents), with its file; this row says which authorization it belongs to.
 
-{% file src="../../assets/data-integration/prior_auth_documents.2b56aa04.csv" %}
+{% file src="../../assets/data-integration/prior_auth_documents.9ccb3e97.csv" %}
 prior_auth_documents.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `prior_auth_record_id` | Yes | the authorization's `record_id` | `PA-0001` |
-| `document_record_id` | Yes | the document's `record_id` in `documents` | `DOC-0001` |
+| `document_record_id` | Yes | the document's `record_id` in `prior_auth_attachments` or `documents` | `PA-DOC-0001` |
 | `line_number` | If the document supports one line | that line's `line_number`; blank when the document supports the whole authorization. carried but not yet published; every link currently reaches the authorization as a whole | `1` |
 | `category_code` | If not an attachment | `info`, `material`, `related`, `other` and the rest of the claim information categories [claim-informationcategory](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/claim-informationcategory%7C4.0.1) (`attachment` assumed when empty) | `material` |
 
-- A `document_record_id` is not checked against `documents` at ingest, so a link to a document that never arrives dangles. Deliver both in the same window.
+- An authorization is published only once every document it links to has arrived. A link to a document that never arrives holds the authorization back, so deliver them in the same window.
 - One document can support several authorizations, and one authorization can have many documents. Send a row per pair.
 - Documents are what the provider submitted. A denial letter the plan issued does not belong here.
 - The link is per authorization, so a document store keyed only to the member cannot produce these rows. Those documents still travel in `documents` and are served as clinical documents, with nothing tying them to an authorization.
-- `documents` takes LOINC `type_code` only, so a library typed by its own codes needs a crosswalk. It is short in practice: `11488-4` consult note, `18842-5` discharge summary, `96349-6` referral letter, `52036-1` home health prior authorization, `94118-7` medical records in response to authorization denial, and `34109-9` note for anything with no better match.
+
+## prior_auth_attachments
+
+One row per document behind an authorization, with the file itself in the delivery. The same columns as the clinical feed's [`documents`](../uscdi/clinical-notes.md#documents).
+
+```
+delivery-2026-09-16/
+  prior_auths.csv
+  prior_auth_lines.csv
+  prior_auth_documents.csv
+  prior_auth_attachments.csv
+  attachments/
+    PA-DOC-0001.pdf
+```
+
+{% file src="../../assets/data-integration/prior_auth_attachments.6ffb1d9b.csv" %}
+prior_auth_attachments.csv Data template with example rows
+{% endfile %}
+
+| Column | Required | Format / values | Example |
+|---|---|---|---|
+| `record_id` | Yes | your stable key for this document | `PA-DOC-0001` |
+| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `type_code` | Yes | LOINC document type [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `52036-1` |
+| `attachment_file` | Yes | path relative to the delivery root | `attachments/PA-DOC-0001.pdf` |
+| `document_date` | Recommended | datetime | `2026-03-02T09:05:00-05:00` |
+| `author_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
+| `encounter_id` | If applicable | `encounters` key | `ENC-9912` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- `record_id` is shared with the clinical feed's `documents`: the same `record_id` in either file is the same document. A document already sent there needs no row here. If your numbering can repeat the clinical feed's, prefix it before delivery.
+- A document whose file is not in the delivery is not published, and is reported back.
+- `type_code` takes LOINC only, so a library typed by its own codes needs a crosswalk. It is short in practice: `52036-1` home health prior authorization, `11488-4` consult note, `18842-5` discharge summary, `96349-6` referral letter, `94118-7` medical records in response to authorization denial, and `34109-9` note for anything with no better match.
+- Put no patient details in file or folder names.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
