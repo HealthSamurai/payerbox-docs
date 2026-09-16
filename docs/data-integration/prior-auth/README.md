@@ -174,7 +174,7 @@ Send these columns only where what was authorized differs from what was requeste
 - PDex allows authorized detail this contract gives no column for: procedure modifiers, unit price, revenue code, nursing-home level of care, the EPSDT indicator. The full set is in the [itemAuthorizedDetail](https://hl7.org/fhir/us/davinci-pas/STU2.1/StructureDefinition-extension-itemAuthorizedDetail.html) extension.
 - A review action is carried on an adjudication entry, and PDex requires every entry to state a unit count, a denial reason or an amount. A line with none of them cannot carry a review action. This is most often a pending line: send `review_action_code` there only when the line also carries `allowed_units`, `consumed_units`, a denial reason or an amount, and otherwise let `outcome` on the authorization report that the request is still in processing.
 - `allowed_units` and `consumed_units` are the utilization pair: what was granted, and how much of it is used. They are the only way a unit-limited authorization says how much is left, so send `consumed_units` whenever your system tracks it.
-- **Line-level amounts are not in this feed.** PDex accepts fourteen adjudication categories on an authorization line, but `prior_auth_lines.csv` carries no amount column and Payerbox reads none, so the amounts on [`prior_auths`](#prior_auths) are the only ones an authorization publishes. Say so if you need them per line and the columns will be added.
+- Amounts sit on the authorization, not the line: `submitted_amount` and `eligible_amount` on [`prior_auths`](#prior_auths). PDex allows them per line; this feed has no column for them.
 
 ## prior_auth_documents
 
