@@ -47,7 +47,7 @@ One row per decision on the Provider Access switch.
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error | |
 
-`opt-out` becomes `provision.type` = `deny`, `share` becomes `permit`. `captured_at` is `Consent.dateTime`, `effective_start` is `provision.period.start`, `signer_type` decides whether `performer` is the Patient or the RelatedPerson, and the category carries the PDex API purpose `provider-access`. The check the operation runs is [documented with the operation](../../api-reference/operations/provider-member-match.md#matching-behavior).
+`opt-out` becomes `provision.type` = `deny`, `share` becomes `permit`. `captured_at` is `Consent.dateTime`, `effective_start` is `provision.period.start`, `signer_type` decides whether `performer` is the Patient or the RelatedPerson. The rest of the profile is filled from plan configuration, not from the row: the two category codes (`IDSCL` and the PDex API purpose `provider-access`), your Organization as `organization` and as the `source` actor, `provision.action` = `disclose`, and `policyRule` = `cric`, the value the profile fixes. The check the operation runs is [documented with the operation](../../api-reference/operations/provider-member-match.md#matching-behavior).
 
 ## payer_to_payer_opt_ins
 
@@ -69,7 +69,7 @@ One row per decision on the Payer-to-Payer switch. One election covers previous 
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error; a withdrawal is a `withdraw` row | |
 
-An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision.period` from `effective_start` and `effective_end`, `sourceReference` to the signed form, and `policy.uri` from `scope`: `all` maps to `#sensitive`, `non-sensitive` to `#regular`. The names are the profile's: `#sensitive` is the wider grant. A `withdraw` row closes the election from `captured_at`.
+An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision.period` from `effective_start` and `effective_end`, `sourceReference` to the signed form, and `policy.uri` from `scope`: `all` maps to `#sensitive`, `non-sensitive` to `#regular`. The names are the profile's: `#sensitive` is the wider grant. Your Organization fills both required actors, `source` and `recipient`, and `provision.action` is `disclose`. A `withdraw` row closes the election from `captured_at`.
 
 ## previous_coverages
 
@@ -88,6 +88,6 @@ One row per previous or concurrent coverage the member names when opting in.
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts this row | |
 
-`relationship` is required by HRex Coverage and only the member can supply it. No coverage dates: the match runs on demographics and identifiers.
+`relationship` is required by HRex Coverage and only the member can supply it. `member_id` becomes both `subscriberId` and the `MB` identifier. No coverage dates: the match runs on demographics and identifiers.
 
 These resources are read by [Provider Access](../../interop-apis/provider-access.md) and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
