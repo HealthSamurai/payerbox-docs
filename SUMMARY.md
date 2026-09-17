@@ -69,4 +69,5 @@
     * [Allergies and Intolerances](data-integration/uscdi/allergies.md)
     * [Device](data-integration/uscdi/device.md)
   * [Provider Directory](data-integration/provider-directory/README.md)
+  * [Member Consent](data-integration/consent/README.md)
 * [Releases](releases.md)

@@ -34,3 +34,4 @@ graph LR
 |---|---|---|
 | [USCDI v3.1 Data](uscdi/README.md) | US Core 6.1.0 | 24 |
 | [Provider Directory](provider-directory/README.md) | PDex Plan-Net STU 1.2.0 | 4 |
+| [Member Consent](consent/README.md) | HRex STU 1.1.0, PDex STU 2.2.0 | 3 |
