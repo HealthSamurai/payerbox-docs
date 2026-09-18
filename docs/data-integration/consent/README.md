@@ -14,7 +14,7 @@ A member **opts out** of [Provider Access](../../interop-apis/provider-access.md
 | Dataset | Target profile |
 |---|---|
 | [`provider_access_opt_outs`](#provider_access_opt_outs) | [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.2/StructureDefinition-pdex-provider-consent.html), read by [`$provider-member-match`](../../api-reference/operations/provider-member-match.md) and by every Provider Access export |
-| [`payer_to_payer_opt_ins`](#payer_to_payer_opt_ins) | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), the opt-in Payer-to-Payer runs on |
+| [`payer_to_payer_opt_ins`](#payer_to_payer_opt_ins) | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), the member authorization used to build outbound Payer-to-Payer requests |
 | [`previous_coverages`](#previous_coverages) | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html): which payer to ask, and about whom |
 
 ## Data conventions
