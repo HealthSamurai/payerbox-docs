@@ -38,3 +38,4 @@ graph LR
 | [Claims](carin-bb/README.md) | CARIN Blue Button STU 2.1.0 | 10 |
 | [Prior Authorizations](prior-auth/README.md) | Da Vinci PDex STU 2.1.0 | 3 |
 | [Drug Formulary](drug-formulary/README.md) | PDex US Drug Formulary STU 2.1.0 | 16 |
+| [Member Consent](consent/README.md) | HRex STU 1.1.0, PDex STU 2.2.0 | 3 |

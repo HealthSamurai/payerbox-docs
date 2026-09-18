@@ -107,4 +107,5 @@
       * [Formulary Contacts](data-integration/drug-formulary/formulary-contacts.md)
     * [Formulary Drugs](data-integration/drug-formulary/formulary-drugs.md)
     * [Formulary Items](data-integration/drug-formulary/formulary-items.md)
+  * [Member Consent](data-integration/consent/README.md)
 * [Releases](releases.md)
