@@ -14,6 +14,7 @@ Administrators can:
 
 * **Review Apps** — Evaluate submitted apps and approve or reject them
 * **Manage Active Apps** — Monitor apps, view feedback, check sessions, deactivate if needed
+* **Configure MPF Publications** — On deployments with the MPF module, choose which contracts and plans are published to the Medicare Plan Finder (see [MPF Publications](mpf-publications.md))
 
 ## Review Submitted Apps
 

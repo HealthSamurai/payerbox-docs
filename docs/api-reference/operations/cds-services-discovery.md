@@ -16,7 +16,7 @@ GET <base>/cds-services
 
 ## Auth
 
-Discovery is unauthenticated per CDS Hooks spec — EHRs fetch the service list before configuring credentials. Hook invocations themselves require SMART Backend Services; see [Authentication](../authentication.md).
+Discovery requires the same client credentials as hook invocations — unauthenticated requests are rejected with `401`. See [Authentication](../authentication.md).
 
 ## Response Fields
 
@@ -38,6 +38,7 @@ Discovery is unauthenticated per CDS Hooks spec — EHRs fetch the service list 
 ```http
 GET /cds-services
 Accept: application/json
+Authorization: Bearer <access-token>
 ```
 
 {% endtab %}

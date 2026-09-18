@@ -6,6 +6,15 @@ When combined with [CRD](crd.md) and [DTR](dtr/README.md), PAS ensures authoriza
 
 Payerbox implements Da Vinci PAS STU 2.1.0. See [Compliance / CMS-0057](../compliance/cms-0057.md) for the regulatory context.
 
+## What Payerbox covers
+
+- **The three PAS operations** — `Claim/$submit`, `Claim/$inquire` and `$submit-attachment`, exposed as FHIR operations with SMART Backend Services authorization.
+- **Profile validation before anything is stored** — submissions are checked against the Da Vinci PAS profiles, strictly by default, with a lenient mode for onboarding environments.
+- **The full request lifecycle** — initial submissions, updates and cancellations, each with the 2.1.0 rules about what a change may do to an existing authorization.
+- **Forwarding to the payer's UM system** — asynchronous delivery with retries and reconciliation, through a conformant PAS delegate or the GuidingCare connector.
+- **Decisions delivered both ways** — pulled with `Claim/$inquire`, or pushed to a subscriber as the decision is recorded.
+- **Metrics out of the box** — the PAS IG's suggested metrics, computed from the stored FHIR data.
+
 ## Lifecycle
 
 PAS supports three operations forming a typical flow:
@@ -16,16 +25,18 @@ PAS supports three operations forming a typical flow:
 
 The Da Vinci PAS Request Bundle profile requires exactly one focal `Claim` per Bundle — the underlying X12 278 transaction carries one prior authorization per BHT. Submit multiple requests with multiple `Claim/$submit` calls.
 
+Changing or cancelling an authorization is another `Claim/$submit` call with a new `Claim` pointing at the previous one through `Claim.related`. Under PAS 2.1.0 it reuses the original `ClaimResponse` instead of creating a second one, and an update to an already denied authorization is rejected. See [Update flow](../api-reference/operations/claim-submit.md#update-flow).
+
 ## Authentication
 
 PAS uses **SMART Backend Services Authorization**. The payer admin provisions Client credentials per partner integration (EHR vendor, UM vendor, integrator). See [API Reference / Authentication](../api-reference/authentication.md) for the onboarding and token exchange flow.
 
 ## Example
 
-Submit a prior authorization:
+Submit a prior authorization. The payloads below are abbreviated to show the shape — elements the PAS profiles require (`Claim.identifier`, `Claim.item`, the MB-typed member identifier on `Patient`, entry `fullUrl`s, the referenced `Organization` resources, and more) are elided, so this exact Bundle would be rejected by [validation](#validation-strictness). For a complete request that passes strict validation, see [Claim/$submit](../api-reference/operations/claim-submit.md#initial-submit).
 
 {% tabs %}
-{% tab title="Request" %}
+{% tab title="Request (abbreviated)" %}
 
 ```http
 POST /fhir/Claim/$submit
@@ -36,6 +47,8 @@ Accept: application/json
   "resourceType": "Bundle",
   "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-pas-request-bundle"] },
   "type": "collection",
+  "identifier": { "system": "http://example.org/PATIENT_EVENT_TRACE_NUMBER", "value": "trace-0001" },
+  "timestamp": "2025-12-08T16:48:02Z",
   "entry": [
     { "resource": { "resourceType": "Claim", "id": "claim-1", "status": "active", "use": "preauthorization", "patient": { "reference": "Patient/patient-1" }, "insurer": { "reference": "Organization/payer-org-1" } } },
     { "resource": { "resourceType": "Patient", "id": "patient-1", "name": [{ "family": "Smith", "given": ["John"] }] } },
@@ -45,17 +58,21 @@ Accept: application/json
 ```
 
 {% endtab %}
-{% tab title="Response" %}
+{% tab title="Response (abbreviated)" %}
 
 ```json
 {
   "resourceType": "Bundle",
+  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pas/StructureDefinition/profile-pas-response-bundle"] },
   "type": "collection",
+  "identifier": { "system": "http://example.org/PATIENT_EVENT_TRACE_NUMBER", "value": "trace-0001" },
+  "timestamp": "2025-12-08T16:48:03Z",
   "entry": [
     {
+      "fullUrl": "<base>/fhir/ClaimResponse/62424909-3c59-4a09-be78-2032c4e081f5",
       "resource": {
         "resourceType": "ClaimResponse",
-        "id": "response-1",
+        "id": "62424909-3c59-4a09-be78-2032c4e081f5",
         "status": "active",
         "use": "preauthorization",
         "outcome": "queued",
@@ -65,6 +82,8 @@ Accept: application/json
   ]
 }
 ```
+
+The real response Bundle carries the `ClaimResponse` first, followed by the resources it references, each with an absolute `fullUrl` under the deployment's FHIR base URL.
 
 {% endtab %}
 {% endtabs %}
@@ -95,6 +114,14 @@ See [UM System Integration](um-integration.md) for the connectors, the delivery 
 
 Rather than polling `Claim/$inquire`, a downstream system can subscribe to decision events and be notified when a `ClaimResponse` is recorded. See [Event Notifications](event-notifications.md) for how to set up a FHIR topic-based subscription.
 
-## Metrics
+## Recording inquiry exchanges
 
-Payerbox ships with Da Vinci PAS Implementation Guide's suggested [PAS metrics](../analytics/pas-metrics.md) that are calculated directly from stored FHIR data. 
+`Claim/$inquire` is a read operation and stores nothing by default. Two of the [PAS metrics](../analytics/pas-metrics.md) — the query bucket of metric 2 and metric 3 — measure query exchanges, so they stay empty unless the deployment records them:
+
+```
+PAS_PERSIST_INQUIRIES=true
+```
+
+With the flag on, each successful `$inquire` additionally stores one small `AuditEvent` naming the inquiring provider and the `Claim` the inquiry resolved to. The record never appears in `$inquire` responses, and a failure to write it does not affect the response; unmatched inquiries are not recorded.
+
+Default (unset) — off.

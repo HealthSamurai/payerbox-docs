@@ -1,0 +1,4 @@
+record_id,patient_identifier,status,member_id,subscriber_id,relationship_code,coverage_type_code,payer_org_npi,group_number,group_name,plan_number,plan_name,period_start,period_end,is_deleted
+COV-0001,MRN-4471903,active,HSX9930012,HSX9930012,self,1,9999999979,GRP-4410,Acme Manufacturing,H6776-001,Gold PPO,2026-01-01,2026-12-31,
+COV-0002,MRN-3391077,active,HSX9930013,HSX9930012,spouse,1,9999999979,,,,,2026-01-01,2026-12-31,
+COV-0003,MRN-4471903,cancelled,HSX8820001,HSX8820001,self,,9999999979,,,,,2025-01-01,2025-12-31,

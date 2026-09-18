@@ -1,4 +1,5 @@
 redirects:
+  data-integration/uscdi/service-requests: data-integration/uscdi/procedures.md
   run-payerbox/maintain/event-notifications.md: prior-auth/event-notifications.md
   fhir-app-portal/developer-portal#register-a-smart-app: fhir-app-portal/smart-app.md#register-a-smart-app
   fhir-app-portal/developer-portal#test-your-app: fhir-app-portal/smart-app.md#test-your-app
@@ -12,3 +13,7 @@ redirects:
   data-integration/clinical/patient-demographics: data-integration/uscdi/patient-demographics.md
   data-integration/clinical/health-insurance: data-integration/uscdi/health-insurance.md
   data-integration/clinical/care-team: data-integration/uscdi/care-team.md
+  run-payerbox/provider-directory-pipeline/admin-ui: fhir-app-portal/mpf-publications.md
+  run-payerbox/provider-directory-pipeline/provider-directory-pipeline: run-payerbox/provider-directory-pipeline.md
+  data-integration/drug-formulary/plan-contacts: data-integration/drug-formulary/payer-plans/plan-contacts.md
+  data-integration/drug-formulary/coverage-areas: data-integration/drug-formulary/payer-plans/coverage-areas.md

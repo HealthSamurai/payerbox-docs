@@ -1,0 +1,7 @@
+claim_record_id,line_number,service_code,service_code_system,service_date_start,service_date_end,note_numbers,submitted_amount,eligible_amount,deductible_amount,copay_amount,benefit_amount,coinsurance_amount,noncovered_amount,paid_to_provider_amount,paid_to_patient_amount,paid_by_patient_amount,paid_by_patient_cash_amount,paid_by_patient_other_amount,member_liability_amount,discount_amount,prior_payer_paid_amount,drug_cost_amount
+CLM-0001,1,99214,http://www.ama-assn.org/go/cpt,2026-03-05,,1,250.00,137.00,0.00,0.00,137.00,0.00,0.00,137.00,,,,,0.00,113.00,,
+CLM-0001,2,80053,http://www.ama-assn.org/go/cpt,2026-03-05,,1,470.00,300.00,0.00,0.00,300.00,0.00,0.00,300.00,,,,,0.00,170.00,,
+CLM-0002,1,93000,http://www.ama-assn.org/go/cpt,2026-06-01,,1;2,480.00,0.00,,,0.00,,480.00,0.00,,,,,480.00,,,
+CLM-0003,1,99214,http://www.ama-assn.org/go/cpt,2026-05-12,,1,250.00,137.00,0.00,0.00,137.00,0.00,0.00,137.00,,,,,0.00,113.00,,
+CLM-0004,1,99214,http://www.ama-assn.org/go/cpt,2026-05-12,,1,250.00,137.00,47.00,0.00,90.00,0.00,0.00,90.00,,,,,47.00,113.00,,
+CLM-0005,1,E1130,https://www.cms.gov/Medicare/Coding/HCPCSReleaseCodeSets,2026-03-01,2026-03-31,,650.00,480.00,0.00,,480.00,,0.00,480.00,,,,,0.00,170.00,,

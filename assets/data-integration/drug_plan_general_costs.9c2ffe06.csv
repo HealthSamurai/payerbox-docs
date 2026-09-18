@@ -1,0 +1,5 @@
+drug_plan_id,cost_type,cost_type_system,group_size,amount,comment,is_deleted
+DP-DSNP,premium,,1,0.00,No monthly premium for members with full Medicaid,
+DP-DSNP,deductible,,1,0.00,,
+DP-ISNP,premium,,1,38.50,,
+DP-ISNP,deductible,,1,590.00,Applies to tiers 3 and above,

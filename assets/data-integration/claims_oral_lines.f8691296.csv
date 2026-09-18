@@ -1,0 +1,7 @@
+claim_record_id,line_number,service_code,service_code_system,modifier_codes,service_date_start,service_date_end,place_of_service,tooth_number,oral_cavity_area,tooth_surfaces,additional_tooth_numbers,quantity,diagnosis_sequences,benefit_payment_status,allowed_units,adjustment_reason_code,adjustment_reason_system,note_numbers,submitted_amount,eligible_amount,deductible_amount,copay_amount,benefit_amount,coinsurance_amount,noncovered_amount,paid_to_provider_amount,paid_to_patient_amount,paid_by_patient_amount,paid_by_patient_cash_amount,paid_by_patient_other_amount,member_liability_amount,discount_amount,prior_payer_paid_amount,drug_cost_amount
+CLM-OR-0001,1,D0120,,,2026-03-12,,11,,00,,,1,1,innetwork,1,,,,65.00,50.00,0.00,0.00,50.00,0.00,0.00,50.00,,0.00,,,0.00,15.00,,
+CLM-OR-0001,2,D1110,,,2026-03-12,,11,,00,,,1,1,innetwork,1,,,,120.00,90.00,0.00,0.00,90.00,0.00,0.00,90.00,,0.00,,,0.00,30.00,,
+CLM-OR-0002,1,D2392,,,2026-05-19,,11,19,,M;O,,1,1,innetwork,1,,,1,240.00,180.00,0.00,0.00,144.00,36.00,0.00,144.00,,36.00,,,36.00,60.00,,
+CLM-OR-0002,2,D0270,,,2026-05-19,,11,19,,,18;20,1,1,innetwork,1,,,,40.00,30.00,0.00,0.00,24.00,6.00,0.00,24.00,,6.00,,,6.00,10.00,,
+CLM-OR-0003,1,D5214,,,2026-07-08,2026-07-29,11,,02,,,1,,innetwork,1,,,1,1450.00,1100.00,50.00,0.00,525.00,525.00,0.00,525.00,,575.00,,,575.00,350.00,,
+CLM-OR-0004,1,D8080,,,2026-04-06,,11,,00,,,1,,innetwork,0,96,,1,4800.00,0.00,,,0.00,,4800.00,0.00,,,,,4800.00,,,

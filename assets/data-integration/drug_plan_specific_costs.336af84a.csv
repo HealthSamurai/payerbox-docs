@@ -1,0 +1,4 @@
+drug_plan_id,pharmacy_benefit_type,is_deleted
+DP-DSNP,1-month-in-retail,
+DP-DSNP,3-month-in-mail,
+DP-ISNP,1-month-in-retail,

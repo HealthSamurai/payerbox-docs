@@ -1,0 +1,9 @@
+claim_record_id,line_number,service_code,service_code_system,modifier_codes,service_date_start,service_date_end,place_of_service,quantity,diagnosis_sequences,benefit_payment_status,allowed_units,adjustment_reason_code,adjustment_reason_system,pickup_location,dropoff_location,transport_distance_miles,note_numbers,submitted_amount,eligible_amount,deductible_amount,copay_amount,benefit_amount,coinsurance_amount,noncovered_amount,paid_to_provider_amount,paid_to_patient_amount,paid_by_patient_amount,paid_by_patient_cash_amount,paid_by_patient_other_amount,member_liability_amount,discount_amount,prior_payer_paid_amount,drug_cost_amount
+CLM-PR-0001,1,99214,,25,2026-03-05,,11,1,1;2,innetwork,1,,,,,,1,250.00,137.00,0.00,25.00,112.00,0.00,0.00,112.00,,25.00,,,25.00,113.00,,
+CLM-PR-0001,2,80053,,,2026-03-05,,11,1,1,innetwork,1,,,,,,,47.00,30.00,0.00,0.00,30.00,0.00,0.00,30.00,,0.00,,,0.00,17.00,,
+CLM-PR-0002,1,A0428,https://www.cms.gov/Medicare/Coding/HCPCSReleaseCodeSets,,2026-06-09,,41,1,1,innetwork,1,,,Patient home; Anytown; NY 12345,Anytown Medical Group; Anytown; NY 12345,21,,450.00,350.00,0.00,0.00,350.00,0.00,0.00,350.00,,0.00,,,0.00,100.00,,
+CLM-PR-0002,2,A0428,https://www.cms.gov/Medicare/Coding/HCPCSReleaseCodeSets,,2026-06-09,,41,1,1,innetwork,1,,,Anytown Medical Group; Anytown; NY 12345,Patient home; Anytown; NY 12345,22,,450.00,350.00,0.00,0.00,350.00,0.00,0.00,350.00,,0.00,,,0.00,100.00,,
+CLM-PR-0002,3,A0425,https://www.cms.gov/Medicare/Coding/HCPCSReleaseCodeSets,,2026-06-09,,41,43,1,innetwork,43,,,,,,,430.00,301.00,0.00,0.00,301.00,0.00,0.00,301.00,,0.00,,,0.00,129.00,,
+CLM-PR-0003,1,97110,,GP,2026-05-06,,11,2,1,innetwork,2,,,,,,,120.00,64.00,0.00,0.00,64.00,0.00,0.00,64.00,,0.00,,,0.00,56.00,,
+CLM-PR-0003,2,97140,,GP,2026-05-06,,11,1,1,innetwork,0,97,,,,,1,80.00,0.00,,,0.00,,80.00,0.00,,0.00,,,0.00,,,
+CLM-PR-0004,1,,,,2026-01-14,,11,1,1,innetwork,1,,,,,,,110.00,85.00,0.00,0.00,85.00,0.00,0.00,85.00,,0.00,,,0.00,25.00,,
