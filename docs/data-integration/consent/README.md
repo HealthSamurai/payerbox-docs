@@ -69,7 +69,7 @@ One row per decision on the Payer-to-Payer switch. One election covers previous 
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error; a withdrawal is a `withdraw` row | |
 
-An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision.period` from `effective_start` and `effective_end`, `sourceReference` to the signed form, and `policy.uri` from `scope`: `all` maps to `#sensitive`, `non-sensitive` to `#regular`. The names are the profile's: `#sensitive` is the wider grant. Your Organization fills both required actors, `source` and `recipient`, and `provision.action` is `disclose`. A `withdraw` row closes the election from `captured_at`.
+An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision.period` from `effective_start` and `effective_end`, `sourceReference` to the signed form, and `policy.uri` from `scope`: `all` maps to `#sensitive`, `non-sensitive` to `#regular`. The names are the profile's: `#sensitive` is the wider grant. Both required actors are populated for each exchange: the previous or concurrent payer's Organization is `source`, and your Organization is `recipient`; `provision.action` is `disclose`. A `withdraw` row closes the election from `captured_at`.
 
 ## previous_coverages
 
@@ -82,7 +82,7 @@ One row per previous or concurrent coverage the member names when opting in.
 | `patient_identifier` | Yes | patient key from `patients` | `MRN-4471903` |
 | `payer_name` | Yes | as the member gives it, ideally as printed on the member ID card | `Anthem Blue Cross` |
 | `payer_id` | If known | the payer's identifier in the payer directory you use | `00060` |
-| `member_id` | If known | the member's ID with that payer | `XYZ123456789` |
+| `member_id` | Yes | the member's ID with that payer; required to build the HRex Coverage used for member match | `XYZ123456789` |
 | `relationship` | Yes | `self`, `spouse`, `child`, `other`; whether the coverage was in the member's own name [subscriber-relationship](https://terminology.hl7.org/CodeSystem-subscriber-relationship.html) | `self` |
 | `coverage_kind` | Yes | `previous`, `concurrent` | `previous` |
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
