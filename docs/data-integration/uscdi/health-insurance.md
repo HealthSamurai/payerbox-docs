@@ -18,7 +18,7 @@ description: >-
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
-{% file src="../../assets/data-integration/coverage.170a1241.csv" %}
+{% file src="../../assets/data-integration/coverage.846be928.csv" %}
 coverage.csv Data template with example rows
 {% endfile %}
 
@@ -36,11 +36,13 @@ coverage.csv Data template with example rows
 | `group_name` | If available | text | `Acme Manufacturing` |
 | `plan_number` | If available | text | `H6776-001` |
 | `plan_name` | If available | text | `Gold PPO` |
+| `network_id` | If available | text | `NET-GOLD-NY` |
 | `period_start` | Recommended | date | `2026-01-01` |
 | `period_end` | Recommended | date | `2026-12-31` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
 - Send at least one of `member_id` and `subscriber_id`. US Core requires a member id or a subscriber id on every Coverage, so a row with neither cannot become one.
 - A group or plan name travels with its number: send `group_number` with `group_name`, and `plan_number` with `plan_name`.
+- `network_id` is the provider network this coverage is under, published to `Coverage.network`. It is a linking key, not a name: send the same identifier you use for that network in your [provider directory](../provider-directory/README.md) delivery, so a member’s coverage and that network’s providers can be joined. It is stored as sent — we do not resolve it against any registry.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), [Payer-to-Payer](../../interop-apis/payer-to-payer.md), and [Prior Auth](../../prior-auth/README.md).
