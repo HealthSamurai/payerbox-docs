@@ -56,7 +56,7 @@ services:
       retries: 5
 
   minio:
-    image: minio/minio
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
     restart: unless-stopped
     command: server /data --console-address ":9001"
     ports:
@@ -75,7 +75,7 @@ services:
       start_period: 5s
 
   minio-init:
-    image: minio/mc
+    image: pgsty/mc:RELEASE.2026-09-16T00-00-00Z
     depends_on:
       minio:
         condition: service_healthy
@@ -119,7 +119,7 @@ services:
       BOX_FHIR_SEARCH_COMPARISONS: "true"
       BOX_FHIR_CREATEDAT_URL: https://aidbox.app/ex/createdAt
       BOX_SEARCH_INCLUDE_CONFORMANT: "true"
-      BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.terminology.r4#6.4.0:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.1.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.0.1:hl7.fhir.us.davinci-pdex-plan-net#1.2.0:hl7.fhir.us.davinci-cdex#2.1.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0"
+      BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.terminology.r4#6.4.0:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.1.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.1.0:hl7.fhir.us.davinci-pdex-plan-net#1.2.0:hl7.fhir.us.davinci-cdex#2.1.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0"
       BOX_FHIR_NPM_PACKAGE_REGISTRY: https://fs.get-ig.org/pkgs
       BOX_FHIR_BULK_STORAGE_PROVIDER: aws
       BOX_FHIR_BULK_STORAGE_AWS_ACCOUNT: minio
