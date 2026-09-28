@@ -45,10 +45,6 @@ A cancel is the same request carrying certificationType `3` (Cancel) from `https
 
 See [Update](#update) and [Cancel](#cancel) for the payloads.
 
-## Auth
-
-SMART Backend Services. Scope: `system/Claim.cu system/ClaimResponse.r`. See [Authentication](../authentication.md).
-
 ## Parameters
 
 | Direction | Parameter | Type | Cardinality | Description |
