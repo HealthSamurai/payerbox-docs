@@ -19,14 +19,14 @@ description: >-
 
 One row per procedure performed. This dataset carries the **Procedures** element of the class.
 
-{% file src="../../assets/data-integration/procedures.f8a0f753.csv" %}
+{% file src="../../assets/data-integration/procedures.ce913637.csv" %}
 procedures.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this procedure | `PRO-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `preparation`, `in-progress`, `on-hold`, `stopped`, `completed`, `not-done`, `entered-in-error`, `unknown` [event-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/event-status%7C4.0.1) | `completed` |
 | `code` | Yes | CPT, HCPCS, ICD-10-PCS, or SNOMED CT code, with `code_system`; CPT if omitted [US Core Procedure Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-procedure-code) | `80146002` appendectomy |
 | `performed_start` | Recommended | date or datetime | `2026-04-18` |
@@ -44,14 +44,14 @@ procedures.csv Data template with example rows
 
 One row per requested service: a referral, an order, or an SDOH intervention. This dataset carries the **Reason for Referral** and **SDOH Interventions** elements of the class; the services actually performed go in `procedures`.
 
-{% file src="../../assets/data-integration/service_requests.9d58ea47.csv" %}
+{% file src="../../assets/data-integration/service_requests.e257e917.csv" %}
 service_requests.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this request; `procedures` reference it | `SR-2201` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `draft`, `active`, `on-hold`, `completed`, `revoked`, `entered-in-error`, `unknown` [request-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-status%7C4.0.1) | `active` |
 | `intent` | Yes | `proposal`, `plan`, `directive`, `order`, `original-order`, `reflex-order`, `filler-order`, `instance-order`, `option` [request-intent](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/request-intent%7C4.0.1) | `order` |
 | `code` | Yes | CPT, HCPCS, SNOMED CT, or LOINC code, with `code_system`; CPT if omitted [US Core Procedure Codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-procedure-code) | `103696004` patient referral to specialist |

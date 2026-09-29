@@ -1,0 +1,4 @@
+record_id,patient_identifier,narrative_text,status,intent,period_start,period_end,is_deleted
+CP-0001,MBR0000012,Assessment: … Plan: …,active,plan,2026-04-18,,
+CP-0002,MBR0000015,Assessment: … Plan: …,completed,plan,2025-01-06,2025-12-31,
+CP-0003,MBR0000014,Assessment: … Plan: …,draft,proposal,,,

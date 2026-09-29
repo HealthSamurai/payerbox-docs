@@ -19,14 +19,14 @@ description: >-
 
 One row per medication order: the prescriber's intent, with drug, dose, and indication. **For most payers this file is sparse or empty** — orders live in EHR and e-prescribing systems, not in claims. If your medication data comes from pharmacy claims, it belongs in [`medication_dispenses`](#medication-dispenses); populate this file only with order-level data you actually hold.
 
-{% file src="../../assets/data-integration/medications.7b8e5544.csv" %}
+{% file src="../../assets/data-integration/medications.1690d7e0.csv" %}
 medications.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this order; `medication_dispenses` reference it | `MED-77120` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `active`, `on-hold`, `cancelled`, `completed`, `entered-in-error`, `stopped`, `draft`, `unknown` [medicationrequest-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/medicationrequest-status%7C4.0.1) | `active` |
 | `intent` | Yes | `proposal`, `plan`, `order`, `original-order`, `reflex-order`, `filler-order`, `instance-order`, `option` [medicationrequest-intent](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/medicationrequest-intent%7C4.0.1) | `order` |
 | `medication_code` | Yes | RxNorm drug-level code, with `medication_system` (RxNorm assumed when empty) [Medication Clinical Drug](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1010.4/expansion) | `310965` ibuprofen 200 MG oral tablet |
@@ -55,14 +55,14 @@ medications.csv Data template with example rows
 
 One row per fill: what the pharmacy actually handed over. **For a payer this is usually the primary medication file** — pharmacy claims are fill records. It carries the USCDI Medications (Fill Status) element and stays distinct from the order in [`medications`](#medications).
 
-{% file src="../../assets/data-integration/medication_dispenses.972672c6.csv" %}
+{% file src="../../assets/data-integration/medication_dispenses.a422d71d.csv" %}
 medication_dispenses.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this fill | `MD-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `preparation`, `in-progress`, `cancelled`, `on-hold`, `completed`, `entered-in-error`, `stopped`, `declined`, `unknown` [medicationdispense-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/medicationdispense-status%7C4.0.1) | `completed` |
 | `medication_code` | Yes | RxNorm drug-level code, with `medication_system` (RxNorm assumed when empty) [Medication Clinical Drug](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1010.4/expansion) | `310965` ibuprofen 200 MG oral tablet |
 | `type_code` | If available | fill type: `FF` first fill, `RF` refill, `EM` emergency supply, `UD` unit dose [ActPharmacySupplyType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-ActPharmacySupplyType) | `RF` |

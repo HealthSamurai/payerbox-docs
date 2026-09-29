@@ -18,14 +18,14 @@ description: >-
 
 One row per implanted device per patient. The USCDI data class covers implantable devices only — other equipment does not belong in this file.
 
-{% file src="../../assets/data-integration/devices.80ff669f.csv" %}
+{% file src="../../assets/data-integration/devices.edf7750c.csv" %}
 devices.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this device row | `DV-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `udi_device_identifier` | Yes | DI portion of the UDI | `00643169007222` |
 | `udi_carrier_hrf` | Recommended | full UDI barcode string, human-readable form | `(01)00643169007222(17)…` |
 | `device_type_code` | Yes | SNOMED CT code, with `device_type_system` [device-kind](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/device-kind%7C4.0.1) | `468063009` Coated femoral stem prosthesis, modular |

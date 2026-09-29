@@ -18,14 +18,14 @@ description: >-
 
 One row per substance per patient. A substance with several reaction manifestations stays one row: list the manifestation codes `;`-separated.
 
-{% file src="../../assets/data-integration/allergies.a73e091b.csv" %}
+{% file src="../../assets/data-integration/allergies.3b547ffc.csv" %}
 allergies.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this allergy | `AL-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `substance_code` | Yes | RxNorm ingredient or SNOMED CT code, with `substance_system` (RxNorm assumed when empty) [Common substances for allergy and intolerance documentation including refutations](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http%3A%2F%2Fcts.nlm.nih.gov%2Ffhir%2FValueSet%2F2.16.840.1.113762.1.4.1186.8) | `7980` penicillin G |
 | `clinical_status` | Yes, unless `verification_status` is `entered-in-error` | `active`, `inactive`, `resolved` [allergyintolerance-clinical](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-clinical%7C4.0.1) | `active` |
 | `verification_status` | Recommended | `unconfirmed`, `confirmed`, `refuted`, `entered-in-error` [allergyintolerance-verification](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/allergyintolerance-verification%7C4.0.1) | `confirmed` |
