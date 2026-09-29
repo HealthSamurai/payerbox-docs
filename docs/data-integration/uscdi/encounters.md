@@ -19,7 +19,7 @@ description: >-
 
 One row per encounter. Several diagnoses or participants stay one row: list the keys `;`-separated.
 
-{% file src="../../assets/data-integration/encounters.e3840f7b.csv" %}
+{% file src="../../assets/data-integration/encounters.2a8fe81e.csv" %}
 encounters.csv Data template with example rows
 {% endfile %}
 
@@ -27,7 +27,7 @@ encounters.csv Data template with example rows
 |---|---|---|---|
 | `encounter_id` | Yes | your stable key for this encounter; other datasets reference it | `ENC-9912` |
 | `encounter_id_system` | Yes | URI of the identifier system; a URL you control or an OID | `urn:oid:2.16.840.1.113883.3.99.2` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `planned`, `arrived`, `triaged`, `in-progress`, `onleave`, `finished`, `cancelled`, `entered-in-error`, `unknown` [encounter-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/encounter-status%7C4.0.1) | `finished` |
 | `class` | Yes | `AMB` ambulatory, `IMP` inpatient, `EMER` emergency, `OBSENC` observation [v3-ActEncounterCode](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-ActEncounterCode) | `AMB` |
 | `type_code` | Yes | CPT or SNOMED CT code(s), `;`-separated, with `type_system`; CPT if omitted [US Core Encounter Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-encounter-type) | `99213` |

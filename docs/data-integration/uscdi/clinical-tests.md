@@ -18,14 +18,14 @@ description: >-
 
 One row per observation. This dataset carries every USCDI observation that is not a lab result, a vital sign or a social history row: non-lab test results, imaging findings, functional, disability and cognitive status, and SDOH screening answers.
 
-{% file src="../../assets/data-integration/clinical_observations.10560ba5.csv" %}
+{% file src="../../assets/data-integration/clinical_observations.56568f53.csv" %}
 clinical_observations.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this observation; panel members reference it | `CO-1200` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `category` | Yes | one of the [categories](#categories) below | `sdoh` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `loinc_code` | Yes | LOINC, with `loinc_system` | `76504-0` |

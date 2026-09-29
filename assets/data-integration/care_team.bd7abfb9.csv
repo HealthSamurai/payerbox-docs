@@ -1,0 +1,4 @@
+patient_identifier,member_npi,member_related_person_id,role_code,status,is_deleted
+MBR0000012,9999999995,,446050000,active,
+MBR0000012,,RP-3310,446050000,active,
+MBR0000015,9999999987,,446050000,inactive,

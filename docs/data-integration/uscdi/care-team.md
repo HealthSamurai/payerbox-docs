@@ -78,13 +78,13 @@ organizations.csv Data template with example rows
 
 One row per patient and team member.
 
-{% file src="../../assets/data-integration/care_team.48fb1225.csv" %}
+{% file src="../../assets/data-integration/care_team.bd7abfb9.csv" %}
 care_team.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `member_npi` | Yes, unless `member_related_person_id` is sent | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
 | `member_related_person_id` | Yes, unless `member_npi` is sent | `record_id` of the `related_persons` row, for non-clinicians | `RP-3310` |
 | `role_code` | Yes | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `446050000` primary care physician |

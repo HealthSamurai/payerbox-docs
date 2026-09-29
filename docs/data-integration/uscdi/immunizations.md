@@ -20,14 +20,14 @@ description: >-
 
 One row per administered (or refused) dose per patient. A member with three seasonal flu shots is three rows.
 
-{% file src="../../assets/data-integration/immunizations.83f9e53a.csv" %}
+{% file src="../../assets/data-integration/immunizations.c29b95e5.csv" %}
 immunizations.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this dose | `IM-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `completed`, `entered-in-error`, `not-done` [immunization-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status%7C4.0.1) | `completed` |
 | `status_reason_code` | If `not-done` | SNOMED CT or v3 ActReason code, with `status_reason_system` [immunization-status-reason](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/immunization-status-reason%7C4.0.1) | `PATOBJ` patient objection |
 | `vaccine_code` | Yes | CVX code, with `vaccine_system` (CVX assumed when empty) [CVX Vaccines Administered Vaccine Set](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/vaccine-code%7C4.0.1) | `140` influenza, seasonal, injectable, preservative free |

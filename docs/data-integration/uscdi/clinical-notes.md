@@ -33,14 +33,14 @@ delivery-2026-08-19/
 
 One row per note. The note itself is the file; this row is its index card.
 
-{% file src="../../assets/data-integration/documents.56055b45.csv" %}
+{% file src="../../assets/data-integration/documents.72db3d62.csv" %}
 documents.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this note | `DOC-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `type_code` | Yes | LOINC note type, e.g. `11488-4` consult, `18842-5` discharge summary, `34117-2` history and physical, `11506-3` progress note [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `11488-4` |
 | `attachment_file` | Yes | path relative to the delivery root | `attachments/DOC-0001.pdf` |
 | `document_date` | Recommended | datetime | `2026-04-18T10:00:00-04:00` |
@@ -55,14 +55,14 @@ documents.csv Data template with example rows
 
 One row per report. The individual results live in `labs` and `clinical_observations` and point back with `diagnostic_report_id`.
 
-{% file src="../../assets/data-integration/diagnostic_reports.596497e8.csv" %}
+{% file src="../../assets/data-integration/diagnostic_reports.58696d22.csv" %}
 diagnostic_reports.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this report; result rows reference it | `DR-771` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `report_kind` | Yes | `lab` or `note` | `lab` |
 | `status` | Yes | `registered`, `partial`, `preliminary`, `final`, `amended`, `corrected`, `appended`, `cancelled`, `entered-in-error`, `unknown` [diagnostic-report-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/diagnostic-report-status%7C4.0.1) | `final` |
 | `code` | Yes | LOINC, from the value set the `report_kind` profile binds, with `code_system` | `24323-8` lab, `39053-4` note |

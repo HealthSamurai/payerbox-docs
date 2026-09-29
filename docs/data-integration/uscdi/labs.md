@@ -18,14 +18,14 @@ description: >-
 
 One row per analyte result. A panel flattens: each member analyte is its own row, grouped back together by a shared `diagnostic_report_id`. The FHIR category is fixed to `laboratory` — non-lab test results belong in `clinical_observations`.
 
-{% file src="../../assets/data-integration/labs.14af2063.csv" %}
+{% file src="../../assets/data-integration/labs.879039c2.csv" %}
 labs.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this result | `LAB-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `loinc_code` | Yes | LOINC [us-core-laboratory-test-codes](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-laboratory-test-codes) | `2339-0` glucose [mass/volume] in blood |
 | `value_quantity` | If numeric | decimal | `104` |

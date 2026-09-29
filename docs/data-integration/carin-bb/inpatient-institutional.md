@@ -21,7 +21,7 @@ Both files carry every column from [Explanation of Benefit](explanation-of-benef
 
 One row per inpatient claim.
 
-{% file src="../../assets/data-integration/claims_inpatient.009f0d13.csv" %}
+{% file src="../../assets/data-integration/claims_inpatient.a59e86b4.csv" %}
 claims_inpatient.csv Data template with example rows
 {% endfile %}
 

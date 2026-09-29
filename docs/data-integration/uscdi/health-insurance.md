@@ -18,17 +18,17 @@ description: >-
 
 One row per coverage. A member with more than one plan, or a plan year that changed mid-year, produces more than one row.
 
-{% file src="../../assets/data-integration/coverage.846be928.csv" %}
+{% file src="../../assets/data-integration/coverage.378d6c60.csv" %}
 coverage.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this coverage | `COV-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `active`, `cancelled`, `draft`, `entered-in-error` [fm-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/fm-status%7C4.0.1) | `active` |
-| `member_id` | Yes, unless `subscriber_id` is sent | plan member id | `HSX9930012` |
-| `subscriber_id` | Yes, unless `member_id` is sent | text | `HSX9930012` |
+| `member_id` | Yes, unless `subscriber_id` is sent | plan member id | `MBR0000012` |
+| `subscriber_id` | Yes, unless `member_id` is sent | text | `MBR0000012` |
 | `relationship_code` | Yes | `self`, `spouse`, `child`, `other` [subscriber-relationship](https://terminology.hl7.org/CodeSystem-subscriber-relationship.html) | `self` |
 | `coverage_type_code` | Recommended | Source of Payment Typology [Payer Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591) | `1` Medicare |
 | `payer_org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, or your payer id | `9999999979` |
