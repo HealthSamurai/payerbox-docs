@@ -36,7 +36,7 @@ patients.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another. Usually your member number; if you reissue member numbers, use a stable internal person id and send the member number as an [additional identifier](#additional-identifiers) | `MBR0000012` |
+| `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another. Usually your member number | `MBR0000012` |
 | `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/member-ids` |
 | `patient_identifier_type` | Recommended | `MB` member number, `MR` medical record, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MB` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
