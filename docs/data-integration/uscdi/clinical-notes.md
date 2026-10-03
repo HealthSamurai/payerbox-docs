@@ -50,6 +50,7 @@ documents.csv Data template with example rows
 
 - `type_code` has a required binding, so the note type must come from that value set. It is large, but the four codes above cover most of what a payer holds.
 - Payerbox sets the status to `current` and the category to `clinical-note`, and reads the attachment's content type and size from the stored file. None of those are columns.
+- Documents submitted with a prior authorization can travel with the authorizations instead, in [`prior_auth_attachments`](../prior-auth/README.md#prior_auth_attachments). The same `record_id` in either file is the same document.
 
 ## diagnostic_reports
 

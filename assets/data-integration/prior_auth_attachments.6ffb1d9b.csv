@@ -1,0 +1,2 @@
+record_id,patient_identifier,type_code,attachment_file,document_date,author_npi,encounter_id,is_deleted
+PA-DOC-0001,MRN-4471903,52036-1,attachments/PA-DOC-0001.pdf,2026-03-02T09:05:00-05:00,9999999995,,
