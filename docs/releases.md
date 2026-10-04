@@ -14,7 +14,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **Payer-to-Payer and Provider Access**
 
-- In the `MatchedMembers` Group returned by [`$bulk-member-match`](api-reference/operations/bulk-member-match.md), each member links to the Patient demographics the requesting payer submitted.
+- In the `MatchedMembers` Group returned by [`$bulk-member-match`](api-reference/operations/bulk-member-match.md), each member links to the Patient the requesting payer submitted, carried in `Group.contained[]`. See the [output example](api-reference/operations/bulk-member-match.md#output-download).
 - Submitted Patients contained in [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) and [`$provider-member-match`](api-reference/operations/provider-member-match.md) results now have the ids `submitted-1`, `submitted-2`, … (previously `1`, `2`, …) and no `meta.versionId`, `meta.lastUpdated`, or `meta.security`.
 
 **Deployment**
