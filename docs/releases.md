@@ -8,51 +8,45 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 ## September 2026 (`2609`)
 
-- The [Data Integration Reference](data-integration/README.md) adds four feeds: [Claims](data-integration/carin-bb/README.md), five claim types mapped to the CARIN BB STU 2.1.0 ExplanationOfBenefit profiles; [Prior Authorizations](data-integration/prior-auth/README.md), mapped to the PDex STU 2.1.0 Prior Authorization profile; [Drug Formulary](data-integration/drug-formulary/README.md), mapped to PDex US Drug Formulary STU 2.1.0; and [Member Consent](data-integration/consent/README.md), the Provider Access opt-outs, Payer-to-Payer opt-ins, and previous coverages.
-- Some Prior Auth (ePA) API changes below were already delivered in the `2608` patch releases (`2608.2`–`2608.5`). `2609` is the first monthly release that contains all of them.
+- The [Data Integration Reference](data-integration/README.md) adds four feeds: [Claims](data-integration/carin-bb/README.md) (CARIN BB 2.1.0), [Prior Authorizations](data-integration/prior-auth/README.md) (PDex 2.1.0), [Drug Formulary](data-integration/drug-formulary/README.md) (PDex US Drug Formulary 2.1.0), and [Member Consent](data-integration/consent/README.md).
 
 ### Interop APIs [`2609`](https://hub.docker.com/r/healthsamurai/interop)
 
 **Payer-to-Payer and Provider Access**
 
-- In the `MatchedMembers` Group returned by [`$bulk-member-match`](api-reference/operations/bulk-member-match.md), each member now links back to the demographics the requesting payer submitted. The submitted Patient is carried in `Group.contained[]` and referenced from `member.entity` through the PDex `base-ext-match-parameters` extension.
-- Submitted Patients carried in `Group.contained[]` by [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) and [`$provider-member-match`](api-reference/operations/provider-member-match.md) now have the ids `submitted-1`, `submitted-2`, … (previously `1`, `2`, …), so they cannot collide with references inside the submitted resources. `meta.versionId`, `meta.lastUpdated`, and `meta.security` are removed from them, as FHIR requires for contained resources.
+- In the `MatchedMembers` Group returned by [`$bulk-member-match`](api-reference/operations/bulk-member-match.md), each member links to the Patient demographics the requesting payer submitted.
+- Submitted Patients contained in [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) and [`$provider-member-match`](api-reference/operations/provider-member-match.md) results now have the ids `submitted-1`, `submitted-2`, … (previously `1`, `2`, …) and no `meta.versionId`, `meta.lastUpdated`, or `meta.security`.
 
 **Deployment**
 
-- At startup, the Interop APIs wait up to 10 minutes for their registration in Aidbox (previously about 30 seconds) and exit with an error if it does not succeed. The HTTP port opens only after registration, so readiness checks no longer pass on an instance that cannot serve operations. See [Deploy](run-payerbox/deploy.md).
+- At startup, the Interop APIs wait up to 10 minutes for their registration in Aidbox (previously about 30 seconds) and open the HTTP port only after it succeeds. See [Deploy](run-payerbox/deploy.md).
 
 ### Prior Auth (ePA) APIs [`2609`](https://hub.docker.com/r/healthsamurai/prior-auth)
 
 **PAS**
 
-- With `PAS_PERSIST_INQUIRIES=true`, every successful [`Claim/$inquire`](api-reference/operations/claim-inquire.md) is recorded as an `AuditEvent` naming the inquiring provider, the Claim the inquiry resolved to, and the time it was received. The record never appears in the response. Off by default. See [Recording inquiry exchanges](prior-auth/pas.md#recording-inquiry-exchanges).
-- Forwarding to an external UM system is now enabled by `UM_ENABLED=true` (default `false`). **Upgrade note:** deployments that route prior authorization requests to a UM system through [`UMTenantConfig`](api-reference/configuration-resources/um-tenant-config.md) (the `pas-passthrough` or `guidingcare` connector) must set `UM_ENABLED=true`, otherwise requests are not forwarded. Also in `2608.5`. See [UM System Integration](prior-auth/um-integration.md).
-- The UM delivery worker checks for retries and on-hold requests with one search every 60 seconds instead of three searches every 15 seconds, which reduces audit log volume. New requests are still forwarded immediately.
+- With `PAS_PERSIST_INQUIRIES=true`, each successful [`Claim/$inquire`](api-reference/operations/claim-inquire.md) is recorded as an `AuditEvent`. Off by default. See [Recording inquiry exchanges](prior-auth/pas.md#recording-inquiry-exchanges).
+- The UM delivery worker checks for retries with one search every 60 seconds instead of three searches every 15 seconds, which reduces audit log volume.
 
 **CRD**
 
-- The `coverage` reference in the Coverage Information system action is taken from the Coverage entry of a Bundle-valued `prefetch.coverage`. Previously, when the Bundle listed an included resource such as the payer Organization first, the reference pointed at that resource's id. See [System actions](prior-auth/crd.md#system-actions). Also in `2608.3`.
+- The Coverage Information system action now references the Coverage entry of a Bundle-valued `prefetch.coverage` instead of the first entry in the Bundle. Also in `2608.3`. See [System actions](prior-auth/crd.md#system-actions).
 
 **Analytics**
 
-- [PAS Metrics](analytics/pas-metrics.md) 0.1.9 (`io.healthsamurai.pas-metrics`) implements Metric 3 (non-ordering provider queries) and the query bucket of Metric 2, both counted from the inquiry records enabled by `PAS_PERSIST_INQUIRIES`. Metrics 1, 4, 6, and 8 exclude query exchanges, and the provider dimension now resolves the NPI of Organization providers. The Aidbox Notebook is published as a download beside the package. On deployments with a large audit log, create the partial index described in [Large audit logs](analytics/pas-metrics.md#large-audit-logs).
+- [PAS Metrics](analytics/pas-metrics.md) 0.1.9 adds Metric 3 and the query bucket of Metric 2, counted from the inquiry records enabled by `PAS_PERSIST_INQUIRIES`. See [Large audit logs](analytics/pas-metrics.md#large-audit-logs) for the index to create on large deployments.
 
 ### FHIR App Portal [`2609`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
 
 **Member consent**
 
-- Members record their [Provider Access](interop-apis/provider-access.md#consent-model) and [Payer-to-Payer](interop-apis/payer-to-payer.md#consent) choices on a new **Data sharing** page: opt out of Provider Access sharing or turn it back on, and opt in to Payer-to-Payer exchange (all information, or non-sensitive information only), name previous or concurrent plans, or withdraw. A member or an authorized representative signs each choice. The portal saves it in one transaction as a `QuestionnaireResponse`, a `DocumentReference`, a `Consent` (PDex Provider Consent or HRex Consent), and a `Provenance`, and retires the member's earlier choices. Provider Access opt-outs are applied by `$provider-member-match` and the Provider Access exports.
-- A representative's choice that widens sharing waits for an administrator's approval in the **Data sharing** card on the member's details page.
-- **Settings → Consent** sets the plan Organization, the date until which Payer-to-Payer authorizations are valid, whether members are offered the non-sensitive-only option, and the list of previous payers members can choose from.
-- Consent capture is enabled per deployment and requires `BOX_FHIR_VALIDATION_SKIP_REFERENCE=true` on Aidbox; see [Deploy](run-payerbox/deploy.md).
+- On a new **Data sharing** page, members opt out of [Provider Access](interop-apis/provider-access.md#consent-model) or opt in to [Payer-to-Payer](interop-apis/payer-to-payer.md#consent) exchange. Each choice is signed by the member or an authorized representative and saved as a `Consent`.
+- A representative's choice that widens sharing waits for an administrator's approval on the member's details page.
+- **Settings → Consent** configures the plan Organization, how long Payer-to-Payer authorizations stay valid, the non-sensitive-only option, and the list of previous payers.
 
 **Admin Portal**
 
-- **Settings → Theme → Font** sets a custom font for the deployment: a font family and the URL of a stylesheet with its `@font-face` rules, such as a Google Fonts or self-hosted stylesheet. The font applies to the Admin Portal, the Developer Portal, and the login page. With no font set, the portals keep their default fonts.
-- The **Members** list pages with **Previous** and **Next** when Aidbox is configured not to return search totals. Previously only the first page was reachable.
-- **Members** search by identifier matches the exact identifier value, such as a member ID. Previously identifier searches returned no results.
-- Administrators who hold several roles no longer get access errors when the admin role is not listed first.
+- **Settings → Theme → Font** sets a custom font for the Admin Portal, the Developer Portal, and the login page.
 
 ## August 2026 (`2608`)
 
