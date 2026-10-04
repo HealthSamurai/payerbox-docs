@@ -439,7 +439,7 @@ URL comes from `output[0].url` in the manifest. Body is a single ndjson line —
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | OUT | `MatchedMembers` | Group | 0..1 | [`pdex-treatment-relationship`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-treatment-relationship.html); members matched, attestation valid, no opt-out. Group id is the input to `$davinci-data-export`. |
-| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match, ambiguous match, or invalid attestation. Submitted Patients are carried in `Group.contained[]` (fragment refs `#1`, `#2`, …). |
+| OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match, ambiguous match, or invalid attestation. Submitted Patients are carried in `Group.contained[]` (fragment refs `#submitted-1`, `#submitted-2`, …). |
 | OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-opt-out`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-opt-out.html); matched member with an active opt-out `Consent`. |
 
 ### Example
@@ -491,7 +491,7 @@ Body (single ndjson line, formatted for readability):
         "meta": {"profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-member-no-match-group"]},
         "active": true, "type": "person", "actual": true,
         "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "nomatch"}]},
-        "contained": [{"resourceType": "Patient", "id": "1", "name": [{"family": "Unknown", "given": ["Nobody"]}], "gender": "male", "birthDate": "2000-01-01"}],
+        "contained": [{"resourceType": "Patient", "id": "submitted-1", "name": [{"family": "Unknown", "given": ["Nobody"]}], "gender": "male", "birthDate": "2000-01-01"}],
         "characteristic": [{
           "code": {"coding": [{"system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/PdexMultiMemberMatchResultCS", "code": "nomatch"}]},
           "valueBoolean": true,
@@ -501,10 +501,10 @@ Body (single ndjson line, formatted for readability):
         "quantity": 1,
         "member": [{
           "entity": {
-            "reference": "#1",
+            "reference": "#submitted-1",
             "extension": [{
               "url": "http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/base-ext-match-parameters",
-              "valueReference": {"reference": "#1"}
+              "valueReference": {"reference": "#submitted-1"}
             }]
           },
           "inactive": false
@@ -537,6 +537,8 @@ Body (single ndjson line, formatted for readability):
 {% endtabs %}
 
 `managingEntity.identifier` is the payer's NPI, resolved from the first member's `Coverage.payor[0]` Organization; falls back to `"unknown"` if the Organization is missing or has no NPI. `characteristic[].period` is a 30-day validity window — `start = today`, `end = today + 30 days`.
+
+A contained submitted Patient is the `MemberPatient` as submitted, with its id replaced by `submitted-N` and `meta.versionId`, `meta.lastUpdated`, and `meta.security` removed, as FHIR requires for contained resources.
 
 ## Cancellation
 
