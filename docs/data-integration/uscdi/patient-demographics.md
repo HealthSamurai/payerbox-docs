@@ -38,10 +38,12 @@ patients.csv Data template with example rows
 |---|---|---|---|
 | `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another. Usually your member number; if you reissue member numbers, use a stable internal person id and send the member number as an [additional identifier](#additional-identifiers) | `MBR0000012` |
 | `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/member-ids` |
-| `patient_identifier_type` | Recommended | `MB` member number, `MR` medical record, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MB` |
+| `patient_identifier_type` | Yes, if you deliver claims | `MB` member number, `MR` medical record, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MB` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `patient_identifier_assigner_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- If you deliver [claims](../carin-bb/README.md), one identifier on the row must be typed `MB`. Every ExplanationOfBenefit references the member through the C4BB Patient profile, which requires a member number identifier that US Core does not. Usually that is this column set to `MB`; if your key is something else, carry the member number in the [additional identifier](#additional-identifiers) slot 2 with `identifier_2_type` = `MB`. Payerbox marks the Patient as C4BB Patient only when it finds one in either place. A USCDI-only delivery may key members by any stable identifier.
 
 ### Additional identifiers
 
