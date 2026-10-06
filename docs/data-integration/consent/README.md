@@ -9,7 +9,7 @@ description: >-
 
 ## Datasets
 
-A member **opts out** of [Provider Access](../../interop-apis/provider-access.md) and **opts in** to [Payer-to-Payer](../../interop-apis/payer-to-payer.md). Each decision becomes one FHIR Consent. Whoever holds the record delivers this feed.
+A member **opts out** of [Provider Access](../../interop-apis/provider-access.md) and **opts in** to [Payer-to-Payer](../../interop-apis/payer-to-payer.md). Each decision becomes one FHIR Consent. Whoever holds the record delivers this feed. Members can also record both choices themselves on the portal's [Data Sharing](../../fhir-app-portal/data-sharing.md) page, which writes Consents of the same profiles.
 
 | Dataset | Target profile |
 |---|---|

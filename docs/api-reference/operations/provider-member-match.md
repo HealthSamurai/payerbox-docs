@@ -594,17 +594,17 @@ A member is **unmatched** when the search returns zero entries **or** more than 
 
 **Treatment attestation.** Accepted when the `Consent` part is present and `Consent.status = "active"`. There is no deeper verification of the attestation claim itself.
 
-**Opt-out check.** After a successful match, an Aidbox search runs against the matched Patient (the opt-out category code uses the `pdex-consent-api-purpose` CodeSystem from PDex 2.2.0):
+**Opt-out check.** After a successful match, the interop app searches the matched Patient's Consents. PDex 2.1.0 requires only the `IDSCL` category on a provider consent, and the PDex 2.2.0 draft adds the `provider-access` code from the `pdex-consent-api-purpose` CodeSystem, so the search accepts either:
 
 ```http
 GET /fhir/Consent
   ?patient=<matched-patient-id>
   &status=active
-  &category=http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose|provider-access
+  &category=http://terminology.hl7.org/CodeSystem/v3-ActCode|IDSCL,http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose|provider-access
   &provision-type=deny
 ```
 
-Any matching `Consent` constrains the member to `ConsentConstrainedMembers`. Revocations (`provision.type = "permit"`) do not surface in the query and therefore do not block. If the opt-out query itself fails (non-2xx), the member fails safe to `ConsentConstrainedMembers`.
+`IDSCL` marks any disclosure consent, so a result whose `pdex-consent-api-purpose` codes name only other APIs (for example `payer-to-payer`) is ignored: a Payer-to-Payer decision does not constrain Provider Access. Any other matching `Consent` constrains the member to `ConsentConstrainedMembers`. Revocations (`provision.type = "permit"`) do not surface in the query and therefore do not block. If the opt-out query itself fails (non-2xx), the member fails safe to `ConsentConstrainedMembers`.
 
 ## Group lifecycle
 
