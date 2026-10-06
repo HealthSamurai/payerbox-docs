@@ -40,9 +40,9 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **Member consent**
 
-- On a new **Data sharing** page, members opt out of [Provider Access](interop-apis/provider-access.md#consent-model) or opt in to [Payer-to-Payer](interop-apis/payer-to-payer.md#consent) exchange. Each choice is signed by the member or an authorized representative and saved as a `Consent`.
-- A representative's choice that widens sharing waits for an administrator's approval on the member's details page.
-- **Settings → Consent** configures the plan Organization, how long Payer-to-Payer authorizations stay valid, the non-sensitive-only option, and the list of previous payers.
+- On a new **Data sharing** page, members opt out of [Provider Access](interop-apis/provider-access.md#consent-model) or opt in to [Payer-to-Payer](interop-apis/payer-to-payer.md#consent) exchange. Each choice is signed by the member or an authorized representative and saved as a `Consent`. See [Consent Capture](fhir-app-portal/member-portal/consent-capture.md) and the [Consent](api-reference/resources/consent.md) resource reference.
+- A representative's choice that widens sharing waits for an administrator's approval on the member's details page. See [Consent Reviews](fhir-app-portal/consent-reviews.md).
+- **Settings → Consent** configures the plan Organization, how long Payer-to-Payer authorizations stay valid, the non-sensitive-only option, and the list of previous payers. See [Consent Settings](fhir-app-portal/consent-settings.md).
 
 **Admin Portal**
 
