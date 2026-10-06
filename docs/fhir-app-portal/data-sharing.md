@@ -14,7 +14,7 @@ The **Data sharing** page is where a plan member records the two data-sharing ch
 
 Members open the page from **Data sharing** in the portal's top navigation after signing in (`/consent`). The page appears only on deployments that enable member consent capture.
 
-![Top of the Data sharing page: the Provider Access card with its Sharing is on status and what a treating provider receives](../../assets/fhir-app-portal/consent/member-data-sharing.png)
+![Top of the Data sharing page: the Provider Access card with its Sharing is on status and what a treating provider receives](../../assets/fhir-app-portal/consent/member-data-sharing.avif)
 
 ## Overview
 
@@ -54,7 +54,7 @@ Tick the statement under **Signature**, draw the signature in the box (**Clear**
 {% endstep %}
 {% endstepper %}
 
-![The Provider Access choice set to OPT OUT, with the confirmation panel: Member (myself), the signed attestation, a drawn signature, and Save this choice](../../assets/fhir-app-portal/consent/member-provider-access-confirm.png)
+![The Provider Access choice set to OPT OUT, with the confirmation panel: Member (myself), the signed attestation, a drawn signature, and Save this choice](../../assets/fhir-app-portal/consent/member-provider-access-confirm.avif)
 
 A member's own choice takes effect when it is saved, and the record it replaces stops being in force. From then on, Provider Access responses leave this member's data out.
 
@@ -72,11 +72,11 @@ Pick who is completing the form, sign, and click **Save this choice**.
 {% endstep %}
 {% endstepper %}
 
-![The Payer-to-Payer choice set to ALL of my health information, with Lakeside Health Plan picked as the previous plan, a member ID, and Add another plan](../../assets/fhir-app-portal/consent/member-p2p-prior-plan.png)
+![The Payer-to-Payer choice set to ALL of my health information, with Lakeside Health Plan picked as the previous plan, a member ID, and Add another plan](../../assets/fhir-app-portal/consent/member-p2p-prior-plan.avif)
 
 The authorization runs until the date the plan sets in [Consent Settings](consent-settings.md), and the form shows that date before the member signs. Once saved, the card lists the plans the member named:
 
-![Payer-to-Payer in force since October 6, 2026 and running until December 31, 2027, with Lakeside Health Plan listed](../../assets/fhir-app-portal/consent/member-p2p-plans.png)
+![Payer-to-Payer in force since October 6, 2026 and running until December 31, 2027, with Lakeside Health Plan listed](../../assets/fhir-app-portal/consent/member-p2p-plans.avif)
 
 Picking **Only NON-SENSITIVE information** shows a warning before saving: other plans cannot yet separate specially protected records from the rest, so they hold back the member's whole history and nothing moves today.
 
@@ -92,7 +92,7 @@ Picking **Authorized representative** under **Who is completing this form?** add
 | **Basis of authority** | **Power of Attorney**, **Legal guardian**, or **Other** with a description. |
 | **Upload documentation of your authority** | The power of attorney, guardianship papers or equivalent: a PDF, JPEG or PNG file of up to 10 MB. **Replace document** swaps it before saving. |
 
-![The confirmation panel signed by an authorized representative: name and relationship, Power of Attorney, the uploaded document, the note that the paperwork is checked first, and the signature](../../assets/fhir-app-portal/consent/member-representative-confirm.png)
+![The confirmation panel signed by an authorized representative: name and relationship, Power of Attorney, the uploaded document, the note that the paperwork is checked first, and the signature](../../assets/fhir-app-portal/consent/member-representative-confirm.avif)
 
 What happens next depends on the direction of the change, and the panel says which applies before the representative saves:
 
@@ -105,7 +105,7 @@ What happens next depends on the direction of the change, and the panel says whi
 
 **Earlier changes to this choice**, at the bottom of each card, lists every choice recorded for that switch, newest first, with who signed it and its status. **View what was answered** shows the answers as they were submitted.
 
-![Earlier changes on the Provider Access card: a representative's choice Waiting on document check above the member's own opt-out, In force](../../assets/fhir-app-portal/consent/member-provider-access-history.png)
+![Earlier changes on the Provider Access card: a representative's choice Waiting on document check above the member's own opt-out, In force](../../assets/fhir-app-portal/consent/member-provider-access-history.avif)
 
 | Tag | Meaning |
 |---|---|
@@ -118,13 +118,13 @@ What happens next depends on the direction of the change, and the panel says whi
 
 After an administrator approves the representative's choice above, the history reads:
 
-![Earlier changes after approval: the representative's choice In force, approved October 6, 2026, and the member's earlier opt-out No longer in force](../../assets/fhir-app-portal/consent/member-provider-access-approved.png)
+![Earlier changes after approval: the representative's choice In force, approved October 6, 2026, and the member's earlier opt-out No longer in force](../../assets/fhir-app-portal/consent/member-provider-access-approved.avif)
 
 ## When the plan records choices for members
 
 Some plans record these choices through Member Services instead of on the page. On those deployments the page shows what is on file, the choices cannot be changed, and a note points to the contact details:
 
-![The Data sharing page on a read-only deployment, with the note that the plan records these choices through Member Services](../../assets/fhir-app-portal/consent/member-read-only.png)
+![The Data sharing page on a read-only deployment, with the note that the plan records these choices through Member Services](../../assets/fhir-app-portal/consent/member-read-only.avif)
 
 If the plan has not finished setting up consent capture, the page shows the choices on file but saving is blocked with *Data sharing is not configured yet; please call Member Services to record your choice.*
 

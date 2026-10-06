@@ -11,7 +11,7 @@ When an authorized representative records a choice that shares more of a member'
 
 Reviews happen on the member's page: **Members** → the member → **Data sharing** card. The card is shown on deployments that enable member consent capture, in both read-write and read-only [capture modes](consent-settings.md#capture-mode).
 
-![The Data sharing card on Member Details: Provider Access Not sharing with Review pending, Payer-to-Payer Permission given, one pending review signed by Sam Lee, son as power of attorney, and the history](../../assets/fhir-app-portal/consent/admin-data-sharing-card.png)
+![The Data sharing card on Member Details: Provider Access Not sharing with Review pending, Payer-to-Payer Permission given, one pending review signed by Sam Lee, son as power of attorney, and the history](../../assets/fhir-app-portal/consent/admin-data-sharing-card.avif)
 
 ## What the card shows
 
@@ -30,12 +30,12 @@ Reviews happen on the member's page: **Members** → the member → **Data shari
 {% step %}
 **Check the answers.** **View answers** lists the form's questions with the answers as submitted: the member block, the choice, the representative's name and basis of authority, and the drawn signature.
 
-![The answers of a pending review: the member's name, birth date and member ID, the choice, the representative and their authority, the document, and the signature](../../assets/fhir-app-portal/consent/admin-review-answers.png)
+![The answers of a pending review: the member's name, birth date and member ID, the choice, the representative and their authority, the document, and the signature](../../assets/fhir-app-portal/consent/admin-review-answers.avif)
 {% endstep %}
 {% step %}
 **Decide.** Click **Approve** or **Reject**. The dialog takes an optional **Internal note**, which goes to the audit log only and is never shown to the member. Confirm with **Approve** or **Reject**.
 
-![The Approve this choice? dialog with the internal note Power of attorney checked](../../assets/fhir-app-portal/consent/admin-approve-dialog.png)
+![The Approve this choice? dialog with the internal note Power of attorney checked](../../assets/fhir-app-portal/consent/admin-approve-dialog.avif)
 {% endstep %}
 {% endstepper %}
 
@@ -48,7 +48,7 @@ Both decisions are saved together with a `Provenance` record that names the admi
 
 After the approval above, the card reads:
 
-![The Data sharing card after approval: Provider Access Sharing is on, Pending review (0), and the history with In force, approved October 6, 2026](../../assets/fhir-app-portal/consent/admin-data-sharing-card-after.png)
+![The Data sharing card after approval: Provider Access Sharing is on, Pending review (0), and the history with In force, approved October 6, 2026](../../assets/fhir-app-portal/consent/admin-data-sharing-card-after.avif)
 
 ## Audit
 

@@ -11,7 +11,7 @@ The **Settings → Consent** tab of the Admin Portal sets what the member [Data 
 
 Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable member consent capture.
 
-![Settings → Consent: the capture mode, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings.png)
+![Settings → Consent: the capture mode, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings.avif)
 
 ## Capture mode
 
@@ -41,7 +41,7 @@ Until both the plan organization and the end date are set, the tab warns *Not co
 
 The **Previous payers** card holds the health plans a member can pick as a previous or concurrent payer on the Payer-to-Payer form. Members never type a plan's name freely; they pick from this list, and the plan organization above is never offered.
 
-![The Previous payers card: Lakeside Health Plan registered, and Summit Health with its NPI about to be registered, with the hint that the NPI is not registered yet](../../assets/fhir-app-portal/consent/admin-previous-payers-register.png)
+![The Previous payers card: Lakeside Health Plan registered, and Summit Health with its NPI about to be registered, with the hint that the NPI is not registered yet](../../assets/fhir-app-portal/consent/admin-previous-payers-register.avif)
 
 To register a plan, enter its **Organization name** and **NPI**, wait for the hint under the NPI, and click **Register organization**. The hint checks the NPI as you type:
 
