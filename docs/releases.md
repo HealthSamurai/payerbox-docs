@@ -6,6 +6,48 @@ description: "Notable changes across Payerbox: the Interop APIs, the Prior Auth 
 
 This page tracks notable changes across Payerbox: the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal. Releases are listed newest first. The apps run on an Aidbox FHIR server; each component heading links to its image on Docker Hub.
 
+## September 2026 (`2609`)
+
+- The [Data Integration Reference](data-integration/README.md) adds four feeds: [Claims](data-integration/carin-bb/README.md) (CARIN BB 2.1.0), [Prior Authorizations](data-integration/prior-auth/README.md) (PDex 2.1.0), [Drug Formulary](data-integration/drug-formulary/README.md) (PDex US Drug Formulary 2.1.0), and [Member Consent](data-integration/consent/README.md).
+
+### Interop APIs [`2609`](https://hub.docker.com/r/healthsamurai/interop)
+
+**Payer-to-Payer and Provider Access**
+
+- In the `MatchedMembers` Group returned by [`$bulk-member-match`](api-reference/operations/bulk-member-match.md), each member links to the Patient the requesting payer submitted, carried in `Group.contained[]`. See the [output example](api-reference/operations/bulk-member-match.md#output-download).
+- Submitted Patients contained in [`$bulk-member-match`](api-reference/operations/bulk-member-match.md) and [`$provider-member-match`](api-reference/operations/provider-member-match.md) results now have the ids `submitted-1`, `submitted-2`, … (previously `1`, `2`, …) and no `meta.versionId`, `meta.lastUpdated`, or `meta.security`.
+
+**Deployment**
+
+- At startup, the Interop APIs wait up to 10 minutes for their registration in Aidbox (previously about 30 seconds) and open the HTTP port only after it succeeds. See [Deploy](run-payerbox/deploy.md).
+
+### Prior Auth (ePA) APIs [`2609`](https://hub.docker.com/r/healthsamurai/prior-auth)
+
+**PAS**
+
+- With `PAS_PERSIST_INQUIRIES=true`, each successful [`Claim/$inquire`](api-reference/operations/claim-inquire.md) is recorded as an `AuditEvent`. Off by default. See [Recording inquiry exchanges](prior-auth/pas.md#recording-inquiry-exchanges).
+- The UM delivery worker checks for retries with one search every 60 seconds instead of three searches every 15 seconds, which reduces audit log volume.
+
+**CRD**
+
+- The Coverage Information system action now references the Coverage entry of a Bundle-valued `prefetch.coverage` instead of the first entry in the Bundle. Also in `2608.3`. See [System actions](prior-auth/crd.md#system-actions).
+
+**Analytics**
+
+- [PAS Metrics](analytics/pas-metrics.md) 0.1.9 adds Metric 3 and the query bucket of Metric 2, counted from the inquiry records enabled by `PAS_PERSIST_INQUIRIES`. See [Large audit logs](analytics/pas-metrics.md#large-audit-logs) for the index to create on large deployments.
+
+### FHIR App Portal [`2609`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
+
+**Member consent**
+
+- On a new **Data sharing** page, members opt out of [Provider Access](interop-apis/provider-access.md#consent-model) or opt in to [Payer-to-Payer](interop-apis/payer-to-payer.md#consent) exchange. Each choice is signed by the member or an authorized representative and saved as a `Consent`.
+- A representative's choice that widens sharing waits for an administrator's approval on the member's details page.
+- **Settings → Consent** configures the plan Organization, how long Payer-to-Payer authorizations stay valid, the non-sensitive-only option, and the list of previous payers.
+
+**Admin Portal**
+
+- **Settings → Theme → Font** sets a custom font for the Admin Portal, the Developer Portal, and the login page.
+
 ## August 2026 (`2608`)
 
 - Published the [Data Integration Reference](data-integration/README.md): the inbound data contract for 24 [USCDI v3.1 datasets](data-integration/uscdi/README.md) mapped to US Core 6.1.0 and 4 [Provider Directory datasets](data-integration/provider-directory/README.md) mapped to Plan-Net 1.2.0, each with a downloadable CSV template. Coded columns link to their value sets, e.g. [OMB Ethnicity Categories ValueSet](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/omb-ethnicity-category).
