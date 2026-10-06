@@ -36,7 +36,7 @@ One row per decision on the Provider Access switch.
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your identifier for this decision | `PAC-000117` |
-| `patient_identifier` | Yes | patient key from `patients` | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
 | `choice` | Yes | `opt-out`, `share` (opt back in) | `opt-out` |
 | `captured_at` | Yes | datetime the decision was made | `2026-11-03T14:22:00-05:00` |
 | `effective_start` | Yes | date the decision takes effect | `2026-11-03` |
@@ -56,7 +56,7 @@ One row per decision on the Payer-to-Payer switch. One election covers previous 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your identifier for this decision | `P2P-000342` |
-| `patient_identifier` | Yes | patient key from `patients` | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
 | `choice` | Yes | `opt-in`, `withdraw` | `opt-in` |
 | `scope` | If `opt-in` | `all`, `non-sensitive` (everything except what state or federal law treats as sensitive) | `all` |
 | `captured_at` | Yes | datetime the decision was made | `2026-11-03T14:22:00-05:00` |
@@ -79,7 +79,7 @@ One row per previous or concurrent coverage the member names when opting in.
 |---|---|---|---|
 | `record_id` | Yes | your identifier for this entry | `PCV-000342-1` |
 | `consent_record_id` | Yes | `record_id` of the `opt-in` row it was named on | `P2P-000342` |
-| `patient_identifier` | Yes | patient key from `patients` | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
 | `payer_name` | Yes | as the member gives it, ideally as printed on the member ID card | `Anthem Blue Cross` |
 | `payer_id` | If known | the payer's identifier in the payer directory you use | `00060` |
 | `member_id` | Yes | the member's ID with that payer; required to build the HRex Coverage used for member match | `XYZ123456789` |

@@ -18,14 +18,14 @@ description: >-
 
 One row per measurement, except blood pressure: systolic and diastolic are two components of a single reading, so they share a row.
 
-{% file src="../../assets/data-integration/vital_signs.23d912b4.csv" %}
+{% file src="../../assets/data-integration/vital_signs.8021fbb7.csv" %}
 vital_signs.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this reading | `VS-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `loinc_code` | Yes | one of the [vital sign codes](#vital-sign-codes) below [US Core Vital Signs](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-vital-signs) | `8867-4` |
 | `effective_datetime` | Yes | datetime | `2026-04-18T09:05:00-04:00` |

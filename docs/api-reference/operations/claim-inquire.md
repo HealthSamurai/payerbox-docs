@@ -20,10 +20,6 @@ From any `Claim` in the chain, `$inquire` walks `Claim.related` backward to the 
 
 Under the legacy 2.0.1 model each `Claim` in a chain carried its own `ClaimResponse`, and `$inquire` resolved forward to the newest one. Payerbox behavior, not a PAS profile element.
 
-## Auth
-
-SMART Backend Services. Scope: `system/Claim.r system/ClaimResponse.r`. See [Authentication](../authentication.md).
-
 ## Parameters
 
 | Direction | Parameter | Type | Cardinality | Description |

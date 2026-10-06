@@ -23,12 +23,12 @@ One row per member, and all the tables in this section describe that same single
 | Column group | What it carries |
 |---|---|
 | [Identity](#identity) | the primary key your other rows reference, and how it is issued |
-| [Additional identifiers](#additional-identifiers) | other identifiers the member is known by — member number, Medicare or Medicaid ID |
+| [Additional identifiers](#additional-identifiers) | other identifiers the member is known by — a provider's medical record number, Medicare or Medicaid ID |
 | [Name](#name) | current and previous names |
 | [Demographics](#demographics) | gender, sex, birth date, race, ethnicity, tribal affiliation, language |
 | [Address and contact](#address-and-contact) | current and previous address, phone, email |
 
-{% file src="../../assets/data-integration/patients.7fb3d72c.csv" %}
+{% file src="../../assets/data-integration/patients.3a404cb2.csv" %}
 patients.csv Data template with example rows
 {% endfile %}
 
@@ -36,20 +36,22 @@ patients.csv Data template with example rows
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another | `MRN-4471903` |
-| `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/mrns` |
-| `patient_identifier_type` | Recommended | `MR` medical record, `MB` member number, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MR` |
+| `patient_identifier` | Yes | your most stable patient key; must not change for a person or be reused for another. Usually your member number; if you reissue member numbers, use a stable internal person id and send the member number as an [additional identifier](#additional-identifiers) | `MBR0000012` |
+| `patient_identifier_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/member-ids` |
+| `patient_identifier_type` | Yes, with `MB`, if you deliver claims | `MB` member number, `MR` medical record, `MC` Medicare, `MA` Medicaid [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) | `MB` |
 | `patient_identifier_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `patient_identifier_assigner_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- If you deliver [claims](../carin-bb/README.md), one identifier on the row must be typed `MB`. Every ExplanationOfBenefit references the member through the C4BB Patient profile, which requires a member number identifier that US Core does not. Usually that is this column set to `MB`; if your key is something else, carry the member number in the [additional identifier](#additional-identifiers) slot 2 with `identifier_2_type` = `MB`. Payerbox marks the Patient as C4BB Patient only when it finds one in either place. A USCDI-only delivery may key members by any stable identifier.
 
 ### Additional identifiers
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `identifier_<n>_value` | Yes | the identifier as issued | `HSX9930012` |
-| `identifier_<n>_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/member-ids` |
-| `identifier_<n>_type` | Recommended | [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) code | `MB` |
+| `identifier_<n>_value` | Yes | the identifier as issued | `MRN-4471903` |
+| `identifier_<n>_system` | Yes | URI of the identifier system; a URL you control or an OID | `http://example.org/mrns` |
+| `identifier_<n>_type` | Recommended | [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html) code | `MR` |
 | `identifier_<n>_use` | Recommended | `usual`, `official`, `temp`, `secondary`, `old` [identifier-use](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/identifier-use%7C4.0.1) | `official` |
 | `identifier_<n>_period_start` | Recommended | date | `2024-01-01` |
 | `identifier_<n>_period_end` | Recommended | date | `2025-12-31` |
@@ -102,14 +104,14 @@ patients.csv Data template with example rows
 
 Contacts and non-clinician care-team members, such as a daughter, spouse, or guardian. One row per person per patient.
 
-{% file src="../../assets/data-integration/related_persons.8c1bfb5d.csv" %}
+{% file src="../../assets/data-integration/related_persons.286561f2.csv" %}
 related_persons.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this person; `care_team` references it | `RP-3310` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `relationship_code` | Recommended | `DAU` daughter, `SPS` spouse, `CHILD` child [v3-RoleCode](https://terminology.hl7.org/CodeSystem-v3-RoleCode.html), [v2-0131](https://terminology.hl7.org/CodeSystem-v2-0131.html) | `DAU` |
 | `last_name` | Recommended | text | `Doe` |
 | `first_name` | Recommended | text | `Mary` |
@@ -123,14 +125,14 @@ related_persons.csv Data template with example rows
 
 ## social_history
 
-{% file src="../../assets/data-integration/social_history.fed3cd52.csv" %}
+{% file src="../../assets/data-integration/social_history.6c336251.csv" %}
 social_history.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your stable key for this row | `SH-0001` |
-| `patient_identifier` | Yes | patient key | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key | `MBR0000012` |
 | `observation_type` | Yes | `occupation` for the demographics rows; `smoking-status`, `pregnancy-status`, `pregnancy-intent` are Health Status/Assessments | `occupation` |
 | `status` | Yes | `registered`, `preliminary`, `final`, `amended`, `corrected`, `cancelled`, `entered-in-error`, `unknown` [observation-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/observation-status%7C4.0.1) | `final` |
 | `value_code` | Yes | the value for this `observation_type`, with `value_system` | `29-1141.00.005678`, `266919005` |

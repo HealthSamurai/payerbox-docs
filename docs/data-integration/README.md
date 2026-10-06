@@ -27,7 +27,9 @@ graph LR
 
 ## Built on US Core
 
-[USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) lists the data classes and the elements in each. [US Core](https://hl7.org/fhir/us/core/STU6.1/) maps every element onto a FHIR element. Payerbox pins **US Core 6.1.0**, realizing **USCDI v3** ([Implementation Guides](../api-reference/implementation-guides.md)). This feed targets **USCDI v3.1**.
+[USCDI](https://isp.healthit.gov/united-states-core-data-interoperability-uscdi#uscdi-v3-1) lists the data classes and the elements in each. [US Core](https://hl7.org/fhir/us/core/STU6.1/) maps every element onto a FHIR element. Payerbox pins **US Core 6.1.0**, realizing **USCDI v3** ([Implementation Guides](../api-reference/implementation-guides.md)). The USCDI feed targets **USCDI v3.1**.
+
+The other feeds build on their own implementation guides, listed below, and some of them lean on the USCDI feed. Claims is the clearest case: every ExplanationOfBenefit references the Patient, Coverage, Organization and Practitioner built from the USCDI datasets, and CARIN Blue Button types those references against its own profiles, which derive from US Core and add constraints. The one that shapes a column: C4BB Patient requires a member number identifier, which US Core does not, so a delivery that includes claims must carry one on every row of [Patient Demographics](uscdi/patient-demographics.md).
 
 ## Feeds
 

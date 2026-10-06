@@ -21,14 +21,14 @@ The two templates below carry exactly these shared columns. Each claim-type page
 
 One row per adjudicated claim. The claim type and the profile are decided by which file the row is in, so there is no claim-type column: a row in `claims_pharmacy` becomes a Pharmacy ExplanationOfBenefit with `type` = `pharmacy` and `use` = `claim`.
 
-{% file src="../../assets/data-integration/claims.0473b5fc.csv" %}
+{% file src="../../assets/data-integration/claims.75501769.csv" %}
 claims.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your claim control number, stable across adjustments to the same claim [C4BBClaimIdentifierType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBClaimIdentifierType%7C2.1.0) | `CLM-0001` |
-| `patient_identifier` | Yes | patient key from `patients` | `MRN-4471903` |
+| `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
 | `coverage_id` | Yes | key from `coverage`, the plan the claim was adjudicated against | `COV-0001` |
 | `payer_org_npi` | Yes | 10 digits, or your payer id; the same payer named on that coverage | `9999999979` |
 | `billing_provider_npi` | Yes | 10 digits; key from `practitioners` or `organizations` | `9999999995` |

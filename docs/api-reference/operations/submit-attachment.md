@@ -14,10 +14,6 @@ Unlike `Claim/$submit` and `Claim/$inquire`, this is a **system-level** operatio
 POST <base>/fhir/$submit-attachment
 ```
 
-## Auth
-
-SMART Backend Services. Scope requirements depend on the attachment content type (e.g. `system/DocumentReference.c`) plus Claim update (`system/Claim.u`). See [Authentication](../authentication.md).
-
 ## Parameters
 
 | Parameter | Type | Cardinality | Description |
