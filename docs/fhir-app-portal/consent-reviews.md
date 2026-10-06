@@ -7,7 +7,7 @@ description: >-
 
 # Consent Reviews
 
-When an authorized representative records a choice that shares more of a member's record (turning Provider Access sharing back on, or authorizing Payer-to-Payer exchange), the choice does not apply until a plan administrator has checked the representative's document of authority. Choices that share less apply at once; the plan checks their document afterwards. See [Sign as an authorized representative](data-sharing.md#sign-as-an-authorized-representative) for the member's side.
+When an authorized representative records a choice that shares more of a member's record (turning Provider Access sharing back on, or authorizing Payer-to-Payer exchange), the choice does not apply until a plan administrator has checked the representative's document of authority. Choices that share less apply at once; the plan checks their document afterwards. See [Authorized representatives](member-portal/consent-capture.md#authorized-representatives) for the member's side. Representative signing, and with it reviews, exists only where the portal runs with `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true`; elsewhere the card shows no **Pending review** section.
 
 Reviews happen on the member's page: **Members** → the member → **Data sharing** card. The card is shown on deployments that enable member consent capture, in both read-write and read-only [capture modes](consent-settings.md#capture-mode).
 
@@ -56,14 +56,14 @@ Every member save writes a **Member Consent Recorded** audit event, and every de
 
 ## Related
 
-{% content-ref url="data-sharing.md" %}
-[data-sharing.md](data-sharing.md)
+{% content-ref url="member-portal/consent-capture.md" %}
+[consent-capture.md](member-portal/consent-capture.md)
 {% endcontent-ref %}
 
 {% content-ref url="consent-settings.md" %}
 [consent-settings.md](consent-settings.md)
 {% endcontent-ref %}
 
-{% content-ref url="../api-reference/operations/member-consent-api.md" %}
-[member-consent-api.md](../api-reference/operations/member-consent-api.md)
+{% content-ref url="../api-reference/resources/consent.md" %}
+[consent.md](../api-reference/resources/consent.md)
 {% endcontent-ref %}

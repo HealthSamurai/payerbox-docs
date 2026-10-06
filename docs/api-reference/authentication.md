@@ -50,7 +50,7 @@ Key fields Payerbox returns:
 
 ## SMART App Launch (member-authorized)
 
-Used by third-party apps in the [FHIR App Portal](../fhir-app-portal/README.md). The member discovers an app in the [FHIR App Gallery](../fhir-app-portal/fhir-app-gallery.md), clicks Launch, signs in, and grants the requested scopes.
+Used by third-party apps in the [FHIR App Portal](../fhir-app-portal/README.md). The member discovers an app in the [FHIR App Gallery](../fhir-app-portal/member-portal/fhir-app-gallery.md), clicks Launch, signs in, and grants the requested scopes.
 
 ### Client registration
 

@@ -47,7 +47,7 @@ Administrators review it from the [Admin Portal](admin-portal.md) and approve or
 |---|---|
 | **Draft** | Created, not yet submitted |
 | **Under Review** | Submitted, waiting for admin decision |
-| **Active** | Approved and live in the [FHIR App Gallery](fhir-app-gallery.md) |
+| **Active** | Approved and live in the [FHIR App Gallery](member-portal/fhir-app-gallery.md) |
 | **Rejected** | Declined at review, or deactivated after going live |
 
 ## Example: Growth Chart app

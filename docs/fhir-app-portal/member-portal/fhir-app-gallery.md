@@ -52,7 +52,7 @@ When a card is marked **Connected**, a **Revoke Access** button appears next to 
 
 You can reconnect later by launching the app again and approving consent.
 
-Revoking an app does not change your Provider Access or Payer-to-Payer choices; those are on the [Data Sharing](data-sharing.md) page.
+Revoking an app does not change your Provider Access or Payer-to-Payer choices; those are on the **Data sharing** page (see [Consent Capture](consent-capture.md)).
 
 ## Feedback
 

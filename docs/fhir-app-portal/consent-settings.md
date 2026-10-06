@@ -7,11 +7,11 @@ description: >-
 
 # Consent Settings
 
-The **Settings → Consent** tab of the Admin Portal sets what the member [Data Sharing](data-sharing.md) page writes into every consent and which health plans members can name for Payer-to-Payer exchange.
+The **Settings → Consent** tab of the Admin Portal sets what the member portal's [Data sharing page](member-portal/consent-capture.md) writes into every consent and which health plans members can name for Payer-to-Payer exchange.
 
 Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable member consent capture.
 
-![Settings → Consent: the capture mode, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings.avif)
+![Settings → Consent: the capture mode, whether authorized representatives are offered, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings-v2.png)
 
 ## Capture mode
 
@@ -19,11 +19,13 @@ The first card shows the deployment's capture mode. It is part of the deployment
 
 | Mode | Members | Administrators |
 |---|---|---|
-| **read-write** | Record and change both choices on the Data sharing page. A representative's choice that shares more waits for [review](consent-reviews.md). | This tab, and the **Data sharing** card on Member Details with its reviews. |
+| **read-write** | Record and change both choices on the Data sharing page. Where representatives are offered, a representative's choice that shares more waits for [review](consent-reviews.md). | This tab, and the **Data sharing** card on Member Details, with its reviews where representatives are offered. |
 | **read-only** | See the choices on file; the controls are disabled and the page points to Member Services. | This tab, and the **Data sharing** card on Member Details. |
 | off | No Data sharing page. | No Consent tab, no Data sharing card. |
 
 Changing the mode means changing the deployment: an operator adds or removes the member consent access policies shipped with the portal's Aidbox configuration. The portal notices the change within a minute.
+
+The same card says whether an **authorized representative** can sign for a member: *can sign for a member* or *not offered*. That is also part of the deployment: the portal's `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true` turns it on, and it is off otherwise. Turn it on only if your staff check the uploaded documents of authority in [Consent Reviews](consent-reviews.md). Review any pending choices before turning it off again: they can no longer be approved or rejected while it is off, and they never take effect.
 
 ## Fields
 
@@ -63,10 +65,10 @@ Saving the settings writes a **Settings Updated** audit event, and each registra
 [consent-reviews.md](consent-reviews.md)
 {% endcontent-ref %}
 
-{% content-ref url="data-sharing.md" %}
-[data-sharing.md](data-sharing.md)
+{% content-ref url="member-portal/consent-capture.md" %}
+[consent-capture.md](member-portal/consent-capture.md)
 {% endcontent-ref %}
 
-{% content-ref url="../api-reference/operations/member-consent-api.md" %}
-[member-consent-api.md](../api-reference/operations/member-consent-api.md)
+{% content-ref url="../api-reference/resources/consent.md" %}
+[consent.md](../api-reference/resources/consent.md)
 {% endcontent-ref %}

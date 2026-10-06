@@ -17,3 +17,6 @@ redirects:
   run-payerbox/provider-directory-pipeline/provider-directory-pipeline: run-payerbox/provider-directory-pipeline.md
   data-integration/drug-formulary/plan-contacts: data-integration/drug-formulary/payer-plans/plan-contacts.md
   data-integration/drug-formulary/coverage-areas: data-integration/drug-formulary/payer-plans/coverage-areas.md
+  fhir-app-portal/fhir-app-gallery: fhir-app-portal/member-portal/fhir-app-gallery.md
+  fhir-app-portal/data-sharing: fhir-app-portal/member-portal/consent-capture.md
+  api-reference/operations/member-consent-api: api-reference/resources/consent.md

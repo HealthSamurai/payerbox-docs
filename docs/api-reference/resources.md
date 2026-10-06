@@ -12,7 +12,7 @@ The authoritative list per deployment is in the [Capability Statement](capabilit
 | Coverage | ✓ | ✓ | ✓ |  | ✓ |
 | RelatedPerson | ✓ | ✓ | ✓ |  |  |
 | Group |  | ✓ | ✓ |  |  |
-| Consent | ✓ | ✓ | ✓ |  |  |
+| [Consent](resources/consent.md) | ✓ | ✓ | ✓ |  |  |
 
 ## Clinical (US Core)
 

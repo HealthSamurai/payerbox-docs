@@ -29,7 +29,7 @@ CMS-0057-F prescribes **opt-in** for Payer-to-Payer. The receiving payer collect
 
 Members can withdraw consent. Withdrawal is captured by the receiving payer and stops further requests.
 
-Members can give or withdraw the opt-in, naming their previous or concurrent plans, on the portal's [Data Sharing](../fhir-app-portal/data-sharing.md) page; it can also arrive in the [member consent feed](../data-integration/consent/README.md).
+Members can give or withdraw the opt-in, naming their previous or concurrent plans, on the member portal's [Data sharing page](../fhir-app-portal/member-portal/consent-capture.md); it can also arrive in the [member consent feed](../data-integration/consent/README.md).
 
 ## Data scope
 

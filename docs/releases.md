@@ -169,7 +169,7 @@ A new `payerbox` umbrella Helm chart deploys the full stack (portals, Interop AP
 
 **FHIR App Gallery**
 
-- Discover, launch, and test registered SMART apps. See [FHIR App Gallery](fhir-app-portal/fhir-app-gallery.md).
+- Discover, launch, and test registered SMART apps. See [FHIR App Gallery](fhir-app-portal/member-portal/fhir-app-gallery.md).
 - Patients can review their connected apps and revoke access.
 
 **Security & Authentication**
