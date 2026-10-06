@@ -52,6 +52,8 @@ When a card is marked **Connected**, a **Revoke Access** button appears next to 
 
 You can reconnect later by launching the app again and approving consent.
 
+Revoking an app does not change your Provider Access or Payer-to-Payer choices; those are on the [Data Sharing](data-sharing.md) page.
+
 ## Feedback
 
 Every card has a **Feedback** button. Click it to open a form and send a message to the plan administrator about that specific app. Feedback is stored as a FHIR `Communication` resource and the plan's admin is notified.

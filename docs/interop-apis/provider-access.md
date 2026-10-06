@@ -76,7 +76,7 @@ Both `$provider-member-match` and `$davinci-data-export` are **always asynchrono
 
 CMS-0057-F prescribes **opt-out** for Provider Access. Default is share-on; a member who opts out is removed from the data response for all in-network providers — PDex 2.1.0 frames the opt-out as all-or-nothing, not per-provider. The member can opt out and reverse the choice at any time.
 
-Opt-out is captured by the payer and surfaced to Payerbox so the API filters out opted-out members before responding, regardless of whether v1 or v2 is used.
+Opt-out is captured by the payer and surfaced to Payerbox so the API filters out opted-out members before responding, regardless of whether v1 or v2 is used. Members can record it themselves on the portal's [Data Sharing](../fhir-app-portal/data-sharing.md) page, or the payer delivers it in the [member consent feed](../data-integration/consent/README.md).
 
 ## Data scope
 
