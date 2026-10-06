@@ -11,7 +11,7 @@ The **Settings → Consent** tab of the Admin Portal sets what the member portal
 
 Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable member consent capture.
 
-![Settings → Consent: the capture mode, whether authorized representatives are offered, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings-v2.png)
+![Settings → Consent: the capture mode, whether authorized representatives are offered, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings-v2.avif)
 
 ## Capture mode
 
