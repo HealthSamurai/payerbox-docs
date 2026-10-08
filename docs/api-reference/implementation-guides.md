@@ -29,7 +29,7 @@ CMS does not lock IG versions in regulation. The versions below match the [CMS A
 |---|---|---|---|
 | CARIN Consumer-Directed Payer Data Exchange (Blue Button) | STU 2.1.0 | [hl7.org/fhir/us/carin-bb/STU2.1](https://hl7.org/fhir/us/carin-bb/STU2.1/) | Patient Access — claims and encounters |
 | Da Vinci PDex | STU 2.1.0 | [hl7.org/fhir/us/davinci-pdex/STU2.1](https://hl7.org/fhir/us/davinci-pdex/STU2.1/) | Patient Access — clinical, prior-auth data; Provider Access; Payer-to-Payer |
-| Da Vinci PDex US Drug Formulary | STU 2.0.1 | [hl7.org/fhir/us/Davinci-drug-formulary/STU2](https://hl7.org/fhir/us/Davinci-drug-formulary/STU2/) | Patient Access — formulary (MA-PD) |
+| Da Vinci PDex US Drug Formulary | STU 2.1.0 | [hl7.org/fhir/us/davinci-drug-formulary/STU2.1](https://hl7.org/fhir/us/davinci-drug-formulary/STU2.1/) | Patient Access — formulary (MA-PD) |
 
 ## Provider Directory
 
