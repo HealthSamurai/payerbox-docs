@@ -344,7 +344,7 @@ Content-Type: application/json
 Swap `jwks_uri` and `client_assertion_types` for a `secret` to get the symmetric variant, for local stacks and sandboxes only. The extension sits at the top level of `Client`, next to `auth`. `Client` has no `identifier` element, so organization identity travels through this extension.
 
 {% hint style="warning" %}
-Write the `Client` through the Aidbox base endpoint (`PUT /Client/<id>` or a `POST /` transaction Bundle), not through `/fhir`. With `BOX_FHIR_CORRECT_AIDBOX_FORMAT` enabled (the Payerbox default), `/fhir` rewrites the extension's `valueReference` / `valueUri` / `valueCoding` into Aidbox's internal union format (`value: {"Reference": …}`), which the token builder does not read. The write succeeds and tokens are still issued, but without `extensions.hl7-b2b`.
+Which endpoint the `Client` is written through decides whether the claim appears. With `BOX_FHIR_CORRECT_AIDBOX_FORMAT` enabled (the Payerbox default), `/fhir/Client/<id>` stores the extension in Aidbox's internal union format (`value: {"Reference": …}`), while the base endpoint `/Client/<id>` keeps the FHIR shape (`valueReference` / `valueUri` / `valueCoding`). Aidbox edge builds from 2026-10-08 on read the internal format: write the `Client` through `/fhir/Client/<id>` or a `POST /fhir` transaction. Earlier builds read the FHIR shape and need the base endpoint. The write succeeds either way and tokens are still issued; the wrong endpoint only drops `extensions.hl7-b2b`, so decode a token after registration and confirm the claim is present.
 {% endhint %}
 
 #### Identifier systems

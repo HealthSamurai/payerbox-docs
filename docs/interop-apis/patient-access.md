@@ -86,6 +86,14 @@ Browse covered drugs in the member's plan formulary:
 GET <base>/fhir/MedicationKnowledge?_profile=http://hl7.org/fhir/us/davinci-drug-formulary/StructureDefinition/usdf-FormularyDrug
 ```
 
+Formulary resources sit outside the Patient compartment, and `patient/` scopes return an empty Bundle for them (Aidbox exempts only Organization, Practitioner and PractitionerRole from the compartment filter). An app that shows the formulary requests user-level scopes narrowed to formulary data alongside its patient scopes:
+
+```
+patient/*.read user/InsurancePlan.rs user/MedicationKnowledge.rs user/Basic.rs?code=formulary-item
+```
+
+The search-parameter suffix keeps other `Basic` resources out of reach. Add `user/Medication.rs` when the app follows `MedicationRequest.medicationReference` (`_include=MedicationRequest:medication`) and `user/Location.rs` for plan coverage areas.
+
 ### Prior authorization (from January 1, 2027)
 
 Adjudicated PA decisions surface as `ExplanationOfBenefit` with `use=preauthorization`:
