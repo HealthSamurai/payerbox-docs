@@ -33,7 +33,7 @@
     * [Consent Reviews](fhir-app-portal/consent-reviews.md)
   * [Member Portal](fhir-app-portal/member-portal/README.md)
     * [FHIR App Gallery](fhir-app-portal/member-portal/fhir-app-gallery.md)
-    * [Consent Capture](fhir-app-portal/member-portal/consent-capture.md)
+    * [Consent Panel](fhir-app-portal/member-portal/consent-panel.md)
 * [Compliance](compliance/README.md)
   * [CMS-9115](compliance/cms-9115.md)
   * [CMS-0057](compliance/cms-0057.md)

@@ -15,7 +15,7 @@ A member's data-sharing decisions are FHIR `Consent` resources in Payerbox's Aid
 | Payer-to-Payer opt-in | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent` | Da Vinci HRex STU 1.1 |
 
 The records arrive in three ways:
-- members record them on the member portal ([Consent Capture](../../fhir-app-portal/member-portal/consent-capture.md));
+- members record them on the member portal ([Consent Panel](../../fhir-app-portal/member-portal/consent-panel.md));
 - the plan's data feed delivers them ([Member Consent](../../data-integration/consent/README.md));
 - a system writes them through the FHIR API, as described on this page.
 
@@ -297,8 +297,8 @@ Records captured on the member portal come with:
 
 ## Related
 
-{% content-ref url="../../fhir-app-portal/member-portal/consent-capture.md" %}
-[consent-capture.md](../../fhir-app-portal/member-portal/consent-capture.md)
+{% content-ref url="../../fhir-app-portal/member-portal/consent-panel.md" %}
+[consent-panel.md](../../fhir-app-portal/member-portal/consent-panel.md)
 {% endcontent-ref %}
 
 {% content-ref url="../../data-integration/consent/README.md" %}

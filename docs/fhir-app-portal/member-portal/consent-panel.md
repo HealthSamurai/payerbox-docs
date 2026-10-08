@@ -5,14 +5,14 @@ description: >-
   records, and what the plan configures. For administrators and support staff.
 ---
 
-# Consent Capture
+# Consent Panel
 
 Plan members record the two data-sharing choices of [CMS-0057-F](../../compliance/cms-0057.md) themselves, on the **Data sharing** page of the member portal (**Data sharing** in the top navigation, `/consent`):
 
 - **Provider Access**: whether the plan shares the member's record with the in-network providers who treat them through [Provider Access](../../interop-apis/provider-access.md). Sharing is on unless the member opts out.
 - **Payer-to-Payer**: whether the plan may request the member's records from their previous or concurrent health plans through [Payer-to-Payer](../../interop-apis/payer-to-payer.md). Nothing is requested unless the member opts in.
 
-This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices signed by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only on deployments that enable member consent capture; see [Capture mode](../consent-settings.md#capture-mode).
+This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices signed by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only where the deployment turns it on; see [Capture mode](../consent-settings.md#capture-mode).
 
 ![Top of the Data sharing page: the Provider Access card with its Sharing is on status and what a treating provider receives](../../../assets/fhir-app-portal/consent/member-data-sharing.avif)
 

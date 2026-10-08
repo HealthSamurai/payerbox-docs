@@ -1,15 +1,15 @@
 ---
 description: >-
-  Configure member consent capture from the Admin Portal's Settings → Consent
-  tab: the plan organization, how long a Payer-to-Payer authorization lasts,
+  Configure the member Consent Panel from the Admin Portal's Settings →
+  Consent tab: the plan organization, how long a Payer-to-Payer authorization lasts,
   the non-sensitive option, and the registry of previous payers.
 ---
 
 # Consent Settings
 
-The **Settings → Consent** tab of the Admin Portal sets what the member portal's [Data sharing page](member-portal/consent-capture.md) writes into every consent and which health plans members can name for Payer-to-Payer exchange.
+The **Settings → Consent** tab of the Admin Portal sets what the member portal's [Data sharing page](member-portal/consent-panel.md) writes into every consent and which health plans members can name for Payer-to-Payer exchange.
 
-Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable member consent capture.
+Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable the Consent Panel.
 
 ![Settings → Consent: the capture mode, whether authorized representatives are offered, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings-v2.avif)
 
@@ -65,8 +65,8 @@ Saving the settings writes a **Settings Updated** audit event, and each registra
 [consent-reviews.md](consent-reviews.md)
 {% endcontent-ref %}
 
-{% content-ref url="member-portal/consent-capture.md" %}
-[consent-capture.md](member-portal/consent-capture.md)
+{% content-ref url="member-portal/consent-panel.md" %}
+[consent-panel.md](member-portal/consent-panel.md)
 {% endcontent-ref %}
 
 {% content-ref url="../api-reference/resources/consent.md" %}

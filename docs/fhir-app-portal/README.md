@@ -5,5 +5,5 @@ The FHIR App Portal covers the full lifecycle of the third-party SMART on FHIR a
 | Surface | Audience | What it covers |
 |---|---|---|
 | [Developer Portal](developer-portal.md) | Third-party SMART on FHIR app developers | Register apps, configure OAuth, run a Test Launch against sample data, submit for review |
-| [Admin Portal](admin-portal.md) | Payer administrators | Review submitted apps, approve or reject, monitor feedback and sessions, deactivate active apps; configure member consent capture and review representatives' choices |
-| [Member Portal](member-portal/README.md) | Plan members | The [FHIR App Gallery](member-portal/fhir-app-gallery.md) (browse approved apps, launch them with SMART on FHIR, manage and revoke their connections) and the Data sharing page, where members record their Provider Access and Payer-to-Payer choices ([Consent Capture](member-portal/consent-capture.md)) |
+| [Admin Portal](admin-portal.md) | Payer administrators | Review submitted apps, approve or reject, monitor feedback and sessions, deactivate active apps; configure the Consent Panel and review representatives' choices |
+| [Member Portal](member-portal/README.md) | Plan members | The [FHIR App Gallery](member-portal/fhir-app-gallery.md) (browse approved apps, launch them with SMART on FHIR, manage and revoke their connections) and the Data sharing page, where members record their Provider Access and Payer-to-Payer choices ([Consent Panel](member-portal/consent-panel.md)) |

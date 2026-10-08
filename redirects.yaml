@@ -18,5 +18,6 @@ redirects:
   data-integration/drug-formulary/plan-contacts: data-integration/drug-formulary/payer-plans/plan-contacts.md
   data-integration/drug-formulary/coverage-areas: data-integration/drug-formulary/payer-plans/coverage-areas.md
   fhir-app-portal/fhir-app-gallery: fhir-app-portal/member-portal/fhir-app-gallery.md
-  fhir-app-portal/data-sharing: fhir-app-portal/member-portal/consent-capture.md
+  fhir-app-portal/data-sharing: fhir-app-portal/member-portal/consent-panel.md
+  fhir-app-portal/member-portal/consent-capture: fhir-app-portal/member-portal/consent-panel.md
   api-reference/operations/member-consent-api: api-reference/resources/consent.md

@@ -15,7 +15,7 @@ Administrators can:
 * **Review Apps** — Evaluate submitted apps and approve or reject them
 * **Manage Active Apps** — Monitor apps, view feedback, check sessions, deactivate if needed
 * **Configure MPF Publications** — On deployments with the MPF module, choose which contracts and plans are published to the Medicare Plan Finder (see [MPF Publications](mpf-publications.md))
-* **Configure member consent capture** — Set the plan organization, the Payer-to-Payer end date and options, and the previous payers members can name (see [Consent Settings](consent-settings.md))
+* **Configure the Consent Panel** — Set the plan organization, the Payer-to-Payer end date and options, and the previous payers members can name (see [Consent Settings](consent-settings.md))
 * **Review representatives' consent choices** — Check the document of authority and approve or reject the choice (see [Consent Reviews](consent-reviews.md))
 
 ## Review Submitted Apps

@@ -7,9 +7,9 @@ description: >-
 
 # Consent Reviews
 
-When an authorized representative records a choice that shares more of a member's record (turning Provider Access sharing back on, or authorizing Payer-to-Payer exchange), the choice does not apply until a plan administrator has checked the representative's document of authority. Choices that share less apply at once; the plan checks their document afterwards. See [Authorized representatives](member-portal/consent-capture.md#authorized-representatives) for the member's side. Representative signing, and with it reviews, exists only where the portal runs with `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true`; elsewhere the card shows no **Pending review** section.
+When an authorized representative records a choice that shares more of a member's record (turning Provider Access sharing back on, or authorizing Payer-to-Payer exchange), the choice does not apply until a plan administrator has checked the representative's document of authority. Choices that share less apply at once; the plan checks their document afterwards. See [Authorized representatives](member-portal/consent-panel.md#authorized-representatives) for the member's side. Representative signing, and with it reviews, exists only where the portal runs with `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true`; elsewhere the card shows no **Pending review** section.
 
-Reviews happen on the member's page: **Members** → the member → **Data sharing** card. The card is shown on deployments that enable member consent capture, in both read-write and read-only [capture modes](consent-settings.md#capture-mode).
+Reviews happen on the member's page: **Members** → the member → **Data sharing** card. The card is shown on deployments that enable the Consent Panel, in both read-write and read-only [capture modes](consent-settings.md#capture-mode).
 
 ![The Data sharing card on Member Details: Provider Access Not sharing with Review pending, Payer-to-Payer Permission given, one pending review signed by Sam Lee, son as power of attorney, and the history](../../assets/fhir-app-portal/consent/admin-data-sharing-card.avif)
 
@@ -56,8 +56,8 @@ Every member save writes a **Member Consent Recorded** audit event, and every de
 
 ## Related
 
-{% content-ref url="member-portal/consent-capture.md" %}
-[consent-capture.md](member-portal/consent-capture.md)
+{% content-ref url="member-portal/consent-panel.md" %}
+[consent-panel.md](member-portal/consent-panel.md)
 {% endcontent-ref %}
 
 {% content-ref url="consent-settings.md" %}
