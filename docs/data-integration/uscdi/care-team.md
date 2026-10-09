@@ -79,7 +79,7 @@ organizations.csv Data template with example rows
 | CLIA number | 10 characters, `D` in the third position | `urn:oid:2.16.840.1.113883.4.7` | clinical laboratory |
 | Your own id | any stable string | a URL you control or an OID | anything else |
 
-NPI, CLIA number and NAIC company code are the identifiers [US Core Organization](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-organization.html) expects, with its format rules; Plan-Net, CARIN BB and PAS organizations expect the same three. One identifier per row: an organization with an NPI is keyed by the NPI.
+NPI, CLIA number and NAIC company code are the identifiers [US Core Organization](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-organization.html) expects, with its format rules; Plan-Net, CARIN BB and PAS organizations expect the same three.
 - `telecom_code` and `telecom_value` travel together: FHIR requires the system code whenever a contact value is sent, so a `telecom_value` with an empty `telecom_code` is rejected.
 - FHIR requires `name` and `active` on every Organization, so a row without `org_name` is rejected, and an empty `active` is taken as `true`.
 
