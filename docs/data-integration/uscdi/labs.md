@@ -50,6 +50,6 @@ labs.csv Data template with example rows
 - `interpretation` and the `reference_range_*` pair go beyond the USCDI v3.1 floor (they joined USCDI in v4), but pass them through whenever your source has them — they are what makes a bare number readable.
 - `specimen_type_code` is the USCDI Specimen Type element; it becomes a companion US Core Specimen resource the Observation points at, not a separate dataset you deliver.
 - `diagnostic_report_id` groups the analytes of one panel under a report in the `diagnostic_reports` dataset. A lab row is complete without it.
-- `performer_npi` is the resulting lab or clinician and must match a row in [`practitioners`](care-team.md#practitioners) or [`organizations`](care-team.md#organizations).
+- `performer_npi` is the resulting lab or clinician and must match a row in [`practitioners`](care-team.md#practitioners) or [`organizations`](../provider-directory/README.md#organizations).
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

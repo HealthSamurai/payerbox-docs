@@ -13,6 +13,7 @@ Built to [Plan-Net STU 1.2.0](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1
 |---|---|
 | [`providers`](#providers) | [Practitioner](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Practitioner.html), [PractitionerRole](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-PractitionerRole.html), [Location](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Location.html) |
 | [`facilities`](#facilities) | [Organization](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Organization.html), [OrganizationAffiliation](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-OrganizationAffiliation.html), [Location](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Location.html) |
+| [`organizations`](#organizations) | [Organization](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Organization.html) |
 | [`networks`](#networks) | [Network](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Network.html) |
 | [`plans`](#plans) | [InsurancePlan](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan.html) |
 
@@ -88,6 +89,44 @@ One row per facility NPI, plan and network.
 | `longitude` | If available | decimal, WGS84 | `-73.9100` |
 | `phone` | Yes | 10 digits | `7185551212` |
 
+## organizations
+
+One row per organization that is not a facility: the plan sponsor, an administrator or PBM, a laboratory, a practice, or anything else a `*_org_identifier` column in any feed names. A facility already published by [`facilities`](#facilities) needs no row here. One file serves every feed.
+
+{% file src="../../assets/data-integration/organizations.c9b5ff65.csv" %}
+organizations.csv Data template with example rows
+{% endfile %}
+
+| Column | Required | Format / values | Example |
+|---|---|---|---|
+| `org_identifier` | Yes | NPI, NAIC company code, CLIA number or your own id, see [identifier options](#organization-identifier-options); unique across the dataset | `9999999979` |
+| `org_identifier_system` | If `org_identifier` is not an NPI | URI of the issuing system, see [identifier options](#organization-identifier-options); NPI assumed when empty | `urn:oid:2.16.840.1.113883.6.300` |
+| `org_name` | Yes | text | `Family Medical Group` |
+| `active` | Recommended | `true` / `false` (`true` assumed when empty); `false` retires an organization without deleting it | `true` |
+| `org_type_code` | If available | `prov` provider, `pay` payer, `ins` insurance company, `dept` hospital department, `bus` non-healthcare business [organization-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/organization-type%7C4.0.1) | `prov` |
+| `telecom_code` | Recommended | `phone`, `fax`, `email`, `pager`, `url`, `sms`, `other` [contact-point-system](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/contact-point-system%7C4.0.1) | `phone` |
+| `telecom_value` | Recommended | the number, address, or URL itself | `5551234567` |
+| `address_line1` | Recommended | text | `225 Broadway` |
+| `city` | Recommended | text | `New York` |
+| `state` | Recommended | 2-letter USPS [USPS states](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state) | `NY` |
+| `zip` | Recommended | 5 or 9 digits, as a string | `10007` |
+| `is_deleted` | If retracting | `true` retracts this row | `true` |
+
+- Every `*_org_identifier` column in every feed carries this `org_identifier` value as is; the system is declared once, here.
+
+### Organization identifier options
+
+| Identifier | `org_identifier` | `org_identifier_system` | Typical organization |
+|---|---|---|---|
+| NPI | 10 digits, Luhn-valid over the `80840` prefix | empty, or `http://hl7.org/fhir/sid/us-npi` | practice, hospital, pharmacy |
+| NAIC company code | 5 digits | `urn:oid:2.16.840.1.113883.6.300` | insurer, plan sponsor |
+| CLIA number | 10 characters, `D` in the third position | `urn:oid:2.16.840.1.113883.4.7` | clinical laboratory |
+| Your own id | any stable string | a URL you control or an OID | anything else |
+
+The first three are the `identifier:NPI`, `identifier:CLIA` and `identifier:NAIC` slices of [Plan-Net Organization](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-Organization.html), with its format rules; US Core, CARIN BB and PAS organizations carry the same slices. One identifier per row: an organization with an NPI is keyed by the NPI.
+- `telecom_code` and `telecom_value` travel together: FHIR requires the system code whenever a contact value is sent, so a `telecom_value` with an empty `telecom_code` is rejected.
+- FHIR requires `name` and `active` on every Organization, so a row without `org_name` is rejected, and an empty `active` is taken as `true`.
+
 ## networks
 
 The authoritative list of networks, so `network_id` stays consistent across datasets. One row per network.
@@ -112,7 +151,11 @@ Defines each plan once, so provider and facility rows carry only `plan_id`. One 
 | `plan_identifier` | If MA | `H#####-###-###`, contract-plan-segment; blank for non-MA plans | `H6776-001-000` |
 | `contract_year` | If applicable | YYYY | `2027` |
 | `network_id` | Yes | one or more keys from `networks`, `;`-separated | `NET-001;NET-002` |
-| `owned_by_org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, the plan sponsor | `9999999979` |
-| `administered_by_org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
+| `owned_by_org_identifier` | Yes | the plan sponsor; key from [`organizations`](#organizations) | `99999` |
+| `administered_by_org_identifier` | Yes | the administrator or PBM, the sponsor itself when it administers its own plans; key from [`organizations`](#organizations) | `99999` |
+
+- Plan-Net defines [`ownedBy`](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan-definitions.html#InsurancePlan.ownedBy) as "the entity that is providing the health insurance product and underwriting the risk. This is typically an insurance carriers, other third-party payers, or health plan sponsors commonly referred to as 'payers'."
+- Plan-Net defines [`administeredBy`](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan-definitions.html#InsurancePlan.administeredBy) as "an organization which administer other services such as underwriting, customer service and/or claims processing on behalf of the health insurance product owner."
+- The sponsor and the administrator each need a row in [`organizations`](#organizations); a payer without an NPI is keyed there by its NAIC company code.
 
 These resources are served by the [Provider Directory API](../../interop-apis/provider-directory.md).

@@ -17,7 +17,7 @@ Part of the [Payer Plans](README.md) group of the [Drug Formulary](../README.md)
 
 One row per geographic area a plan is offered in. A plan sold in one state has one area; a plan sold county by county has one per county. [`payer_plans`](README.md) and [`formularies`](../formularies.md) point at these rows through `coverage_area_ids`.
 
-{% file src="../../../assets/data-integration/coverage_areas.62bb193f.csv" %}
+{% file src="../../../assets/data-integration/coverage_areas.36fb8703.csv" %}
 coverage_areas.csv Data template with example rows
 {% endfile %}
 
@@ -40,7 +40,7 @@ coverage_areas.csv Data template with example rows
 | `latitude` | If available | decimal, WGS84; a point inside the area | `42.9538` |
 | `longitude` | If available | decimal, WGS84 | `-75.5268` |
 | `region_geojson` | If a boundary | the area's boundary as a GeoJSON Feature or geometry, the whole document in one cell, quoted per RFC 4180 | `{"type":"Polygon","coordinates":[[[-74.3,40.5],[-73.7,40.5],[-73.7,40.9],[-74.3,40.9],[-74.3,40.5]]]}` |
-| `managing_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix; the organization responsible for the area, usually the plan sponsor; key from [`organizations`](../../uscdi/care-team.md#organizations) | `9999999979` |
+| `managing_org_identifier` | Recommended | the organization responsible for the area, usually the plan sponsor; key from [`organizations`](../../provider-directory/README.md#organizations) | `99999` |
 | `last_updated` | Recommended | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the area last changed in your system; blank, or a date alone, and Payerbox stamps the time it received the file | `2026-10-01T09:00:00-05:00` |
 | `is_deleted` | If retracting | `true` sets the published area's `status` to `inactive` | `true` |
 

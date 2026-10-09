@@ -21,7 +21,7 @@ Both files carry every column from [Explanation of Benefit](explanation-of-benef
 
 One row per dental claim.
 
-{% file src="../../assets/data-integration/claims_oral.93ec67e0.csv" %}
+{% file src="../../assets/data-integration/claims_oral.f9eaf1fc.csv" %}
 claims_oral.csv Data template with example rows
 {% endfile %}
 

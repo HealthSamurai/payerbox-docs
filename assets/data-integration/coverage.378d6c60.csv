@@ -1,4 +1,0 @@
-record_id,patient_identifier,status,member_id,subscriber_id,relationship_code,coverage_type_code,payer_org_npi,group_number,group_name,plan_number,plan_name,network_id,period_start,period_end,is_deleted
-COV-0001,MBR0000012,active,MBR0000012,MBR0000012,self,1,9999999979,GRP-4410,Acme Manufacturing,H6776-001,Gold PPO,NET-GOLD-NY,2026-01-01,2026-12-31,
-COV-0002,MBR0000013,active,MBR0000013,MBR0000012,spouse,1,9999999979,,,,,NET-GOLD-NY,2026-01-01,2026-12-31,
-COV-0003,MBR0000012,cancelled,MBR0000001,MBR0000001,self,,9999999979,,,,,,2025-01-01,2025-12-31,
