@@ -31,8 +31,8 @@ formularies.csv Data template with example rows
 | `status` | Yes | `active`, `draft`, `retired`, `unknown` [publication-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/publication-status%7C4.0.1) | `active` |
 | `period_start` | Recommended | date the formulary takes effect | `2027-01-01` |
 | `period_end` | Recommended | date the formulary expires | `2027-12-31` |
-| `owned_by_org_identifier` | Recommended | plan issuer; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
-| `administered_by_org_identifier` | Yes | product administrator; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999961` |
+| `owned_by_org_identifier` | Recommended | Plan issuer; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
+| `administered_by_org_identifier` | Yes | Product administrator; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999961` |
 | `network_ids` | If available | pharmacy networks the formulary applies to, keys from Provider Directory [`networks`](../provider-directory/README.md#networks), `;`-separated; each must be a network that feed has published, or the formulary waits for it | `NET-001` |
 | `coverage_area_ids` | If available | keys from [`coverage_areas`](payer-plans/coverage-areas.md), `;`-separated | `AREA-NY` |
 | `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the formulary last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
