@@ -33,7 +33,7 @@ Repeating references and codes that carry no fields of their own stay as `;`-sep
 
 One row per plan: the elements of the InsurancePlan that occur once.
 
-{% file src="../../../assets/data-integration/payer_plans.2c6ac72b.csv" %}
+{% file src="../../../assets/data-integration/payer_plans.8bce591e.csv" %}
 payer_plans.csv Data template with example rows
 {% endfile %}
 
@@ -47,17 +47,17 @@ payer_plans.csv Data template with example rows
 | `period_start` | Recommended | date the plan year begins | `2027-01-01` |
 | `period_end` | Recommended | date the plan year ends | `2027-12-31` |
 | `coverage_area_ids` | Recommended | keys from [`coverage_areas`](coverage-areas.md), `;`-separated | `AREA-NY` |
-| `owned_by_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix; the plan sponsor; key from [`organizations`](../../uscdi/care-team.md#organizations) | `9999999979` |
-| `administered_by_org_npi` | If different | 10 digits, Luhn-valid over the `80840` prefix; the administrator or PBM; key from [`organizations`](../../uscdi/care-team.md#organizations) | |
+| `owned_by_org_identifier` | Recommended | the plan sponsor; key from [`organizations`](../../uscdi/care-team.md#organizations) | `99999` |
+| `administered_by_org_identifier` | If different | the administrator or PBM; key from [`organizations`](../../uscdi/care-team.md#organizations) | |
 | `network_ids` | If available | networks of the product, keys from Provider Directory [`networks`](../../provider-directory/README.md#networks), `;`-separated; each must be a network that feed has published, or the plan waits for it | `NET-001` |
 | `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the plan last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
 | `is_deleted` | If retracting | `true` sets the published plan's `status` to `retired`; every child row that references it goes with it | `true` |
 
 - `plan_id` becomes the plan's first identifier, under the identifier namespace fixed for your engagement. Further identifiers, such as the CMS contract-plan-segment, are rows in [`plan_identifiers`](plan-identifiers.md).
 - A plan is complete only with its children. The profile requires at least one drug coverage and at least one drug plan with a cost table, so a `payer_plans` row with no `plan_drug_coverages` row or no `drug_plans` row is reported and not published.
-- `owned_by_org_npi`, `administered_by_org_npi` and `network_ids` reuse the Provider Directory keys, so the same plan described in both feeds names one sponsor and one set of networks.
+- Plan-Net defines [`ownedBy`](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan-definitions.html#InsurancePlan.ownedBy) as "the entity that is providing the health insurance product and underwriting the risk. This is typically an insurance carriers, other third-party payers, or health plan sponsors commonly referred to as 'payers'."
+- Plan-Net defines [`administeredBy`](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan-definitions.html#InsurancePlan.administeredBy) as "an organization which administer other services such as underwriting, customer service and/or claims processing on behalf of the health insurance product owner."
 - `is_deleted` on the plan retracts the whole tree. Child rows have their own `is_deleted` for dropping one contact, one cost cell or one identifier from the plan; a child row absent from the snapshot is dropped the same way when the plan is next built.
-- An NPI that fails the check digit is reported as `invalid_npi` and the sponsor is left off; the plan still publishes.
 
 ### How the datasets become the resource
 
@@ -66,7 +66,7 @@ payer_plans.csv Data template with example rows
 | `meta.lastUpdated` | 1..1 | `payer_plans.last_updated` |
 | `identifier` | 1..* | `plan_id`, then one per `plan_identifiers` row |
 | `status`, `type`, `name`, `alias`, `period` | | `payer_plans` columns |
-| `ownedBy`, `administeredBy` | | `owned_by_org_npi`, `administered_by_org_npi` |
+| `ownedBy`, `administeredBy` | | `owned_by_org_identifier`, `administered_by_org_identifier` |
 | `coverageArea` | 0..*, must support | one Insurance Plan Location per `coverage_area_ids` value, from `coverage_areas` |
 | `contact` | 0..*, must support | one per `plan_contacts` row |
 | `network` | | `network_ids` |

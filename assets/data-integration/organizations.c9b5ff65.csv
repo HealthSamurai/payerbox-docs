@@ -1,0 +1,7 @@
+org_identifier,org_identifier_system,org_name,active,org_type_code,telecom_code,telecom_value,address_line1,city,state,zip,is_deleted
+9999999979,,Anytown Medical Group,true,prov,phone,5551234567,123 Main St,Anytown,NY,12345,
+9999999961,,Anytown Pharmacy,true,prov,phone,5559876543,45 Oak St,Anytown,NY,12345,
+9999999938,,Anytown Hospital,true,prov,phone,5551112222,200 Hospital Way,Anytown,NY,12345,
+99999,urn:oid:2.16.840.1.113883.6.300,Example Health Plan,true,pay,phone,8885551000,1 Insurance Plaza,Anytown,NY,12345,
+33D9999999,urn:oid:2.16.840.1.113883.4.7,Anytown Clinical Laboratory,true,prov,phone,5553334444,10 Lab Dr,Anytown,NY,12345,
+FB-001,http://acme.org/org-ids,Anytown Food Bank,true,cg,,,,,,,

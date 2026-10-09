@@ -21,7 +21,7 @@ The two templates below carry exactly these shared columns. Each claim-type page
 
 One row per adjudicated claim. The claim type and the profile are decided by which file the row is in, so there is no claim-type column: a row in `claims_pharmacy` becomes a Pharmacy ExplanationOfBenefit with `type` = `pharmacy` and `use` = `claim`.
 
-{% file src="../../assets/data-integration/claims.75501769.csv" %}
+{% file src="../../assets/data-integration/claims.3ef31da5.csv" %}
 claims.csv Data template with example rows
 {% endfile %}
 
@@ -30,7 +30,7 @@ claims.csv Data template with example rows
 | `record_id` | Yes | your claim control number, stable across adjustments to the same claim [C4BBClaimIdentifierType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/carin-bb/ValueSet/C4BBClaimIdentifierType%7C2.1.0) | `CLM-0001` |
 | `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
 | `coverage_id` | Yes | key from `coverage`, the plan the claim was adjudicated against | `COV-0001` |
-| `payer_org_npi` | Yes | 10 digits, or your payer id; the same payer named on that coverage | `9999999979` |
+| `payer_org_identifier` | Yes | the payer; key from [`organizations`](../uscdi/care-team.md#organizations); the same payer named on that coverage | `99999` |
 | `billing_provider_npi` | Yes | 10 digits; key from `practitioners` or `organizations` | `9999999995` |
 | `status` | Yes | `active`, `cancelled` [explanationofbenefit-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/explanationofbenefit-status%7C4.0.1) | `active` |
 | `outcome` | Yes | `complete`, `partial`, `error`, `queued` [remittance-outcome](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/remittance-outcome%7C4.0.1) | `complete` |
@@ -52,7 +52,7 @@ claims.csv Data template with example rows
 - `record_id` becomes the claim's unique identifier, typed `uc`, the payer-assigned claim id. CARIN expects the number a member sees on a paper EOB. Keep it stable: a corrected version of the same claim keeps its `record_id` and is an update. An adjustment that your system numbers as a new claim is a new record, and the two point at each other through `related_claim_ids`.
 - `status` is `active` for a claim in force and `cancelled` for one voided or reversed. The value set also has `draft` and `entered-in-error`; CARIN does not expect either on an adjudicated claim, so a row with them is reported back rather than published.
 - `outcome` is the adjudication result. `complete` is the expected value for a processed claim, paid or denied; a denial is `complete` with a `payment_status` of `denied`. `partial` and `queued` describe a claim still in process.
-- `payer_org_npi` and `coverage_id` must agree: the payer on the claim is the payer on the coverage it was adjudicated against. Payerbox sets that coverage as the focal insurance on the resource.
+- `payer_org_identifier` and `coverage_id` must agree: the payer on the claim is the payer on the coverage it was adjudicated against. Payerbox sets that coverage as the focal insurance on the resource.
 - `billing_provider_npi` is the party that submitted the claim. Whether it becomes a Practitioner or an Organization reference is decided by which dataset defines that NPI, so a provider named here must exist in `practitioners` or `organizations`, in network or not.
 - `payee_type` says who was paid. `subscriber` and `provider` need no `payee_npi`; `beneficiary` resolves to the patient; `other` must name the party in `payee_npi`, or the row is rejected.
 - `related_relationships` are read from the current claim's point of view: `prior` means the claim in `related_claim_ids` is the one this claim adjusts; `replacedby` means this claim has itself been adjusted by that one. Name the immediately preceding or following claim, not the first or the last in a chain.

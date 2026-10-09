@@ -22,7 +22,7 @@ One row per practitioner, organization, and location: each row becomes one Pract
 
 If you already send the [Provider Directory](../provider-directory/README.md) feed, list here only the clinicians missing from it, such as an external ordering physician.
 
-{% file src="../../assets/data-integration/practitioners.c3d34ffb.csv" %}
+{% file src="../../assets/data-integration/practitioners.983dad30.csv" %}
 practitioners.csv Data template with example rows
 {% endfile %}
 
@@ -33,7 +33,7 @@ practitioners.csv Data template with example rows
 | `last_name` | Yes | text | `Roe` |
 | `first_name` | Recommended | text | `Richard` |
 | `specialty_nucc` | Recommended | NUCC taxonomy code(s), `;`-separated [Healthcare Provider Taxonomy](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.1066&server=https://tx.fhir.org/r4) | `207R00000X` |
-| `primary_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
+| `primary_org_identifier` | Recommended | key from [`organizations`](#organizations) | `9999999979` |
 | `practitioner_role_code` | Recommended | SNOMED CT or v3 participation-function code [Care Team Member Function](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1099.30&server=https://tx.fhir.org/r4) | `PCP` primary care physician |
 | `location_id` | Recommended | `locations` key | `LOC-221` |
 | `phone` | Recommended | 10 digits | `5551234567` |
@@ -47,18 +47,18 @@ practitioners.csv Data template with example rows
 
 ## organizations
 
-One row per organization: a practice, hospital, pharmacy, or payer that other rows reference by NPI — [`practitioners`](#practitioners) via `primary_org_npi`, `encounters` via `service_provider_npi`, `medication_dispenses` via `pharmacy_org_npi`.
+One row per organization: every practice, hospital, laboratory, pharmacy or payer that a `*_org_identifier` column in any feed names.
 
 If you already send the [Provider Directory](../provider-directory/README.md#facilities) feed, list here only the organizations missing from it.
 
-{% file src="../../assets/data-integration/organizations.4e83a034.csv" %}
+{% file src="../../assets/data-integration/organizations.c9b5ff65.csv" %}
 organizations.csv Data template with example rows
 {% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
-| `org_npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix, or another stable id with `org_identifier_system` | `9999999979` |
-| `org_identifier_system` | If `org_npi` is not an NPI | URI of the issuing system, a URL you control or an OID; NPI (`http://hl7.org/fhir/sid/us-npi`) assumed when empty | `http://acme.org/org-ids` |
+| `org_identifier` | Yes | NPI, NAIC company code, CLIA number or your own id, see [identifier options](#organization-identifier-options); unique across the dataset | `9999999979` |
+| `org_identifier_system` | If `org_identifier` is not an NPI | URI of the issuing system, see [identifier options](#organization-identifier-options); NPI assumed when empty | `urn:oid:2.16.840.1.113883.6.300` |
 | `org_name` | Yes | text | `Family Medical Group` |
 | `active` | Recommended | `true` / `false` (`true` assumed when empty); `false` retires an organization without deleting it | `true` |
 | `org_type_code` | If available | `prov` provider, `pay` payer, `ins` insurance company, `dept` hospital department, `bus` non-healthcare business [organization-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/organization-type%7C4.0.1) | `prov` |
@@ -70,7 +70,18 @@ organizations.csv Data template with example rows
 | `zip` | Recommended | 5 or 9 digits, as a string | `10007` |
 | `is_deleted` | If retracting | `true` retracts this row | `true` |
 
-- `org_npi` is the key every other dataset uses to point at an organization. Send the NPI whenever the organization has one — US Core requires systems to support NPIs on organizations. An organization without an NPI, such as a community group a referral points to, may use another identifier that stays stable across deliveries; then `org_identifier_system` names who issued it, the same way `patient_identifier_system` does for members.
+- Every `*_org_identifier` column in every feed carries this `org_identifier` value as is; the system is declared once, here.
+
+### Organization identifier options
+
+| Identifier | `org_identifier` | `org_identifier_system` | Typical organization |
+|---|---|---|---|
+| NPI | 10 digits, Luhn-valid over the `80840` prefix | empty, or `http://hl7.org/fhir/sid/us-npi` | practice, hospital, pharmacy |
+| NAIC company code | 5 digits | `urn:oid:2.16.840.1.113883.6.300` | insurer, plan sponsor |
+| CLIA number | 10 characters, `D` in the third position | `urn:oid:2.16.840.1.113883.4.7` | clinical laboratory |
+| Your own id | any stable string | a URL you control or an OID | anything else |
+
+The first three are the `identifier:NPI`, `identifier:CLIA` and `identifier:NAIC` slices of [US Core Organization](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-organization.html), with its format rules; Plan-Net, CARIN BB and PAS organizations carry the same slices. One identifier per row: an organization with an NPI is keyed by the NPI.
 - `telecom_code` and `telecom_value` travel together: FHIR requires the system code whenever a contact value is sent, so a `telecom_value` with an empty `telecom_code` is rejected.
 - FHIR requires `name` and `active` on every Organization, so a row without `org_name` is rejected, and an empty `active` is taken as `true`.
 

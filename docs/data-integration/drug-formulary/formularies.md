@@ -19,7 +19,7 @@ The formulary's identifiers and contacts repeat, so they are the datasets [`form
 
 One row per formulary. A formulary is a plan-year list; a new plan year is a new row with a new `formulary_id`.
 
-{% file src="../../assets/data-integration/formularies.c5f109d9.csv" %}
+{% file src="../../assets/data-integration/formularies.682d75f6.csv" %}
 formularies.csv Data template with example rows
 {% endfile %}
 
@@ -31,8 +31,8 @@ formularies.csv Data template with example rows
 | `status` | Yes | `active`, `draft`, `retired`, `unknown` [publication-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/publication-status%7C4.0.1) | `active` |
 | `period_start` | Recommended | date the formulary takes effect | `2027-01-01` |
 | `period_end` | Recommended | date the formulary expires | `2027-12-31` |
-| `owned_by_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix; the plan sponsor that issues the formulary; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999979` |
-| `administered_by_org_npi` | If different | 10 digits, Luhn-valid over the `80840` prefix; the PBM or administrator that maintains it; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999961` |
+| `owned_by_org_identifier` | Recommended | the plan sponsor that issues the formulary; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
+| `administered_by_org_identifier` | If different | the PBM or administrator that maintains it; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999961` |
 | `network_ids` | If available | pharmacy networks the formulary applies to, keys from Provider Directory [`networks`](../provider-directory/README.md#networks), `;`-separated; each must be a network that feed has published, or the formulary waits for it | `NET-001` |
 | `coverage_area_ids` | If available | keys from [`coverage_areas`](payer-plans/coverage-areas.md), `;`-separated | `AREA-NY` |
 | `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the formulary last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
@@ -40,7 +40,7 @@ formularies.csv Data template with example rows
 
 - The profile requires at least one identifier. `formulary_id` becomes it, under the identifier namespace fixed for your engagement. Every other identifier, such as the CMS formulary id from your HPMS submission, is a row in [`formulary_identifiers`](formulary-identifiers.md) with its own namespace.
 - A formulary needs a name or an id; both are better. Payerbox sets its type to drug policy and its plan type to drug, which is what marks an InsurancePlan as a formulary rather than a payer plan.
-- `owned_by_org_npi`, `administered_by_org_npi` and `network_ids` are the same keys the Provider Directory `plans` dataset uses, so a formulary and the plan that uses it name the same sponsor and networks. `coverage_area_ids` point at the same `coverage_areas` rows the plans use. An NPI that fails the check digit is reported as `invalid_npi` and the sponsor is left off; the formulary still publishes.
+- `owned_by_org_identifier`, `administered_by_org_identifier` and `network_ids` are the same keys the Provider Directory `plans` dataset uses, so a formulary and the plan that uses it name the same sponsor and networks. `coverage_area_ids` point at the same `coverage_areas` rows the plans use.
 - A formulary revised within the plan year keeps its `formulary_id`; `last_updated` on the formulary and on the changed items is how a revision is told from the previous one. The IG has no version element, and none is added.
 - Contacts, including the printable formulary the IG expects to be reachable from the resource, are rows in [`formulary_contacts`](formulary-contacts.md).
 - Not collected: `endpoint`, and the Formulary's own `coverage` and `plan` structures. The IG uses the Formulary as an organizing construct; cost sharing lives on the payer plan.
