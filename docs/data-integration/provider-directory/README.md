@@ -112,11 +112,11 @@ Defines each plan once, so provider and facility rows carry only `plan_id`. One 
 | `plan_identifier` | If MA | `H#####-###-###`, contract-plan-segment; blank for non-MA plans | `H6776-001-000` |
 | `contract_year` | If applicable | YYYY | `2027` |
 | `network_id` | Yes | one or more keys from `networks`, `;`-separated | `NET-001;NET-002` |
-| `owned_by_org_identifier` | Yes | the plan sponsor; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
-| `administered_by_org_identifier` | Yes | the administrator, the sponsor itself when it administers its own plans; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
+| `owned_by_org_identifier` | Yes | the plan issuer; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
+| `administered_by_org_identifier` | Yes | the product administrator, the issuer itself when it administers its own plans; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
 
 - Plan-Net defines [`ownedBy`](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan-definitions.html#InsurancePlan.ownedBy) as "the entity that is providing the health insurance product and underwriting the risk. This is typically an insurance carriers, other third-party payers, or health plan sponsors commonly referred to as 'payers'."
 - Plan-Net defines [`administeredBy`](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/StructureDefinition-plannet-InsurancePlan-definitions.html#InsurancePlan.administeredBy) as "an organization which administer other services such as underwriting, customer service and/or claims processing on behalf of the health insurance product owner."
-- The sponsor and the administrator are Organizations the directory references but does not build. Send them as rows in the USCDI [`organizations`](../uscdi/care-team.md#organizations) dataset, or ask us to create them once in the FHIR server during onboarding, before the first delivery.
+- The issuer and the administrator are Organizations the directory references but does not build. Send them as rows in the USCDI [`organizations`](../uscdi/care-team.md#organizations) dataset, or ask us to create them once in the FHIR server during onboarding, before the first delivery.
 
 These resources are served by the [Provider Directory API](../../interop-apis/provider-directory.md).

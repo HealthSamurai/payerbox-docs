@@ -47,7 +47,7 @@ practitioners.csv Data template with example rows
 
 ## organizations
 
-One row per organization, defined once: an in-network facility is its Provider Directory [`facilities`](../provider-directory/README.md#facilities) row; every other organization a `*_org_identifier` column names, including the plan sponsor, is a row here. A directory-only sender ships this one file with the directory.
+One row per organization, defined once: an in-network facility is its Provider Directory [`facilities`](../provider-directory/README.md#facilities) row; every other organization a `*_org_identifier` column names, including the plan issuer, is a row here. A directory-only sender ships this one file with the directory.
 
 {% file src="../../assets/data-integration/organizations.c9b5ff65.csv" %}
 organizations.csv Data template with example rows
@@ -75,7 +75,7 @@ organizations.csv Data template with example rows
 | Identifier | `org_identifier` | `org_identifier_system` | Typical organization |
 |---|---|---|---|
 | NPI | 10 digits, Luhn-valid over the `80840` prefix | empty, or `http://hl7.org/fhir/sid/us-npi` | practice, hospital, pharmacy |
-| NAIC company code | 5 digits | `urn:oid:2.16.840.1.113883.6.300` | insurer, plan sponsor |
+| NAIC company code | 5 digits | `urn:oid:2.16.840.1.113883.6.300` | insurer, plan issuer |
 | CLIA number | 10 characters, `D` in the third position | `urn:oid:2.16.840.1.113883.4.7` | clinical laboratory |
 | Your own id | any stable string | a URL you control or an OID | anything else |
 
