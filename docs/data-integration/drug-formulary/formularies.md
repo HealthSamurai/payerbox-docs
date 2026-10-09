@@ -19,7 +19,7 @@ The formulary's identifiers and contacts repeat, so they are the datasets [`form
 
 One row per formulary. A formulary is a plan-year list; a new plan year is a new row with a new `formulary_id`.
 
-{% file src="../../assets/data-integration/formularies.682d75f6.csv" %}
+{% file src="../../assets/data-integration/formularies.c8d853c1.csv" %}
 formularies.csv Data template with example rows
 {% endfile %}
 
@@ -32,7 +32,7 @@ formularies.csv Data template with example rows
 | `period_start` | Recommended | date the formulary takes effect | `2027-01-01` |
 | `period_end` | Recommended | date the formulary expires | `2027-12-31` |
 | `owned_by_org_identifier` | Recommended | the plan sponsor that issues the formulary; key from [`organizations`](../uscdi/care-team.md#organizations) | `99999` |
-| `administered_by_org_identifier` | If different | the PBM or administrator that maintains it; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999961` |
+| `administered_by_org_identifier` | Yes | the PBM or administrator that maintains it, the sponsor itself when it maintains its own; key from [`organizations`](../uscdi/care-team.md#organizations) | `9999999961` |
 | `network_ids` | If available | pharmacy networks the formulary applies to, keys from Provider Directory [`networks`](../provider-directory/README.md#networks), `;`-separated; each must be a network that feed has published, or the formulary waits for it | `NET-001` |
 | `coverage_area_ids` | If available | keys from [`coverage_areas`](payer-plans/coverage-areas.md), `;`-separated | `AREA-NY` |
 | `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the formulary last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
