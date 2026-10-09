@@ -52,7 +52,7 @@ The member ticks the statement under **Confirmation** and clicks **Save this cho
 {% endstep %}
 {% endstepper %}
 
-![The Provider Access choice set to OPT OUT, with the confirmation panel: Member (myself), the ticked attestation, and Save this choice](../../../assets/fhir-app-portal/consent/member-provider-access-confirm-v2.png)
+![The Provider Access choice set to OPT OUT, with the confirmation panel: Member (myself), the ticked attestation, and Save this choice](../../../assets/fhir-app-portal/consent/member-provider-access-confirm-v2.avif)
 
 A member's own choice takes effect when it is saved, and the record it replaces stops being in force. From then on, Provider Access responses leave this member's data out.
 
@@ -92,7 +92,7 @@ Where it is offered, picking **Authorized representative** adds:
 | **Basis of authority** | **Power of Attorney**, **Legal guardian**, or **Other** with a description. |
 | **Upload documentation of your authority** | The power of attorney, guardianship papers or equivalent: a PDF, JPEG or PNG file of up to 10 MB. |
 
-![The confirmation panel completed by an authorized representative: name and relationship, Power of Attorney, the uploaded document, the note that the paperwork is checked first, and the ticked attestation](../../../assets/fhir-app-portal/consent/member-representative-confirm-v2.png)
+![The confirmation panel completed by an authorized representative: name and relationship, Power of Attorney, the uploaded document, the note that the paperwork is checked first, and the ticked attestation](../../../assets/fhir-app-portal/consent/member-representative-confirm-v2.avif)
 
 When the choice applies depends on its direction, and the panel tells the representative which before they save:
 

@@ -11,7 +11,7 @@ When an authorized representative records a choice that shares more of a member'
 
 Reviews happen on the member's page: **Members** → the member → **Data sharing** card. The card is shown on deployments that enable the Consent Panel, in both read-write and read-only [capture modes](consent-settings.md#capture-mode).
 
-![The Data sharing card on Member Details: Provider Access Not sharing with Review pending, Payer-to-Payer Permission given, one pending review submitted by Sam Lee, son as power of attorney, and the history](../../assets/fhir-app-portal/consent/admin-data-sharing-card-v2.png)
+![The Data sharing card on Member Details: Provider Access Not sharing with Review pending, Payer-to-Payer Permission given, one pending review submitted by Sam Lee, son as power of attorney, and the history](../../assets/fhir-app-portal/consent/admin-data-sharing-card-v2.avif)
 
 ## What the card shows
 
@@ -30,7 +30,7 @@ Reviews happen on the member's page: **Members** → the member → **Data shari
 {% step %}
 **Check the answers.** **View answers** lists the form's questions with the answers as submitted: the member block, the choice, who completed the form, the representative's name, basis of authority and document, and the date.
 
-![The answers of a pending review: the member's name, birth date, member ID and phone, the choice, who completed the form, the representative and their authority, the document, and the date](../../assets/fhir-app-portal/consent/admin-review-answers-v2.png)
+![The answers of a pending review: the member's name, birth date, member ID and phone, the choice, who completed the form, the representative and their authority, the document, and the date](../../assets/fhir-app-portal/consent/admin-review-answers-v2.avif)
 {% endstep %}
 {% step %}
 **Decide.** Click **Approve** or **Reject**. The dialog takes an optional **Internal note**, which goes to the audit log only and is never shown to the member. Confirm with **Approve** or **Reject**.
@@ -48,7 +48,7 @@ Both decisions are saved together with a `Provenance` record that names the admi
 
 After the approval above, the card reads:
 
-![The Data sharing card after approval: Provider Access Sharing is on, Pending review (0), and the history with In force, approved October 8, 2026](../../assets/fhir-app-portal/consent/admin-data-sharing-card-after-v2.png)
+![The Data sharing card after approval: Provider Access Sharing is on, Pending review (0), and the history with In force, approved October 8, 2026](../../assets/fhir-app-portal/consent/admin-data-sharing-card-after-v2.avif)
 
 ## Audit
 
