@@ -103,7 +103,7 @@ Authorization: Bearer <token>
 | `category` | `IDSCL`, and the PDex API purpose `provider-access`. |
 | `patient`, `performer` | The member's `Patient`. PDex STU 2.1 allows only the Patient as `performer`. |
 | `organization` | The plan's `Organization`. |
-| `provision.actor` | The plan's Organization in the role `performer` (the source of the data). A representative who signed can be added in their authority role, for example `POWATT`. |
+| `provision.actor` | The plan's Organization in the role `performer` (the source of the data). A representative who completed the form can be added in their authority role, for example `POWATT`. |
 | `policyRule` | `cric`, with the display *Common Rule Informed Consent*, as the profile fixes it. |
 | `provision.type` | `deny` to opt out, `permit` to share again. |
 | `provision.period.start` | The day the decision takes effect. |
@@ -171,11 +171,11 @@ Content-Type: application/fhir+json
 | `status` | `active`, fixed by the profile. |
 | `scope`, `category` | `patient-privacy`; `IDSCL`, and the PDex API purpose `payer-to-payer`. |
 | `policy.uri` | `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive` for all information, `…#regular` for non-sensitive information only. The names are the profile's: `#sensitive` is the wider grant. |
-| `sourceReference` | A `DocumentReference` for the signed form. HRex requires a source document, and it must exist before the Consent is written. |
+| `sourceReference` | A `DocumentReference` for the completed form. HRex requires a source document, and it must exist before the Consent is written. |
 | `provision.type` | `permit`. |
 | `provision.period` | `start`, and an `end` set by the plan's policy. |
 | `provision.actor` | Each previous or concurrent payer in the role `performer` (the source), and the plan's Organization in the role `IRCP` (the recipient). |
-| `performer` | The member's `Patient`, or the `RelatedPerson` who signed for them. |
+| `performer` | The member's `Patient`, or the `RelatedPerson` who acted for them. |
 
 {% code title="The elements that differ from the opt-out" %}
 ```json
@@ -260,7 +260,7 @@ Records captured on the member portal come with:
 |---|---|
 | `DocumentReference` | The consent document, LOINC `59284-0` *Consent Document*: `Consent.sourceReference` points to it, and its attachment points to the QuestionnaireResponse. |
 | `QuestionnaireResponse` | The answered form, US Core QuestionnaireResponse profile. |
-| `Provenance` | Who signed, how (activity `CREATE`, `ONLINEWRIT`), and the form's canonical; a review adds one with the administrator as `verifier`. |
+| `Provenance` | Who submitted it, how (activity `CREATE`, `ONLINEWRIT`), and the form's canonical; a review adds one with the administrator as `verifier`. |
 | `RelatedPerson`, `DocumentReference` | For a representative: the RelatedPerson (US Core RelatedPerson profile, relationship `POWATT`, `GUARD` or `RESP`), and the document of authority. |
 
 ## Errors

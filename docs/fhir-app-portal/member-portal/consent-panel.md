@@ -12,7 +12,7 @@ Plan members record the two data-sharing choices of [CMS-0057-F](../../complianc
 - **Provider Access**: whether the plan shares the member's record with the in-network providers who treat them through [Provider Access](../../interop-apis/provider-access.md). Sharing is on unless the member opts out.
 - **Payer-to-Payer**: whether the plan may request the member's records from their previous or concurrent health plans through [Payer-to-Payer](../../interop-apis/payer-to-payer.md). Nothing is requested unless the member opts in.
 
-This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices signed by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only where the deployment turns it on; see [Capture mode](../consent-settings.md#capture-mode).
+This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices made by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only where the deployment turns it on; see [Capture mode](../consent-settings.md#capture-mode).
 
 ![Top of the Data sharing page: the Provider Access card with its Sharing is on status and what a treating provider receives](../../../assets/fhir-app-portal/consent/member-data-sharing.avif)
 
@@ -21,7 +21,7 @@ This page describes what members see and do there and what each choice records, 
 * **See what is on file** for each choice, and since when it applies
 * **Opt out of Provider Access**, or turn sharing back on
 * **Authorize Payer-to-Payer exchange** for all information, or for non-sensitive information only where the plan offers it, naming one or more registered previous or concurrent plans; and **withdraw** the authorization
-* **Let an authorized representative sign**, with a document of authority, where the deployment offers it (see [Authorized representatives](#authorized-representatives))
+* **Let an authorized representative act for them**, with a document of authority, where the deployment offers it (see [Authorized representatives](#authorized-representatives))
 * **Review earlier changes** and what was answered each time
 
 ## The two cards
@@ -48,11 +48,11 @@ On the Provider Access card the member picks **OPT OUT: do not share my health i
 A confirmation panel opens. Where representatives are offered, it first asks **Who is completing this form?** with **Member (myself)** and **Authorized representative**.
 {% endstep %}
 {% step %}
-The member ticks the statement under **Signature**, draws a signature, and clicks **Save this choice**.
+The member ticks the statement under **Confirmation** and clicks **Save this choice**.
 {% endstep %}
 {% endstepper %}
 
-![The Provider Access choice set to OPT OUT, with the confirmation panel: Member (myself), the signed attestation, a drawn signature, and Save this choice](../../../assets/fhir-app-portal/consent/member-provider-access-confirm.avif)
+![The Provider Access choice set to OPT OUT, with the confirmation panel: Member (myself), the ticked attestation, and Save this choice](../../../assets/fhir-app-portal/consent/member-provider-access-confirm-v2.png)
 
 A member's own choice takes effect when it is saved, and the record it replaces stops being in force. From then on, Provider Access responses leave this member's data out.
 
@@ -66,23 +66,23 @@ On the Payer-to-Payer card the member picks **ALL of my health information, incl
 Under **Previous or concurrent health plan** the member types the plan's name and picks it from the list. Only plans registered in [Consent Settings](../consent-settings.md#previous-payers) appear. The member adds their **Member ID with that plan**, whether that plan was in their own name or under someone else, and whether it is a previous plan or one they have now alongside this one. **Add another plan** names more.
 {% endstep %}
 {% step %}
-The member signs and clicks **Save this choice**.
+The member ticks the statement under **Confirmation** and clicks **Save this choice**.
 {% endstep %}
 {% endstepper %}
 
 ![The Payer-to-Payer choice set to ALL of my health information, with Lakeside Health Plan picked as the previous plan, a member ID, and Add another plan](../../../assets/fhir-app-portal/consent/member-p2p-prior-plan.avif)
 
-The authorization runs until the date set in [Consent Settings](../consent-settings.md), which the form shows before the member signs. Once it is saved, the card lists the plans the member named:
+The authorization runs until the date set in [Consent Settings](../consent-settings.md), which the form shows before the member saves. Once it is saved, the card lists the plans the member named:
 
 ![Payer-to-Payer in force since October 6, 2026 and running until December 31, 2027, with Lakeside Health Plan listed](../../../assets/fhir-app-portal/consent/member-p2p-plans.avif)
 
 Picking **Only NON-SENSITIVE information** shows the member a warning before saving: other plans cannot yet separate specially protected records from the rest, so they hold back the member's whole history and nothing moves today.
 
-To stop, the member picks **Withdraw my authorization. Do not request my records from my other health plans.**, signs, and saves. The plan stops asking from that day; records it already collected stay in the member's file.
+To stop, the member picks **Withdraw my authorization. Do not request my records from my other health plans.**, ticks the statement, and saves. The plan stops asking from that day; records it already collected stay in the member's file.
 
 ## Authorized representatives
 
-Representative signing is offered only where the portal runs with `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true`, for plans whose staff check documents of authority. Elsewhere the panel does not ask who completes the form, the member always signs themselves, and there is nothing to review.
+Representatives are offered only where the portal runs with `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true`, for plans whose staff check documents of authority. Elsewhere the panel does not ask who completes the form, the member always completes it, and there is nothing to review.
 
 Where it is offered, picking **Authorized representative** adds:
 
@@ -92,7 +92,7 @@ Where it is offered, picking **Authorized representative** adds:
 | **Basis of authority** | **Power of Attorney**, **Legal guardian**, or **Other** with a description. |
 | **Upload documentation of your authority** | The power of attorney, guardianship papers or equivalent: a PDF, JPEG or PNG file of up to 10 MB. |
 
-![The confirmation panel signed by an authorized representative: name and relationship, Power of Attorney, the uploaded document, the note that the paperwork is checked first, and the signature](../../../assets/fhir-app-portal/consent/member-representative-confirm.avif)
+![The confirmation panel completed by an authorized representative: name and relationship, Power of Attorney, the uploaded document, the note that the paperwork is checked first, and the ticked attestation](../../../assets/fhir-app-portal/consent/member-representative-confirm-v2.png)
 
 When the choice applies depends on its direction, and the panel tells the representative which before they save:
 
@@ -103,7 +103,7 @@ When the choice applies depends on its direction, and the panel tells the repres
 
 ## Earlier changes
 
-**Earlier changes to this choice**, at the bottom of each card, lists every choice recorded for that switch, newest first, with who signed it and its status. **View what was answered** shows the answers as they were submitted.
+**Earlier changes to this choice**, at the bottom of each card, lists every choice recorded for that switch, newest first, with who submitted it and its status. **View what was answered** shows the answers as they were submitted.
 
 ![Earlier changes on the Provider Access card: a representative's choice Waiting on document check above the member's own opt-out, In force](../../../assets/fhir-app-portal/consent/member-provider-access-history.avif)
 
@@ -135,7 +135,7 @@ Each save writes one set of FHIR records under the member's own session, all tog
 - the answered form, a `QuestionnaireResponse`;
 - a consent document that indexes it, a `DocumentReference`;
 - the `Consent` itself;
-- a `Provenance` record of who signed and how;
+- a `Provenance` record of who submitted it and how;
 - for a representative, also a `RelatedPerson` and a second `DocumentReference` for the uploaded document.
 
 If anything fails, nothing is saved, the panel stays open, and the member sees *Sorry, we can't save it now. Please try again later or contact Member Services.*

@@ -26,7 +26,7 @@ Unauthenticated `GET` is permitted on `Practitioner`, `PractitionerRole`, `Organ
 
 ## Resources and profiles
 
-Plan-Net 1.2.0 defines nine profiles. Payerbox ships seed bundles shaped against them; the IG package can be loaded to turn on profile validation.
+Plan-Net 1.2.0 defines nine profiles. Payerbox ships seed bundles shaped against them, and the Plan-Net package is loaded by default (see [Implementation Guides](../api-reference/implementation-guides.md#version-pinning-policy)), so records that declare these profiles are validated against them.
 
 | FHIR resource | Plan-Net profile | Use |
 |---|---|---|

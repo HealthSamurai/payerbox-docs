@@ -29,7 +29,7 @@ CMS does not lock IG versions in regulation. The versions below match the [CMS A
 |---|---|---|---|
 | CARIN Consumer-Directed Payer Data Exchange (Blue Button) | STU 2.1.0 | [hl7.org/fhir/us/carin-bb/STU2.1](https://hl7.org/fhir/us/carin-bb/STU2.1/) | Patient Access — claims and encounters |
 | Da Vinci PDex | STU 2.1.0 | [hl7.org/fhir/us/davinci-pdex/STU2.1](https://hl7.org/fhir/us/davinci-pdex/STU2.1/) | Patient Access — clinical, prior-auth data; Provider Access; Payer-to-Payer |
-| Da Vinci PDex US Drug Formulary | STU 2.0.1 | [hl7.org/fhir/us/Davinci-drug-formulary/STU2](https://hl7.org/fhir/us/Davinci-drug-formulary/STU2/) | Patient Access — formulary (MA-PD) |
+| Da Vinci PDex US Drug Formulary | STU 2.1.0 | [hl7.org/fhir/us/davinci-drug-formulary/STU2.1](https://hl7.org/fhir/us/davinci-drug-formulary/STU2.1/) | Patient Access — formulary (MA-PD) |
 
 ## Provider Directory
 
@@ -57,5 +57,13 @@ CMS recommends these IGs but does not mandate them. The regulation requires func
 
 ## Version pinning policy
 
-Payerbox aligns by default with the versions CMS lists as recommended. The bundled IG packages are loaded via Aidbox's `BOX_BOOTSTRAP_FHIR_PACKAGES`; customers who need to support an alternate IG version for a specific use case can change that list at deploy time.
+Payerbox aligns by default with the versions CMS lists as recommended. The admin Aidbox loads the bundled IG packages through `BOX_BOOTSTRAP_FHIR_PACKAGES`:
+
+```yaml
+BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.1.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.1.0:hl7.fhir.us.davinci-pdex-plan-net#1.2.0:hl7.fhir.us.davinci-hrex#1.2.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0:hl7.fhir.us.davinci-cdex#2.1.0"
+```
+
+Besides the IGs in the tables above, the list loads Da Vinci Health Record Exchange (HRex) 1.2.0, which PDex and the prior authorization IGs build on. Each package also brings the packages it depends on. Aidbox reads the list only on its first start against an empty database.
+
+Customers who need to support an alternate IG version for a specific use case can change the list at deploy time.
 

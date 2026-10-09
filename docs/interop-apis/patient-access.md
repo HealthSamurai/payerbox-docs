@@ -10,7 +10,7 @@ The Patient Access API lets a member authorize a third-party app to read their o
 
 ## What Payerbox covers
 
-- [US Core](https://hl7.org/fhir/us/core/) preloaded; [CARIN IG for Blue Button](https://hl7.org/fhir/us/carin-bb/), [PDex](https://hl7.org/fhir/us/davinci-pdex/), and [PDex US Drug Formulary](https://hl7.org/fhir/us/davinci-drug-formulary/) supported as additional FHIR packages.
+- [US Core](https://hl7.org/fhir/us/core/), [CARIN IG for Blue Button](https://hl7.org/fhir/us/carin-bb/), [PDex](https://hl7.org/fhir/us/davinci-pdex/), and [PDex US Drug Formulary](https://hl7.org/fhir/us/davinci-drug-formulary/) preloaded (see [Implementation Guides](../api-reference/implementation-guides.md#version-pinning-policy)).
 - [FHIR App Portal](../fhir-app-portal/README.md) for member-facing app discovery and the [Developer Portal](../fhir-app-portal/developer-portal.md) for third-party app registration.
 - Per-app audit logging of every member access.
 

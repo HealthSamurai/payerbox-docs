@@ -20,5 +20,5 @@ What administrators control:
 | Which apps the gallery lists: only apps approved in the Admin Portal | [Admin Portal](../admin-portal.md) |
 | Whether the **Data sharing** page appears, and whether members can change their choices there or only see them | [Capture mode](../consent-settings.md#capture-mode) |
 | The plan organization, the Payer-to-Payer end date, the non-sensitive option, and the previous payers members can name | [Consent Settings](../consent-settings.md) |
-| Whether an authorized representative can sign for a member: `MEMBER_CONSENT_REPRESENTATIVES_ENABLED` on the portal | [Consent Panel](consent-panel.md#authorized-representatives) |
-| Approving or rejecting the choices representatives sign | [Consent Reviews](../consent-reviews.md) |
+| Whether an authorized representative can act for a member: `MEMBER_CONSENT_REPRESENTATIVES_ENABLED` on the portal | [Consent Panel](consent-panel.md#authorized-representatives) |
+| Approving or rejecting the choices representatives make | [Consent Reviews](../consent-reviews.md) |
