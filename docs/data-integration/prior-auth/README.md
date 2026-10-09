@@ -40,7 +40,7 @@ PDex points the authorization's insurance at the [HRex Coverage](https://hl7.org
 
 One row per authorization.
 
-{% file src="../../assets/data-integration/prior_auths.eae5243e.csv" %}
+{% file src="../../assets/data-integration/prior_auths.b801c19d.csv" %}
 prior_auths.csv Data template with example rows
 {% endfile %}
 
@@ -49,7 +49,7 @@ prior_auths.csv Data template with example rows
 | `record_id` | Yes | your authorization number, stable across status changes | `PA-0001` |
 | `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
 | `coverage_id` | Yes | key from `coverage`, the plan the authorization was decided against | `COV-0001` |
-| `payer_org_npi` | Yes | 10 digits, or your payer id; the same payer named on that coverage | `9999999979` |
+| `payer_org_identifier` | Yes | the payer; key from [`organizations`](../uscdi/care-team.md#organizations); the same payer named on that coverage | `99999` |
 | `requesting_provider_npi` | Yes | 10 digits; key from `practitioners` or `organizations`; who asked for the authorization | `9999999995` |
 | `enterer_npi` | If available | 10 digits; key from `practitioners`; who entered the request, when that is not the requesting provider | `9999999987` |
 | `facility_id` | If applicable | key from `locations`; where the authorized service is to be delivered | `LOC-221` |

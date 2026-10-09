@@ -55,7 +55,7 @@ medications.csv Data template with example rows
 
 One row per fill: what the pharmacy actually handed over. **For a payer this is usually the primary medication file** — pharmacy claims are fill records. It carries the USCDI Medications (Fill Status) element and stays distinct from the order in [`medications`](#medications).
 
-{% file src="../../assets/data-integration/medication_dispenses.a422d71d.csv" %}
+{% file src="../../assets/data-integration/medication_dispenses.765f565f.csv" %}
 medication_dispenses.csv Data template with example rows
 {% endfile %}
 
@@ -66,7 +66,7 @@ medication_dispenses.csv Data template with example rows
 | `status` | Yes | `preparation`, `in-progress`, `cancelled`, `on-hold`, `completed`, `entered-in-error`, `stopped`, `declined`, `unknown` [medicationdispense-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/medicationdispense-status%7C4.0.1) | `completed` |
 | `medication_code` | Yes | RxNorm drug-level code, with `medication_system` (RxNorm assumed when empty) [Medication Clinical Drug](https://vsac.nlm.nih.gov/valueset/2.16.840.1.113762.1.4.1010.4/expansion) | `310965` ibuprofen 200 MG oral tablet |
 | `type_code` | If available | fill type: `FF` first fill, `RF` refill, `EM` emergency supply, `UD` unit dose [ActPharmacySupplyType](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://terminology.hl7.org/ValueSet/v3-ActPharmacySupplyType) | `RF` |
-| `pharmacy_org_npi` | Recommended | 10 digits, Luhn-valid over the `80840` prefix | `9999999979` |
+| `pharmacy_org_identifier` | Recommended | key from [`organizations`](care-team.md#organizations) | `9999999979` |
 | `performer_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix, the dispensing pharmacist | `9999999995` |
 | `authorizing_prescription_id` | If available | `record_id` of the `medications` row | `MED-77120` |
 | `quantity_value` | If available | decimal | `30` |
@@ -77,7 +77,7 @@ medication_dispenses.csv Data template with example rows
 
 - `status` is the Fill Status element: `completed` for a fill picked up, `in-progress` or `preparation` for one underway, `declined` for one refused, `entered-in-error` to retract. The binding is required, so a value outside the list is rejected.
 - A pharmacy-claim row that carries only an NDC may send it with `medication_system` as `http://hl7.org/fhir/sid/ndc`; Payerbox crosswalks it to the RxNorm coding US Core requires.
-- `pharmacy_org_npi` is the dispensing pharmacy and `performer_npi` the dispensing pharmacist, when your source records one; both become `MedicationDispense.performer.actor` and must match a row in [`organizations`](care-team.md#organizations) and [`practitioners`](care-team.md#practitioners) respectively. Pharmacy claims usually identify only the store — sending just `pharmacy_org_npi` is fine.
+- `pharmacy_org_identifier` is the dispensing pharmacy and `performer_npi` the dispensing pharmacist, when your source records one; both become `MedicationDispense.performer.actor` and must match a row in [`organizations`](care-team.md#organizations) and [`practitioners`](care-team.md#practitioners) respectively. Pharmacy claims usually identify only the store — sending just `pharmacy_org_identifier` is fine.
 - `when_handed_over` is when the medication left the pharmacy — for a claim, the fill date.
 
 These resources are served by [Patient Access](../../interop-apis/patient-access.md), [Provider Access](../../interop-apis/provider-access.md), and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).
