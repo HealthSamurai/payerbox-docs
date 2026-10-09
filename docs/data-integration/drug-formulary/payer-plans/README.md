@@ -33,7 +33,7 @@ Repeating references and codes that carry no fields of their own stay as `;`-sep
 
 One row per plan: the elements of the InsurancePlan that occur once.
 
-{% file src="../../../assets/data-integration/payer_plans.8bce591e.csv" %}
+{% file src="../../../assets/data-integration/payer_plans.dc8ae0c6.csv" %}
 payer_plans.csv Data template with example rows
 {% endfile %}
 
@@ -48,7 +48,7 @@ payer_plans.csv Data template with example rows
 | `period_end` | Recommended | date the plan year ends | `2027-12-31` |
 | `coverage_area_ids` | Recommended | keys from [`coverage_areas`](coverage-areas.md), `;`-separated | `AREA-NY` |
 | `owned_by_org_identifier` | Recommended | the plan sponsor; key from [`organizations`](../../uscdi/care-team.md#organizations) | `99999` |
-| `administered_by_org_identifier` | If different | the administrator or PBM; key from [`organizations`](../../uscdi/care-team.md#organizations) | |
+| `administered_by_org_identifier` | Yes | the administrator or PBM, the sponsor itself when it administers its own plans; key from [`organizations`](../../uscdi/care-team.md#organizations) | `99999` |
 | `network_ids` | If available | networks of the product, keys from Provider Directory [`networks`](../../provider-directory/README.md#networks), `;`-separated; each must be a network that feed has published, or the plan waits for it | `NET-001` |
 | `last_updated` | Yes | datetime with a timezone offset, `YYYY-MM-DDThh:mm:ss±hh:mm`, when the plan last changed in your system; a date alone holds the row back | `2026-10-01T09:00:00-05:00` |
 | `is_deleted` | If retracting | `true` sets the published plan's `status` to `retired`; every child row that references it goes with it | `true` |

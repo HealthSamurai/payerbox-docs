@@ -47,9 +47,7 @@ practitioners.csv Data template with example rows
 
 ## organizations
 
-One row per organization: every practice, hospital, laboratory, pharmacy or payer that a `*_org_identifier` column in any feed names.
-
-If you already send the [Provider Directory](../provider-directory/README.md#facilities) feed, list here only the organizations missing from it.
+One row per organization, defined once: an in-network facility is its Provider Directory [`facilities`](../provider-directory/README.md#facilities) row; every other organization a `*_org_identifier` column names, including the plan sponsor, is a row here. A directory-only sender ships this one file with the directory.
 
 {% file src="../../assets/data-integration/organizations.c9b5ff65.csv" %}
 organizations.csv Data template with example rows
