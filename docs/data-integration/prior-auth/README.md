@@ -133,7 +133,7 @@ prior_auth_lines.csv Data template with example rows
 
 ### Authorized
 
-Send these columns only where what was authorized differs from what was requested. An approval with no changes needs none of them.
+The authorized code and quantity are sent only where they differ from what was requested: an approval with no changes leaves them blank. The other columns follow their own rows: the issue date and period on every approved line, the provider list only when the approval is restricted to a provider.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
