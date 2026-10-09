@@ -31,7 +31,7 @@ Provider Access checks the opt-outs in [`$provider-member-match`](../operations/
 | Create or update | `PUT` | `/fhir/Consent/<id>` |
 | Patch | `PATCH` | `/fhir/Consent/<id>` |
 | History | `GET` | `/fhir/Consent/<id>/_history` |
-| Transaction | `POST` | `/fhir` |
+| [Batch or transaction](#load-in-bulk) | `POST` | `/fhir` |
 
 The general behavior of these interactions, including conditional requests and `If-Match`, is in [FHIR RESTful API](../operations/fhir-restful-api.md).
 
@@ -171,7 +171,7 @@ Content-Type: application/fhir+json
 | `status` | `active`, fixed by the profile. |
 | `scope`, `category` | `patient-privacy`; `IDSCL`, and the PDex API purpose `payer-to-payer`. |
 | `policy.uri` | `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive` for all information, `…#regular` for non-sensitive information only. The names are the profile's: `#sensitive` is the wider grant. |
-| `sourceReference` | A `DocumentReference` for the completed form. HRex requires a source document, and it must exist before the Consent is written. |
+| `sourceReference` | A `DocumentReference` for the completed form. HRex requires a source document. Load it before the Consent, or in the same transaction, see [Load in bulk](#load-in-bulk). |
 | `provision.type` | `permit`. |
 | `provision.period` | `start`, and an `end` set by the plan's policy. |
 | `provision.actor` | Each previous or concurrent payer in the role `performer` (the source), and the plan's Organization in the role `IRCP` (the recipient). |
@@ -263,16 +263,173 @@ Records captured on the member portal come with:
 | `Provenance` | Who submitted it, how (activity `CREATE`, `ONLINEWRIT`), and the form's canonical; a review adds one with the administrator as `verifier`. |
 | `RelatedPerson`, `DocumentReference` | For a representative: the RelatedPerson (US Core RelatedPerson profile, relationship `POWATT`, `GUARD` or `RESP`), and the document of authority. |
 
+## Load in bulk
+
+Plans usually write consent records from their own systems in bulk, one resource type at a time: for example 1,000 documents, then 1,000 Consents. Post each set to `/fhir` in bundles of `type: batch` or `type: transaction`, up to about 1,000 entries each.
+
+### Load order
+
+Aidbox checks the references of every record it writes, so a record can be loaded only after the records it points to. Loaded the other way round, every Consent that points to a missing document fails with `422`: `Referenced resource DocumentReference/<id> does not exist`.
+
+| Step | Records |
+|---|---|
+| 1 | `Patient`, `RelatedPerson` for representatives, and `Organization` for your plan and the other payers. The Patients and Organizations must declare their profiles, see [Referenced records](#referenced-records). |
+| 2 | `DocumentReference`: the consent forms that Payer-to-Payer opt-ins point to. |
+| 3 | `Consent`: the new decisions. |
+| 4 | `PATCH` entries that retire the Consents the new decisions replace. |
+| 5 | `Provenance`, if you record one: it points to the Consent. |
+
+To send Consents before their documents, put both in one transaction. Inside a transaction a reference may point to any record in the same bundle, before or after the entry.
+
+### Batch or transaction
+
+| Bundle | Behavior |
+|---|---|
+| `batch` | Aidbox writes the entries one by one, in order, each on its own. A failed entry does not stop the others, and a later entry may point to a record an earlier one wrote. The bundle answers `200` with a status for every entry and an `OperationOutcome` for each failure, so you fix and resend only the failed entries. |
+| `transaction` | All the entries or none. One failed entry rolls back the whole bundle, and Aidbox answers `400` naming the entry. Use it for records that must arrive together, such as Consents with their documents. |
+
+### Retire what the new decisions replace
+
+A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal. Provider Access treats a member as opted out while any opt-out is active, so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
+
+In a backfill of past decisions, load the ones no longer in force as retired records: `status: inactive` and no profile.
+
+### Bundle rules
+
+- **Ids.** Write each record with `PUT` and an id made from your system's key, such as `Consent/P2P-000342`. A re-run, or a resend of the failed entries, then updates the same records instead of adding copies.
+- **Retirements.** A `PATCH` entry carries the JSON merge patch from [Retire a record](#retire-a-record) as its `resource`. Add `request.ifMatch` with the version you read to refuse a record that changed since. A FHIRPath Patch `Parameters` resource works too.
+- **Access.** Aidbox authorizes every entry as a request of its own, such as `PUT /fhir/Consent/<id>`. The client's access policy must allow `POST /fhir` and each interaction in the bundle; an entry it refuses fails with `403`.
+- **Responses.** With `Prefer: return=minimal` the response leaves the records out: each entry keeps its status, and a failed batch entry its `OperationOutcome`. Do not send it with a transaction, see [Current limitations](#current-limitations).
+- **Request size.** 1,000 Consents are about 1.6 MB of JSON. An ingress-nginx in front of Aidbox refuses request bodies over 1 MB with `413` unless its `proxy-body-size` is raised. Raise it, or send smaller bundles.
+
+The batch below is shortened to the elements that matter here; the full records are in [Provider Access opt-out](#provider-access-opt-out) and [Payer-to-Payer opt-in](#payer-to-payer-opt-in). The document for `P2P-000343` was not loaded yet, so that entry fails and the other two are written. Sent as a transaction, the same bundle writes nothing.
+
+{% tabs %}
+{% tab title="Consents" %}
+```http
+POST /fhir
+Authorization: Bearer <token>
+Content-Type: application/fhir+json
+Prefer: return=minimal
+
+{
+  "resourceType": "Bundle",
+  "type": "batch",
+  "entry": [
+    {
+      "request": { "method": "PUT", "url": "Consent/P2P-000342" },
+      "resource": {
+        "resourceType": "Consent",
+        "id": "P2P-000342",
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T14:22:00Z" },
+        "sourceReference": { "reference": "DocumentReference/DOC-55192" },
+        "...": "..."
+      }
+    },
+    {
+      "request": { "method": "PUT", "url": "Consent/P2P-000343" },
+      "resource": {
+        "resourceType": "Consent",
+        "id": "P2P-000343",
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T15:05:00Z" },
+        "sourceReference": { "reference": "DocumentReference/DOC-55193" },
+        "...": "..."
+      }
+    },
+    {
+      "request": { "method": "PUT", "url": "Consent/PAC-000117" },
+      "resource": {
+        "resourceType": "Consent",
+        "id": "PAC-000117",
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"], "lastUpdated": "2026-10-06T16:40:00Z" },
+        "...": "..."
+      }
+    }
+  ]
+}
+```
+{% endtab %}
+{% tab title="200" %}
+```json
+{
+  "resourceType": "Bundle",
+  "type": "batch-response",
+  "entry": [
+    { "response": { "status": "201", "location": "<base>/fhir/Consent/P2P-000342/_history/5120", "etag": "5120" } },
+    {
+      "resource": {
+        "resourceType": "OperationOutcome",
+        "issue": [{
+          "severity": "fatal",
+          "code": "invalid",
+          "expression": ["Consent.sourceReference"],
+          "diagnostics": "Referenced resource DocumentReference/DOC-55193 does not exist"
+        }]
+      },
+      "response": { "status": "422" }
+    },
+    { "response": { "status": "201", "location": "<base>/fhir/Consent/PAC-000117/_history/5122", "etag": "5122" } }
+  ]
+}
+```
+{% endtab %}
+{% tab title="Retirements" %}
+```http
+POST /fhir
+Authorization: Bearer <token>
+Content-Type: application/fhir+json
+Prefer: return=minimal
+
+{
+  "resourceType": "Bundle",
+  "type": "batch",
+  "entry": [
+    {
+      "request": { "method": "PATCH", "url": "Consent/P2P-000298" },
+      "resource": { "status": "inactive", "meta": { "profile": null } }
+    },
+    {
+      "request": { "method": "PATCH", "url": "Consent/PAC-000090" },
+      "resource": { "status": "inactive", "meta": { "profile": null } }
+    }
+  ]
+}
+```
+{% endtab %}
+{% tab title="400 (transaction)" %}
+```json
+{
+  "resourceType": "OperationOutcome",
+  "id": "processing",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Transaction failed at entry[1]. Response status is 422. Response body is {…}.</p></div>"
+  },
+  "issue": [{
+    "severity": "fatal",
+    "code": "invalid",
+    "expression": ["Consent.sourceReference"],
+    "diagnostics": "Referenced resource DocumentReference/DOC-55193 does not exist"
+  }]
+}
+```
+{% endtab %}
+{% endtabs %}
+
 ## Errors
 
 | Status | When | `diagnostics` |
 |---|---|---|
+| `400` | An entry of a [transaction](#load-in-bulk) failed, so nothing in the bundle was written. The narrative names the entry and its own status. | The failed entry's |
 | `401`, `403` | The token is missing or invalid, or the access policy does not allow the interaction. | |
 | `404` | No Consent with that id. | |
 | `412` | `If-Match` names a version that is not the current one. | `Version ID validation failed. Requested versionId W/"999999"; versionId 3927` |
 | `422` | The record breaks its profile. | `The value 'draft' does not match the expected pattern 'active'` |
+| `422` | A referenced record does not exist, for example a document not loaded yet. | `Referenced resource DocumentReference/DOC-55193 does not exist` |
 | `422` | A referenced record does not declare the target profile. | `Referenced resource Patient/example-member content doesn't conform to any of target profiles: http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient` |
 | `422` | An HRex Consent without a recognized `policy.uri`. | `Invalid slice cardinality 'hrex'. Current count is '0', expected between '1' and 'Infinity'.` |
+
+In a batch, an entry's failure comes in its own `response.status`, and the bundle itself answers `200`.
 
 ```json
 {
@@ -293,6 +450,7 @@ Records captured on the member portal come with:
 - A record carries its PDex or HRex profile only while `active`. A representative's draft has none until it is approved, and retired or rejected records lose it.
 - The member portal shows only Consents with scope `patient-privacy` that are either profiled or carry one of the two PDex API purposes, for the plan organization set in [Consent Settings](../../fhir-app-portal/consent-settings.md) or for none.
 - `period=<day>` without a prefix matches only periods that fit inside that day; use `le` and `ge` as above.
+- A failed transaction sent with `Prefer: return=minimal` answers `400` with an empty body. Leave the header out to see which entry failed and why.
 - An opt-in for non-sensitive information only moves no data until sensitive data is labeled: other payers return the member as consent-constrained.
 
 ## Related
