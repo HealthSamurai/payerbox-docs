@@ -40,7 +40,7 @@ PDex points the authorization's insurance at the [HRex Coverage](https://hl7.org
 
 One row per authorization.
 
-{% file src="../../assets/data-integration/prior_auths.b801c19d.csv" %}
+{% file src="../../assets/data-integration/prior_auths.a98ade84.csv" %}
 prior_auths.csv Data template with example rows
 {% endfile %}
 
@@ -98,7 +98,7 @@ prior_auths.csv Data template with example rows
 - `claim_type` has no `pharmacy` value: drug authorizations are out of scope. Dental is `oral`, vision is `vision`. Blank reads as `professional`. It is not derived from the lines, so send `institutional` yourself for a facility authorization.
 - The provider columns take an NPI, or the id that provider is registered under in `practitioners` and `organizations`. A provider known only by a name cannot be published.
 - `outcome` is about processing, `review_action_code` about the decision. They are not interchangeable, so send both: a request reviewed and sent back for more information is `queued` with a review action of pended. A cancelled authorization keeps the outcome it had reached and says it was cancelled in `status`.
-- `review_action_code`, `review_number`, `review_reason_codes`, `second_surgical_opinion_flag` and `decision_date` are published only on a row that also carries `denial_reason_codes` or `submitted_amount`. Without either they are left out and reported, and the rest of the authorization is published.
+- `review_action_code`, `review_number`, `review_reason_codes`, `second_surgical_opinion_flag` and `decision_date` are published only on a row that also carries `denial_reason_codes` or `submitted_amount`. Without either they are left out and reported, and the rest of the authorization is published; its decision is then published on the lines.
 - Leave `auth_period_end` blank when the authorization ends on a unit or visit allowance rather than a date. `allowed_units` on the line then says when it is exhausted. Both may be present.
 - `denial_reason_codes` takes CARC and RARC codes only. They explain claim payments, so a utilization management system may have none: leave the column blank. The decision and its X12 278 reason codes go in `review_action_code` and `review_reason_codes` where your system assigns them, and the wording goes in `denial_reason_text`, which is published with or without a code. A payer-defined code goes in neither code column.
 - The amounts are optional; an authorization decided on medical necessity alone carries none. Send them where you have them.
@@ -108,7 +108,7 @@ prior_auths.csv Data template with example rows
 
 One row per item or service on the authorization. An authorization covering three services has three rows carrying the same `prior_auth_record_id`. Lines have no `is_deleted`: an authorization is delivered as a whole, so re-sending it replaces its previous lines.
 
-{% file src="../../assets/data-integration/prior_auth_lines.0e581687.csv" %}
+{% file src="../../assets/data-integration/prior_auth_lines.e0cbcd57.csv" %}
 prior_auth_lines.csv Data template with example rows
 {% endfile %}
 
@@ -158,7 +158,7 @@ Send these columns only where what was authorized differs from what was requeste
 | `review_reason_codes` | If pended, denied or partially approved | X12 review decision reason code(s), `;`-separated | |
 | `second_surgical_opinion_flag` | If asserted | `true` when a second surgical opinion is required for this line | |
 | `decision_date` | If decided | datetime this line was decided | `2026-03-04T16:20:00-05:00` |
-| `allowed_units` | If approved | decimal; units, visits or days the payer allowed | `8` |
+| `allowed_units` | If approved | decimal; units, visits or days the payer allowed; blank on a line with `denial_reason_text` reads as `0` | `8` |
 | `consumed_units` | If tracked | decimal; units, visits or days used so far | `2` |
 | `denial_reason_codes` | If denied or reduced and your system records them | CARC or RARC codes for this line, `;`-separated | `198` |
 | `denial_reason_system` | If RARC | as on the authorization row | |
@@ -170,7 +170,7 @@ Send these columns only where what was authorized differs from what was requeste
 - The authorized columns are how a modified approval is expressed: what the provider asked for stays in `service_code` and `quantity_value`, and what the payer granted goes in `authorized_service_code` and `authorized_quantity_value`. Twelve visits requested and eight approved leaves both numbers on the line, and the member sees both.
 - The requested and authorized columns bind to different code lists. Send either spelling of HCPCS; Payerbox translates. CPT works in both, and the authorized list also takes X12 1365, ICD-9-CM, ICD-10-PCS and NDC. HIPPS is accepted only as requested, so express a HIPPS change through `authorized_quantity_value`.
 - There is no column for procedure modifiers, unit price, revenue code, nursing-home level of care or the EPSDT indicator on an authorized line.
-- A line's review action needs a host, as the authorization's does: `review_action_code` and the other review columns are published only where the line also carries `allowed_units`, `consumed_units` or `denial_reason_codes`. Without any of them they are left out and reported, and the line is published. A pending line with none of them lets `outcome` on the authorization report that the request is still in processing.
+- A line's review action needs a host, as the authorization's does: `review_action_code` and the other review columns are published only where the line also carries `allowed_units`, `consumed_units` or `denial_reason_codes`. Without any of them they are left out and reported, and the line is published. A denied line needs no `allowed_units`: with `denial_reason_text` and no units it reads as 0 allowed, and that is the entry its review action, reason codes and decision date ride on. A pending line with none of them lets `outcome` on the authorization report that the request is still in processing.
 - `allowed_units` and `consumed_units` are the utilization pair: what was granted, and how much of it is used. They are the only way a unit-limited authorization says how much is left, so send `consumed_units` whenever your system tracks it.
 - Amounts sit on the authorization, not the line: `submitted_amount` and `eligible_amount` on [`prior_auths`](#prior_auths). PDex allows them per line; this feed has no column for them.
 

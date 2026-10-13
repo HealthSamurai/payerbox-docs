@@ -5,3 +5,4 @@ PA-0003,1,99214,,,Established patient office visit,3,2026-05-25,,12,visits,1,,,,
 PA-0003,2,E1130,https://www.cms.gov/Medicare/Coding/HCPCSReleaseCodeSets,,Standard wheelchair,3,2026-05-25,,1,units,1,,,,,,,,,,,,,,,,,,2026-05-20T14:05:00-04:00,,,50,,Not medically necessary for this indication
 PA-0004,1,99214,,,Established patient office visit,3,2026-06-15,,4,visits,1,,,,,,,,,,,,PA-0001,,,,,,,,,,,
 PA-0005,1,BB201,https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/ProspMedicareFeeSvcPmtGen/HIPPSCodes,,Skilled nursing assessment,3,2026-06-20,,5,days,1,,,,,,,,,,,,,,,,,,,,,,,
+PA-0007,1,,,0905,"Intensive outpatient program, behavioral health",3,2026-06-08,2026-06-18,10,days,1,,,,,,,,,,,,,,,,0F,,2026-06-03T11:30:00-04:00,,,,,Not medically necessary for this indication
