@@ -11,7 +11,7 @@ The **Settings → Consent** tab of the Admin Portal sets what the member portal
 
 Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable the Consent Panel.
 
-![Settings → Consent: the capture mode, whether authorized representatives are offered, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings-v2.avif)
+![Settings → Consent: the capture mode, whether authorized representatives are offered, the plan organization resolved to Example Health Plan, the Payer-to-Payer end date, the non-sensitive option, and Save](../../assets/fhir-app-portal/consent/admin-consent-settings-v3.png)
 
 ## Capture mode
 
@@ -37,23 +37,23 @@ The same card says whether an **authorized representative** can act for a member
 
 **Save** is enabled after a change and confirms with *Consent settings updated*. The settings are stored on the admin Aidbox and read by the next save on the member page; no restart is needed. Problems are shown as an error toast before anything is sent, for example *The end date must not be in the past.* or *The organization id may contain letters, digits, dashes, dots and underscores only.* An id that matches no Organization is refused by the server with `Organization/<id> not found`.
 
-Until both the plan organization and the end date are set, the tab warns *Not configured yet: members cannot save choices until the plan organization and the Payer-to-Payer end date are set.*, and the member page shows the choices on file but blocks saving.
+Members can save choices only while the settings are complete: the plan organization is set and exists, and the end date is set and has not passed. Until an administrator saves them once, the tab warns *Not configured yet: members cannot save choices until the plan organization and the Payer-to-Payer end date are set.* Afterwards the warning names what is wrong, for example *Members cannot save choices: the Payer-to-Payer end date 2026-01-01 has passed.* or *… the plan organization acme-plan is not found.* While the warning shows, the member page shows the choices on file, and an opened form says the change cannot be made online yet.
 
 ## Previous payers
 
 The **Previous payers** card holds the health plans a member can pick as a previous or concurrent payer on the Payer-to-Payer form. Members never type a plan's name freely; they pick from this list, and the plan organization above is never offered.
 
-![The Previous payers card: Lakeside Health Plan registered, and Summit Health with its NPI about to be registered, with the hint that the NPI is not registered yet](../../assets/fhir-app-portal/consent/admin-previous-payers-register.avif)
+![The Previous payers card: Lakeside Health Plan registered with its NAIC code, Summit Health with its TIN, and a third plan about to be registered, with the hint that its NAIC code is not registered yet](../../assets/fhir-app-portal/consent/admin-previous-payers-register-v2.png)
 
-To register a plan, enter its **Organization name** and **NPI**, wait for the hint under the NPI, and click **Register organization**. The hint checks the NPI as you type:
+To register a plan, enter its **Organization name** and at least one of its two codes, the **NAIC company code** (five digits) or the **TIN** (nine digits, `XX-XXXXXXX`; the hyphen may be left out), wait for the hint under the code, and click **Register organization**. Health plans have no NPI: it identifies providers. The hints check each code as you type:
 
 | Hint | Meaning |
 |---|---|
-| *This NPI is not registered as a previous payer yet.* | Ready to register. |
-| *Already registered as <name> (Organization/<id>). Nothing can be created with this NPI.* | Another registered previous payer carries this NPI; the button stays disabled. |
-| *Not a valid NPI: ten digits whose last one is the check digit.* | The NPI fails the format or check-digit test. |
+| *This NAIC code is not registered as a previous payer yet.* (or *This TIN …*) | Ready to register. |
+| *Already registered as <name> (Organization/<id>). Nothing can be created with this NAIC code.* | Another registered previous payer carries this code; the button stays disabled. |
+| *Not a valid NAIC code: five digits.* / *Not a valid TIN: nine digits, XX-XXXXXXX.* | The code fails the format test. |
 
-Each registration creates an `Organization` that declares the HRex Organization profile, is typed as a payer (`organization-type` `pay`), carries the NPI as its identifier, and is tagged as a registered previous payer. The NPI is unique among registered previous payers only: an Organization loaded by a data feed for another purpose, or the plan's own Organization, does not block a registration with the same NPI. The portal has no edit or delete action for registered payers.
+Each registration creates an `Organization` that declares the HRex Organization profile, is typed as a payer (`organization-type` `pay`), carries the NAIC code (`urn:oid:2.16.840.1.113883.6.300`) and/or the TIN (`urn:oid:2.16.840.1.113883.4.4`, stored as `XX-XXXXXXX`) as its identifiers, and is tagged as a registered previous payer. Each code is unique among registered previous payers only: an Organization loaded by a data feed for another purpose, or the plan's own Organization, does not block a registration with the same code. Plans registered with an NPI before this release stay in the list and on the member's form. The portal has no edit or delete action for registered payers.
 
 ## Audit
 

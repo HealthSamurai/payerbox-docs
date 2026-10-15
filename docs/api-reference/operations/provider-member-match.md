@@ -604,7 +604,7 @@ GET /fhir/Consent
   &provision-type=deny
 ```
 
-`IDSCL` marks any disclosure consent, so a result whose `pdex-consent-api-purpose` codes name only other APIs (for example `payer-to-payer`) is ignored: a Payer-to-Payer decision does not constrain Provider Access. Any other matching `Consent` constrains the member to `ConsentConstrainedMembers`. Revocations (`provision.type = "permit"`) do not surface in the query and therefore do not block. If the opt-out query itself fails (non-2xx), the member fails safe to `ConsentConstrainedMembers`.
+`IDSCL` marks any disclosure consent, so a result whose `pdex-consent-api-purpose` codes name only other APIs (for example `payer-to-payer`) is ignored: a Payer-to-Payer decision does not constrain Provider Access. The search cannot express dates, so each result is then checked against its `provision.period`: a deny counts from `start`, forever when `end` is absent, and through the end of `end`'s day when present (a bare date is inclusive); a deny with no period counts. A deny that has ended, or whose `start` is still ahead, does not constrain. Any `Consent` that passes both checks constrains the member to `ConsentConstrainedMembers`. Revocations (`provision.type = "permit"`) do not surface in the query and therefore do not block. If the opt-out query itself fails (non-2xx), the member fails safe to `ConsentConstrainedMembers`.
 
 ## Group lifecycle
 

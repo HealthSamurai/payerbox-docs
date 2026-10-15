@@ -97,7 +97,7 @@ Authorization: Bearer <token>
 | Element | Rule |
 |---|---|
 | `meta.profile` | The PDex Provider Consent canonical, without a version. |
-| `meta.lastUpdated` | Required whenever `meta` is sent. |
+| `meta.lastUpdated` | Set by the server on every write; a value in the request is replaced. |
 | `status` | `active`: the profile fixes it, so a record carries the profile only while it is in force. |
 | `scope` | `patient-privacy`. |
 | `category` | `IDSCL`, and the PDex API purpose `provider-access`. |
@@ -120,8 +120,7 @@ Content-Type: application/fhir+json
   "resourceType": "Consent",
   "id": "67d8623c-9af9-4dac-a40d-f5f30bb856ea",
   "meta": {
-    "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
-    "lastUpdated": "2026-10-06T14:22:00Z"
+    "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"]
   },
   "status": "active",
   "scope": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy" }] },
@@ -180,7 +179,7 @@ Content-Type: application/fhir+json
 {% code title="The elements that differ from the opt-out" %}
 ```json
 {
-  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T14:22:00Z" },
+  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"] },
   "category": [
     { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL" }] },
     { "coding": [{ "system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose", "code": "payer-to-payer" }] }
@@ -290,7 +289,7 @@ To send Consents before their documents, put both in one transaction. Inside a t
 
 ### Retire what the new decisions replace
 
-A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal. Provider Access treats a member as opted out while any opt-out is active, so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
+A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal. Provider Access treats a member as opted out while any opt-out is in force (`status` `active` and a `provision.period` that covers today, or no period at all), so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
 
 In a backfill of past decisions, load the ones no longer in force as retired records: `status: inactive` and no profile.
 
@@ -321,7 +320,7 @@ Prefer: return=minimal
       "resource": {
         "resourceType": "Consent",
         "id": "P2P-000342",
-        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T14:22:00Z" },
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"] },
         "sourceReference": { "reference": "DocumentReference/DOC-55192" },
         "...": "..."
       }
@@ -331,7 +330,7 @@ Prefer: return=minimal
       "resource": {
         "resourceType": "Consent",
         "id": "P2P-000343",
-        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T15:05:00Z" },
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"] },
         "sourceReference": { "reference": "DocumentReference/DOC-55193" },
         "...": "..."
       }
@@ -341,7 +340,7 @@ Prefer: return=minimal
       "resource": {
         "resourceType": "Consent",
         "id": "PAC-000117",
-        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"], "lastUpdated": "2026-10-06T16:40:00Z" },
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"] },
         "...": "..."
       }
     }
