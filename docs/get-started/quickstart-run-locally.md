@@ -259,7 +259,7 @@ services:
       STORAGE_ACCOUNT_ID: minio
       STORAGE_BUCKET: pas-attachments
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8088/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -285,7 +285,7 @@ services:
       INTEROP_APP_URL: http://interop:8088
       AIDBOX_APP_SECRET: secret
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8088/health"]
       interval: 10s
       timeout: 5s
       retries: 5
