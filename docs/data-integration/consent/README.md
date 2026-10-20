@@ -2,7 +2,8 @@
 description: >-
   Columns for the member consent feed: the Provider Access opt-out and the
   Payer-to-Payer opt-in, mapped to the Da Vinci PDex STU 2.2.0 and HRex STU
-  1.1.0 Consent profiles, plus the previous coverage a member names.
+  1.1.0 Consent profiles, plus the previous coverage a member names and the
+  signed forms and documents of authority behind the decisions.
 ---
 
 # Member Consent
@@ -16,6 +17,7 @@ A member **opts out** of [Provider Access](../../interop-apis/provider-access.md
 | [`provider_access_opt_outs`](#provider_access_opt_outs) | [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.2/StructureDefinition-pdex-provider-consent.html), read by [`$provider-member-match`](../../api-reference/operations/provider-member-match.md) and by every Provider Access export |
 | [`payer_to_payer_opt_ins`](#payer_to_payer_opt_ins) | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), the member authorization used to build outbound Payer-to-Payer requests |
 | [`previous_coverages`](#previous_coverages) | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html): which payer to ask, and about whom |
+| [`consent_documents`](#consent_documents) | [US Core DocumentReference](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-documentreference.html): the signed form a decision points to, and a representative's document of authority |
 
 ## Data conventions
 
@@ -25,8 +27,8 @@ A member **opts out** of [Provider Access](../../interop-apis/provider-access.md
 | Freshness | Within one business day of capture. Faster delivery, including event-driven, per engagement. |
 | Delivery | One backfill of every decision on file, then deltas with rows new since your last successful load. |
 | Keys | `record_id` is your consent system's identifier for the decision, unique across the feed. |
-| References | `patient_identifier` from [`patients`](../uscdi/patient-demographics.md#patients), `signer_related_person_id` from [`related_persons`](../uscdi/patient-demographics.md#related-persons), `*_document_id` from `documents`. |
-| Documents | The signed form and a representative's document of authority travel in `documents`, referenced from here by key. The opt-in cannot be built without its signed form: HRex Consent requires a source document. |
+| References | `patient_identifier` from [`patients`](../uscdi/patient-demographics.md#patients), `signer_related_person_id` from [`related_persons`](../uscdi/patient-demographics.md#related-persons), `*_document_id` from [`consent_documents`](#consent_documents). |
+| Documents | The signed form and a representative's document of authority travel in [`consent_documents`](#consent_documents), referenced from here by key. The opt-in cannot be built without its signed form: HRex Consent requires a source document. |
 | Dates | `date` columns are `YYYY-MM-DD`. `datetime` columns are ISO 8601 with a timezone offset. |
 
 ## provider_access_opt_outs
@@ -42,8 +44,8 @@ One row per decision on the Provider Access switch.
 | `effective_start` | Yes | date the decision takes effect | `2026-11-03` |
 | `signer_type` | Yes | `member`, `personal-representative` | `member` |
 | `signer_related_person_id` | If `personal-representative` | key from `related_persons` | `RP-88012` |
-| `authority_document_id` | If `personal-representative` | key from `documents`; power of attorney, guardianship order or equivalent | `DOC-55190` |
-| `signed_form_document_id` | If available | key from `documents` | `DOC-55191` |
+| `authority_document_id` | If `personal-representative` | key from `consent_documents`; power of attorney, guardianship order or equivalent | `DOC-55190` |
+| `signed_form_document_id` | If available | key from `consent_documents` | `DOC-55191` |
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error | |
 
@@ -64,8 +66,8 @@ One row per decision on the Payer-to-Payer switch. One election covers previous 
 | `effective_end` | If `opt-in` | date the consent expires, set by your policy; the record cannot be built without it | `2027-12-31` |
 | `signer_type` | Yes | `member`, `personal-representative` | `member` |
 | `signer_related_person_id` | If `personal-representative` | key from `related_persons` | `RP-88012` |
-| `authority_document_id` | If `personal-representative` | key from `documents` | `DOC-55190` |
-| `signed_form_document_id` | If `opt-in` | key from `documents` | `DOC-55192` |
+| `authority_document_id` | If `personal-representative` | key from `consent_documents` | `DOC-55190` |
+| `signed_form_document_id` | If `opt-in` | key from `consent_documents` | `DOC-55192` |
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error; a withdrawal is a `withdraw` row | |
 
@@ -89,5 +91,28 @@ One row per previous or concurrent coverage the member names when opting in.
 | `is_deleted` | If retracting | `true` retracts this row | |
 
 `relationship` is required by HRex Coverage and only the member can supply it. `member_id` becomes both `subscriberId` and the `MB` identifier. No coverage dates: the match runs on demographics and identifiers.
+
+## consent_documents
+
+One row per document behind a decision: the signed form, and the document of authority a personal representative acts under. The document itself is the file; this row is its index card.
+
+{% file src="../../assets/data-integration/consent_documents.89132cfe.csv" %}
+consent_documents.csv Data template with example rows
+{% endfile %}
+
+| Column | Required | Format / values | Example |
+|---|---|---|---|
+| `record_id` | Yes | your stable key for this document | `DOC-55191` |
+| `patient_identifier` | Yes | patient key from `patients` | `MBR0000012` |
+| `type_code` | Yes | LOINC document type: `59284-0` Consent Document for a signed form; `64298-3` Power of attorney; `64299-1` Legal document for a guardianship order or another document of authority; `UNK` when none fits [US Core DocumentReference Type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type) | `59284-0` |
+| `type_text` | If `UNK` | what the document is | `Conservatorship order` |
+| `attachment_file` | Yes | path relative to the delivery root; PDF, JPEG or PNG | `attachments/DOC-55191.pdf` |
+| `document_date` | Recommended | datetime the document was signed or issued | `2026-11-03T14:22:00-05:00` |
+| `is_deleted` | If retracting | `true` retracts this row | |
+
+- `type_code` has a required binding, so the type must come from that value set. Two codes cover the feed: `59284-0` for every signed form, `64298-3` for a power of attorney; `64299-1` for the other documents of authority.
+- `author` is not a column: it comes from the decision row that names the document, the member's Patient for `member` and the RelatedPerson for `personal-representative`. A document named by several decisions, such as one power of attorney for both switches, is delivered once.
+- Payerbox sets `status` to `current`, `category` to `clinical-note` (the profile requires a category, and that is the one code in the US Core category value set), `custodian` to your Organization and `content.format` to `urn:ihe:iti:xds:2017:mimeTypeSufficient`, and reads the attachment's content type and size from the stored file. None of those are columns.
+- A decision points to its documents, so they must load first: deliver `consent_documents` in the same window as the decisions, before them or with them. An `opt-in` without its signed form is not built.
 
 These resources are read by [Provider Access](../../interop-apis/provider-access.md) and [Payer-to-Payer](../../interop-apis/payer-to-payer.md).

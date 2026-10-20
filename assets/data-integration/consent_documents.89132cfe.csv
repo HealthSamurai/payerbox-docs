@@ -1,0 +1,6 @@
+record_id,patient_identifier,type_code,type_text,attachment_file,document_date,is_deleted
+DOC-55190,MBR0000012,64298-3,,attachments/DOC-55190.pdf,2026-10-20T09:15:00-05:00,
+DOC-55191,MBR0000012,59284-0,,attachments/DOC-55191.pdf,2026-11-03T14:22:00-05:00,
+DOC-55192,MBR0000012,59284-0,,attachments/DOC-55192.pdf,2026-11-03T14:40:00-05:00,
+DOC-55193,MBR0000015,64299-1,,attachments/DOC-55193.pdf,2026-09-12T11:00:00-04:00,
+DOC-55194,MBR0000015,UNK,Conservatorship order,attachments/DOC-55194.pdf,2026-09-12T11:05:00-04:00,
