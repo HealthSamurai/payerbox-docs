@@ -12,7 +12,7 @@ Plan members record the two data-sharing choices of [CMS-0057-F](../../complianc
 - **Sharing with providers who treat you**: whether the plan shares the member's record with the in-network providers who treat them through [Provider Access](../../interop-apis/provider-access.md). Sharing is on unless the member opts out.
 - **Records from your other health plans**: whether the plan may request the member's records from their previous or concurrent health plans through [Payer-to-Payer](../../interop-apis/payer-to-payer.md). Nothing is requested unless the member gives permission.
 
-This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices made by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only where the deployment turns it on; see [Capture mode](../consent-settings.md#capture-mode).
+This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices made by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only where the deployment turns it on; see [Capture mode](../consent-settings.md#how-the-deployment-is-set-up).
 
 ![The Data sharing page with nothing on file: Sharing with providers who treat you, On, with Opt out; Records from your other health plans, Off, with Give permission](../../../assets/fhir-app-portal/consent/member-data-sharing-v2.png)
 
@@ -61,7 +61,7 @@ A member's own choice takes effect when it is saved, and the record it replaces 
 On the **Records from your other health plans** card the member clicks **Give permission**.
 {% endstep %}
 {% step %}
-Under **Which plan should we ask?** the member types the plan's name in **Health plan** and picks it from the list. Only plans registered in [Consent Settings](../consent-settings.md#previous-payers) appear. The member adds their **Member ID with that plan** (optional), answers **How were you covered under that plan?** (in their own name, through a spouse or partner, through a parent, another way) and **Do you still have that plan?** (no, they had it before; yes, they have it now too). **Add another plan** names more; **Remove** drops one.
+Under **Which plan should we ask?** the member types the plan's name in **Health plan** and picks it from the list. Only plans registered in [Consent Settings](../consent-settings.md#other-health-plans-members-can-pick) appear. The member adds their **Member ID with that plan** (optional), answers **How were you covered under that plan?** (in their own name, through a spouse or partner, through a parent, another way) and **Do you still have that plan?** (no, they had it before; yes, they have it now too). **Add another plan** names more; **Remove** drops one.
 {% endstep %}
 {% step %}
 Where the plan offers the non-sensitive option, the form then asks **What information do you give us permission to request from your other health plans?**: **All of my health information, including sensitive information.** or **Only non-sensitive information. Do not request my sensitive information.** **Which records count as sensitive** lists the kinds of care with extra protection. Without that option the form states that all information will be requested. The form shows the date the permission runs until.
@@ -130,7 +130,7 @@ After an administrator approves the representative's request above, the card rea
 
 ## Read-only and unconfigured deployments
 
-Where the plan records these choices through Member Services, the deployment runs in read-only [capture mode](../consent-settings.md#capture-mode): the page shows what is on file without the buttons, under the note *We record these choices by phone. This page shows what is on file. To change a choice, call Member Services.*
+Where the plan records these choices through Member Services, the deployment runs in read-only [capture mode](../consent-settings.md#how-the-deployment-is-set-up): the page shows what is on file without the buttons, under the note *We record these choices by phone. This page shows what is on file. To change a choice, call Member Services.*
 
 ![The Data sharing page on a read-only deployment: the note that choices are recorded by phone, and both cards with their state but no buttons](../../../assets/fhir-app-portal/consent/member-read-only-v2.png)
 
