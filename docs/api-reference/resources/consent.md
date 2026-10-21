@@ -203,7 +203,7 @@ Content-Type: application/fhir+json
 
 ## Retire a record
 
-A decision is never edited in place. A new decision is a new `Consent`, and the one it replaces is retired. A Payer-to-Payer withdrawal only retires the opt-in. Both profiles fix `status` to `active`, so a retirement sets `status` to `inactive` and removes the profile in the same JSON merge patch. A patch that changes only the status is refused.
+The member portal never edits a decision in place: a new decision is a new `Consent`, and the one it replaces is retired. (A plan that writes its consents as FHIR may instead keep one record per member and switch and update it, see [Member Consent (FHIR)](../../data-integration/consent/fhir.md).) A Payer-to-Payer withdrawal only retires the opt-in. Both profiles fix `status` to `active`, so a retirement sets `status` to `inactive` and removes the profile in the same JSON merge patch. A patch that changes only the status is refused.
 
 {% tabs %}
 {% tab title="Request" %}
@@ -289,7 +289,7 @@ To send Consents before their documents, put both in one transaction. Inside a t
 
 ### Retire what the new decisions replace
 
-A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal. Provider Access treats a member as opted out while any opt-out is in force (`status` `active` and a `provision.period` that covers today, or no period at all), so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
+A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal — or update one record per member and switch in place, as [Member Consent (FHIR)](../../data-integration/consent/fhir.md) does. Provider Access treats a member as opted out while any opt-out is in force (`status` `active` and a `provision.period` that covers today, or no period at all), so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
 
 In a backfill of past decisions, load the ones no longer in force as retired records: `status: inactive` and no profile.
 
