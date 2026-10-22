@@ -1,8 +1,8 @@
 ---
 description: >-
   Columns for the member consent feed as flat files: the Provider Access
-  opt-out and the Payer-to-Payer opt-in, mapped to the Da Vinci PDex STU 2.2.0
-  and HRex STU 1.1.0 Consent profiles, plus the previous coverage a member
+  opt-out and the Payer-to-Payer opt-in, mapped to the Da Vinci PDex STU 2.1.0
+  and HRex 1.2.0 Consent profiles, plus the previous coverage a member
   names and the signed forms and documents of authority behind the decisions.
 ---
 
@@ -14,9 +14,9 @@ A member **opts out** of [Provider Access](../../interop-apis/provider-access.md
 
 | Dataset | Target profile |
 |---|---|
-| [`provider_access_opt_outs`](#provider_access_opt_outs) | [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.2/StructureDefinition-pdex-provider-consent.html), read by [`$provider-member-match`](../../api-reference/operations/provider-member-match.md) and by every Provider Access export |
-| [`payer_to_payer_opt_ins`](#payer_to_payer_opt_ins) | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), the member authorization used to build outbound Payer-to-Payer requests |
-| [`previous_coverages`](#previous_coverages) | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html): which payer to ask, and about whom |
+| [`provider_access_opt_outs`](#provider_access_opt_outs) | [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-provider-consent.html), read by [`$provider-member-match`](../../api-reference/operations/provider-member-match.md) and by every Provider Access export |
+| [`payer_to_payer_opt_ins`](#payer_to_payer_opt_ins) | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/1.2.0/StructureDefinition-hrex-consent.html), the member authorization used to build outbound Payer-to-Payer requests |
+| [`previous_coverages`](#previous_coverages) | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/1.2.0/StructureDefinition-hrex-coverage.html): which payer to ask, and about whom |
 | [`consent_documents`](#consent_documents) | [US Core DocumentReference](https://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-documentreference.html): the signed form a decision points to, and a representative's document of authority |
 
 ## Data conventions
@@ -49,7 +49,7 @@ One row per decision on the Provider Access switch.
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error | |
 
-`opt-out` becomes `provision.type` = `deny`, `share` becomes `permit`. `captured_at` is `Consent.dateTime`, `effective_start` is `provision.period.start`, `signer_type` decides whether `performer` is the Patient or the RelatedPerson. The rest of the profile is filled from plan configuration, not from the row: the two category codes (`IDSCL` and the PDex API purpose `provider-access`), your Organization as `organization` and as the `source` actor, `provision.action` = `disclose`, and `policyRule` = `cric`, the value the profile fixes. The check the operation runs is [documented with the operation](../../api-reference/operations/provider-member-match.md#matching-behavior).
+`opt-out` becomes `provision.type` = `deny`, `share` becomes `permit`. `captured_at` is `Consent.dateTime`, `effective_start` is `provision.period.start`. `performer` is the member's Patient; a `personal-representative` row adds the RelatedPerson as a `provision.actor` with the role of their authority (`POWATT`, `GUARD` or `RESP`). The rest of the profile is filled from plan configuration, not from the row: `status` `active`, `scope` `patient-privacy`, the two category codes (`IDSCL`, which PDex 2.1.0 requires, and the API purpose `provider-access` from the PDex 2.2.0 draft, which tells the two decisions apart: IDSCL alone does not), your Organization as `organization` and as the `source` actor, `provision.action` = `disclose`, and `policyRule` = `cric`, the value the profile fixes. The check the operation runs is [documented with the operation](../../api-reference/operations/provider-member-match.md#matching-behavior).
 
 ## payer_to_payer_opt_ins
 
@@ -71,7 +71,7 @@ One row per decision on the Payer-to-Payer switch. One election covers previous 
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts a row delivered in error; a withdrawal is a `withdraw` row | |
 
-An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision.period` from `effective_start` and `effective_end`, `sourceReference` to the signed form, and `policy.uri` from `scope`: `all` maps to `#sensitive`, `non-sensitive` to `#regular`. The names are the profile's: `#sensitive` is the wider grant. Both required actors are populated for each exchange: the previous or concurrent payer's Organization is `source`, and your Organization is `recipient`; `provision.action` is `disclose`. A `withdraw` row closes the election from `captured_at`.
+An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision.period` from `effective_start` and `effective_end`, `sourceReference` to the signed form, and `policy.uri` from `scope`: `all` maps to `#sensitive`, `non-sensitive` to `#regular`. The names are the profile's: `#sensitive` is the wider grant. `performer` is the member's Patient, or the RelatedPerson for a `personal-representative` row. Both required actors are populated for each exchange: each plan named in `previous_coverages` is a `source` actor, and your Organization is `recipient`; `provision.action` is `disclose`; the categories are `IDSCL` and the API purpose `payer-to-payer`, as above. A `withdraw` row closes the election from `captured_at`: the opt-in's Consent is [retired](../../api-reference/resources/consent.md#retire-a-record), `status` `inactive` without its profile.
 
 ## previous_coverages
 
@@ -90,7 +90,7 @@ One row per previous or concurrent coverage the member names when opting in.
 | `last_updated` | Yes | datetime this row last changed in your system | `2026-11-03T14:22:00-05:00` |
 | `is_deleted` | If retracting | `true` retracts this row | |
 
-`relationship` is required by HRex Coverage and only the member can supply it. `member_id` becomes both `subscriberId` and the `MB` identifier. No coverage dates: the match runs on demographics and identifiers.
+`relationship` is required by HRex Coverage and only the member can supply it. `member_id` becomes both `subscriberId` and the `MB` identifier. `coverage_kind` becomes `status`: `cancelled` for a previous plan, `active` for a concurrent one. The plan becomes `payor`: the Organization of a plan registered in [Consent Settings](../../fhir-app-portal/consent-settings.md#other-health-plans-members-can-pick) when `payer_id` or `payer_name` identifies one, otherwise an HRex Organization named `payer_name` and numbered by `record_id`; the same Organization is the opt-in's `source` actor. No coverage dates: the match runs on demographics and identifiers. The member's Patient must declare the HRex Patient Demographics profile, which `beneficiary` requires.
 
 ## consent_documents
 

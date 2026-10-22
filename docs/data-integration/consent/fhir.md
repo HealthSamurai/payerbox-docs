@@ -7,7 +7,7 @@ description: >-
 
 # Member Consent (FHIR)
 
-A plan whose own system holds the decisions — a member portal, a consent management system — can write them to Payerbox as FHIR instead of the flat files of [Member Consent (CSV)](csv.md). The records are the same ones that feed builds: the [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.2/StructureDefinition-pdex-provider-consent.html) for the Provider Access opt-out, the [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html) for the Payer-to-Payer opt-in, and an [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-coverage.html) per plan the member names. The element-level rules of each record are in the [Consent](../../api-reference/resources/consent.md) reference; this page is the contract for the bundles.
+A plan whose own system holds the decisions — a member portal, a consent management system — can write them to Payerbox as FHIR instead of the flat files of [Member Consent (CSV)](csv.md). The records are the same ones that feed builds: the [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-provider-consent.html) for the Provider Access opt-out, the [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/1.2.0/StructureDefinition-hrex-consent.html) for the Payer-to-Payer opt-in, and an [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/1.2.0/StructureDefinition-hrex-coverage.html) per plan the member names. The element-level rules of each record are in the [Consent](../../api-reference/resources/consent.md) reference; this page is the contract for the bundles.
 
 ## Conventions
 
@@ -213,6 +213,7 @@ On October 6 the member opts out of sharing with treating providers.
 
 - The Consent is created (`201`) with the Member ID as its number, `provision.type` `deny`, `period.start` the day of the decision, no `end`.
 - `policyRule` is `cric` with its `display`: PDex fixes the whole coding, and without the `display` the record is refused.
+- `category` carries `IDSCL`, which PDex 2.1.0 requires, and the API purpose `provider-access` from the PDex 2.2.0 draft, which tells the two decisions apart: IDSCL alone does not.
 - `provision.actor` with role `performer` is your plan, the source of the data the member withholds.
 - `sourceReference` points straight to the QuestionnaireResponse. PDex allows that, so Provider Access needs no DocumentReference.
 
@@ -598,6 +599,7 @@ On October 12 the member opts in for two plans: Lakeside from your list (previou
 
 - Blue Valley gets an Organization numbered by its plan entry. The Consent and the Coverage point to it through the bundle's `urn:uuid`.
 - One Consent for all plans. `provision.actor` with role `performer` is a plan allowed to disclose; HRex calls these entries the `source` slice. The entry with role `IRCP` is your plan, allowed to receive; HRex calls it the `recipient` slice. The slice names live only in the profile, a stored record carries just the role codes.
+- `category` carries `IDSCL` and the API purpose `payer-to-payer`, as on the Provider Access record.
 - `policy.uri` is `#sensitive` only (all data). `period` has `start` and `end`, both required by HRex.
 - Two Coverages: the member's ID with that plan (`subscriberId` and the `MB` identifier), `relationship`, and `status` `cancelled` for a previous plan, `active` for a current one. [`$bulk-member-match`](../../api-reference/operations/bulk-member-match.md) sends them to the other plan as `CoverageToMatch`.
 - The DocumentReference points to the QuestionnaireResponse. It is there because HRex lets a Payer-to-Payer Consent point only to a DocumentReference.

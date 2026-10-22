@@ -12,7 +12,7 @@ A member's data-sharing decisions are FHIR `Consent` resources in Payerbox's Aid
 | Decision | Profile | IG |
 |---|---|---|
 | Provider Access opt-out, or a return to sharing | [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-provider-consent.html), `http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent` | Da Vinci PDex STU 2.1 |
-| Payer-to-Payer opt-in | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent` | Da Vinci HRex STU 1.1 |
+| Payer-to-Payer opt-in | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/1.2.0/StructureDefinition-hrex-consent.html), `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent` | Da Vinci HRex STU 1.1 |
 
 The records arrive in three ways:
 - members record them on the member portal ([Consent Panel](../../fhir-app-portal/member-portal/consent-panel.md));
