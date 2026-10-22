@@ -12,7 +12,7 @@ A member's data-sharing decisions are FHIR `Consent` resources in Payerbox's Aid
 | Decision | Profile | IG |
 |---|---|---|
 | Provider Access opt-out, or a return to sharing | [PDex Provider Consent](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-pdex-provider-consent.html), `http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent` | Da Vinci PDex STU 2.1 |
-| Payer-to-Payer opt-in | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/STU1.1/StructureDefinition-hrex-consent.html), `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent` | Da Vinci HRex STU 1.1 |
+| Payer-to-Payer opt-in | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/1.2.0/StructureDefinition-hrex-consent.html), `http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent` | Da Vinci HRex STU 1.1 |
 
 The records arrive in three ways:
 - members record them on the member portal ([Consent Panel](../../fhir-app-portal/member-portal/consent-panel.md));
@@ -97,7 +97,7 @@ Authorization: Bearer <token>
 | Element | Rule |
 |---|---|
 | `meta.profile` | The PDex Provider Consent canonical, without a version. |
-| `meta.lastUpdated` | Required whenever `meta` is sent. |
+| `meta.lastUpdated` | Set by the server on every write; a value in the request is replaced. |
 | `status` | `active`: the profile fixes it, so a record carries the profile only while it is in force. |
 | `scope` | `patient-privacy`. |
 | `category` | `IDSCL`, and the PDex API purpose `provider-access`. |
@@ -120,8 +120,7 @@ Content-Type: application/fhir+json
   "resourceType": "Consent",
   "id": "67d8623c-9af9-4dac-a40d-f5f30bb856ea",
   "meta": {
-    "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
-    "lastUpdated": "2026-10-06T14:22:00Z"
+    "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"]
   },
   "status": "active",
   "scope": { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/consentscope", "code": "patient-privacy" }] },
@@ -180,7 +179,7 @@ Content-Type: application/fhir+json
 {% code title="The elements that differ from the opt-out" %}
 ```json
 {
-  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T14:22:00Z" },
+  "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"] },
   "category": [
     { "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IDSCL" }] },
     { "coding": [{ "system": "http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose", "code": "payer-to-payer" }] }
@@ -204,7 +203,7 @@ Content-Type: application/fhir+json
 
 ## Retire a record
 
-A decision is never edited in place. A new decision is a new `Consent`, and the one it replaces is retired. A Payer-to-Payer withdrawal only retires the opt-in. Both profiles fix `status` to `active`, so a retirement sets `status` to `inactive` and removes the profile in the same JSON merge patch. A patch that changes only the status is refused.
+The member portal never edits a decision in place: a new decision is a new `Consent`, and the one it replaces is retired. (A plan that writes its consents as FHIR may instead keep one record per member and switch and update it, see [Member Consent (FHIR)](../../data-integration/consent/fhir.md).) A Payer-to-Payer withdrawal only retires the opt-in. Both profiles fix `status` to `active`, so a retirement sets `status` to `inactive` and removes the profile in the same JSON merge patch. A patch that changes only the status is refused.
 
 {% tabs %}
 {% tab title="Request" %}
@@ -290,7 +289,7 @@ To send Consents before their documents, put both in one transaction. Inside a t
 
 ### Retire what the new decisions replace
 
-A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal. Provider Access treats a member as opted out while any opt-out is active, so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
+A new Consent does not retire the one it replaces. Send a [retirement](#retire-a-record) for every Consent a new decision supersedes, including ones the member recorded on the member portal — or update one record per member and switch in place, as [Member Consent (FHIR)](../../data-integration/consent/fhir.md) does. Provider Access treats a member as opted out while any opt-out is in force (`status` `active` and a `provision.period` that covers today, or no period at all), so a `permit` changes nothing until the opt-out before it is retired. Retire after the new Consents are written: an opt-out then never lapses before its replacement is in. The first search example above finds a member's opt-outs in force.
 
 In a backfill of past decisions, load the ones no longer in force as retired records: `status: inactive` and no profile.
 
@@ -300,7 +299,6 @@ In a backfill of past decisions, load the ones no longer in force as retired rec
 - **Retirements.** A `PATCH` entry carries the JSON merge patch from [Retire a record](#retire-a-record) as its `resource`. Add `request.ifMatch` with the version you read to refuse a record that changed since. A FHIRPath Patch `Parameters` resource works too.
 - **Access.** Aidbox authorizes every entry as a request of its own, such as `PUT /fhir/Consent/<id>`. The client's access policy must allow `POST /fhir` and each interaction in the bundle; an entry it refuses fails with `403`.
 - **Responses.** With `Prefer: return=minimal` the response leaves the records out: each entry keeps its status, and a failed batch entry its `OperationOutcome`. Do not send it with a transaction, see [Current limitations](#current-limitations).
-- **Request size.** 1,000 Consents are about 1.6 MB of JSON. An ingress-nginx in front of Aidbox refuses request bodies over 1 MB with `413` unless its `proxy-body-size` is raised. Raise it, or send smaller bundles.
 
 The batch below is shortened to the elements that matter here; the full records are in [Provider Access opt-out](#provider-access-opt-out) and [Payer-to-Payer opt-in](#payer-to-payer-opt-in). The document for `P2P-000343` was not loaded yet, so that entry fails and the other two are written. Sent as a transaction, the same bundle writes nothing.
 
@@ -321,7 +319,7 @@ Prefer: return=minimal
       "resource": {
         "resourceType": "Consent",
         "id": "P2P-000342",
-        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T14:22:00Z" },
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"] },
         "sourceReference": { "reference": "DocumentReference/DOC-55192" },
         "...": "..."
       }
@@ -331,7 +329,7 @@ Prefer: return=minimal
       "resource": {
         "resourceType": "Consent",
         "id": "P2P-000343",
-        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"], "lastUpdated": "2026-10-06T15:05:00Z" },
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent"] },
         "sourceReference": { "reference": "DocumentReference/DOC-55193" },
         "...": "..."
       }
@@ -341,7 +339,7 @@ Prefer: return=minimal
       "resource": {
         "resourceType": "Consent",
         "id": "PAC-000117",
-        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"], "lastUpdated": "2026-10-06T16:40:00Z" },
+        "meta": { "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"] },
         "...": "..."
       }
     }

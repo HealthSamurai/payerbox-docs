@@ -113,4 +113,6 @@
     * [Formulary Drugs](data-integration/drug-formulary/formulary-drugs.md)
     * [Formulary Items](data-integration/drug-formulary/formulary-items.md)
   * [Member Consent](data-integration/consent/README.md)
+    * [Member Consent (CSV)](data-integration/consent/csv.md)
+    * [Member Consent (FHIR)](data-integration/consent/fhir.md)
 * [Releases](releases.md)
