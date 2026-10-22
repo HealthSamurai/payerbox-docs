@@ -116,11 +116,11 @@ Content-Type: application/fhir+json
 }
 ```
 
-Then the clients, through the Aidbox base endpoint rather than `/fhir` (see [Registering a B2B client](../authentication.md#registering-a-b2b-client)). Each `Client` carries the `client-hl7B2b` extension pointing at the Organization whose NPI it presents:
+Then the clients and their access policies, as a transaction on `/fhir` (Aidbox edge from 2026-10-08 on reads the `client-hl7B2b` extension in the format `/fhir` stores; see [Registering a B2B client](../authentication.md#registering-a-b2b-client) for older builds). Each `Client` carries the extension pointing at the Organization whose NPI it presents:
 
 ```http
-POST /
-Content-Type: application/json
+POST /fhir
+Content-Type: application/fhir+json
 
 {
   "resourceType": "Bundle",
