@@ -68,7 +68,7 @@
                 "answer": [
                   {
                     "valueReference": {
-                      "reference": "Organization/lakeside-health-plan",
+                      "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890",
                       "display": "Lakeside Health Plan"
                     }
                   }
@@ -247,7 +247,7 @@
           }
         ],
         "custodian": {
-          "reference": "Organization/example-health-plan"
+          "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|12345"
         },
         "description": "Payer-to-Payer opt-in form",
         "content": [
@@ -319,7 +319,7 @@
         ],
         "organization": [
           {
-            "reference": "Organization/example-health-plan"
+            "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|12345"
           }
         ],
         "sourceReference": {
@@ -347,7 +347,7 @@
                 ]
               },
               "reference": {
-                "reference": "Organization/lakeside-health-plan",
+                "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890",
                 "display": "Lakeside Health Plan"
               }
             },
@@ -375,7 +375,7 @@
                 ]
               },
               "reference": {
-                "reference": "Organization/example-health-plan",
+                "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|12345",
                 "display": "Example Health Plan"
               }
             }
@@ -421,7 +421,7 @@
             },
             "value": "XYZ123456789",
             "assigner": {
-              "reference": "Organization/lakeside-health-plan",
+              "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890",
               "display": "Lakeside Health Plan"
             }
           }
@@ -442,7 +442,7 @@
         },
         "payor": [
           {
-            "reference": "Organization/lakeside-health-plan",
+            "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890",
             "display": "Lakeside Health Plan"
           }
         ]

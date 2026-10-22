@@ -123,7 +123,7 @@
         ],
         "organization": [
           {
-            "reference": "Organization/example-health-plan"
+            "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|12345"
           }
         ],
         "sourceReference": {
@@ -154,7 +154,7 @@
                 ]
               },
               "reference": {
-                "reference": "Organization/example-health-plan"
+                "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|12345"
               }
             }
           ],

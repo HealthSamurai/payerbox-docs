@@ -299,7 +299,6 @@ In a backfill of past decisions, load the ones no longer in force as retired rec
 - **Retirements.** A `PATCH` entry carries the JSON merge patch from [Retire a record](#retire-a-record) as its `resource`. Add `request.ifMatch` with the version you read to refuse a record that changed since. A FHIRPath Patch `Parameters` resource works too.
 - **Access.** Aidbox authorizes every entry as a request of its own, such as `PUT /fhir/Consent/<id>`. The client's access policy must allow `POST /fhir` and each interaction in the bundle; an entry it refuses fails with `403`.
 - **Responses.** With `Prefer: return=minimal` the response leaves the records out: each entry keeps its status, and a failed batch entry its `OperationOutcome`. Do not send it with a transaction, see [Current limitations](#current-limitations).
-- **Request size.** 1,000 Consents are about 1.6 MB of JSON. An ingress-nginx in front of Aidbox refuses request bodies over 1 MB with `413` unless its `proxy-body-size` is raised. Raise it, or send smaller bundles.
 
 The batch below is shortened to the elements that matter here; the full records are in [Provider Access opt-out](#provider-access-opt-out) and [Payer-to-Payer opt-in](#payer-to-payer-opt-in). The document for `P2P-000343` was not loaded yet, so that entry fails and the other two are written. Sent as a transaction, the same bundle writes nothing.
 

@@ -33,7 +33,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Organization/example-health-plan"
+        "url": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|12345"
       }
     },
     {
@@ -67,7 +67,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Organization/lakeside-health-plan"
+        "url": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890"
       }
     },
     {
@@ -101,7 +101,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Organization/riverbend-health-cooperative"
+        "url": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|54321"
       }
     },
     {
@@ -143,7 +143,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Patient/example-member"
+        "url": "Patient?identifier=https://example.org/fhir/sid/member-id|MBR0000012"
       }
     }
   ]
