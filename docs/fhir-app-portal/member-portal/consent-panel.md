@@ -14,7 +14,7 @@ Plan members record the two data-sharing choices of [CMS-0057-F](../../complianc
 
 This page describes what members see and do there and what each choice records, so that administrators can configure the feature and support members. The plan's side is configured in [Consent Settings](../consent-settings.md), and choices made by an authorized representative are checked in [Consent Reviews](../consent-reviews.md). The page appears only where the deployment turns it on; see [Capture mode](../consent-settings.md#how-the-deployment-is-set-up).
 
-![The Data sharing page with nothing on file: Sharing with providers who treat you, On, with Opt out; Records from your other health plans, Off, with Give permission](../../../assets/fhir-app-portal/consent/member-data-sharing-v2.png)
+![The Data sharing page with nothing on file: Sharing with providers who treat you, On, with Opt out; Records from your other health plans, Off, with Give permission](../../../assets/fhir-app-portal/consent/member-data-sharing-v2.avif)
 
 ## What members can do
 
@@ -50,7 +50,7 @@ The member clicks **Opt out**. There is no confirmation checkbox: the button is 
 {% endstep %}
 {% endstepper %}
 
-![The Provider Access card with the Opt out form open: the two notes, Who is completing this form? with Member (myself) selected, and the Opt out and Cancel buttons](../../../assets/fhir-app-portal/consent/member-provider-access-confirm-v3.png)
+![The Provider Access card with the Opt out form open: the two notes, Who is completing this form? with Member (myself) selected, and the Opt out and Cancel buttons](../../../assets/fhir-app-portal/consent/member-provider-access-confirm-v3.avif)
 
 A member's own choice takes effect when it is saved, and the record it replaces stops being in force. From then on, Provider Access responses leave this member's data out. To turn sharing back on, the member clicks **Opt back in**: the form asks only who is completing it.
 
@@ -71,11 +71,11 @@ The member answers **Who is completing this form?** where it is asked, and click
 {% endstep %}
 {% endstepper %}
 
-![The Payer-to-Payer card with the Give permission form open: Lakeside Health Plan picked, a member ID, the coverage and still-have-it answers, the information question with All of my health information selected, the end date, and the Give permission button](../../../assets/fhir-app-portal/consent/member-p2p-prior-plan-v2.png)
+![The Payer-to-Payer card with the Give permission form open: Lakeside Health Plan picked, a member ID, the coverage and still-have-it answers, the information question with All of my health information selected, the end date, and the Give permission button](../../../assets/fhir-app-portal/consent/member-p2p-prior-plan-v2.avif)
 
 The permission runs until the date set in [Consent Settings](../consent-settings.md). Once it is saved, the card names the plans:
 
-![The Payer-to-Payer card after saving: On, We ask Lakeside Health Plan for your records, permission given on October 14, 2026 and running until December 31, 2027, with Change plans and Withdraw permission](../../../assets/fhir-app-portal/consent/member-p2p-plans-v2.png)
+![The Payer-to-Payer card after saving: On, We ask Lakeside Health Plan for your records, permission given on October 14, 2026 and running until December 31, 2027, with Change plans and Withdraw permission](../../../assets/fhir-app-portal/consent/member-p2p-plans-v2.avif)
 
 Picking **Only non-sensitive information** shows a warning before saving: *Choosing this sends nothing today.* Other plans cannot yet separate specially protected records from the rest, so they hold back the member's whole history. The card says so afterwards as well.
 
@@ -99,7 +99,7 @@ Where it is offered, picking **Authorized representative** adds:
 | **Basis of authority** | **Power of Attorney**, **Legal guardian**, or **Other** with a description. |
 | **Document that shows your authority** | The power of attorney, guardianship papers or equivalent: a PDF, JPEG or PNG file of up to 10 MB, uploaded with **Choose file**. |
 
-![The Provider Access card with the Opt back in form completed by an authorized representative: Sam Lee, son; Power of Attorney; the uploaded document; the note that this starts once the document is checked; and the Opt back in button](../../../assets/fhir-app-portal/consent/member-representative-confirm-v3.png)
+![The Provider Access card with the Opt back in form completed by an authorized representative: Sam Lee, son; Power of Attorney; the uploaded document; the note that this starts once the document is checked; and the Opt back in button](../../../assets/fhir-app-portal/consent/member-representative-confirm-v3.avif)
 
 When the choice applies depends on its direction, and the form says which under the representative's details before they save:
 
@@ -112,7 +112,7 @@ When the choice applies depends on its direction, and the form says which under 
 
 **History**, on each card, lists every choice recorded for that switch, newest first: what was done (*Opted out*, *Opted back in*, *Gave permission*, *Gave permission, non-sensitive records only*, *Withdrew permission*), the date, who submitted it (*By you*, or the representative's name) and its status. **What was answered** appears under a row that recorded more than the choice itself, such as the plans named or the representative's details, and shows the answers as they were submitted.
 
-![The Provider Access card while a representative's request waits: the Waiting on document check chip, the note about the request, and the History with Opted back in by Sam Lee, son, Waiting on document check, above Opted out by you, In force](../../../assets/fhir-app-portal/consent/member-provider-access-history-v2.png)
+![The Provider Access card while a representative's request waits: the Waiting on document check chip, the note about the request, and the History with Opted back in by Sam Lee, son, Waiting on document check, above Opted out by you, In force](../../../assets/fhir-app-portal/consent/member-provider-access-history-v2.avif)
 
 | Status | Meaning |
 |---|---|
@@ -126,13 +126,13 @@ When the choice applies depends on its direction, and the form says which under 
 
 After an administrator approves the representative's request above, the card reads:
 
-![The Provider Access card after approval: On since October 14, 2026, and the History with Opted back in by Sam Lee, son, In force, approved October 14, 2026, above Opted out by you, No longer in force](../../../assets/fhir-app-portal/consent/member-provider-access-approved-v2.png)
+![The Provider Access card after approval: On since October 14, 2026, and the History with Opted back in by Sam Lee, son, In force, approved October 14, 2026, above Opted out by you, No longer in force](../../../assets/fhir-app-portal/consent/member-provider-access-approved-v2.avif)
 
 ## Read-only and unconfigured deployments
 
 Where the plan records these choices through Member Services, the deployment runs in read-only [capture mode](../consent-settings.md#how-the-deployment-is-set-up): the page shows what is on file without the buttons, under the note *We record these choices by phone. This page shows what is on file. To change a choice, call Member Services.*
 
-![The Data sharing page on a read-only deployment: the note that choices are recorded by phone, and both cards with their state but no buttons](../../../assets/fhir-app-portal/consent/member-read-only-v2.png)
+![The Data sharing page on a read-only deployment: the note that choices are recorded by phone, and both cards with their state but no buttons](../../../assets/fhir-app-portal/consent/member-read-only-v2.avif)
 
 Until the plan organization and a Payer-to-Payer end date that has not passed are set in [Consent Settings](../consent-settings.md), the buttons are there but an opened form shows only *You can't make this change online yet. Call Member Services to record your choice.* and **Cancel**.
 

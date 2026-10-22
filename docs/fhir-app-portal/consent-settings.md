@@ -11,7 +11,7 @@ The **Settings → Consent** tab of the Admin Portal sets what the member portal
 
 Open **Settings → Consent** (`/dashboard/settings/consent`). The tab is shown only on deployments that enable the Consent Panel. It is written for the plan's administrator: plans are shown by name, and no record ids, profile names or deployment variables appear on it.
 
-![Settings → Consent, the Member data sharing card: Your health plan set to Example Health Plan with Change, Permission lasts until December 31, 2027, Let members exclude sensitive records ticked, and Save with No changes yet](../../assets/fhir-app-portal/consent/admin-consent-settings-v3.png)
+![Settings → Consent, the Member data sharing card: Your health plan set to Example Health Plan with Change, Permission lasts until December 31, 2027, Let members exclude sensitive records ticked, and Save with No changes yet](../../assets/fhir-app-portal/consent/admin-consent-settings-v3.avif)
 
 ## Member data sharing
 
@@ -25,7 +25,7 @@ The first card holds the three settings and its own **Save** button.
 
 **Save** is always enabled. A press with something missing lists the problems above the button instead of saving, for example *Set the date the Payer-to-Payer permission lasts until.*, *The end date has passed. Set a date in the future.* or *The health plan was not found. Pick it from the list.*; a press with nothing changed says *Nothing changed*; a save confirms with *Settings saved*. The settings are stored on the admin Aidbox and read by the next save on the member page; no restart is needed.
 
-![The Member data sharing card after a press of Save with the date cleared: a yellow list above the button reads Set the date the Payer-to-Payer permission lasts until](../../assets/fhir-app-portal/consent/admin-consent-settings-problems.png)
+![The Member data sharing card after a press of Save with the date cleared: a yellow list above the button reads Set the date the Payer-to-Payer permission lasts until](../../assets/fhir-app-portal/consent/admin-consent-settings-problems.avif)
 
 Members can save choices only while the settings are complete: the plan is set and exists, and the end date is set and has not passed. While they are not, a yellow note at the top of the card says what is missing, for example *Members cannot record choices yet: pick your health plan; set the date the Payer-to-Payer permission lasts until.* or *… the Payer-to-Payer end date 2026-01-01 has passed, set a new one.*, and the member page shows the choices on file but an opened form says the change cannot be made online yet. The note disappears once all three are in order.
 
@@ -33,11 +33,11 @@ Members can save choices only while the settings are complete: the plan is set a
 
 The plan's Organization usually arrives with the plan's data. When it does not, the picker finds nothing and offers to create it:
 
-![The plan picker with Anytown Health typed: No health plan is named like this, and a button Add “Anytown Health” as your plan](../../assets/fhir-app-portal/consent/admin-consent-plan-not-found.png)
+![The plan picker with Anytown Health typed: No health plan is named like this, and a button Add “Anytown Health” as your plan](../../assets/fhir-app-portal/consent/admin-consent-plan-not-found.avif)
 
 **Add “<name>” as your plan** (or **Add your plan** under the picker) opens a form for the **Plan name** and at least one of the two codes, the **NAIC company code** (five digits, as listed in the NAIC Consumer Information Source) or the **TIN** (the plan's federal tax id, nine digits, `XX-XXXXXXX`; the hyphen may be left out). Health plans have no NPI: it identifies providers.
 
-![The Add your plan form: Plan name Anytown Health Plan, NAIC company code 95202, TIN empty, and the buttons Add and use this plan and Cancel](../../assets/fhir-app-portal/consent/admin-consent-plan-add.png)
+![The Add your plan form: Plan name Anytown Health Plan, NAIC company code 95202, TIN empty, and the buttons Add and use this plan and Cancel](../../assets/fhir-app-portal/consent/admin-consent-plan-add.avif)
 
 **Add and use this plan** creates the `Organization` (HRex Organization profile, typed as a payer, the codes as its identifiers) and sets it as your plan in the same step; the date and the sensitive-records option stay as they were. The new plan is never offered to members on the Payer-to-Payer form. A press with something missing lists it above the button, for example *Enter the NAIC code or the TIN. One is enough.*
 
@@ -47,7 +47,7 @@ One plan, one record: if an `Organization` already carries the code — loaded b
 
 The second card holds the health plans a member can pick as a previous or concurrent plan on the Payer-to-Payer form. Members never type a plan's name freely; they pick from this list, and your own plan is never offered. Each row shows the plan's name and its codes.
 
-![The Other health plans members can pick card: Lakeside Health Plan with NAIC 95123, Riverbend Health with TIN 12-3456789, and under Add a health plan the name Summit Health with NAIC code 95301 and the hint that the code is not registered as a previous payer yet](../../assets/fhir-app-portal/consent/admin-previous-payers-register-v2.png)
+![The Other health plans members can pick card: Lakeside Health Plan with NAIC 95123, Riverbend Health with TIN 12-3456789, and under Add a health plan the name Summit Health with NAIC code 95301 and the hint that the code is not registered as a previous payer yet](../../assets/fhir-app-portal/consent/admin-previous-payers-register-v2.avif)
 
 To add a plan, enter its **Plan name** and at least one of the **NAIC company code** or the **TIN**, wait for the hint under the code, and click **Add health plan**. The hints check each code as you type:
 
@@ -63,7 +63,7 @@ Each addition creates an `Organization` that declares the HRex Organization prof
 
 A collapsed note at the bottom of the tab, **How this deployment is set up**, shows two facts that are part of the deployment, not settings on this page:
 
-![The note expanded: Capture mode read-write, members can change their choices online; Authorized representatives can act for a member, a choice that shares more waits for review](../../assets/fhir-app-portal/consent/admin-consent-deployment-note.png)
+![The note expanded: Capture mode read-write, members can change their choices online; Authorized representatives can act for a member, a choice that shares more waits for review](../../assets/fhir-app-portal/consent/admin-consent-deployment-note.avif)
 
 **Capture mode**:
 
