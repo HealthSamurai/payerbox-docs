@@ -28,6 +28,10 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 - With `PAS_PERSIST_INQUIRIES=true`, each successful [`Claim/$inquire`](api-reference/operations/claim-inquire.md) is recorded as an `AuditEvent`. Off by default. See [Recording inquiry exchanges](prior-auth/pas.md#recording-inquiry-exchanges).
 - The UM delivery worker checks for retries with one search every 60 seconds instead of three searches every 15 seconds, which reduces audit log volume.
 
+**UM integration**
+
+- The `guidingcare` connector is scheduled for deprecation. It receives defect fixes only; no new features are planned. See [Choosing a connector](prior-auth/um-integration.md#choosing-a-connector).
+
 **CRD**
 
 - The Coverage Information system action now references the Coverage entry of a Bundle-valued `prefetch.coverage` instead of the first entry in the Bundle. Also in `2608.3`. See [System actions](prior-auth/crd.md#system-actions).

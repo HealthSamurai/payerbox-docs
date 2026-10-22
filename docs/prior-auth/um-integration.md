@@ -22,7 +22,11 @@ Forwarding is enabled per payer by a [`UMTenantConfig`](../api-reference/configu
 | `connector` | Use when | Wire contract |
 |---|---|---|
 | `pas-passthrough` | The UM system implements Da Vinci PAS itself | The request Bundle is rebuilt and POSTed to the delegate's `Claim/$submit`; status refresh via its `Claim/$inquire` |
-| `guidingcare` | The payer runs HealthEdge GuidingCare | Proprietary REST (`/claim/$submit`, `/claimresponse`) with `ConceptMap`-driven code translation |
+| `guidingcare` | The payer runs HealthEdge GuidingCare | GuidingCare Interoperability API (`/claim/$submit`, `/claimresponse`), FHIR-shaped but not Da Vinci PAS, with `ConceptMap`-driven code translation |
+
+{% hint style="info" %}
+The `guidingcare` connector is scheduled for deprecation. It is built on the GuidingCare Interoperability API and receives defect fixes only; no new features are planned. Existing `guidingcare` tenant configurations keep working.
+{% endhint %}
 
 With `pas-passthrough`, onboarding a conformant delegate is configuration only — endpoint, auth and routing keys, no code. `guidingcare` additionally needs the tenant's picklist values and crosswalks, because GuidingCare fields are configured inside the UM tenant and are not discoverable through its API.
 
@@ -68,7 +72,7 @@ An `invalid` tenant is excluded from routing — its Claims are stored and retur
 
 ## Current limitations
 
-- `guidingcare` does not forward cancel requests; such a Task is parked for manual handling.
+- `guidingcare` is [scheduled for deprecation](#choosing-a-connector) and does not forward cancel requests; such a Task is parked for manual handling.
 - `pas-passthrough` has no correlation search, so an ambiguous initial submission goes to manual review instead of being reconciled automatically.
 - The worker runs as a single instance per deployment.
 
