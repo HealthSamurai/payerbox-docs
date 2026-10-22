@@ -9,7 +9,7 @@ Custom resource that configures forwarding of Prior Auth submissions to a payer'
 One instance per payer per UM system. Instances are re-read about once a minute, so changes apply without a restart. Narrative overview: [UM System Integration](../../prior-auth/um-integration.md).
 
 {% hint style="info" %}
-The `guidingcare` connector is scheduled for deprecation and receives defect fixes only. See [Choosing a connector](../../prior-auth/um-integration.md#choosing-a-connector).
+The `guidingcare` connector is scheduled for deprecation. See [Choosing a connector](../../prior-auth/um-integration.md#choosing-a-connector).
 {% endhint %}
 
 ## Authentication

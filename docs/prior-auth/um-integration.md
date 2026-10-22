@@ -25,7 +25,7 @@ Forwarding is enabled per payer by a [`UMTenantConfig`](../api-reference/configu
 | `guidingcare` | The payer runs HealthEdge GuidingCare | GuidingCare Interoperability API (`/claim/$submit`, `/claimresponse`), FHIR-shaped but not Da Vinci PAS, with `ConceptMap`-driven code translation |
 
 {% hint style="info" %}
-The `guidingcare` connector is scheduled for deprecation. It is built on the GuidingCare Interoperability API and receives defect fixes only; no new features are planned. Existing `guidingcare` tenant configurations keep working.
+The `guidingcare` connector is scheduled for deprecation.
 {% endhint %}
 
 With `pas-passthrough`, onboarding a conformant delegate is configuration only — endpoint, auth and routing keys, no code. `guidingcare` additionally needs the tenant's picklist values and crosswalks, because GuidingCare fields are configured inside the UM tenant and are not discoverable through its API.

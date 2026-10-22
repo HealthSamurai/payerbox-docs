@@ -30,7 +30,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 
 **UM integration**
 
-- The `guidingcare` connector is scheduled for deprecation. It receives defect fixes only; no new features are planned. See [Choosing a connector](prior-auth/um-integration.md#choosing-a-connector).
+- The `guidingcare` connector is scheduled for deprecation. See [Choosing a connector](prior-auth/um-integration.md#choosing-a-connector).
 
 **CRD**
 
