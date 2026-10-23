@@ -77,6 +77,8 @@ One row per facility NPI, plan and network.
 | `parent_org_npi` | If available | 10 digits, Luhn-valid over the `80840` prefix, if part of a larger system | `9999999961` |
 | `plan_id` | Yes | key from `plans` | `PLAN-ISNP` |
 | `network_id` | Yes | key from `networks` | `NET-002` |
+| `ccn` | If Medicare-certified | 6 digits | `999999` |
+| `ncpdp_id` | If a pharmacy | 7 digits | `9999999` |
 | `location_name` | Recommended | text; defaults to `facility_name` if there is no distinct site name | `Example Hospital` |
 | `address_line1` | Yes | text | `123 Park Ave` |
 | `address_line2` | No | text | `Floor 3` |
@@ -87,6 +89,8 @@ One row per facility NPI, plan and network.
 | `latitude` | If available | decimal, WGS84 | `40.8801` |
 | `longitude` | If available | decimal, WGS84 | `-73.9100` |
 | `phone` | Yes | 10 digits | `7185551212` |
+
+- `ccn` and `ncpdp_id` identify the site itself. Send either where you have one: Payerbox keys the Location on it, and unlike an address it survives being reworded between extracts. Without one the address is the key, so send it the same way each time.
 
 ## networks
 
