@@ -4,7 +4,7 @@ description: Run the full Payerbox local stack — FHIR App Portal, Prior Auth, 
 
 # Quickstart: Run locally
 
-The compose below brings up the full Payerbox stack in one command: PostgreSQL, MinIO, two Aidbox instances preconfigured with the FHIR Implementation Guides required for Prior Auth and Interop APIs, the FHIR App Portal, and the Prior Auth and Interop applications.
+The compose below brings up the full Payerbox stack in one command: PostgreSQL, RustFS (S3-compatible object storage), two Aidbox instances preconfigured with the FHIR Implementation Guides required for Prior Auth and Interop APIs, the FHIR App Portal, and the Prior Auth and Interop applications.
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ mkdir payerbox-local && cd payerbox-local
 ```yaml
 volumes:
   postgres_data: {}
-  minio_data: {}
+  rustfs_data: {}
 
 services:
   postgres:
@@ -55,38 +55,41 @@ services:
       timeout: 5s
       retries: 5
 
-  minio:
-    image: minio/minio
+  rustfs:
+    image: rustfs/rustfs:1.0.3
     restart: unless-stopped
-    command: server /data --console-address ":9001"
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - minio_data:/data
+      - rustfs_data:/data
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 5s
 
-  minio-init:
-    image: minio/mc
+  rustfs-init:
+    image: curlimages/curl:8.8.0
     depends_on:
-      minio:
+      rustfs:
         condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      mc alias set local http://minio:9000 minioadmin minioadmin &&
-      mc mb --ignore-existing local/pas-attachments &&
-      mc mb --ignore-existing local/aidbox-bulk &&
-      mc anonymous set download local/pas-attachments &&
-      mc anonymous set download local/aidbox-bulk
-      "
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        s3() { curl -s --aws-sigv4 aws:amz:us-east-1:s3 -u rustfsadmin:rustfsadmin "$$@"; }
+        for b in pas-attachments aidbox-bulk; do
+          code=$$(s3 -o /dev/null -w '%{http_code}' -X PUT "http://rustfs:9000/$$b")
+          [ "$$code" = 200 ] || [ "$$code" = 409 ] || { echo "create bucket $$b: HTTP $$code" >&2; exit 1; }
+          s3 -Sf -X PUT "http://rustfs:9000/$$b?policy" -d "$$(printf '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":["*"]},"Action":["s3:GetObject"],"Resource":["arn:aws:s3:::%s/*"]}]}' "$$b")"
+        done
 
   aidbox-admin:
     image: healthsamurai/aidboxone:edge
@@ -95,7 +98,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      minio-init:
+      rustfs-init:
         condition: service_completed_successfully
     ports:
       - "8080:8080"
@@ -122,7 +125,7 @@ services:
       BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.1.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.1.0:hl7.fhir.us.davinci-pdex-plan-net#1.2.0:hl7.fhir.us.davinci-hrex#1.2.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0:hl7.fhir.us.davinci-cdex#2.1.0"
       BOX_FHIR_NPM_PACKAGE_REGISTRY: https://fs.get-ig.org/pkgs
       BOX_FHIR_BULK_STORAGE_PROVIDER: aws
-      BOX_FHIR_BULK_STORAGE_AWS_ACCOUNT: minio
+      BOX_FHIR_BULK_STORAGE_AWS_ACCOUNT: rustfs
       BOX_FHIR_BULK_STORAGE_AWS_BUCKET: aidbox-bulk
       BOX_FHIR_BULK_DATA_EXPORT_NESTED_ELEMENTS: "true"
       BOX_SECURITY_AUDIT_LOG_ENABLED: "true"
@@ -256,7 +259,7 @@ services:
       AIDBOX_APP_SECRET: secret
       PRIOR_AUTH_APP_URL: http://prior-auth:8088/
       STORAGE_PROVIDER: aws
-      STORAGE_ACCOUNT_ID: minio
+      STORAGE_ACCOUNT_ID: rustfs
       STORAGE_BUCKET: pas-attachments
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8088/health"]
@@ -312,7 +315,7 @@ Open `docker-compose.yaml` and replace two values with the JWT licenses you obta
 docker compose up
 ```
 
-First startup takes several minutes while Aidbox downloads the FHIR packages listed in `BOX_BOOTSTRAP_FHIR_PACKAGES`, applies the init bundle (Prior Auth/Interop clients, AwsAccount/minio), and the Prior Auth and Interop apps register with admin Aidbox.
+First startup takes several minutes while Aidbox downloads the FHIR packages listed in `BOX_BOOTSTRAP_FHIR_PACKAGES`, applies the init bundle (Prior Auth/Interop clients, AwsAccount/rustfs), and the Prior Auth and Interop apps register with admin Aidbox.
 
 ## Step 4. Open the UIs
 
@@ -322,7 +325,7 @@ First startup takes several minutes while Aidbox downloads the FHIR packages lis
 | Developer Aidbox UI | http://localhost:8090 |
 | Admin portal | http://localhost:8095 |
 | Developer portal | http://localhost:8096 |
-| MinIO Console | http://localhost:9001 |
+| RustFS Console (`rustfsadmin` / `rustfsadmin`) | http://localhost:9001/rustfs/console/ |
 
 ## Try the APIs in Aidbox
 
@@ -344,7 +347,7 @@ Three portals ship with the stack — each has its own audience and its own page
 
 ```bash
 docker compose down      # stop containers, keep data
-docker compose down -v   # stop and delete PostgreSQL and MinIO volumes
+docker compose down -v   # stop and delete PostgreSQL and RustFS volumes
 ```
 
 ## Next steps

@@ -1,6 +1,6 @@
 volumes:
   postgres_data: {}
-  minio_data: {}
+  rustfs_data: {}
 
 services:
   postgres:
@@ -22,42 +22,41 @@ services:
       timeout: 5s
       retries: 5
 
-  minio:
-    image: minio/minio
+  rustfs:
+    image: rustfs/rustfs:1.0.3
     restart: unless-stopped
-    command: server /data --console-address ":9001"
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - minio_data:/data
+      - rustfs_data:/data
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -f http://localhost:9000/minio/health/live || exit 1",
-        ]
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 5s
 
-  minio-init:
-    image: minio/mc
+  rustfs-init:
+    image: curlimages/curl:8.8.0
     depends_on:
-      minio:
+      rustfs:
         condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      mc alias set local http://minio:9000 minioadmin minioadmin &&
-      mc mb --ignore-existing local/pas-attachments &&
-      mc mb --ignore-existing local/aidbox-bulk &&
-      mc anonymous set download local/pas-attachments &&
-      mc anonymous set download local/aidbox-bulk
-      "
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        s3() { curl -s --aws-sigv4 aws:amz:us-east-1:s3 -u rustfsadmin:rustfsadmin "$$@"; }
+        for b in pas-attachments aidbox-bulk; do
+          code=$$(s3 -o /dev/null -w '%{http_code}' -X PUT "http://rustfs:9000/$$b")
+          [ "$$code" = 200 ] || [ "$$code" = 409 ] || { echo "create bucket $$b: HTTP $$code" >&2; exit 1; }
+          s3 -Sf -X PUT "http://rustfs:9000/$$b?policy" -d "$$(printf '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":["*"]},"Action":["s3:GetObject"],"Resource":["arn:aws:s3:::%s/*"]}]}' "$$b")"
+        done
 
   aidbox-admin:
     image: healthsamurai/aidboxone:edge
@@ -66,7 +65,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      minio-init:
+      rustfs-init:
         condition: service_completed_successfully
     ports:
       - "8080:8080"
@@ -93,7 +92,7 @@ services:
       BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.terminology.r4#6.4.0:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.1.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.0.1:hl7.fhir.us.davinci-pdex-plan-net#1.2.0:hl7.fhir.us.davinci-cdex#2.1.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0"
       BOX_FHIR_NPM_PACKAGE_REGISTRY: https://fs.get-ig.org/pkgs
       BOX_FHIR_BULK_STORAGE_PROVIDER: aws
-      BOX_FHIR_BULK_STORAGE_AWS_ACCOUNT: minio
+      BOX_FHIR_BULK_STORAGE_AWS_ACCOUNT: rustfs
       BOX_FHIR_BULK_STORAGE_AWS_BUCKET: aidbox-bulk
       BOX_SECURITY_AUDIT_LOG_ENABLED: "true"
       BOX_SECURITY_DEV_MODE: "true"
@@ -226,7 +225,7 @@ services:
       AIDBOX_APP_SECRET: secret
       PRIOR_AUTH_APP_URL: http://prior-auth:8088/
       STORAGE_PROVIDER: aws
-      STORAGE_ACCOUNT_ID: minio
+      STORAGE_ACCOUNT_ID: rustfs
       STORAGE_BUCKET: pas-attachments
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
