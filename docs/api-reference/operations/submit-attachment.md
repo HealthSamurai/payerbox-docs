@@ -43,11 +43,11 @@ POST <base>/fhir/$submit-attachment
 
 ## Processing flow
 
-1. **Validation** — The `Parameters` resource is validated against the [CDex Parameters Submit Attachment profile](https://hl7.org/fhir/us/davinci-cdex/StructureDefinition-cdex-parameters-submit-attachment.html). Missing required parameters or invalid structure returns HTTP 422.
+1. **Validation** — The `Parameters` resource is validated against the [CDex Parameters Submit Attachment profile](https://hl7.org/fhir/us/davinci-cdex/StructureDefinition-cdex-parameters-submit-attachment.html). Missing required parameters or invalid structure returns HTTP 422. A `DocumentReference` in `Content` must carry base64 data in every `content[].attachment.data`; a missing or malformed value returns HTTP 422 (`invalid`) naming the element. A deployment with `SUBMIT_ATTACHMENT_ACCEPT_URL=true` also accepts a `content[]` entry that has `attachment.url` and no `data` — see [Configuration](#configuration).
 2. **Claim Lookup** — The system searches for an existing `Claim` matching the `TrackingId` identifier and `AttachTo` use code. If no matching Claim is found, the request is rejected with HTTP 422. Unsolicited attachments (where no prior Claim exists) are not supported.
 3. **Decision Check** — If the Claim's latest `ClaimResponse` has `outcome = "complete"`, the prior authorization is finalized and the request is rejected with HTTP 422 (`business-rule`). The diagnostic carries the `ClaimResponse.disposition` so the caller can tell an approved authorization from a denied one.
 4. **Duplicate Check** — Attachments whose `Content` resource `id` is already linked from the Claim's `supportingInfo` are rejected. When every attachment in the request collides, the request fails with HTTP 422 (`duplicate`). When only some collide, the non-colliding attachments are attached and the response is HTTP 200 with a `warning` issue listing the collisions. To submit new content, use a unique `id` or omit `id` to have one generated.
-5. **Cloud Storage Upload** — For `DocumentReference` resources containing inline base64 data (`content[].attachment.data`), the data is automatically uploaded to cloud storage. The base64 data is replaced with a URL reference, and the `size` field is populated.
+5. **Cloud Storage Upload** — For `DocumentReference` resources containing inline base64 data (`content[].attachment.data`), the data is uploaded to cloud storage. The base64 data is replaced with a URL reference, `size` is populated, and a blank `title` is filled from `creation`, the `DocumentReference.description`, or a generated `attachment.<ext>` name. A `QuestionnaireResponse` is stored as submitted: an inline `valueAttachment.data` in any answer stays in the resource. A deployment with `SUBMIT_ATTACHMENT_OFFLOAD_QUESTIONNAIRE_RESPONSE=true` uploads every inline `valueAttachment` the same way and stores the answer with a `url` — see [Configuration](#configuration). Without cloud storage configured, data stays inline in both resource types.
 6. **Content Persistence** — All attachment content resources are persisted in Aidbox via a FHIR transaction bundle.
 7. **Claim Association** — The Claim is updated with new `supportingInfo` entries referencing the persisted content resources. Each entry includes a fixed PAS-valid category code and an optional `code` from the Attachment's `Code` parameter.
 8. **Re-queue on Final** — see below.
@@ -64,10 +64,27 @@ With `Final = false` the `ClaimResponse` is left untouched — use it to stream 
 |---|---|
 | 200 | Attachments accepted and associated with the Claim. On a partial id collision the `OperationOutcome` carries an extra `warning` issue (code `duplicate`) listing the attachments that were skipped |
 | 422 | Validation failure (missing required parameters, blank `TrackingId.value`, invalid structure, no matching Claim found) |
+| 422 | Attachment content — a `DocumentReference` `content[].attachment.data` is missing or not valid base64 (issue code `invalid`). With `SUBMIT_ATTACHMENT_ACCEPT_URL=true` an entry carrying `url` instead of `data` passes |
 | 422 | Finalized prior authorization — the Claim's latest `ClaimResponse` has `outcome = "complete"` (issue code `business-rule`) |
 | 422 | Attachment id collision — every attachment's `Content` resource `id` is already linked from the Claim's `supportingInfo` (issue code `duplicate`) |
 | 409 | The Claim could not be updated because another writer kept changing it. Payerbox retries the update a few times before giving up; the attachments themselves are already stored, and because their ids are reused, repeating the same call is safe |
 | 500 | Server error (content resource persistence or Claim update failed) |
+
+## Configuration
+
+Two deployment flags on the prior-auth service relax the default handling of attachment content. Both are off by default and take effect on service restart.
+
+```
+SUBMIT_ATTACHMENT_ACCEPT_URL=true
+```
+
+A `DocumentReference` `content[]` entry may carry `attachment.url` and no `data`. The entry is stored as given; Payerbox does not fetch the URL, so the submitter is responsible for its reachability from the payer side.
+
+```
+SUBMIT_ATTACHMENT_OFFLOAD_QUESTIONNAIRE_RESPONSE=true
+```
+
+Inline `valueAttachment.data` found in a submitted `QuestionnaireResponse` is uploaded to cloud storage and replaced with a `url`, as for `DocumentReference` content. Requires cloud storage to be configured; with no storage the data stays inline.
 
 ## Example
 
@@ -188,6 +205,23 @@ Accept: application/json
       "severity": "error",
       "code": "duplicate",
       "diagnostics": "Attachment id collision: DocumentReference/doc-1 already linked to Claim/claim-1765213116210. To submit new content use a unique id, or omit `id` to have one auto-generated."
+    }
+  ]
+}
+```
+
+{% endtab %}
+{% tab title="Error: Missing Attachment Data" %}
+
+```json
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "invalid",
+      "diagnostics": "Invalid $submit-attachment attachment content: Attachment[0].Content.content[0].attachment.data is missing",
+      "expression": ["Parameters.parameter"]
     }
   ]
 }
