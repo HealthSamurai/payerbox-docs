@@ -75,21 +75,18 @@ services:
       start_period: 5s
 
   rustfs-init:
-    image: curlimages/curl:8.8.0
+    image: rustfs/rc:v0.1.36
     depends_on:
       rustfs:
         condition: service_healthy
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        set -e
-        s3() { curl -s --aws-sigv4 aws:amz:us-east-1:s3 -u rustfsadmin:rustfsadmin "$$@"; }
-        for b in pas-attachments aidbox-bulk; do
-          code=$$(s3 -o /dev/null -w '%{http_code}' -X PUT "http://rustfs:9000/$$b")
-          [ "$$code" = 200 ] || [ "$$code" = 409 ] || { echo "create bucket $$b: HTTP $$code" >&2; exit 1; }
-          s3 -Sf -X PUT "http://rustfs:9000/$$b?policy" -d "$$(printf '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":["*"]},"Action":["s3:GetObject"],"Resource":["arn:aws:s3:::%s/*"]}]}' "$$b")"
-        done
+    entrypoint: >
+      /bin/sh -c "
+      rc alias set local http://rustfs:9000 rustfsadmin rustfsadmin &&
+      rc mb --ignore-existing local/pas-attachments &&
+      rc mb --ignore-existing local/aidbox-bulk &&
+      rc anonymous set download local/pas-attachments &&
+      rc anonymous set download local/aidbox-bulk
+      "
 
   aidbox-admin:
     image: healthsamurai/aidboxone:edge
