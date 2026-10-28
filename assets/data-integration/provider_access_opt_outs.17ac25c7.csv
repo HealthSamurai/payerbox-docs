@@ -1,0 +1,5 @@
+record_id,patient_identifier,choice,captured_at,effective_start,signer_type,signer_related_person_id,authority_document_id,signed_form_document_id,last_updated,is_deleted
+PAC-000117,MBR0000012,opt-out,2026-11-03T14:22:00-05:00,2026-11-03,member,,,DOC-55191,2026-11-03T14:22:00-05:00,
+PAC-000119,MBR0000013,opt-out,2026-11-04T16:10:00-05:00,2026-11-04,member,,,,2026-11-06T08:00:00-05:00,true
+PAC-000121,MBR0000015,opt-out,2026-11-05T09:30:00-05:00,2026-11-05,personal-representative,RP-0003,DOC-55193,,2026-11-05T09:30:00-05:00,
+PAC-000129,MBR0000012,share,2026-11-24T10:05:00-05:00,2026-11-24,member,,,,2026-11-24T10:05:00-05:00,
