@@ -1,0 +1,5 @@
+record_id,consent_record_id,patient_identifier,payer_name,payer_id,member_id,relationship,coverage_kind,last_updated,is_deleted
+PCV-000342-1,P2P-000342,MBR0000012,Lakeside Health Plan,67890,XYZ123456789,self,previous,2026-11-03T14:40:00-05:00,
+PCV-000342-2,P2P-000342,MBR0000012,Blue Valley Health Plan,,BVH-4471902,spouse,concurrent,2026-11-03T14:40:00-05:00,
+PCV-000360-1,P2P-000360,MBR0000015,Lakeside Health Plan,67890,LHP-2203981,self,previous,2026-11-05T09:45:00-05:00,
+PCV-000351-1,P2P-000351,MBR0000012,Lakeside Health Plan,67890,XYZ123456789,self,previous,2026-11-12T09:15:00-05:00,

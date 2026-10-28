@@ -35,6 +35,10 @@ A member **opts out** of [Provider Access](../../interop-apis/provider-access.md
 
 One row per decision on the Provider Access switch.
 
+{% file src="../../assets/data-integration/provider_access_opt_outs.17ac25c7.csv" %}
+provider_access_opt_outs.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your identifier for this decision | `PAC-000117` |
@@ -54,6 +58,10 @@ One row per decision on the Provider Access switch.
 ## payer_to_payer_opt_ins
 
 One row per decision on the Payer-to-Payer switch. One election covers previous and concurrent payers.
+
+{% file src="../../assets/data-integration/payer_to_payer_opt_ins.fb41e7fd.csv" %}
+payer_to_payer_opt_ins.csv Data template with example rows
+{% endfile %}
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
@@ -77,6 +85,10 @@ An `opt-in` becomes an HRex Consent with `provision.type` = `permit`, `provision
 
 One row per previous or concurrent coverage the member names when opting in.
 
+{% file src="../../assets/data-integration/previous_coverages.0215a61a.csv" %}
+previous_coverages.csv Data template with example rows
+{% endfile %}
+
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `record_id` | Yes | your identifier for this entry | `PCV-000342-1` |
@@ -96,7 +108,7 @@ One row per previous or concurrent coverage the member names when opting in.
 
 One row per document behind a decision: the signed form, and the document of authority a personal representative acts under. The document itself is the file; this row is its index card.
 
-{% file src="../../assets/data-integration/consent_documents.89132cfe.csv" %}
+{% file src="../../assets/data-integration/consent_documents.94bcadd5.csv" %}
 consent_documents.csv Data template with example rows
 {% endfile %}
 
