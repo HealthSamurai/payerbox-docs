@@ -1656,17 +1656,17 @@
     {
       "resource": {
         "resourceType": "AwsAccount",
-        "id": "minio",
+        "id": "rustfs",
         "region": "us-east-1",
-        "access-key-id": "minioadmin",
-        "secret-access-key": "minioadmin",
-        "host": "minio:9000",
+        "access-key-id": "rustfsadmin",
+        "secret-access-key": "rustfsadmin",
+        "host": "rustfs:9000",
         "path-style": true,
         "use-ssl": false
       },
       "request": {
         "method": "PUT",
-        "url": "AwsAccount/minio"
+        "url": "AwsAccount/rustfs"
       }
     },
     {

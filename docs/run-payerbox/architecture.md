@@ -120,7 +120,7 @@ See [Deploy](deploy.md) for runbooks.
 | Portals (Admin + Developer + App Gallery) | 8095 / 8096 | Domain-based routing |
 | Prior Auth | 8088 | `http://localhost:8088` |
 | Interop | 8089 (host) → 8088 (container) | `http://localhost:8089` |
-| MinIO (S3-compatible object storage) | 9000 / 9001 | `http://localhost:9000`, console `http://localhost:9001` |
+| RustFS (S3-compatible object storage) | 9000 / 9001 | `http://localhost:9000`, console `http://localhost:9001/rustfs/console/` |
 
 ## Related
 

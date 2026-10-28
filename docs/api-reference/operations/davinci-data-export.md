@@ -233,7 +233,7 @@ Content-Type: application/json
 
 ### Endpoint
 
-Each entry in the completed manifest's `output[].url` is a pre-signed URL pointing at the object-store bucket Aidbox is configured to use (S3, MinIO, etc.). Fetch them directly:
+Each entry in the completed manifest's `output[].url` is a pre-signed URL pointing at the object-store bucket Aidbox is configured to use (for example, Amazon S3, Google Cloud Storage, or an S3-compatible store such as RustFS). Fetch them directly:
 
 ```
 GET <output-url>
