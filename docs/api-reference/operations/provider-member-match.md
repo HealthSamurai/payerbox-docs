@@ -536,7 +536,7 @@ Body (single ndjson line, formatted for readability):
 {% endtab %}
 {% endtabs %}
 
-`managingEntity.identifier` is the payer's NPI, resolved from the first member's `Coverage.payor[0]` Organization; falls back to `"unknown"` if the Organization is missing or has no NPI. `characteristic[].period` is a 30-day validity window — `start = today`, `end = today + 30 days`.
+`managingEntity.identifier` is the payer's identifier, read from the Organization that the first member's `CoverageToMatch.payor[0]` references: the identifier in the system of the caller's hl7-b2b `organization_id` claim if the Organization has one, otherwise its first identifier, in any system. If `payor[0]` is not a literal `Organization/<id>` reference to an Organization on this server, or that Organization has no identifier, `managingEntity` carries only the `display`. `characteristic[].period` is a 30-day validity window — `start = today`, `end = today + 30 days`.
 
 A contained submitted Patient is the `MemberPatient` as submitted, with its id replaced by `submitted-N` and `meta.versionId`, `meta.lastUpdated`, and `meta.security` removed, as FHIR requires for contained resources.
 
