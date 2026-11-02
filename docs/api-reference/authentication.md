@@ -225,8 +225,8 @@ Used by Provider Access, Payer-to-Payer, and PAS. The client signs a JWT with it
 Each backend partner is registered as an Aidbox `Client` resource with `grant_types: ["client_credentials"]`, `auth.client_credentials.client_assertion_types: ["urn:ietf:params:oauth:client-assertion-type:jwt-bearer"]`, and a `jwks_uri` (or inline `jwks`) carrying the partner's public keys:
 
 ```json
-PUT /Client/partner-payer
-Content-Type: application/json
+PUT /fhir/Client/partner-payer
+Content-Type: application/fhir+json
 
 {
   "resourceType": "Client",
@@ -309,8 +309,8 @@ Content-Type: application/fhir+json
 {% endtab %}
 {% tab title="Client (asymmetric JWT)" %}
 ```json
-PUT /Client/partner-payer
-Content-Type: application/json
+PUT /fhir/Client/partner-payer
+Content-Type: application/fhir+json
 
 {
   "resourceType": "Client",
@@ -344,7 +344,7 @@ Content-Type: application/json
 Swap `jwks_uri` and `client_assertion_types` for a `secret` to get the symmetric variant, for local stacks and sandboxes only. The extension sits at the top level of `Client`, next to `auth`. `Client` has no `identifier` element, so organization identity travels through this extension.
 
 {% hint style="warning" %}
-Write the `Client` through the Aidbox base endpoint (`PUT /Client/<id>` or a `POST /` transaction Bundle), not through `/fhir`. With `BOX_FHIR_CORRECT_AIDBOX_FORMAT` enabled (the Payerbox default), `/fhir` rewrites the extension's `valueReference` / `valueUri` / `valueCoding` into Aidbox's internal union format (`value: {"Reference": …}`), which the token builder does not read. The write succeeds and tokens are still issued, but without `extensions.hl7-b2b`.
+Write the `Client` through `/fhir` (`PUT /fhir/Client/<id>` or a `POST /fhir` transaction Bundle), not through the Aidbox base endpoint. With `BOX_FHIR_CORRECT_AIDBOX_FORMAT` enabled (the Payerbox default), the token builder reads the extension in Aidbox's internal union format (`value: {"Reference": …}`), and only `/fhir` converts `valueReference` / `valueUri` / `valueCoding` into it. A `PUT /Client/<id>` with the same body succeeds and tokens are still issued, but without `extensions.hl7-b2b`.
 {% endhint %}
 
 #### Identifier systems

@@ -12,13 +12,13 @@ The operation is **always asynchronous** and follows the [FHIR Bulk Data kick-of
 
 Request and Response examples on this page reference this dataset. Load it first to reproduce them.
 
-Load it in two passes from the Aidbox REST Console: FHIR resources through `/fhir`, `Client` and `AccessPolicy` through the Aidbox base endpoint.
+Load it in two passes from the Aidbox REST Console: FHIR resources and `Client` through `/fhir`, `AccessPolicy` through the Aidbox base endpoint.
 
 <details>
 
 <summary>Click to view test dataset bundle JSON</summary>
 
-First, the FHIR resources:
+First, the FHIR resources and the clients. Each `Client` carries the `client-hl7B2b` extension pointing at the Organization whose NPI it presents, and goes through `/fhir` (see [Registering a B2B client](../authentication.md#registering-a-b2b-client)):
 
 ```http
 POST /fhir
@@ -111,21 +111,7 @@ Content-Type: application/fhir+json
         "provision": {"type": "deny"},
         "policyRule": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "OPTIN"}]}
       }
-    }
-  ]
-}
-```
-
-Then the clients, through the Aidbox base endpoint rather than `/fhir` (see [Registering a B2B client](../authentication.md#registering-a-b2b-client)). Each `Client` carries the `client-hl7B2b` extension pointing at the Organization whose NPI it presents:
-
-```http
-POST /
-Content-Type: application/json
-
-{
-  "resourceType": "Bundle",
-  "type": "transaction",
-  "entry": [
+    },
     {
       "request": {"method": "PUT", "url": "/Client/test-payer-client"},
       "resource": {
@@ -161,7 +147,21 @@ Content-Type: application/json
           ]
         }]
       }
-    },
+    }
+  ]
+}
+```
+
+Then the access policies, through the Aidbox base endpoint:
+
+```http
+POST /
+Content-Type: application/json
+
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
     {
       "request": {"method": "PUT", "url": "/AccessPolicy/allow-test-payer-client"},
       "resource": {
