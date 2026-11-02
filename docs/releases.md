@@ -6,6 +6,15 @@ description: "Notable changes across Payerbox: the Interop APIs, the Prior Auth 
 
 This page tracks notable changes across Payerbox: the Interop APIs, the Prior Auth (ePA) APIs, and the FHIR App Portal. Releases are listed newest first. The apps run on an Aidbox FHIR server; each component heading links to its image on Docker Hub.
 
+## October 2026 (`2610`)
+
+### Interop APIs [`2610`](https://hub.docker.com/r/healthsamurai/interop)
+
+**Provider Access**
+
+- [`$provider-member-match`](api-reference/operations/provider-member-match.md) now recognizes `IDSCL` opt-outs, checks all consent pages, and ignores opt-outs for other APIs.
+- Member matching and [export tracking](api-reference/operations/davinci-data-export.md) now ignore opt-outs that have expired or have not started.
+
 ## September 2026 (`2609`)
 
 - The [Data Integration Reference](data-integration/README.md) adds four feeds: [Claims](data-integration/carin-bb/README.md) (CARIN BB 2.1.0), [Prior Authorizations](data-integration/prior-auth/README.md) (PDex 2.1.0), [Drug Formulary](data-integration/drug-formulary/README.md) (PDex US Drug Formulary 2.1.0), and [Member Consent](data-integration/consent/README.md).
