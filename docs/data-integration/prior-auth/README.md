@@ -55,7 +55,7 @@ prior_auths.csv Data template with example rows
 | `facility_id` | If applicable | key from `locations`; where the authorized service is to be delivered | `LOC-221` |
 | `care_team_npis` | If available | 10 digits, `;`-separated; other providers named on the request | |
 | `care_team_roles` | If `care_team_npis` | `primary`, `assist`, `supervisor`, `other`; one per entry in `care_team_npis`, same length [claim-careteamrole](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/claim-careteamrole%7C4.0.1) (code system `http://terminology.hl7.org/CodeSystem/claimcareteamrole`) | |
-| `claim_type` | Yes | `professional`, `institutional`, `oral`, `vision` [claim-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/claim-type%7C4.0.1) | `professional` |
+| `claim_type` | If not professional | `professional`, `institutional`, `oral`, `vision` [claim-type](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/claim-type%7C4.0.1) | `professional` |
 | `status` | Yes | `active`, `cancelled` [explanationofbenefit-status](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/explanationofbenefit-status%7C4.0.1) | `active` |
 | `outcome` | Yes | `queued`, `complete`, `error`, `partial` [remittance-outcome](https://healthsamurai.github.io/fhir-valueset-viewer/#url=http://hl7.org/fhir/ValueSet/remittance-outcome%7C4.0.1) | `complete` |
 | `request_date` | Yes | datetime the authorization was created in your system | `2026-03-02T09:12:00-05:00` |
@@ -67,7 +67,7 @@ prior_auths.csv Data template with example rows
 | `decision_date` | If decided | datetime the authorization-level decision was made | `2026-03-04T16:20:00-05:00` |
 | `auth_period_start` | If approved | date the authorization takes effect | `2026-03-05` |
 | `auth_period_end` | If it ends on a date | date the authorization expires; blank when the limit is a number of units rather than a date | `2026-06-05` |
-| `review_action_code` | If your system assigns one | X12 review decision action code (2000F HCR01), the decision as a code [reviewAction](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-extension-reviewAction.html) | `A1` |
+| `review_action_code` | If your system assigns one | X12 review decision action code (2000E HCR01), the decision as a code [reviewAction](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-extension-reviewAction.html) | `A1` |
 | `review_number` | If available | the review number your system assigned to this decision | `AUTH0001` |
 | `review_reason_codes` | If pended, denied or partially approved | X12 review decision reason code(s), `;`-separated [X12278ReviewDecisionReasonCode](https://hl7.org/fhir/us/davinci-pdex/STU2.1/ValueSet-X12278ReviewDecisionReasonCode.html) | |
 | `second_surgical_opinion_flag` | If asserted | `true` when a second surgical opinion is required for approval | `true` |
@@ -98,9 +98,9 @@ prior_auths.csv Data template with example rows
 - `claim_type` has no `pharmacy` value: drug authorizations are out of scope. Dental is `oral`, vision is `vision`. Blank reads as `professional`. It is not derived from the lines, so send `institutional` yourself for a facility authorization.
 - The provider columns take an NPI, or the id that provider is registered under in `practitioners` and `organizations`. A provider known only by a name cannot be published.
 - `outcome` is about processing, `review_action_code` about the decision. They are not interchangeable, so send both: a request reviewed and sent back for more information is `queued` with a review action of pended. A cancelled authorization keeps the outcome it had reached and says it was cancelled in `status`.
-- `review_action_code`, `review_number`, `review_reason_codes`, `second_surgical_opinion_flag` and `decision_date` publish only on a row that also carries `denial_reason_codes` or `submitted_amount`. The lines carry the same rule.
+- `review_action_code` needs `denial_reason_codes` or `submitted_amount` on the same row: an authorization that carries it without either is rejected. `review_number`, `review_reason_codes`, `second_surgical_opinion_flag` and `decision_date` are published only when one of the two is present.
 - Leave `auth_period_end` blank when the authorization ends on a unit or visit allowance rather than a date. `allowed_units` on the line then says when it is exhausted. Both may be present.
-- `denial_reason_codes` takes CARC and RARC codes only, so a payer-defined code cannot go there. Put the wording in `denial_reason_text`; both are published.
+- `denial_reason_codes` takes CARC and RARC codes only, so a payer-defined code cannot go there. Put the wording in `denial_reason_text`; both are published, and the wording only together with a code.
 - The amounts are optional; an authorization decided on medical necessity alone carries none. Send them where you have them.
 - A home-care authorization is approved as a schedule: how many hours, on which days. A line's unit count cannot express that, so it goes in `process_note_`. Fill the slots in order. A note is published as written and never parsed.
 
@@ -170,7 +170,7 @@ Send these columns only where what was authorized differs from what was requeste
 - The authorized columns are how a modified approval is expressed: what the provider asked for stays in `service_code` and `quantity_value`, and what the payer granted goes in `authorized_service_code` and `authorized_quantity_value`. Twelve visits requested and eight approved leaves both numbers on the line, and the member sees both.
 - The requested and authorized columns bind to different code lists. Send either spelling of HCPCS; Payerbox translates. CPT works in both, and the authorized list also takes X12 1365, ICD-9-CM, ICD-10-PCS and NDC. HIPPS is accepted only as requested, so express a HIPPS change through `authorized_quantity_value`.
 - There is no column for procedure modifiers, unit price, revenue code, nursing-home level of care or the EPSDT indicator on an authorized line.
-- A line's review action needs a host, as the authorization's does: send `review_action_code` only where the line also carries `allowed_units`, `consumed_units`, a denial reason or an amount. A pending line with none of them lets `outcome` on the authorization report that the request is still in processing.
+- A line's review action needs a host, as the authorization's does: send `review_action_code` only where the line also carries `allowed_units`, `consumed_units` or `denial_reason_codes`; a line that carries it without any of them is rejected. `review_reason_codes` and `second_surgical_opinion_flag` are published only on a line that carries `denial_reason_codes`. A pending line with none of them lets `outcome` on the authorization report that the request is still in processing.
 - `allowed_units` and `consumed_units` are the utilization pair: what was granted, and how much of it is used. They are the only way a unit-limited authorization says how much is left, so send `consumed_units` whenever your system tracks it.
 - Amounts sit on the authorization, not the line: `submitted_amount` and `eligible_amount` on [`prior_auths`](#prior_auths). PDex allows them per line; this feed has no column for them.
 
