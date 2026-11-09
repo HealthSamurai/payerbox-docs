@@ -27,6 +27,28 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 - Lenient validation is now split in two. `FHIR_VALIDATION_LENIENT` still relaxes minor data mismatches. Accepting references to records Payerbox can't find now needs a separate setting, `FHIR_VALIDATION_LENIENT_REFERENCES=true`. If you relied on the old behavior, set both. See [CRD validation strictness](prior-auth/crd.md#validation-strictness).
 - CRD coverage checks no longer fail after Aidbox restarts. Previously they failed with `invalid_token` until the Prior Auth service was restarted too.
 
+### FHIR App Portal [`2610`](https://hub.docker.com/r/healthsamurai/fhir-app-portal)
+
+**Member consent**
+
+- The **Data sharing** page was redesigned: each choice is a card that shows its current state and opens its form in place, one at a time. See [Consent Panel](fhir-app-portal/member-portal/consent-panel.md).
+- Completing the forms as an authorized representative is opt-in per deployment: set `MEMBER_CONSENT_REPRESENTATIVES_ENABLED=true` on the portal backend. Off by default: members complete the forms themselves, representative submissions and document uploads are refused, and Member Details shows no reviews. See [Authorized representatives](fhir-app-portal/member-portal/consent-panel.md#authorized-representatives) and [Consent Reviews](fhir-app-portal/consent-reviews.md).
+- **Settings → Consent** was rebuilt for the plan administrator: one card holds the plan for Provider Access Consent settings; another card holds Payer-To-Payer Consent - an administrator whose plan is not in Aidbox yet can add it from the picker with a NAIC company code or a TIN code. See [Consent Settings](fhir-app-portal/consent-settings.md).
+
+**MPF pipeline**
+
+- The Bundle `entry.fullUrl` base is an admin setting in **Settings → MPF**, saved with the publications; unset, it resolves to the admin Aidbox public URL plus `/fhir`. See [MPF Publications](fhir-app-portal/mpf-publications.md).
+
+**SMART on FHIR**
+
+- The organization FHIR base, `<portal>/Organization/<id>/fhir/*`, is now a pass-through to Aidbox: the caller's own token is forwarded and Aidbox enforces OrgBAC and access policies. Such base exists only in multi-organization (OrgBAC) deployments.
+- Service based URLs configuration was moved to `SERVICE_BASE_URLS_FILE` env variable which makes `/service-base-urls` endpoint return that file as the FHIR Bundle with service base URL list of Organizations.
+- The sandbox app registration form offers only patient-level read scopes: no scope subject picker (`patient/` for a SMART app, `system/` for a backend service), no write scopes at the patient level, and `Account`, `AuditEvent`, `Binary`, `Group`, `List`, and `Person` are no longer offered. This narrows the form only; access policies are unchanged. See [SMART App](fhir-app-portal/smart-app.md) and [Backend Services](fhir-app-portal/backend-services.md).
+
+**Deployment**
+
+- The image moved from Debian to Alpine (`oven/bun:1.4-alpine` with Alpine's nginx) and no longer runs supervisord which tightens security and reduces image size from 450 MB to 165 MB. See [Deploy](run-payerbox/deploy.md).
+
 ## September 2026 (`2609`)
 
 - The [Data Integration Reference](data-integration/README.md) adds four feeds: [Claims](data-integration/carin-bb/README.md) (CARIN BB 2.1.0), [Prior Authorizations](data-integration/prior-auth/README.md) (PDex 2.1.0), [Drug Formulary](data-integration/drug-formulary/README.md) (PDex US Drug Formulary 2.1.0), and [Member Consent](data-integration/consent/README.md).
