@@ -66,7 +66,15 @@ Hook-context resources (context and prefetch content) are validated before they 
 FHIR_VALIDATION_LENIENT=true
 ```
 
-In lenient mode, terminology display-name mismatches, referenced-resource profile mismatches, and context references that cannot be resolved (the referenced resources may exist only in the EHR's own store) are logged as warnings and the hook proceeds; only structural and profile errors fail the request. Default (unset) — strict. The same flag also controls [PAS submission validation](pas.md#validation-strictness).
+In lenient mode, terminology display-name mismatches and referenced-resource profile mismatches are logged as warnings and the hook proceeds; only structural and profile errors fail the request. Default (unset) — strict. The same flag also controls [PAS submission validation](pas.md#validation-strictness).
+
+Context references that cannot be resolved, even from the EHR's `fhirServer` (the referenced resources may exist only in the EHR's own store), fail the hook request unless a separate flag is set:
+
+```
+FHIR_VALIDATION_LENIENT_REFERENCES=true
+```
+
+With it, the hook proceeds without the unresolved references. Off by default.
 
 ## Supported hooks
 

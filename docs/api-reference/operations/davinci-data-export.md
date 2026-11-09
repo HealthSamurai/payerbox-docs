@@ -157,6 +157,19 @@ Content-Type: application/fhir+json
 {% endtab %}
 {% endtabs %}
 
+## Export tracking
+
+After each kick-off, Payerbox records the export on the `Group` with the PDex 2.1.0 tracking extensions:
+
+| Extension | On | Value |
+|---|---|---|
+| [`base-ext-members-opted-out`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-base-ext-members-opted-out.html) | `Group` | Members left out by the consent rule: opted out for `provider-download`, no valid opt-in for `payertopayer` |
+| [`base-ext-last-transmission`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-base-ext-last-transmission.html) | each exported `Group.member` | The request's `_until`, or the kick-off time |
+| [`base-ext-last-types`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-base-ext-last-types.html) | each exported `Group.member` | The request's `_type`, when present |
+| [`base-ext-last-typefilter`](https://hl7.org/fhir/us/davinci-pdex/STU2.1/StructureDefinition-base-ext-last-typefilter.html) | each exported `Group.member` | The request's `_typeFilter`, when present |
+
+An opt-out counts only while its `provision.period` is in force. Members left out by the consent rule, or outside the requested `patient` subset, keep their previous values. Tracking is written after the `202`; a failure there does not affect the export.
+
 ## Status polling
 
 ### Endpoint

@@ -104,9 +104,9 @@ Three buckets in the response:
 
 | Group | Profile | Contents |
 |---|---|---|
-| `MatchedMembers` | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html) | Members matched, consent valid, opt-out clear; submitted `Consent` is persisted by the responding payer |
+| `MatchedMembers` | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html) | Members matched, consent valid; submitted `Consent` is persisted by the responding payer |
 | `NonMatchedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) | No match found |
-| `ConsentConstrainedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) (code `consentconstraint`) | Matched member with active opt-out, expired consent, or consent that could not be persisted |
+| `ConsentConstrainedMembers` | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) (code `consentconstraint`) | Matched member with expired consent or consent that could not be persisted |
 
 `$bulk-member-match` rejects non-admin callers whose access token lacks the hl7-b2b `organization_id` claim with `403`.
 

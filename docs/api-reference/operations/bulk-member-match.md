@@ -470,9 +470,9 @@ URL comes from `output[0].url` in the manifest. Body is a single ndjson line —
 
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
-| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, opt-out clear, and the submitted Consent persisted. Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer`. Each member links to the Patient the requesting payer submitted, carried in `Group.contained[]`, through the `base-ext-match-parameters` extension on `member.entity`. `quantity = 0` and `member` omitted when empty. |
+| OUT | `MatchedMembers` | Group | 1..1 | [`pdex-member-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-match-group.html); members matched, consent passed, and the submitted Consent persisted. Group id is the input to [`$davinci-data-export`](davinci-data-export.md) with `exportType = hl7.fhir.us.davinci-pdex#payertopayer`. Each member links to the Patient the requesting payer submitted, carried in `Group.contained[]`, through the `base-ext-match-parameters` extension on `member.entity`. `quantity = 0` and `member` omitted when empty. |
 | OUT | `NonMatchedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html); no match found. Submitted Patients are carried in `Group.contained[]` (fragment refs `#submitted-1`, `#submitted-2`, …). |
-| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check, has an active opt-out, or whose Consent could not be persisted. |
+| OUT | `ConsentConstrainedMembers` | Group | 0..1 | [`pdex-member-no-match-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-member-no-match-group.html) with code `consentconstraint`; matched member whose Consent failed a match-time check or could not be persisted. |
 
 ### Example
 
@@ -632,7 +632,7 @@ Each submitted member is evaluated independently. Per-member failures never fail
 
 **Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). Identifier-AND is bulk-specific: [`$provider-member-match`](provider-member-match.md#matching-behavior) ignores submitted `Patient.identifier` entries, because provider-side systems carry MRNs the payer does not store. `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
 
-**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true (the opt-out category code below uses the `pdex-consent-api-purpose` CodeSystem from PDex 2.2.0):
+**Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true:
 
 | Check | Constrains when |
 |---|---|
@@ -640,13 +640,12 @@ Each submitted member is evaluated independently. Per-member failures never fail
 | `Consent.provision.period` | absent, unparseable, or does not cover the current time |
 | `Consent.provision.actor[role=IRCP]` recipient | does not resolve to the requesting payer's `Organization/<id>` reference |
 | `Consent.policy[*].uri` | not `#sensitive` — `#regular` and missing/unknown policy URIs both constrain (fail-safe; Payerbox does not yet redact sensitive data, so non-`#sensitive` consents cannot be honored) |
-| Active `provider-access` deny `Consent` on the matched Patient (opt-out) | any active hit; a failing opt-out query (non-2xx) fails safe to constrained |
 
-The opt-out check reuses the same Aidbox search as [`$provider-member-match`](provider-member-match.md#matching-behavior): `Consent?patient=<id>&status=active&category=http://hl7.org/fhir/us/davinci-pdex/CodeSystem/pdex-consent-api-purpose|provider-access&provision-type=deny`.
+A Provider Access opt-out on the matched Patient is not checked: it is the member's choice about sharing with providers, separate from the Payer-to-Payer permission the submitted Consent carries.
 
 **Consent persistence.** For each remaining matched member the submitted `Consent` is upserted into Aidbox with a deterministic id (`SHA-1(payer-org-id|patient-id)`); `Consent.patient` is rewritten to the matched payer Patient and `Consent.organization` to the requesting payer's Organization (FHIR shape is `0..*`; today exactly one element is written). The persisted Consent is what the later `$davinci-data-export?exportType=payertopayer` query reads against. If persistence fails — including the case where the requesting payer's identifier has no `Organization` registered in the responding payer's Aidbox — the member is re-bucketed to `ConsentConstrainedMembers`.
 
-**Stale Consent removal.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check, opt-out hit, or persistence failure), the prior persisted `Consent` at the deterministic id is deleted (one batch `Bundle` for all pairs). Deleted rather than deactivated: the HRex Consent profile fixes `status = active`, so a status flip would `422`. `$davinci-data-export?exportType=payertopayer` fails closed on the missing permit.
+**Stale Consent removal.** If a later `$bulk-member-match` for the same `(matched-patient, requesting-payer)` lands the member in `ConsentConstrainedMembers` (failed match-time check or persistence failure), the prior persisted `Consent` at the deterministic id is deleted (one batch `Bundle` for all pairs). Deleted rather than deactivated: the HRex Consent profile fixes `status = active`, so a status flip would `422`. `$davinci-data-export?exportType=payertopayer` fails closed on the missing permit.
 
 ## Group lifecycle
 

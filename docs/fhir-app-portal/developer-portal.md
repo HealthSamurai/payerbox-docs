@@ -35,7 +35,7 @@ The dashboard splits registration into two sections. Pick by how the client auth
 | OAuth grant | `authorization_code` | `client_credentials` |
 | Register under | **Smart Apps** | **Backend Services** |
 | Auth | Public or confidential; redirect + launch URL | JWKS URI or client secret |
-| Scopes | `patient/*`, `user/*`, launch, OIDC | `system/*` only |
+| Scopes | `patient/` read, launch, OIDC | `system/*` only |
 | Use for | Patient- or provider-facing apps | Bulk export, server-to-server APIs |
 
 Each client-type page covers its own registration, testing, submission, and status.
