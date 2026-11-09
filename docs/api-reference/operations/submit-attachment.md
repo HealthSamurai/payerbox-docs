@@ -30,7 +30,7 @@ POST <base>/fhir/$submit-attachment
 | AdminRefNumber | Identifier | 0..1 | Administrative reference number for the prior authorization |
 
 {% hint style="info" %}
-`TrackingId`, `AttachTo`, `MemberId`, and at least one `Attachment` are required. Requests missing any of these four parameters — or carrying a blank `TrackingId.value` — fail validation with HTTP 422.
+`TrackingId`, `AttachTo`, `MemberId`, and at least one `Attachment` are required. Requests missing any of these four parameters — or carrying a blank `TrackingId.value` — fail validation with HTTP 422. The CDex profile also requires at least five parameters in total, so send at least one optional parameter, usually `Final`.
 {% endhint %}
 
 **Attachment sub-parameters** (nested `part` elements):
@@ -48,7 +48,7 @@ POST <base>/fhir/$submit-attachment
 3. **Decision Check** — If the Claim's latest `ClaimResponse` has `outcome = "complete"`, the prior authorization is finalized and the request is rejected with HTTP 422 (`business-rule`). The diagnostic carries the `ClaimResponse.disposition` so the caller can tell an approved authorization from a denied one.
 4. **Duplicate Check** — Attachments whose `Content` resource `id` is already linked from the Claim's `supportingInfo` are rejected. When every attachment in the request collides, the request fails with HTTP 422 (`duplicate`). When only some collide, the non-colliding attachments are attached and the response is HTTP 200 with a `warning` issue listing the collisions. To submit new content, use a unique `id` or omit `id` to have one generated.
 5. **Cloud Storage Upload** — For `DocumentReference` resources containing inline base64 data (`content[].attachment.data`), the data is uploaded to cloud storage. The base64 data is replaced with a URL reference, `size` is populated, and a blank `title` is filled from `creation`, the `DocumentReference.description`, or a generated `attachment.<ext>` name. A `QuestionnaireResponse` is stored as submitted: an inline `valueAttachment.data` in any answer stays in the resource. A deployment with `SUBMIT_ATTACHMENT_OFFLOAD_QUESTIONNAIRE_RESPONSE=true` uploads every inline `valueAttachment` the same way and stores the answer with a `url` — see [Configuration](#configuration). Without cloud storage configured, data stays inline in both resource types.
-6. **Content Persistence** — All attachment content resources are persisted in Aidbox via a FHIR transaction bundle.
+6. **Content Persistence** — All attachment content resources are persisted in Aidbox via a FHIR transaction bundle. A `QuestionnaireResponse` is stored under the US Core QuestionnaireResponse profile and must carry `questionnaire` and `authored`; without them the request returns HTTP 400.
 7. **Claim Association** — The Claim is updated with new `supportingInfo` entries referencing the persisted content resources. Each entry includes a fixed PAS-valid category code and an optional `code` from the Attachment's `Code` parameter.
 8. **Re-queue on Final** — see below.
 
@@ -63,7 +63,8 @@ With `Final = false` the `ClaimResponse` is left untouched — use it to stream 
 | Status | Condition |
 |---|---|
 | 200 | Attachments accepted and associated with the Claim. On a partial id collision the `OperationOutcome` carries an extra `warning` issue (code `duplicate`) listing the attachments that were skipped |
-| 422 | Validation failure (missing required parameters, blank `TrackingId.value`, invalid structure, no matching Claim found) |
+| 400 | A content resource fails validation on save, for example a `QuestionnaireResponse` without `questionnaire` or `authored`; the `OperationOutcome` names the missing elements |
+| 422 | Validation failure (missing required parameters, fewer than five parameters, blank `TrackingId.value`, invalid structure, no matching Claim found) |
 | 422 | Attachment content — a `DocumentReference` `content[].attachment.data` is missing or not valid base64 (issue code `invalid`). With `SUBMIT_ATTACHMENT_ACCEPT_URL=true` an entry carrying `url` instead of `data` passes |
 | 422 | Finalized prior authorization — the Claim's latest `ClaimResponse` has `outcome = "complete"` (issue code `business-rule`) |
 | 422 | Attachment id collision — every attachment's `Content` resource `id` is already linked from the Claim's `supportingInfo` (issue code `duplicate`) |
