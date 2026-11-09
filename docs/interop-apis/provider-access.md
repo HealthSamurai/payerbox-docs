@@ -12,7 +12,7 @@ The [Da Vinci PDex Provider Access API](https://build.fhir.org/ig/HL7/davinci-ep
 
 - PDex Implementation Guide preconfigured.
 - `$provider-member-match` and `$davinci-data-export` operations available on the Interop bundle.
-- Plugs into the payer's existing attribution roster — accepts `Group` ingestion or an equivalent lookup feed.
+- Exports from the payer's attribution roster when the payer keeps one as `Group` resources in Payerbox. Payerbox does not build or sync the roster.
 - Member opt-out filtering applied before any Provider Access response.
 - Audit logging per provider request, scoped to the requesting provider.
 
@@ -34,7 +34,7 @@ PDex keeps two patterns for delivering Provider Access data. For **CMS-0057-F co
 
 ### v1 — Payer-attributed Group export
 
-The payer maintains an attribution roster mapping each in-network provider to the members the payer considers attributed to that provider, exposed as a `Group` resource per provider. The provider calls `$davinci-data-export` against that Group:
+The payer maintains an attribution roster mapping each in-network provider to the members the payer considers attributed to that provider, as one `Group` per provider. The payer creates and updates these Groups through the FHIR API; Payerbox does not build or sync the roster. Each Group must carry the [`pdex-provider-group`](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-pdex-provider-group.html) profile in `meta.profile`, otherwise the export is rejected with `422`. The provider calls `$davinci-data-export` against its Group:
 
 ```
 POST <base>/fhir/Group/<group-id>/$davinci-data-export
