@@ -66,6 +66,7 @@ One row per unique NPI, plan provider number (when sent), practice location, pla
 
 - `latitude` and `longitude` are one value in FHIR: send both or neither. A Location cannot carry half a position.
 - `payer_provider_id` goes on the PractitionerRole as a second identifier, next to the NPI on the Practitioner, with `payer_provider_id_system` as its system and type `PRN` (Provider number) from [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html). Send it when systems that use the directory, such as a utilization-management vendor, identify providers by the plan's number rather than by NPI: one NPI can cover several provider records. The directory is public, so the number is visible in it.
+- One number per row. If you number providers in more than one way, for example per provider and per site, send one of them here, under a `payer_provider_id_system` that names that numbering and no other.
 
 ## facilities
 
@@ -94,6 +95,7 @@ One row per facility NPI, plan provider number (when sent), plan and network. Fa
 | `phone` | Yes | 10 digits | `7185551212` |
 
 - `payer_provider_id` goes on the Organization as a second identifier, next to the NPI, with the same system and type as in `providers`. Several hospitals of one health system can share an NPI; with the plan's number each hospital becomes its own Organization and Location, and each keeps the shared NPI.
+- One number per row, as in `providers`.
 
 ## networks
 
