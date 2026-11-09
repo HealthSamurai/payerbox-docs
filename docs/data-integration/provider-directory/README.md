@@ -35,7 +35,7 @@ One row per unique NPI, plan provider number (when sent), practice location, pla
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
-| `payer_provider_id` | If available | the plan's own number for this provider at this location, as used on claims and with utilization-management vendors | `100234` |
+| `payer_provider_id` | If available | the plan's own number for this provider at this location | `100234` |
 | `payer_provider_id_system` | If `payer_provider_id` is sent | URI of the plan's provider numbering, a URL the plan controls or an OID; the same value on every row | `http://acme.org/provider-ids` |
 | `first_name` | Yes | text | `Jane` |
 | `last_name` | Yes | text | `Smith` |
@@ -75,7 +75,7 @@ One row per facility NPI, plan provider number (when sent), plan and network. Fa
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
-| `payer_provider_id` | If available | the plan's own number for this facility, as used on claims and with utilization-management vendors | `200871` |
+| `payer_provider_id` | If available | the plan's own number for this facility | `200871` |
 | `payer_provider_id_system` | If `payer_provider_id` is sent | URI of the plan's provider numbering, the same value as in `providers` | `http://acme.org/provider-ids` |
 | `facility_name` | Yes | text | `Example Hospital` |
 | `facility_type_nucc` | Yes | NUCC organization taxonomy code(s), `;`-separated [IndividualAndGroupSpecialtiesVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-IndividualAndGroupSpecialtiesVS.html) | `282N00000X` |
