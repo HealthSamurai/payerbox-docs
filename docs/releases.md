@@ -13,7 +13,7 @@ This page tracks notable changes across Payerbox: the Interop APIs, the Prior Au
 **Provider Access**
 
 - [`$provider-member-match`](api-reference/operations/provider-member-match.md) now recognizes `IDSCL` opt-outs.
-- Member matching and [export tracking](api-reference/operations/davinci-data-export.md) now ignore opt-outs that have expired or have not started.
+- Member matching and [export tracking](api-reference/operations/davinci-data-export.md#export-tracking) now ignore opt-outs that have expired or have not started.
 
 ### Prior Auth (ePA) APIs [`2610`](https://hub.docker.com/r/healthsamurai/prior-auth)
 

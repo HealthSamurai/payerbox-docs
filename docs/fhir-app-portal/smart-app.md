@@ -16,7 +16,7 @@ A SMART App is an interactive SMART on FHIR client: a user launches it in a brow
    * **Confidentiality**: public or confidential; a confidential client is issued a secret
    * **Redirect URL**: where users return after authorization
    * **Launch URL**: your app's SMART launch endpoint
-3. Set the **SMART on FHIR scopes** the app requests (`patient/*`, `user/*`, plus launch and OIDC scopes)
+3. Set the **SMART on FHIR scopes** the app requests (`patient/` read scopes, plus launch and OIDC scopes)
 4. Click **Create App**
 
 You're redirected to the app's draft page to review, edit, or delete it.
