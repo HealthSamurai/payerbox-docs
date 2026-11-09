@@ -119,10 +119,9 @@ On the **portal**:
 | `MPF_EXPORT_CLIENT_ID`, `MPF_EXPORT_CLIENT_SECRET` (required) | `mpf-sync` and the secret from [step 1](#create-the-sync-client). |
 | `MPF_STORAGE_PROVIDER` (required) | Same provider as Aidbox's bulk storage. |
 | `MPF_STORAGE_BUCKET` (required) | The bucket the bundles and `index.json` are published to. |
-| `MPF_PUBLIC_BASE_URL` (required) | Prefix for the bundle links in `index.json`: the portal's public endpoint (`https://<portal>/mpf-provider-directory`) or a public bucket. |
-| `MPF_FULL_URL_BASE` (required) | FHIR base URL for bundle entries' `fullUrl`, e.g. `https://fhir.<payer-domain>/fhir`. |
+| `MPF_PUBLIC_BASE_URL` | Prefix for the bundle links in `index.json`: the portal's public endpoint (`https://<portal>/mpf-provider-directory`) or a public bucket. Defaults to the portal's own public endpoint. |
 | `MPF_TRIGGER_CLIENT_IDS` (required) | Clients allowed to trigger runs. Set `admin-api,mpf-sync` (the default lacks `mpf-sync`). |
-| `MPF_DEFAULT_CONTRACT`, `MPF_DEFAULT_YEAR` | Seed for the single built-in publication the pipeline uses until publications are saved in the [Admin portal](../fhir-app-portal/mpf-publications.md). Defaults: `H2168` and the current year. |
+| `MPF_DEFAULT_CONTRACT`, `MPF_DEFAULT_YEAR` | Legacy. Read only to migrate settings saved by portal versions that predate contract years (one implicit publication). Not needed on a new installation: there is no built-in contract, and the year defaults to the current one. |
 | `MPF_BUCKET_PREFIX` | Source bucket root URL. Only `folder` refresh uses it. |
 | `MPF_ALERT_EMAIL_TO` | Failure-alert recipients via Aidbox `Notification` (needs its email provider configured). Unset: log-only. |
 | `MPF_STORAGE_ACCOUNT_ID` | On AWS: the `AwsAccount` resource id. On Azure: the storage account name. Not used on GCP. |
@@ -130,7 +129,7 @@ On the **portal**:
 | `MPF_MAX_BUNDLE_BYTES` | Max bytes per bundle before rolling to a new file. Default 250 MB. |
 | `MPF_OUTPUT_DIR` | Local directory where bundles are staged. Default `./mpf-output`. |
 
-Resource types and profile filters are fixed in the portal image. Changing them is a portal release (coordinate with Health Samurai), or use the [Custom export flow](#custom-export-flow). Contracts, contract years, and the `InsurancePlan` scope are configured in the [Admin portal](../fhir-app-portal/mpf-publications.md).
+Resource types and profile filters are fixed in the portal image. Changing them is a portal release (coordinate with Health Samurai), or use the [Custom export flow](#custom-export-flow). Contracts, contract years, the `InsurancePlan` scope, and the FHIR base URL written into every bundle entry's `fullUrl` are configured in the [Admin portal](../fhir-app-portal/mpf-publications.md); nothing specific to one payer is built into the image.
 
 {% endstep %}
 {% step %}
@@ -165,7 +164,7 @@ On AWS or Azure, the endpoint prefix is `/aws/storage/<account>/` or `/azure/wor
 
 ### Run and verify
 
-Trigger a sync as `mpf-sync` (listed in `MPF_TRIGGER_CLIENT_IDS`, [step 3](#configure-the-environment)). An empty body regenerates every publication configured in the [Admin portal](../fhir-app-portal/mpf-publications.md); before the first save that is the one seeded from `MPF_DEFAULT_CONTRACT` and `MPF_DEFAULT_YEAR`.
+First configure at least one publication in the [Admin portal](../fhir-app-portal/mpf-publications.md): a fresh installation has none, and a sync is rejected with `400` until one is saved. Then trigger a sync as `mpf-sync` (listed in `MPF_TRIGGER_CLIENT_IDS`, [step 3](#configure-the-environment)). An empty body regenerates every configured publication.
 
 {% code title="First run" %}
 ```bash
@@ -206,7 +205,7 @@ The daily CronJob posts an empty body and regenerates every publication. To run 
 curl -X POST https://<portal>/admin/mpf/sync \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
-  -d '{"contract":"H2168","year":2027}'
+  -d '{"contract":"H1234","year":2027}'
 ```
 {% endcode %}
 
@@ -214,9 +213,9 @@ curl -X POST https://<portal>/admin/mpf/sync \
 |---|---|
 | `{}` | Every configured publication. |
 | `{"year": 2027}` | Every contract of that year. |
-| `{"contract": "H2168", "year": 2027}` | That one publication. |
+| `{"contract": "H1234", "year": 2027}` | That one publication. |
 
-A selector that matches nothing configured in [MPF Publications](../fhir-app-portal/mpf-publications.md) is rejected with `400` and the message *Add the contract year under Settings → MPF first*. One `$export` covers all selected publications; each is then filtered, bundled, and published separately, so one failing publication does not block the others. Details in the [API reference](../api-reference/operations/mpf-pipeline-api.md#post-adminmpfsync).
+A selector that matches nothing configured in [MPF Publications](../fhir-app-portal/mpf-publications.md) is rejected with `400` and the message *Add the contract year under Settings → MPF first*; with nothing configured at all, the message is *MPF is not configured on this install yet*. One `$export` covers all selected publications; each is then filtered, bundled, and published separately, so one failing publication does not block the others. Details in the [API reference](../api-reference/operations/mpf-pipeline-api.md#post-adminmpfsync).
 
 ### Delete a retired publication's files
 
@@ -230,7 +229,7 @@ On AWS or Azure use the equivalent `aws s3 rm --recursive` or `az storage blob d
 
 ### Save fails with an access error
 
-The Admin portal stores publications as `DocumentReference/mpf-export-scope` on the admin Aidbox, written by the portal's `admin-api` client. If **Save** is rejected by Aidbox with an access error, `AccessPolicy/admin-api-document-reference` does not list `mpf-export-scope` among the allowed `DocumentReference` ids. Add it to the admin init bundle and re-apply.
+The Admin portal stores the MPF settings as `DocumentReference/mpf-export-scope` on the admin Aidbox, written by the portal's `admin-api` client. If **Save** is rejected by Aidbox with an access error, `AccessPolicy/admin-api-document-reference` does not list `mpf-export-scope` among the allowed `DocumentReference` ids. Add it to the admin init bundle and re-apply.
 
 ## Custom export flow
 

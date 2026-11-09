@@ -1,7 +1,8 @@
 ---
 description: >-
   Configure which CMS contracts, contract years, and InsurancePlans the MPF
-  pipeline publishes, from the Admin Portal's Settings → MPF tab.
+  pipeline publishes, and the FHIR base URL of the published bundles, from
+  the Admin Portal's Settings → MPF tab.
 ---
 
 # MPF Publications
@@ -10,16 +11,26 @@ The **Settings → MPF** tab of the Admin Portal controls what the [MPF Pipeline
 
 Open **Settings → MPF** (`/dashboard/settings/mpf`). The tab is shown only when the portal runs with the module enabled (see [Configure the environment](../run-payerbox/provider-directory-pipeline.md#configure-the-environment)); otherwise the page says *MPF is not enabled on this installation*.
 
-Until something is saved, the page shows one built-in publication seeded from `MPF_DEFAULT_CONTRACT` and `MPF_DEFAULT_YEAR` and notes that it is *currently using the built-in defaults*. **Save** stores the whole page as an override in Aidbox (`DocumentReference/mpf-export-scope` on the admin box). The next sync reads it; no restart or redeploy is needed.
+Until something is saved, the page has no contract year and notes that *nothing is configured yet*: the daily sync publishes nothing, and a manual trigger is rejected with `400`. There is no built-in publication. **Save** stores the whole page in Aidbox (`DocumentReference/mpf-export-scope` on the admin box). The next sync reads it; no restart or redeploy is needed.
 
 ![MPF settings tab with one contract year card holding a single contract and its CMS crawler URL](../../assets/run-payerbox/mpf-settings-publication.avif)
 
+## Directory-wide settings
+
+The card above the contract years holds the one value that applies to every publication:
+
+| Field | What to enter |
+|---|---|
+| **FHIR base URL for entry.fullUrl** | Every entry of a published bundle carries `fullUrl` = this base + `/<ResourceType>/<id>`. Enter the public FHIR base URL of this installation, e.g. `https://fhir.<payer-domain>/fhir`. Leave it empty to use the admin Aidbox's public URL followed by `/fhir`; the card shows the resulting value. |
+
 ## Fields
+
+Each contract year card holds one or more contracts with these fields:
 
 | Field | What to enter |
 |---|---|
 | **Contract year** | The CMS contract year the directory is for, `2024`–`2099`. One card per year; a year cannot appear twice. |
-| **Contract ID** | The CMS contract number: `H` followed by digits, e.g. `H2168`. Unique within a year. It becomes the first path segment of the crawler URL. |
+| **Contract ID** | The CMS contract number: `H` followed by digits, e.g. `H1234`. Unique within a year. It becomes the first path segment of the crawler URL. |
 | **InsurancePlan IDs** | Aidbox resource ids (not business identifiers) of the `InsurancePlan` resources that belong to this contract, one per line. Letters, digits, `-`, `.` and `_`, up to 64 characters; at least one id; duplicates are dropped. Only plans with `status=active` and the Plan-Net profile are exported. The in-scope network `Organization`s are derived from each plan's `network` references on every run, so there is nothing else to list. |
 | **CMS crawler URL** | Read-only: `MPF_PUBLIC_BASE_URL` + `/<contract>/<year>/index.json`. **Copy** copies it. It is marked as a preview until the publication is saved and a sync has run. This is the URL to register with CMS. |
 
@@ -29,7 +40,7 @@ Limits: 10 contract years, 20 contracts per year, 500 plan ids per contract.
 
 1. In the year card, click **Add contract**.
 2. Fill in **Contract ID** and **InsurancePlan IDs**.
-3. Click **Save**. The toast *MPF publications updated* confirms the write.
+3. Click **Save**. The toast *MPF settings updated* confirms the write.
 4. Wait for the daily sync, or have an operator [trigger one](../run-payerbox/provider-directory-pipeline.md#sync-one-publication), then open the crawler URL and check that `index.json` lists bundle files.
 5. Register the crawler URL with CMS.
 
@@ -53,10 +64,11 @@ Each year publishes into its own folder, so publishing 2027 never touches the 20
 
 **Save** is enabled only after a change. The page is checked before it is sent, and the first problem is shown as an error toast, for example:
 
+- `"fhir.example.org/fhir" is not an absolute URL (e.g. https://fhir.example.org/fhir)`
 - `"20a7" is not a valid contract year (2024–2099)`
-- `"h2168" is not a valid contract id (H followed by digits, e.g. H2168)`
-- `Contract H2168 appears twice in year 2026`
-- `H2168/2026: add at least one InsurancePlan id`
+- `"h1234" is not a valid contract id (H followed by digits, e.g. H1234)`
+- `Contract H1234 appears twice in year 2026`
+- `H1234/2026: add at least one InsurancePlan id`
 - `"plan 1" is not a valid id (letters, digits, "-", ".", "_" — max 64 chars)`
 
 A save rejected with an access error is a deployment issue, not an input problem, see [Save fails with an access error](../run-payerbox/provider-directory-pipeline.md#save-fails-with-an-access-error).
