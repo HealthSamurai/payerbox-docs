@@ -407,7 +407,7 @@
         },
         "identifier": [
           {
-            "system": "https://example.org/fhir/sid/other-plan-coverage",
+            "system": "https://example.org/fhir/sid/plan-entry",
             "value": "PCV-000342-1"
           },
           {
@@ -449,7 +449,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Coverage?identifier=https://example.org/fhir/sid/other-plan-coverage|PCV-000342-1"
+        "url": "Coverage?identifier=https://example.org/fhir/sid/plan-entry|PCV-000342-1"
       }
     },
     {
@@ -462,7 +462,7 @@
         },
         "identifier": [
           {
-            "system": "https://example.org/fhir/sid/other-plan-coverage",
+            "system": "https://example.org/fhir/sid/plan-entry",
             "value": "PCV-000342-2"
           },
           {
@@ -504,7 +504,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Coverage?identifier=https://example.org/fhir/sid/other-plan-coverage|PCV-000342-2"
+        "url": "Coverage?identifier=https://example.org/fhir/sid/plan-entry|PCV-000342-2"
       }
     }
   ]

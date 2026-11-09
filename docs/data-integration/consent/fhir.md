@@ -28,7 +28,7 @@ The example `identifier.system` URLs below are placeholders. Replace them with y
 | Consent, Provider Access | Member ID | `https://example.org/fhir/sid/provider-access-consent` |
 | Consent, Payer-to-Payer | Member ID | `https://example.org/fhir/sid/payer-to-payer-consent` |
 | QuestionnaireResponse; DocumentReference (Payer-to-Payer only) | form identifier (`PAC-000117`) | `https://example.org/fhir/sid/consent-form` |
-| Coverage | plan entry identifier (`PCV-000342-1`) | `https://example.org/fhir/sid/other-plan-coverage` |
+| Coverage | plan entry identifier (`PCV-000342-1`) | `https://example.org/fhir/sid/plan-entry` |
 | Organization for a manually entered health plan | plan entry identifier | `https://example.org/fhir/sid/unlisted-payer` |
 
 | Referenced resource | Reference |
@@ -759,7 +759,7 @@ Prefer: return=minimal
         "resourceType": "Coverage",
         "meta": {"profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage"]},
         "identifier": [
-          {"system": "https://example.org/fhir/sid/other-plan-coverage", "value": "PCV-000342-1"},
+          {"system": "https://example.org/fhir/sid/plan-entry", "value": "PCV-000342-1"},
           {
             "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB"}]},
             "value": "XYZ123456789",
@@ -786,7 +786,7 @@ Prefer: return=minimal
       },
       "request": {
         "method": "PUT",
-        "url": "Coverage?identifier=https://example.org/fhir/sid/other-plan-coverage|PCV-000342-1"
+        "url": "Coverage?identifier=https://example.org/fhir/sid/plan-entry|PCV-000342-1"
       }
     },
     {
@@ -794,7 +794,7 @@ Prefer: return=minimal
         "resourceType": "Coverage",
         "meta": {"profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage"]},
         "identifier": [
-          {"system": "https://example.org/fhir/sid/other-plan-coverage", "value": "PCV-000342-2"},
+          {"system": "https://example.org/fhir/sid/plan-entry", "value": "PCV-000342-2"},
           {
             "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB"}]},
             "value": "BVH-4471902",
@@ -818,7 +818,7 @@ Prefer: return=minimal
       },
       "request": {
         "method": "PUT",
-        "url": "Coverage?identifier=https://example.org/fhir/sid/other-plan-coverage|PCV-000342-2"
+        "url": "Coverage?identifier=https://example.org/fhir/sid/plan-entry|PCV-000342-2"
       }
     }
   ]
@@ -1930,7 +1930,7 @@ Accept: application/fhir+json
         "status": "cancelled",
         "id": "01a163b7-f1ce-7271-8ae3-eb7bcc6547e8",
         "identifier": [
-          {"value": "PCV-000342-1", "system": "https://example.org/fhir/sid/other-plan-coverage"},
+          {"value": "PCV-000342-1", "system": "https://example.org/fhir/sid/plan-entry"},
           {
             "type": {"coding": [{"code": "MB", "system": "http://terminology.hl7.org/CodeSystem/v2-0203"}]},
             "value": "XYZ123456789",
@@ -1967,7 +1967,7 @@ Accept: application/fhir+json
         "status": "active",
         "id": "01a163b7-f281-7174-8392-b70f103983fe",
         "identifier": [
-          {"value": "PCV-000342-2", "system": "https://example.org/fhir/sid/other-plan-coverage"},
+          {"value": "PCV-000342-2", "system": "https://example.org/fhir/sid/plan-entry"},
           {
             "type": {"coding": [{"code": "MB", "system": "http://terminology.hl7.org/CodeSystem/v2-0203"}]},
             "value": "BVH-4471902",
