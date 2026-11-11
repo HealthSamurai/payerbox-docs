@@ -450,7 +450,8 @@
                 "smartbox-enrollment-message",
                 "smartbox-app-name",
                 "smartbox-app-logo",
-                "mpf-export-scope"
+                "mpf-export-scope",
+                "member-consent-settings"
               ]
             },
             "resource/type": "DocumentReference"
@@ -1378,6 +1379,17 @@
       "resource": {
         "resourceType": "Patient",
         "id": "test-e2e-patient",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://example.org/member-id",
+            "value": "E2E-0001"
+          }
+        ],
         "name": [
           {
             "given": [
@@ -1780,6 +1792,26 @@
       }
     },
     {
+      "resource": {
+        "resourceType": "SearchParameter",
+        "id": "Patient-birthsex",
+        "url": "http://hl7.org/fhir/SearchParameter/Patient-birthsex",
+        "name": "birthsex",
+        "status": "active",
+        "description": "US Core birth sex extension on the patient",
+        "code": "birthsex",
+        "base": [
+          "Patient"
+        ],
+        "type": "token",
+        "expression": "Patient.extension.where(url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "/SearchParameter/Patient-birthsex"
+      }
+    },
+    {
       "request": {
         "method": "PUT",
         "url": "/Client/interop-app"
@@ -1807,6 +1839,1166 @@
             "reference": "Client/interop-app"
           }
         ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Parameters",
+        "parameter": [
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/payerbox-public/pdex-priorauthorization-fix-package.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/payerbox-public/consent-reference-targets-fix-package.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/payerbox-public/us-core-relatedperson-targets-fix-package.tar.gz"
+          },
+          {
+            "name": "package",
+            "valueString": "https://storage.googleapis.com/payerbox-public/hrex-coverage-targets-fix-package.tar.gz"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "/$fhir-package-install"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "member-can-read-own-patient",
+        "engine": "matcho",
+        "description": "A patient-linked user may read its own Patient (Data sharing page prefill). Aidbox exposes the read id as params.resource/id, not params.id.",
+        "matcho": {
+          "user": {
+            "fhirUser": {
+              "resourceType": "Patient"
+            }
+          },
+          "request-method": "get",
+          "uri": "#^/fhir/Patient/[^/]+$",
+          "params": {
+            "resource/id": ".user.fhirUser.id"
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/member-can-read-own-patient"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "member-consent-read",
+        "engine": "matcho",
+        "description": "Members read their own Consents (FHIR and Aidbox format; the latter feeds the retirements inside the save transaction), QuestionnaireResponses and DocumentReferences (#847).",
+        "matcho": {
+          "$one-of": [
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "get",
+              "uri": "/fhir/Consent",
+              "params": {
+                "patient": ".user.fhirUser.id"
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "get",
+              "uri": "/fhir/QuestionnaireResponse",
+              "params": {
+                "subject": ".user.fhirUser.id"
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "get",
+              "uri": "/fhir/DocumentReference",
+              "params": {
+                "subject": ".user.fhirUser.id"
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "get",
+              "uri": "/Consent",
+              "params": {
+                "patient": ".user.fhirUser.id"
+              }
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/member-consent-read"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-role-consent",
+        "engine": "matcho",
+        "description": "Portal admins read member consent records for the Data sharing card on Member Details (#847).",
+        "matcho": {
+          "user": {
+            "roles": {
+              "$contains": {
+                "type": "admin"
+              }
+            }
+          },
+          "request-method": "get",
+          "uri": "#^/fhir/(Consent|QuestionnaireResponse|DocumentReference|RelatedPerson|Provenance|Binary)(/[^/?]+)?$"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-role-consent"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-api-consent-mode",
+        "engine": "matcho",
+        "description": "BFF (admin-api) reads the two member consent policies by id to derive the deployment's capture mode (#847): read present = read-only, both = read-write, neither = off.",
+        "matcho": {
+          "client": {
+            "id": "admin-api"
+          },
+          "request-method": "get",
+          "uri": "#^/AccessPolicy/member-consent-(read|write)$"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-api-consent-mode"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-api-consent",
+        "engine": "matcho",
+        "description": "BFF (admin-api) records review decisions as one FHIR transaction (PUT Consent + retirements + Provenance), and reads the consent resources and Questionnaires (#847).",
+        "matcho": {
+          "$one-of": [
+            {
+              "client": {
+                "id": "admin-api"
+              },
+              "request-method": "post",
+              "uri": "/fhir",
+              "body": {
+                "resourceType": "Bundle",
+                "type": "transaction"
+              }
+            },
+            {
+              "client": {
+                "id": "admin-api"
+              },
+              "request-method": "put",
+              "uri": "#^/fhir/Consent/[^/]+$"
+            },
+            {
+              "client": {
+                "id": "admin-api"
+              },
+              "request-method": "patch",
+              "uri": "#^/fhir/Consent/[^/]+$"
+            },
+            {
+              "client": {
+                "id": "admin-api"
+              },
+              "request-method": "put",
+              "uri": "#^/fhir/Provenance/[^/]+$"
+            },
+            {
+              "client": {
+                "id": "admin-api"
+              },
+              "request-method": "get",
+              "uri": "#^/fhir/(Consent|QuestionnaireResponse|DocumentReference|RelatedPerson|Provenance|Questionnaire|Binary)(/[^/?]+)?$"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-api-consent"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "member-consent-write",
+        "engine": "matcho",
+        "description": "Member Data sharing page (#847): a patient-linked user may write one consent-capture transaction (Aidbox-format POST /) whose entries are all bound to its own Patient; Aidbox authorizes every entry against the PUT clauses below, so a foreign patient in any entry fails the whole transaction. Absent on read-only deployments (VillageCare). NOTE: matcho ignores keys that sit next to a top-level $one-of, so every alternative repeats the caller condition (verified on aidboxone edge, 2026-09-23).",
+        "matcho": {
+          "$one-of": [
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "post",
+              "uri": "/",
+              "body": {
+                "resourceType": "Bundle",
+                "type": "transaction"
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "put",
+              "uri": "#^/Consent/[A-Za-z0-9-]+$",
+              "body": {
+                "resourceType": "Consent",
+                "patient": {
+                  "id": ".user.fhirUser.id",
+                  "resourceType": "Patient"
+                }
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "put",
+              "uri": "#^/QuestionnaireResponse/[A-Za-z0-9-]+$",
+              "body": {
+                "resourceType": "QuestionnaireResponse",
+                "subject": {
+                  "id": ".user.fhirUser.id",
+                  "resourceType": "Patient"
+                }
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "put",
+              "uri": "#^/DocumentReference/[A-Za-z0-9-]+$",
+              "body": {
+                "resourceType": "DocumentReference",
+                "subject": {
+                  "id": ".user.fhirUser.id",
+                  "resourceType": "Patient"
+                }
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "put",
+              "uri": "#^/RelatedPerson/[A-Za-z0-9-]+$",
+              "body": {
+                "resourceType": "RelatedPerson",
+                "patient": {
+                  "id": ".user.fhirUser.id",
+                  "resourceType": "Patient"
+                }
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "put",
+              "uri": "#^/Provenance/[A-Za-z0-9-]+$",
+              "body": {
+                "resourceType": "Provenance",
+                "agent": {
+                  "$contains": {
+                    "$one-of": [
+                      {
+                        "who": {
+                          "id": ".user.fhirUser.id",
+                          "resourceType": "Patient"
+                        }
+                      },
+                      {
+                        "onBehalfOf": {
+                          "id": ".user.fhirUser.id",
+                          "resourceType": "Patient"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "user": {
+                "fhirUser": {
+                  "resourceType": "Patient"
+                }
+              },
+              "request-method": "put",
+              "uri": "#^/Binary/[A-Za-z0-9-]+$",
+              "body": {
+                "resourceType": "Binary",
+                "securityContext": {
+                  "id": ".user.fhirUser.id",
+                  "resourceType": "Patient"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/member-consent-write"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-api-oauth-state",
+        "engine": "matcho",
+        "matcho": {
+          "client": {
+            "id": "admin-api"
+          },
+          "request-method": {
+            "$one-of": [
+              "get",
+              "post",
+              "delete"
+            ]
+          },
+          "uri": "#^/Basic.*"
+        },
+        "description": "OAuth login state (PKCE) stored as Basic resources by the portal backend; without this policy the write 403s and state falls back to per-pod memory, breaking the OAuth callback when the portal runs more than one replica"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-api-oauth-state"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-api-organization-create",
+        "engine": "matcho",
+        "matcho": {
+          "client": {
+            "id": "admin-api"
+          },
+          "request-method": "post",
+          "uri": "/fhir/Organization"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-api-organization-create"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "admin-api-member-history-read",
+        "engine": "matcho",
+        "description": "Allow admin-api client to read Patient/Coverage/InsurancePlan/MedicationKnowledge for member history (#844)",
+        "matcho": {
+          "uri": {
+            "$one-of": [
+              "#^/fhir/Patient($|/|\\?)",
+              "#^/fhir/Coverage($|/|\\?)",
+              "#^/fhir/InsurancePlan($|/|\\?)",
+              "#^/fhir/MedicationKnowledge($|/|\\?)"
+            ]
+          },
+          "request-method": "get",
+          "client": {
+            "id": "admin-api"
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/admin-api-member-history-read"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CodeSystem",
+        "id": "rfc3986-hrex-consent-policy",
+        "url": "urn:ietf:rfc:3986",
+        "name": "RFC3986HRexConsentPolicyFragment",
+        "title": "RFC 3986 URIs of the HRex consent policies",
+        "status": "active",
+        "experimental": false,
+        "description": "Fragment of the URI code system (urn:ietf:rfc:3986) holding the two HRex consent policy URIs, so the hrex-consent-policy value set expands and the hrex-consent profile validates on this box. Needed while the terminology server does not define urn:ietf:rfc:3986 (smartbox docs/issue-847/HREX_PROFILE_ENABLEMENT_PLAN.md).",
+        "caseSensitive": true,
+        "content": "fragment",
+        "concept": [
+          {
+            "code": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#regular"
+          },
+          {
+            "code": "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition-hrex-consent.html#sensitive"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "CodeSystem/rfc3986-hrex-consent-policy"
+      }
+    },
+    {
+      "resource": {
+        "description": "Member opt-in consent for Payer-to-Payer data exchange under CMS-0057-F (42 CFR 422.121(b)(2)). Captures the member's decision to authorize their current health plan to request health records from previous and concurrent payers, the sharing scope (all data or only non-sensitive data), a withdrawal of an earlier authorization, the other plans named, and an authorized-representative workflow with document upload. Answers are recorded as a QuestionnaireResponse; an opt-in becomes a Da Vinci HRex Consent. Reference copy branded for a fictional \"Example Health Plan\"; deployments ship their own branded copy under the same canonical URL.",
+        "subjectType": [
+          "Patient"
+        ],
+        "date": "2026-10-12",
+        "publisher": "Example Health Plan",
+        "name": "P2PMemberConsent",
+        "item": [
+          {
+            "text": "Sharing your data can help better coordinate your care, make your medical records more complete if you change insurance carriers, and reduce disruptions in your care.",
+            "type": "display",
+            "linkId": "intro"
+          },
+          {
+            "item": [
+              {
+                "text": "First name",
+                "type": "string",
+                "linkId": "member-given-name",
+                "required": true
+              },
+              {
+                "text": "Last name",
+                "type": "string",
+                "linkId": "member-family-name",
+                "required": true
+              },
+              {
+                "text": "Date of birth",
+                "type": "date",
+                "linkId": "member-dob",
+                "required": true
+              },
+              {
+                "text": "Member ID (current plan)",
+                "type": "string",
+                "linkId": "member-id",
+                "required": true
+              },
+              {
+                "text": "Phone number",
+                "type": "string",
+                "linkId": "member-phone"
+              },
+              {
+                "text": "Email address",
+                "type": "string",
+                "linkId": "member-email"
+              }
+            ],
+            "text": "Member information",
+            "type": "group",
+            "linkId": "member"
+          },
+          {
+            "item": [
+              {
+                "linkId": "prior-plan-organization",
+                "text": "Health plan",
+                "type": "reference",
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-referenceResource",
+                    "valueCode": "Organization"
+                  }
+                ]
+              },
+              {
+                "text": "Member ID with that plan (optional)",
+                "type": "string",
+                "linkId": "prior-plan-member-id"
+              },
+              {
+                "text": "How were you covered under that plan?",
+                "type": "choice",
+                "linkId": "prior-plan-relationship",
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "code": "radio-button",
+                          "system": "http://hl7.org/fhir/questionnaire-item-control",
+                          "display": "Radio Button"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "self",
+                      "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+                      "display": "In my own name"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "spouse",
+                      "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+                      "display": "Through my spouse or partner"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "child",
+                      "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+                      "display": "Through my parent"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "other",
+                      "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+                      "display": "Another way"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "prior-plan-kind",
+                "type": "choice",
+                "required": true,
+                "text": "Do you still have that plan?",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "code": "radio-button",
+                          "system": "http://hl7.org/fhir/questionnaire-item-control",
+                          "display": "Radio Button"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "previous",
+                      "display": "No, I had it before"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "concurrent",
+                      "display": "Yes, I have it now too"
+                    }
+                  }
+                ]
+              }
+            ],
+            "text": "Previous or concurrent health plan",
+            "type": "group",
+            "linkId": "prior-plan",
+            "repeats": true,
+            "enableWhen": [
+              {
+                "question": "consent-choice",
+                "operator": "!=",
+                "answerCoding": {
+                  "code": "withdraw"
+                }
+              }
+            ]
+          },
+          {
+            "item": [
+              {
+                "text": "Some health information receives extra protection under federal and state law: for example, behavioral health and substance use disorder treatment records, HIV/AIDS, and genetic information.",
+                "type": "display",
+                "linkId": "sensitive-info-note"
+              },
+              {
+                "text": "What information do you give us permission to request from your other health plans?",
+                "type": "choice",
+                "linkId": "consent-choice",
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "code": "radio-button",
+                          "system": "http://hl7.org/fhir/questionnaire-item-control",
+                          "display": "Radio Button"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "opt-in-full",
+                      "display": "All of my health information, including sensitive information."
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "opt-in-non-sensitive",
+                      "display": "Only non-sensitive information. Do not request my sensitive information."
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "withdraw",
+                      "display": "Withdraw my permission. Do not request my records from my other health plans."
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "authorization-end-date",
+                "type": "date",
+                "readOnly": true,
+                "text": "Your permission runs until this date unless you withdraw it earlier",
+                "enableWhen": [
+                  {
+                    "question": "consent-choice",
+                    "operator": "!=",
+                    "answerCoding": {
+                      "code": "withdraw"
+                    }
+                  }
+                ]
+              },
+              {
+                "text": "Records we already received stay in your file.",
+                "type": "display",
+                "linkId": "decision-note"
+              }
+            ],
+            "text": "Your decision",
+            "type": "group",
+            "linkId": "decision"
+          },
+          {
+            "item": [
+              {
+                "text": "Who is completing this form?",
+                "type": "choice",
+                "linkId": "signer-relationship",
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "code": "radio-button",
+                          "system": "http://hl7.org/fhir/questionnaire-item-control",
+                          "display": "Radio Button"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "self",
+                      "display": "Member (myself)"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "representative",
+                      "display": "Authorized representative"
+                    }
+                  }
+                ]
+              },
+              {
+                "item": [
+                  {
+                    "text": "Representative name and relationship to member",
+                    "type": "string",
+                    "linkId": "representative-name",
+                    "required": true
+                  },
+                  {
+                    "text": "Basis of authority",
+                    "type": "choice",
+                    "linkId": "representative-authority",
+                    "required": true,
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "code": "radio-button",
+                              "system": "http://hl7.org/fhir/questionnaire-item-control",
+                              "display": "Radio Button"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "answerOption": [
+                      {
+                        "valueCoding": {
+                          "code": "power-of-attorney",
+                          "display": "Power of Attorney"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "code": "legal-guardian",
+                          "display": "Legal guardian"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "code": "other",
+                          "display": "Other"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "text": "Describe your authority",
+                    "type": "string",
+                    "linkId": "representative-authority-other",
+                    "required": true,
+                    "enableWhen": [
+                      {
+                        "answerCoding": {
+                          "code": "other"
+                        },
+                        "operator": "=",
+                        "question": "representative-authority"
+                      }
+                    ]
+                  },
+                  {
+                    "text": "Document that shows your authority",
+                    "type": "attachment",
+                    "linkId": "representative-doc",
+                    "required": true
+                  }
+                ],
+                "text": "Authorized representative details",
+                "type": "group",
+                "linkId": "representative",
+                "enableWhen": [
+                  {
+                    "answerCoding": {
+                      "code": "representative"
+                    },
+                    "operator": "=",
+                    "question": "signer-relationship"
+                  }
+                ]
+              },
+              {
+                "text": "Date",
+                "type": "date",
+                "linkId": "signature-date",
+                "required": true
+              }
+            ],
+            "text": "Confirmation",
+            "type": "group",
+            "linkId": "signature"
+          },
+          {
+            "text": "Questions? Call Member Services at 1-800-555-0123 (TTY 711), Monday through Friday, 8 a.m. to 8 p.m.",
+            "type": "display",
+            "linkId": "questions-note"
+          },
+          {
+            "text": "If you speak a language other than English, free language assistance services are available to you. Call 1-800-555-0123 (TTY 711).",
+            "type": "display",
+            "linkId": "form-footer"
+          }
+        ],
+        "resourceType": "Questionnaire",
+        "title": "Example Health Plan: Payer-to-Payer Data Exchange Consent",
+        "status": "active",
+        "id": "p2p-member-consent",
+        "url": "http://healthsamurai.io/fhir/Questionnaire/p2p-member-consent",
+        "version": "1.3.0",
+        "experimental": false
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire/p2p-member-consent"
+      }
+    },
+    {
+      "resource": {
+        "description": "Member opt-out form for Provider Access API data sharing under CMS-0057-F (42 CFR 422.121(a)(4)). Sharing with in-network treating providers is on by default; this form captures the member's choice to opt out or to resume sharing, with an authorized-representative workflow with document upload. Answers are recorded as a QuestionnaireResponse; the choice becomes a Da Vinci PDex Provider Consent (provision.type deny = opt out, permit = share). Reference copy branded for a fictional \"Example Health Plan\"; deployments ship their own branded copy under the same canonical URL.",
+        "subjectType": [
+          "Patient"
+        ],
+        "date": "2026-10-12",
+        "publisher": "Example Health Plan",
+        "name": "ProviderAccessMemberOptOut",
+        "item": [
+          {
+            "text": "Sharing your data can help your providers better coordinate your care, improve prior authorization processes, and make sure you receive care in a timely manner.",
+            "type": "display",
+            "linkId": "intro"
+          },
+          {
+            "item": [
+              {
+                "text": "Full name",
+                "type": "string",
+                "linkId": "member-name",
+                "required": true
+              },
+              {
+                "text": "Date of birth",
+                "type": "date",
+                "linkId": "member-dob",
+                "required": true
+              },
+              {
+                "text": "Member ID",
+                "type": "string",
+                "linkId": "member-id",
+                "required": true
+              },
+              {
+                "text": "Phone number",
+                "type": "string",
+                "linkId": "member-phone"
+              },
+              {
+                "text": "Email address",
+                "type": "string",
+                "linkId": "member-email"
+              }
+            ],
+            "text": "Member information",
+            "type": "group",
+            "linkId": "member"
+          },
+          {
+            "item": [
+              {
+                "linkId": "coverage-note",
+                "type": "display",
+                "text": "Opting out does not affect your coverage, your benefits, or your providers' ability to treat you."
+              },
+              {
+                "text": "Some health information receives extra protection under federal and state law: for example, behavioral health and substance use disorder treatment records, HIV/AIDS, and genetic information. Your choice applies to all of your health records: sharing with your in-network providers is either on or off.",
+                "type": "display",
+                "linkId": "sensitive-info-note"
+              },
+              {
+                "text": "Do you want us to share your health information with the in-network providers who treat you?",
+                "type": "choice",
+                "linkId": "sharing-choice",
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "code": "radio-button",
+                          "system": "http://hl7.org/fhir/questionnaire-item-control",
+                          "display": "Radio Button"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "share-all",
+                      "display": "Share my health information with my in-network providers."
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "opt-out",
+                      "display": "Opt out: do not share my health information with my in-network providers."
+                    }
+                  }
+                ]
+              },
+              {
+                "text": "Even if you opt out, laws such as HIPAA may still allow your providers to get information they need to treat you.",
+                "type": "display",
+                "linkId": "decision-note"
+              }
+            ],
+            "text": "Your choice",
+            "type": "group",
+            "linkId": "decision"
+          },
+          {
+            "item": [
+              {
+                "text": "Who is completing this form?",
+                "type": "choice",
+                "linkId": "signer-relationship",
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "code": "radio-button",
+                          "system": "http://hl7.org/fhir/questionnaire-item-control",
+                          "display": "Radio Button"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "code": "self",
+                      "display": "Member (myself)"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "code": "representative",
+                      "display": "Authorized representative"
+                    }
+                  }
+                ]
+              },
+              {
+                "item": [
+                  {
+                    "text": "Representative name and relationship to member",
+                    "type": "string",
+                    "linkId": "representative-name",
+                    "required": true
+                  },
+                  {
+                    "text": "Basis of authority",
+                    "type": "choice",
+                    "linkId": "representative-authority",
+                    "required": true,
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "code": "radio-button",
+                              "system": "http://hl7.org/fhir/questionnaire-item-control",
+                              "display": "Radio Button"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "answerOption": [
+                      {
+                        "valueCoding": {
+                          "code": "power-of-attorney",
+                          "display": "Power of Attorney"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "code": "legal-guardian",
+                          "display": "Legal guardian"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "code": "other",
+                          "display": "Other"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "text": "Describe your authority",
+                    "type": "string",
+                    "linkId": "representative-authority-other",
+                    "required": true,
+                    "enableWhen": [
+                      {
+                        "answerCoding": {
+                          "code": "other"
+                        },
+                        "operator": "=",
+                        "question": "representative-authority"
+                      }
+                    ]
+                  },
+                  {
+                    "text": "Document that shows your authority",
+                    "type": "attachment",
+                    "linkId": "representative-doc",
+                    "required": true
+                  }
+                ],
+                "text": "Authorized representative details",
+                "type": "group",
+                "linkId": "representative",
+                "enableWhen": [
+                  {
+                    "answerCoding": {
+                      "code": "representative"
+                    },
+                    "operator": "=",
+                    "question": "signer-relationship"
+                  }
+                ]
+              },
+              {
+                "text": "Date",
+                "type": "date",
+                "linkId": "signature-date",
+                "required": true
+              }
+            ],
+            "text": "Confirmation",
+            "type": "group",
+            "linkId": "signature"
+          },
+          {
+            "text": "Questions? Call Member Services at 1-800-555-0123 (TTY 711), Monday through Friday, 8 a.m. to 8 p.m.",
+            "type": "display",
+            "linkId": "questions-note"
+          },
+          {
+            "text": "If you speak a language other than English, free language assistance services are available to you. Call 1-800-555-0123 (TTY 711).",
+            "type": "display",
+            "linkId": "form-footer"
+          }
+        ],
+        "resourceType": "Questionnaire",
+        "title": "Example Health Plan: Provider Access Data Sharing Opt-Out",
+        "status": "active",
+        "id": "provider-access-member-opt-out",
+        "url": "http://healthsamurai.io/fhir/Questionnaire/provider-access-member-opt-out",
+        "version": "1.2.0",
+        "experimental": false
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire/provider-access-member-opt-out"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Organization",
+        "id": "example-health-plan",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-organization"
+          ]
+        },
+        "active": true,
+        "name": "Example Health Plan",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.6.300",
+            "value": "12345"
+          },
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1234567893"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Organization/example-health-plan"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "member-consent-settings",
+        "status": "current",
+        "type": {
+          "text": "Consent Settings"
+        },
+        "category": [
+          {
+            "text": "portal-config"
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "application/json",
+              "data": "eyJ2ZXJzaW9uIjogMSwgIm9yZ2FuaXphdGlvbklkIjogImV4YW1wbGUtaGVhbHRoLXBsYW4iLCAicDJwUGVyaW9kRW5kIjogIjIwMjctMTItMzEiLCAic2hvd05vblNlbnNpdGl2ZU9wdGlvbiI6IHRydWV9"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "DocumentReference/member-consent-settings"
       }
     }
   ]

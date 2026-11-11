@@ -89,7 +89,7 @@ services:
       "
 
   aidbox-admin:
-    image: healthsamurai/aidboxone:edge
+    image: healthsamurai/aidboxone:2610
     pull_policy: always
     restart: unless-stopped
     depends_on:
@@ -117,6 +117,9 @@ services:
       BOX_FHIR_SEARCH_AUTHORIZE_INLINE_REQUESTS: "true"
       BOX_FHIR_SEARCH_CHAIN_SUBSELECT: "true"
       BOX_FHIR_SEARCH_COMPARISONS: "true"
+      BOX_FHIR_TERMINOLOGY_ENGINE: hybrid
+      BOX_FHIR_TERMINOLOGY_ENGINE_HYBRID_EXTERNAL_TX_SERVER: https://tx.health-samurai.io/fhir
+      BOX_FHIR_TERMINOLOGY_SERVICE_BASE_URL: https://tx.health-samurai.io/fhir
       BOX_FHIR_CREATEDAT_URL: https://aidbox.app/ex/createdAt
       BOX_SEARCH_INCLUDE_CONFORMANT: "true"
       BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.fhir.us.core#6.1.0:hl7.fhir.us.carin-bb#2.1.0:hl7.fhir.us.davinci-pdex#2.1.0:hl7.fhir.us.davinci-drug-formulary#2.1.0:hl7.fhir.us.davinci-pdex-plan-net#1.2.0:hl7.fhir.us.davinci-hrex#1.2.0:hl7.fhir.us.davinci-crd#2.1.0:hl7.fhir.us.davinci-dtr#2.1.0:hl7.fhir.us.davinci-pas#2.1.0:hl7.fhir.us.davinci-cdex#2.1.0"
@@ -146,7 +149,7 @@ services:
       start_period: 120s
 
   aidbox-dev:
-    image: healthsamurai/aidboxone:edge
+    image: healthsamurai/aidboxone:2610
     pull_policy: always
     restart: unless-stopped
     depends_on:
@@ -171,6 +174,9 @@ services:
       BOX_FHIR_SEARCH_AUTHORIZE_INLINE_REQUESTS: "true"
       BOX_FHIR_SEARCH_CHAIN_SUBSELECT: "true"
       BOX_FHIR_SEARCH_COMPARISONS: "true"
+      BOX_FHIR_TERMINOLOGY_ENGINE: hybrid
+      BOX_FHIR_TERMINOLOGY_ENGINE_HYBRID_EXTERNAL_TX_SERVER: https://tx.health-samurai.io/fhir
+      BOX_FHIR_TERMINOLOGY_SERVICE_BASE_URL: https://tx.health-samurai.io/fhir
       BOX_FHIR_CREATEDAT_URL: https://aidbox.app/ex/createdAt
       BOX_SEARCH_INCLUDE_CONFORMANT: "true"
       BOX_BOOTSTRAP_FHIR_PACKAGES: "hl7.fhir.r4.core#4.0.1:hl7.fhir.us.core#6.1.0"
@@ -192,7 +198,7 @@ services:
       start_period: 120s
 
   fhir-app-portal:
-    image: healthsamurai/fhir-app-portal:edge
+    image: healthsamurai/fhir-app-portal:2610
     pull_policy: always
     restart: unless-stopped
     depends_on:
@@ -239,7 +245,7 @@ services:
       start_period: 10s
 
   prior-auth:
-    image: healthsamurai/prior-auth:edge
+    image: healthsamurai/prior-auth:2610
     pull_policy: always
     restart: unless-stopped
     depends_on:
@@ -266,7 +272,7 @@ services:
       start_period: 30s
 
   interop:
-    image: healthsamurai/interop:edge
+    image: healthsamurai/interop:2610
     pull_policy: always
     restart: unless-stopped
     depends_on:
@@ -312,7 +318,7 @@ Open `docker-compose.yaml` and replace two values with the JWT licenses you obta
 docker compose up
 ```
 
-First startup takes several minutes while Aidbox downloads the FHIR packages listed in `BOX_BOOTSTRAP_FHIR_PACKAGES`, applies the init bundle (Prior Auth/Interop clients, AwsAccount/rustfs), and the Prior Auth and Interop apps register with admin Aidbox.
+First startup takes several minutes while Aidbox downloads the FHIR packages listed in `BOX_BOOTSTRAP_FHIR_PACKAGES`, applies the init bundle (portal access policies, member consent questionnaires and profile fixes, an example health plan, Prior Auth/Interop clients, AwsAccount/rustfs), and the Prior Auth and Interop apps register with admin Aidbox.
 
 ## Step 4. Open the UIs
 

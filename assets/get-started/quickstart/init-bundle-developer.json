@@ -385,6 +385,31 @@
       }
     },
     {
+      "resource": {
+        "resourceType": "AccessPolicy",
+        "id": "developer-api-oauth-state",
+        "engine": "matcho",
+        "matcho": {
+          "client": {
+            "id": "developer-api"
+          },
+          "request-method": {
+            "$one-of": [
+              "get",
+              "post",
+              "delete"
+            ]
+          },
+          "uri": "#^/Basic.*"
+        },
+        "description": "OAuth login state (PKCE) stored as Basic resources by the portal backend; without this policy the write 403s and state falls back to per-pod memory, breaking the OAuth callback when the portal runs more than one replica"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "AccessPolicy/developer-api-oauth-state"
+      }
+    },
+    {
       "request": {
         "method": "PUT",
         "url": "AccessPolicy/developer-api-organization"
