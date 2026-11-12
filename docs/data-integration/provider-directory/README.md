@@ -30,11 +30,13 @@ Built to [Plan-Net STU 1.2.0](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1
 
 ## providers
 
-One row per unique NPI, practice location, plan and specialty. A provider at two locations in two plans produces several rows.
+One row per unique NPI, plan provider number (when sent), practice location, plan and specialty. A provider at two locations in two plans produces several rows.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
+| `payer_provider_id` | If available | the plan's own number for this provider at this location | `100234` |
+| `payer_provider_id_system` | If `payer_provider_id` is sent | URI of the plan's provider numbering, a URL the plan controls or an OID; the same value on every row | `http://acme.org/provider-ids` |
 | `first_name` | Yes | text | `Jane` |
 | `last_name` | Yes | text | `Smith` |
 | `middle_name` | No | text | `G` |
@@ -63,14 +65,18 @@ One row per unique NPI, practice location, plan and specialty. A provider at two
 | `hours_of_operation` | If available | `day open-close`, `;`-separated | `mon 09:00-17:00;tue 09:00-17:00` |
 
 - `latitude` and `longitude` are one value in FHIR: send both or neither. A Location cannot carry half a position.
+- `payer_provider_id` goes on the PractitionerRole as a second identifier, next to the NPI on the Practitioner, with `payer_provider_id_system` as its system and type `PRN` (Provider number) from [v2-0203](https://terminology.hl7.org/CodeSystem-v2-0203.html). Send it when systems that use the directory, such as a utilization-management vendor, identify providers by the plan's number rather than by NPI: one NPI can cover several provider records. The directory is public, so the number is visible in it.
+- One number per row. If you number providers in more than one way, for example per provider and per site, send one of them here, under a `payer_provider_id_system` that names that numbering and no other.
 
 ## facilities
 
-One row per facility NPI, plan and network.
+One row per facility NPI, plan provider number (when sent), plan and network. Facilities that share an NPI but carry different plan provider numbers are separate facilities: send a row for each.
 
 | Column | Required | Format / values | Example |
 |---|---|---|---|
 | `npi` | Yes | 10 digits, Luhn-valid over the `80840` prefix | `9999999995` |
+| `payer_provider_id` | If available | the plan's own number for this facility | `200871` |
+| `payer_provider_id_system` | If `payer_provider_id` is sent | URI of the plan's provider numbering, the same value as in `providers` | `http://acme.org/provider-ids` |
 | `facility_name` | Yes | text | `Example Hospital` |
 | `facility_type_nucc` | Yes | NUCC organization taxonomy code(s), `;`-separated [IndividualAndGroupSpecialtiesVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-IndividualAndGroupSpecialtiesVS.html) | `282N00000X` |
 | `affiliation_type` | Recommended | `group` medical group, `hospital`, `outpatient` clinic, `pharmacy`, `laboratory`, `dme`, `urgent` urgent care, `hospice` [OrganizationAffiliationRoleVS](https://hl7.org/fhir/us/davinci-pdex-plan-net/STU1.2/ValueSet-OrganizationAffiliationRoleVS.html) | `group` |
@@ -87,6 +93,9 @@ One row per facility NPI, plan and network.
 | `latitude` | If available | decimal, WGS84 | `40.8801` |
 | `longitude` | If available | decimal, WGS84 | `-73.9100` |
 | `phone` | Yes | 10 digits | `7185551212` |
+
+- `payer_provider_id` goes on the Organization as a second identifier, next to the NPI, with the same system and type as in `providers`. Several hospitals of one health system can share an NPI; with the plan's number each hospital becomes its own Organization and Location, and each keeps the shared NPI.
+- One number per row, as in `providers`.
 
 ## networks
 
