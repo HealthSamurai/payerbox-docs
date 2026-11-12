@@ -83,6 +83,7 @@ Content-Type: application/fhir+json
         "resourceType": "Coverage",
         "id": "test-coverage-001",
         "status": "active",
+        "identifier": [{"type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB"}]}, "value": "MB-001"}],
         "subscriberId": "SUB-001",
         "beneficiary": {"reference": "Patient/test-member-001"},
         "payor": [{"reference": "Organization/test-payer-001"}]
@@ -209,8 +210,8 @@ The request body is a `Parameters` resource with one or more `MemberBundle` entr
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
-| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching |
-| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage); `subscriberId` and `payor[0].reference` are read by the matcher |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics). Matching requires `name[0].family`, `name[0].given[0]`, and a full `birthDate`; `gender`, the US Core `birthsex` extension, and `identifier` are optional (see [Matching behavior](#matching-behavior)) |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage). Matching requires the member ID (`identifier` typed `v2-0203#MB`), `subscriberId`, or both. `payor[0].reference` resolves `managingEntity` |
 | IN | `MemberBundle.Consent` | Consent | 1..1 | [Provider Treatment Relationship Consent](https://build.fhir.org/ig/HL7/davinci-epdx/StructureDefinition-provider-treatment-relationship-consent.html); attestation accepted when `status = "active"` |
 | IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
 | OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
@@ -238,7 +239,7 @@ Prefer: respond-async
         }},
         {"name": "CoverageToMatch", "resource": {
           "resourceType": "Coverage", "status": "active",
-          "subscriberId": "SUB-001",
+          "identifier": [{"type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB"}]}, "value": "MB-001"}],
           "beneficiary": {"reference": "Patient/test-member-001"},
           "payor": [{"reference": "Organization/test-payer-001"}]
         }},
@@ -318,9 +319,9 @@ Prefer: respond-async
 
 Three submitted MemberBundles drive the three output buckets:
 
-- **Johnson** → demographics match `Patient/test-member-001`; no opt-out → `MatchedMembers`
-- **Williams** → demographics match `Patient/test-member-002`; active opt-out `Consent/test-optout-member-002` → `ConsentConstrainedMembers`
-- **Unknown** → demographics do not match any seeded Patient → `NonMatchedMembers`
+- **Johnson** → demographics and member ID `MB-001` match `Patient/test-member-001`; no opt-out → `MatchedMembers`
+- **Williams** → demographics and `subscriberId` `SUB-002` match `Patient/test-member-002`; active opt-out `Consent/test-optout-member-002` → `ConsentConstrainedMembers`
+- **Unknown** → no seeded Patient has these demographics and `subscriberId` → `NonMatchedMembers`
 
 {% endtab %}
 {% tab title="Response (accepted)" %}
@@ -577,20 +578,40 @@ HTTP/1.1 202 Accepted
 
 ## Matching behavior
 
-Each submitted member is evaluated independently and lands in exactly one bucket. Per-member failures never fail the batch — problematic members are routed to `NonMatchedMembers`.
+After validation, each submitted member is evaluated independently and lands in exactly one bucket. Per-member failures never fail the batch — problematic members are routed to `NonMatchedMembers`.
 
-**Demographic match.** All four fields are required on the submitted Patient and queried against payer Patients:
+**Member match.** Deterministic: the payer Patient must match the submitted demographics **and** be the beneficiary of a Coverage with the submitted member ID or `subscriberId`. Demographics alone never match, following the HRex rule that a deterministic match requires the member ID or subscriber ID at a minimum. [`$bulk-member-match`](bulk-member-match.md#matching-behavior) uses the same algorithm.
 
-| Field | Search behaviour |
+Demographics, from the submitted `MemberPatient`:
+
+| Field | Required | Search |
+|---|---|---|
+| `name[0].family` | Yes | `family:eq`: the whole value, ignoring case and accents. `johnson` finds `Johnson` and `Jose` finds `José`, but `John` does not find `Johnson` |
+| `name[0].given[0]` | Yes | `given:eq`, same rules; matches any `given` of the payer Patient |
+| `birthDate` | Yes, full `YYYY-MM-DD` | `birthdate`. A partial date (`1952`, `1952-07`) is not searched |
+| `gender` | No | `gender` |
+| US Core `birthsex` extension | No | `birthsex` (the `Patient-birthsex` SearchParameter from the Payerbox init bundle) |
+
+If both `gender` and `birthsex` are provided, at least one must match. If only one is provided, it must match. If neither is provided, neither is checked.
+
+Coverage IDs, from the submitted `CoverageToMatch`. At least one is required:
+
+| ID | Search |
 |---|---|
-| `Patient.name[0].family` | FHIR `family` (case-insensitive exact) |
-| `Patient.name[0].given[0]` | FHIR `given` (case-insensitive exact) |
-| `Patient.birthDate` | FHIR `birthdate` exact |
-| `Patient.gender` | FHIR `gender` exact |
+| Member ID: `Coverage.identifier` with `type` `http://terminology.hl7.org/CodeSystem/v2-0203#MB` | `_has:Coverage:beneficiary:identifier:of-type=http://terminology.hl7.org/CodeSystem/v2-0203\|MB\|<value>`. `Identifier.system` is ignored |
+| `Coverage.subscriberId` | `_has:Coverage:beneficiary:subscriber-id=<subscriberId>` |
 
-If `Patient.identifier` entries are present they are added as `identifier` search tokens (`system|value` or bare `value`). If `Coverage.subscriberId` is present the query also requires `_has:Coverage:beneficiary:subscriber-id=<subscriberId>`.
+Each search removes candidates with conflicting `Patient.identifier` values (see below) before counting candidates or moving to the next step:
 
-A member is **unmatched** when the search returns zero entries **or** more than one (ambiguous matches are rejected conservatively). Missing any required demographic field also routes to `NonMatchedMembers`.
+1. `family`, `given`, or a full `birthDate` is missing, or neither Coverage ID is present: no search, the member goes to `NonMatchedMembers`.
+2. Member ID submitted: search by demographics plus member ID. Exactly one candidate is the match.
+3. Member ID found nobody, or was not submitted: search by demographics plus `subscriberId`, if submitted. Member ID found several candidates and `subscriberId` was submitted: keep the candidates the `subscriberId` search also found, or all of them if it found none of them.
+4. Several candidates left: keep those carrying a submitted `Patient.identifier` (`system` and `value`, or `value` alone when `system` is absent).
+5. Exactly one candidate left: match. Otherwise the member goes to `NonMatchedMembers`.
+
+`Patient.identifier` never makes a match on its own. It only narrows candidates and can drop one: a candidate that has identifiers in a submitted `system`, none of them with the submitted value, is dropped, even when it is the only candidate. Systems the payer Patient does not carry are ignored, so a provider MRN the payer does not store never blocks a match. Blank values count as absent.
+
+Every search reads all result pages. A search that exceeds the page cap (50 pages) or fails gives no match, and the member goes to `NonMatchedMembers`.
 
 **Treatment attestation.** Accepted when the `Consent` part is present and `Consent.status = "active"`. There is no deeper verification of the attestation claim itself.
 

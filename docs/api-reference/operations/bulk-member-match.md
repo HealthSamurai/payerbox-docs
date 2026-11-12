@@ -83,6 +83,7 @@ Content-Type: application/fhir+json
         "resourceType": "Coverage",
         "id": "test-coverage-001",
         "status": "active",
+        "identifier": [{"type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB"}]}, "value": "MB-001"}],
         "subscriberId": "SUB-001",
         "beneficiary": {"reference": "Patient/test-member-001"},
         "payor": [{"reference": "Organization/test-payer-001"}]
@@ -209,8 +210,8 @@ The request body is a `Parameters` resource with one or more `MemberBundle` entr
 | Direction | Parameter | Type | Cardinality | Description |
 |---|---|---|---|---|
 | IN | `MemberBundle` | part group | 1..* | One per submitted member; contains `MemberPatient`, `CoverageToMatch`, `Consent`, optional `CoverageToLink` |
-| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics) — `family`, `given[0]`, `birthDate`, `gender` are all required for matching; `identifier` entries are added to the matching query as `identifier` search tokens |
-| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage); `subscriberId` (when present) is added to the matching query as `_has:Coverage:beneficiary:subscriber-id` |
+| IN | `MemberBundle.MemberPatient` | Patient | 1..1 | [HRex Patient Demographics](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics). Matching requires `name[0].family`, `name[0].given[0]`, and a full `birthDate`; `$validate` also requires `gender` (see [Matching behavior](#matching-behavior)). The US Core `birthsex` extension and `identifier` are optional |
+| IN | `MemberBundle.CoverageToMatch` | Coverage | 1..1 | [HRex Coverage](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage). The member ID (`identifier` typed `v2-0203#MB`), `subscriberId`, or both must be present; a member with neither fails `$validate` |
 | IN | `MemberBundle.Consent` | Consent | 1..1 | [HRex Consent](https://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-consent); `status`, `provision.period`, `provision.actor[role=IRCP]`, and `policy.uri` are evaluated at match time (see [Matching behavior](#matching-behavior)) |
 | IN | `MemberBundle.CoverageToLink` | Coverage | 0..1 | HRex Coverage |
 | OUT (kick-off) | — | — | — | `202 Accepted` with `Content-Location` header pointing at the status URL |
@@ -238,7 +239,7 @@ Prefer: respond-async
         }},
         {"name": "CoverageToMatch", "resource": {
           "resourceType": "Coverage", "status": "active",
-          "subscriberId": "SUB-001",
+          "identifier": [{"type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "MB"}]}, "value": "MB-001"}],
           "relationship": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship", "code": "self"}]},
           "beneficiary": {"reference": "Patient/test-member-001"},
           "payor": [{"reference": "Organization/test-payer-001"}]
@@ -351,9 +352,9 @@ Prefer: respond-async
 
 Three submitted MemberBundles drive the three output buckets:
 
-- **Johnson** → demographics match `Patient/test-member-001`; Consent recipient = `Organization/test-payer-001` (the caller) → `MatchedMembers`
-- **Williams** → demographics match `Patient/test-member-002`; Consent recipient = `Organization/other-payer-001` (not the caller) → fails recipient match → `ConsentConstrainedMembers`
-- **Unknown** → demographics do not match any seeded Patient → `NonMatchedMembers`
+- **Johnson** → demographics and member ID `MB-001` match `Patient/test-member-001`; Consent recipient = `Organization/test-payer-001` (the caller) → `MatchedMembers`
+- **Williams** → demographics and `subscriberId` `SUB-002` match `Patient/test-member-002`; Consent recipient = `Organization/other-payer-001` (not the caller) → fails recipient match → `ConsentConstrainedMembers`
+- **Unknown** → no seeded Patient has these demographics and `subscriberId` → `NonMatchedMembers`
 {% endtab %}
 {% tab title="Response (accepted)" %}
 ```http
@@ -587,7 +588,7 @@ Body (single ndjson line, formatted for readability):
 {% endtab %}
 {% endtabs %}
 
-`MatchedMembers` and `ConsentConstrainedMembers` carry the requesting payer's identifier in `managingEntity.identifier` and `characteristic[0].valueReference.identifier`: the `{system, value}` parsed from the hl7-b2b `organization_id` claim. The literal `Organization/<id>` reference is added when the responding payer has an Organization registered with that identifier. The example uses an NPI system, but any registered system works. `Patient.identifier` entries submitted on `MemberPatient` are used as additional matching tokens and come back only on the contained submitted Patient.
+`MatchedMembers` and `ConsentConstrainedMembers` carry the requesting payer's identifier in `managingEntity.identifier` and `characteristic[0].valueReference.identifier`: the `{system, value}` parsed from the hl7-b2b `organization_id` claim. The literal `Organization/<id>` reference is added when the responding payer has an Organization registered with that identifier. The example uses an NPI system, but any registered system works. `Patient.identifier` entries submitted on `MemberPatient` only narrow match candidates (see [Matching behavior](#matching-behavior)) and come back only on the contained submitted Patient.
 
 A contained submitted Patient is the `MemberPatient` as submitted, with its id replaced by `submitted-N` and `meta.versionId`, `meta.lastUpdated`, and `meta.security` removed, as FHIR requires for contained resources.
 
@@ -628,9 +629,11 @@ HTTP/1.1 202 Accepted
 
 ## Matching behavior
 
-Each submitted member is evaluated independently. Per-member failures never fail the batch — problematic members are routed to `NonMatchedMembers` or `ConsentConstrainedMembers`.
+After validation, each submitted member is evaluated independently. Per-member failures never fail the batch — problematic members are routed to `NonMatchedMembers` or `ConsentConstrainedMembers`.
 
-**Demographic match.** Same algorithm as [`$provider-member-match`](provider-member-match.md#matching-behavior): all four of `family`, `given[0]`, `birthDate`, `gender` are required and queried against payer Patients. `Patient.identifier` entries become `identifier` search tokens (FHIR AND semantics — every submitted identifier must match). Identifier-AND is bulk-specific: [`$provider-member-match`](provider-member-match.md#matching-behavior) ignores submitted `Patient.identifier` entries, because provider-side systems carry MRNs the payer does not store. `Coverage.subscriberId`, when present, becomes `_has:Coverage:beneficiary:subscriber-id`. Zero or ambiguous (>1) results route to `NonMatchedMembers`.
+**Member match.** Uses the same [matching algorithm](provider-member-match.md#matching-behavior) as `$provider-member-match`. Members with no unique match go to `NonMatchedMembers`.
+
+Before matching, the entire request is validated. It is rejected with `422` if any member's `CoverageToMatch` lacks both a member ID and `subscriberId`, or their `MemberPatient` has no `gender`. Currently, the bulk validator does not accept `birthsex` as a substitute for `gender`, although `$provider-member-match` does.
 
 **Match-time consent checks.** A matched member is moved to `ConsentConstrainedMembers` if **any** of the following is true:
 
