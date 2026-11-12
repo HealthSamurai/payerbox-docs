@@ -19,6 +19,7 @@ For field requirements, see the [Consent](../../api-reference/resources/consent.
 - **Conditional updates by business identifier.** Use `PUT <Type>?identifier=<system>|<value>`: no match creates a resource, one match updates it, and multiple matches fail the transaction.
 - **One Consent per member and consent type.** Use the Member ID as `identifier.value` and a separate `identifier.system` for each type. New decisions update the Consent; earlier versions remain in `_history`, and each decision has its own form.
 - **References by identifier.** Use `<Type>?identifier=<system>|<value>` for existing Patients and Organizations; the server requires exactly one match and replaces the search URL with the resource reference. For resources in the same bundle, use `fullUrl`.
+- **Health plans in a List.** The health plans a member can pick as previous or concurrent plans are the `entry.item` references of one `List`, the payer registry. Your portal reads them with the [registered health plans](#registered-health-plans) search; add an entry when you register a plan.
 - **Forms as QuestionnaireResponses.** Set `questionnaire` to your Questionnaire's canonical URL.
 
 The example `identifier.system` URLs below are placeholders. Replace them with your own stable identifier systems.
@@ -30,15 +31,16 @@ The example `identifier.system` URLs below are placeholders. Replace them with y
 | QuestionnaireResponse; DocumentReference (Payer-to-Payer only) | form identifier (`PAC-000117`) | `https://example.org/fhir/sid/consent-form` |
 | Coverage | plan entry identifier (`PCV-000342-1`) | `https://example.org/fhir/sid/plan-entry` |
 | Organization for a manually entered health plan | plan entry identifier | `https://example.org/fhir/sid/unlisted-payer` |
+| List, the payer registry | `p2p-payer-registry` | `https://example.org/fhir/sid/payer-registry` |
 
 | Referenced resource | Reference |
 |---|---|
 | The member | `Patient?identifier=https://example.org/fhir/sid/member-id\|<Member ID>` |
 | Your plan's Organization | Use the NAIC code of the Organization configured in [Consent Settings](../../fhir-app-portal/consent-settings.md): `Organization?identifier=urn:oid:2.16.840.1.113883.6.300\|<NAIC code>`. For a TIN, use `Organization?identifier=urn:oid:2.16.840.1.113883.4.4\|<XX-XXXXXXX>`. |
-| Another health plan's Organization | Use the NAIC code or TIN of a plan registered in [Consent Settings](../../fhir-app-portal/consent-settings.md#other-health-plans-members-can-pick) or loaded with your data. |
+| Another health plan's Organization | Use the NAIC code or TIN of a plan in the payer registry `List`. |
 | A resource in the same bundle | Use its `fullUrl`. |
 
-An identifier may also appear on an Organization outside the registered plan list. If the identifier matches multiple Organizations, use the intended Organization's logical reference, `Organization/<id>`.
+An identifier may also appear on an Organization outside the payer registry. If the identifier matches multiple Organizations, use the intended Organization's logical reference, `Organization/<id>`.
 
 ## Before the first decision
 
@@ -51,13 +53,13 @@ Referenced Patients and Organizations must already exist and declare these profi
 
 See [Referenced records](../../api-reference/resources/consent.md#referenced-records) for details.
 
-These resources are loaded with your data or configured through Consent Settings. Bundle 00 creates them in an empty test environment, using the five-digit NAIC value `12345` required by US Core.
+These resources are loaded with your data or configured through Consent Settings. Bundle 00 creates them and the payer registry `List` in an empty test environment; the List references the plans by NAIC code. The bundle uses the five-digit NAIC value `12345` required by US Core.
 
 The bundle includes explicit resource IDs, which must match any existing resources found by the conditional updates.
 
 ### 00. Sandbox setup
 
-{% file src="../../../assets/data-integration/consent/00-sandbox-setup.json" %}
+{% file src="../../../assets/data-integration/consent/00-sandbox-setup-v2.json" %}
 00-sandbox-setup.json
 {% endfile %}
 
@@ -129,6 +131,24 @@ Prefer: return=minimal
     },
     {
       "resource": {
+        "resourceType": "List",
+        "id": "p2p-payer-registry",
+        "identifier": [{"system": "https://example.org/fhir/sid/payer-registry", "value": "p2p-payer-registry"}],
+        "status": "current",
+        "mode": "working",
+        "title": "Payer-to-Payer payer registry",
+        "entry": [
+          {"item": {"reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890"}},
+          {"item": {"reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|54321"}}
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "List?identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry"
+      }
+    },
+    {
+      "resource": {
         "resourceType": "Patient",
         "id": "example-member",
         "meta": {
@@ -188,7 +208,15 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "141",
-        "location": "<base>/fhir/Patient/example-member/_history/141",
+        "location": "<base>/fhir/List/p2p-payer-registry/_history/141",
+        "status": "201",
+        "lastModified": "2026-10-22T13:05:58.678191Z"
+      }
+    },
+    {
+      "response": {
+        "etag": "143",
+        "location": "<base>/fhir/Patient/example-member/_history/143",
         "status": "201",
         "lastModified": "2026-10-22T13:05:58.678191Z"
       }
@@ -333,16 +361,16 @@ Prefer: return=minimal
   "entry": [
     {
       "response": {
-        "etag": "143",
-        "location": "<base>/fhir/QuestionnaireResponse/1d76de2e-dd29-47bd-a832-1860c4cf353f/_history/143",
+        "etag": "145",
+        "location": "<base>/fhir/QuestionnaireResponse/1d76de2e-dd29-47bd-a832-1860c4cf353f/_history/145",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.048287Z"
       }
     },
     {
       "response": {
-        "etag": "145",
-        "location": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22/_history/145",
+        "etag": "147",
+        "location": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22/_history/147",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.048287Z"
       }
@@ -475,16 +503,16 @@ Prefer: return=minimal
   "entry": [
     {
       "response": {
-        "etag": "147",
-        "location": "<base>/fhir/QuestionnaireResponse/6ce846b9-d22c-4c36-a5e7-fbb1115e5af6/_history/147",
+        "etag": "149",
+        "location": "<base>/fhir/QuestionnaireResponse/6ce846b9-d22c-4c36-a5e7-fbb1115e5af6/_history/149",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.596598Z"
       }
     },
     {
       "response": {
-        "etag": "149",
-        "location": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22/_history/149",
+        "etag": "151",
+        "location": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22/_history/151",
         "status": "200",
         "lastModified": "2026-10-22T13:05:59.596598Z"
       }
@@ -499,9 +527,9 @@ Prefer: return=minimal
 
 ### 03. Payer-to-Payer opt-in
 
-On October 12, the member authorizes Example Health Plan to request records from two other health plans: Lakeside, a previous plan selected from the registered list, and Blue Valley, a concurrent plan entered manually.
+On October 12, the member authorizes Example Health Plan to request records from two other health plans: Lakeside, a previous plan selected from the payer registry, and Blue Valley, a concurrent plan entered manually.
 
-- Blue Valley's Organization uses the plan entry identifier; the Consent and Coverage reference it by `fullUrl`.
+- Blue Valley's Organization uses the plan entry identifier and is not added to the payer registry; the Consent and Coverage reference it by `fullUrl`.
 - One Consent covers both source plans: actors with role `performer` disclose data, and your plan's Organization with role `IRCP` receives it. HRex names these slices `source` and `recipient`; the JSON contains only the role codes.
 - `category` includes `IDSCL` and the API purpose `payer-to-payer`.
 - `policy.uri` uses the HRex policy URI ending in `#sensitive`, which includes sensitive data. Both `provision.period.start` and `provision.period.end` are required.
@@ -835,16 +863,8 @@ Prefer: return=minimal
   "entry": [
     {
       "response": {
-        "etag": "151",
-        "location": "<base>/fhir/Organization/25966a97-da9d-4605-bdcd-22aaff9e48f2/_history/151",
-        "status": "201",
-        "lastModified": "2026-10-22T13:05:59.778072Z"
-      }
-    },
-    {
-      "response": {
         "etag": "153",
-        "location": "<base>/fhir/QuestionnaireResponse/e54ba7e3-4554-4268-8b8c-f2feb93ebc59/_history/153",
+        "location": "<base>/fhir/Organization/25966a97-da9d-4605-bdcd-22aaff9e48f2/_history/153",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.778072Z"
       }
@@ -852,7 +872,7 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "155",
-        "location": "<base>/fhir/DocumentReference/cf0bcafe-0ec9-49cc-896d-6c5131154d86/_history/155",
+        "location": "<base>/fhir/QuestionnaireResponse/e54ba7e3-4554-4268-8b8c-f2feb93ebc59/_history/155",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.778072Z"
       }
@@ -860,7 +880,7 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "157",
-        "location": "<base>/fhir/Consent/01a163b7-eefd-79d5-8dc9-68e497f07371/_history/157",
+        "location": "<base>/fhir/DocumentReference/cf0bcafe-0ec9-49cc-896d-6c5131154d86/_history/157",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.778072Z"
       }
@@ -868,7 +888,7 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "159",
-        "location": "<base>/fhir/Coverage/01a163b7-f1ce-7271-8ae3-eb7bcc6547e8/_history/159",
+        "location": "<base>/fhir/Consent/01a163b7-eefd-79d5-8dc9-68e497f07371/_history/159",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.778072Z"
       }
@@ -876,7 +896,15 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "161",
-        "location": "<base>/fhir/Coverage/01a163b7-f281-7174-8392-b70f103983fe/_history/161",
+        "location": "<base>/fhir/Coverage/01a163b7-f1ce-7271-8ae3-eb7bcc6547e8/_history/161",
+        "status": "201",
+        "lastModified": "2026-10-22T13:05:59.778072Z"
+      }
+    },
+    {
+      "response": {
+        "etag": "163",
+        "location": "<base>/fhir/Coverage/01a163b7-f281-7174-8392-b70f103983fe/_history/163",
         "status": "201",
         "lastModified": "2026-10-22T13:05:59.778072Z"
       }
@@ -1087,16 +1115,8 @@ Prefer: return=minimal
   "entry": [
     {
       "response": {
-        "etag": "163",
-        "location": "<base>/fhir/QuestionnaireResponse/4d27435a-66c5-4fde-9536-0534113bed11/_history/163",
-        "status": "201",
-        "lastModified": "2026-10-22T13:06:02.001074Z"
-      }
-    },
-    {
-      "response": {
         "etag": "165",
-        "location": "<base>/fhir/DocumentReference/e756452c-fcc7-4950-9aa2-ac01d770c173/_history/165",
+        "location": "<base>/fhir/QuestionnaireResponse/4d27435a-66c5-4fde-9536-0534113bed11/_history/165",
         "status": "201",
         "lastModified": "2026-10-22T13:06:02.001074Z"
       }
@@ -1104,7 +1124,15 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "167",
-        "location": "<base>/fhir/Consent/01a163b7-eefd-79d5-8dc9-68e497f07371/_history/167",
+        "location": "<base>/fhir/DocumentReference/e756452c-fcc7-4950-9aa2-ac01d770c173/_history/167",
+        "status": "201",
+        "lastModified": "2026-10-22T13:06:02.001074Z"
+      }
+    },
+    {
+      "response": {
+        "etag": "169",
+        "location": "<base>/fhir/Consent/01a163b7-eefd-79d5-8dc9-68e497f07371/_history/169",
         "status": "200",
         "lastModified": "2026-10-22T13:06:02.001074Z"
       }
@@ -1274,16 +1302,8 @@ Prefer: return=minimal
   "entry": [
     {
       "response": {
-        "etag": "169",
-        "location": "<base>/fhir/QuestionnaireResponse/75b71653-e481-420c-b046-20dd60489a59/_history/169",
-        "status": "201",
-        "lastModified": "2026-10-22T13:06:02.038989Z"
-      }
-    },
-    {
-      "response": {
         "etag": "171",
-        "location": "<base>/fhir/DocumentReference/68ef44da-f4a1-482e-9db7-4ee73108c315/_history/171",
+        "location": "<base>/fhir/QuestionnaireResponse/75b71653-e481-420c-b046-20dd60489a59/_history/171",
         "status": "201",
         "lastModified": "2026-10-22T13:06:02.038989Z"
       }
@@ -1291,7 +1311,15 @@ Prefer: return=minimal
     {
       "response": {
         "etag": "173",
-        "location": "<base>/fhir/Consent/01a163b7-eefd-79d5-8dc9-68e497f07371/_history/173",
+        "location": "<base>/fhir/DocumentReference/68ef44da-f4a1-482e-9db7-4ee73108c315/_history/173",
+        "status": "201",
+        "lastModified": "2026-10-22T13:06:02.038989Z"
+      }
+    },
+    {
+      "response": {
+        "etag": "175",
+        "location": "<base>/fhir/Consent/01a163b7-eefd-79d5-8dc9-68e497f07371/_history/175",
         "status": "200",
         "lastModified": "2026-10-22T13:06:02.038989Z"
       }
@@ -1318,6 +1346,157 @@ Aidbox requires the target type `:Patient` in `patient:Patient.identifier`. The 
 ## Search examples
 
 These examples show the results after submitting bundles 00–05 in order.
+
+### Registered health plans
+
+Get the health plans in the payer registry, sorted by name. `_has:List:item` returns the Organizations referenced in the List's `entry.item`. Blue Valley, entered manually in 03, is not in the registry; offer an "Other" option for such plans.
+
+{% tabs %}
+{% tab title="Request" %}
+
+```http
+GET /fhir/Organization?_has:List:item:identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry&_sort=name
+Accept: application/fhir+json
+```
+
+{% endtab %}
+{% tab title="Response" %}
+
+```json
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "meta": {"versionId": "0"},
+  "total": 2,
+  "link": [
+    {
+      "relation": "first",
+      "url": "<base>/fhir/Organization?_has:List:item:identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry&_sort=name&_page=1"
+    },
+    {
+      "relation": "self",
+      "url": "<base>/fhir/Organization?_has:List:item:identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry&_sort=name&_page=1"
+    }
+  ],
+  "entry": [
+    {
+      "resource": {
+        "meta": {
+          "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-organization"],
+          "lastUpdated": "2026-10-22T13:05:58.678191Z",
+          "versionId": "137",
+          "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:58.678191Z"}]
+        },
+        "name": "Lakeside Health Plan",
+        "type": [{
+          "coding": [{
+            "code": "pay",
+            "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+            "display": "Payer"
+          }]
+        }],
+        "active": true,
+        "identifier": [{"value": "67890", "system": "urn:oid:2.16.840.1.113883.6.300"}],
+        "id": "lakeside-health-plan",
+        "resourceType": "Organization"
+      },
+      "search": {"mode": "match"},
+      "fullUrl": "<base>/fhir/Organization/lakeside-health-plan",
+      "link": [{"relation": "self", "url": "<base>/fhir/Organization/lakeside-health-plan"}]
+    },
+    {
+      "resource": {
+        "meta": {
+          "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-organization"],
+          "lastUpdated": "2026-10-22T13:05:58.678191Z",
+          "versionId": "139",
+          "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:58.678191Z"}]
+        },
+        "name": "Riverbend Health Cooperative",
+        "type": [{
+          "coding": [{
+            "code": "pay",
+            "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+            "display": "Payer"
+          }]
+        }],
+        "active": true,
+        "identifier": [{"value": "54321", "system": "urn:oid:2.16.840.1.113883.6.300"}],
+        "id": "riverbend-health-cooperative",
+        "resourceType": "Organization"
+      },
+      "search": {"mode": "match"},
+      "fullUrl": "<base>/fhir/Organization/riverbend-health-cooperative",
+      "link": [{"relation": "self", "url": "<base>/fhir/Organization/riverbend-health-cooperative"}]
+    }
+  ]
+}
+```
+
+{% endtab %}
+{% endtabs %}
+
+### Registered health plans by name
+
+Filter the registered health plans by name, for type-ahead.
+
+{% tabs %}
+{% tab title="Request" %}
+
+```http
+GET /fhir/Organization?_has:List:item:identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry&_sort=name&name:contains=lake
+Accept: application/fhir+json
+```
+
+{% endtab %}
+{% tab title="Response" %}
+
+```json
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "meta": {"versionId": "0"},
+  "total": 1,
+  "link": [
+    {
+      "relation": "first",
+      "url": "<base>/fhir/Organization?_has:List:item:identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry&_sort=name&name:contains=lake&_page=1"
+    },
+    {
+      "relation": "self",
+      "url": "<base>/fhir/Organization?_has:List:item:identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry&_sort=name&name:contains=lake&_page=1"
+    }
+  ],
+  "entry": [{
+    "resource": {
+      "meta": {
+        "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-organization"],
+        "lastUpdated": "2026-10-22T13:05:58.678191Z",
+        "versionId": "137",
+        "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:58.678191Z"}]
+      },
+      "name": "Lakeside Health Plan",
+      "type": [{
+        "coding": [{
+          "code": "pay",
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "display": "Payer"
+        }]
+      }],
+      "active": true,
+      "identifier": [{"value": "67890", "system": "urn:oid:2.16.840.1.113883.6.300"}],
+      "id": "lakeside-health-plan",
+      "resourceType": "Organization"
+    },
+    "search": {"mode": "match"},
+    "fullUrl": "<base>/fhir/Organization/lakeside-health-plan",
+    "link": [{"relation": "self", "url": "<base>/fhir/Organization/lakeside-health-plan"}]
+  }]
+}
+```
+
+{% endtab %}
+{% endtabs %}
 
 ### All consents of the member, with their organizations
 
@@ -1380,7 +1559,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "149",
+          "versionId": "151",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -1442,7 +1621,7 @@ Accept: application/fhir+json
         },
         "meta": {
           "lastUpdated": "2026-10-22T13:06:02.038989Z",
-          "versionId": "173",
+          "versionId": "175",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -1580,7 +1759,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "149",
+          "versionId": "151",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -1642,7 +1821,7 @@ Accept: application/fhir+json
         },
         "meta": {
           "lastUpdated": "2026-10-22T13:06:02.038989Z",
-          "versionId": "173",
+          "versionId": "175",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -1668,7 +1847,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "147",
+          "versionId": "149",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.596598Z"}]
         },
         "item": [
@@ -1708,7 +1887,7 @@ Accept: application/fhir+json
         "date": "2026-10-14T11:30:00-04:00",
         "meta": {
           "lastUpdated": "2026-10-22T13:06:02.038989Z",
-          "versionId": "171",
+          "versionId": "173",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:06:02.038989Z"}]
         },
         "content": [{
@@ -1779,7 +1958,7 @@ Accept: application/fhir+json
             "http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-patient-demographics"
           ],
           "lastUpdated": "2026-10-22T13:05:58.678191Z",
-          "versionId": "141",
+          "versionId": "143",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:58.678191Z"}]
         },
         "name": [{"given": ["Maria", "Elena"], "family": "Alvarez"}],
@@ -1827,7 +2006,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "149",
+          "versionId": "151",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -1889,7 +2068,7 @@ Accept: application/fhir+json
         },
         "meta": {
           "lastUpdated": "2026-10-22T13:06:02.038989Z",
-          "versionId": "173",
+          "versionId": "175",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -1914,7 +2093,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage"],
           "lastUpdated": "2026-10-22T13:05:59.778072Z",
-          "versionId": "159",
+          "versionId": "161",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "beneficiary": {"reference": "Patient/example-member"},
@@ -1948,7 +2127,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-hrex/StructureDefinition/hrex-coverage"],
           "lastUpdated": "2026-10-22T13:05:59.778072Z",
-          "versionId": "161",
+          "versionId": "163",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "beneficiary": {"reference": "Patient/example-member"},
@@ -1989,7 +2168,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:05:59.048287Z",
-          "versionId": "143",
+          "versionId": "145",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "item": [
@@ -2031,7 +2210,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "147",
+          "versionId": "149",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.596598Z"}]
         },
         "item": [
@@ -2071,7 +2250,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:05:59.778072Z",
-          "versionId": "153",
+          "versionId": "155",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "item": [
@@ -2187,7 +2366,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:06:02.001074Z",
-          "versionId": "163",
+          "versionId": "165",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:06:02.001074Z"}]
         },
         "item": [
@@ -2271,7 +2450,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:06:02.038989Z",
-          "versionId": "169",
+          "versionId": "171",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:06:02.038989Z"}]
         },
         "item": [
@@ -2376,7 +2555,7 @@ Accept: application/fhir+json
       "meta": {
         "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
         "lastUpdated": "2026-10-22T13:05:59.596598Z",
-        "versionId": "149",
+        "versionId": "151",
         "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
       },
       "organization": [{"reference": "Organization/example-health-plan"}],
@@ -2473,7 +2652,7 @@ Accept: application/fhir+json
       },
       "meta": {
         "lastUpdated": "2026-10-22T13:06:02.038989Z",
-        "versionId": "173",
+        "versionId": "175",
         "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
       },
       "organization": [{"reference": "Organization/example-health-plan"}],
@@ -2632,7 +2811,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "147",
+          "versionId": "149",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.596598Z"}]
         },
         "item": [
@@ -2672,7 +2851,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-questionnaireresponse"],
           "lastUpdated": "2026-10-22T13:05:59.048287Z",
-          "versionId": "143",
+          "versionId": "145",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "item": [
@@ -2753,7 +2932,7 @@ Accept: application/fhir+json
         "date": "2026-10-14T11:30:00-04:00",
         "meta": {
           "lastUpdated": "2026-10-22T13:06:02.038989Z",
-          "versionId": "171",
+          "versionId": "173",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:06:02.038989Z"}]
         },
         "content": [{
@@ -2783,7 +2962,7 @@ Accept: application/fhir+json
         "date": "2026-10-13T09:15:00-04:00",
         "meta": {
           "lastUpdated": "2026-10-22T13:06:02.001074Z",
-          "versionId": "165",
+          "versionId": "167",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:06:02.001074Z"}]
         },
         "content": [{
@@ -2813,7 +2992,7 @@ Accept: application/fhir+json
         "date": "2026-10-12T16:40:00-04:00",
         "meta": {
           "lastUpdated": "2026-10-22T13:05:59.778072Z",
-          "versionId": "155",
+          "versionId": "157",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.778072Z"}]
         },
         "content": [{
@@ -2894,7 +3073,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
           "lastUpdated": "2026-10-22T13:05:59.596598Z",
-          "versionId": "149",
+          "versionId": "151",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -2949,7 +3128,7 @@ Accept: application/fhir+json
         "meta": {
           "profile": ["http://hl7.org/fhir/us/davinci-pdex/StructureDefinition/pdex-provider-consent"],
           "lastUpdated": "2026-10-22T13:05:59.048287Z",
-          "versionId": "145",
+          "versionId": "147",
           "extension": [{"url": "https://aidbox.app/ex/createdAt", "valueInstant": "2026-10-22T13:05:59.048287Z"}]
         },
         "organization": [{"reference": "Organization/example-health-plan"}],
@@ -2976,7 +3155,7 @@ Accept: application/fhir+json
       "fullUrl": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22"
     }
   ],
-  "id": "149",
+  "id": "151",
   "link": [
     {"relation": "first", "url": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22/_history?_count=100&_page=1"},
     {"relation": "self", "url": "<base>/fhir/Consent/01a163b7-e91d-7039-813c-f4cddb9b8e22/_history?_count=100&_page=0"},
@@ -2991,6 +3170,8 @@ Accept: application/fhir+json
 ## Alongside the member portal
 
 The member portal's [Data sharing page](../../fhir-app-portal/member-portal/consent-panel.md) creates a new Consent for each decision and [retires](../../api-reference/resources/consent.md#retire-a-record) the previous Consent. The integration described on this page updates one Consent per member and consent type.
+
+The member portal offers the health plans registered in [Consent Settings](../../fhir-app-portal/consent-settings.md#other-health-plans-members-can-pick), not the payer registry `List`.
 
 Both approaches can be used on the same installation. For each member, use a single workflow to record consent decisions; using both workflows can leave separate active Consent resources for the same consent type.
 

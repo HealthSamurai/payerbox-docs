@@ -106,6 +106,37 @@
     },
     {
       "resource": {
+        "resourceType": "List",
+        "id": "p2p-payer-registry",
+        "identifier": [
+          {
+            "system": "https://example.org/fhir/sid/payer-registry",
+            "value": "p2p-payer-registry"
+          }
+        ],
+        "status": "current",
+        "mode": "working",
+        "title": "Payer-to-Payer payer registry",
+        "entry": [
+          {
+            "item": {
+              "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|67890"
+            }
+          },
+          {
+            "item": {
+              "reference": "Organization?identifier=urn:oid:2.16.840.1.113883.6.300|54321"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "List?identifier=https://example.org/fhir/sid/payer-registry|p2p-payer-registry"
+      }
+    },
+    {
+      "resource": {
         "resourceType": "Patient",
         "id": "example-member",
         "meta": {
