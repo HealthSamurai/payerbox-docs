@@ -45,6 +45,12 @@ A cancel is the same request carrying certificationType `3` (Cancel) from `https
 
 See [Update](#update) and [Cancel](#cancel) for the payloads.
 
+### Attachments
+
+A `DocumentReference` in the bundle with inline base64 data (`content[].attachment.data`) has that data uploaded to cloud storage before the bundle is persisted. The stored attachment carries a `url` instead of `data`, and `size` is filled when missing. Malformed base64 returns HTTP 422 naming the `DocumentReference`.
+
+A `QuestionnaireResponse` is stored as submitted: an inline `valueAttachment.data` in any answer stays in the resource. A deployment with `SUBMIT_ATTACHMENT_OFFLOAD_QUESTIONNAIRE_RESPONSE=true` uploads every inline `valueAttachment` the same way and stores the answer with a `url`; see the flag in [`$submit-attachment` Configuration](submit-attachment.md#configuration). Without cloud storage configured, data stays inline in both resource types.
+
 ## Parameters
 
 | Direction | Parameter | Type | Cardinality | Description |
