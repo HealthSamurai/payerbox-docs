@@ -23,6 +23,7 @@
   * [PAS](prior-auth/pas.md)
   * [UM System Integration](prior-auth/um-integration.md)
   * [Event Notifications](prior-auth/event-notifications.md)
+  * [Prior Auth Integration Guide](prior-auth/integration-guide.md)
 * [FHIR App Portal](fhir-app-portal/README.md)
   * [Developer Portal](fhir-app-portal/developer-portal.md)
     * [SMART App](fhir-app-portal/smart-app.md)

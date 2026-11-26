@@ -11,3 +11,5 @@ Da Vinci electronic Prior Authorization stack. [CMS-0057-F](../compliance/cms-00
 | [PAS](pas.md) | Da Vinci PAS | Submit the prior authorization request and receive the response |
 
 The three IGs compose: CRD identifies the rule, DTR collects the evidence, PAS submits the request.
+
+For the full set of calls a connecting EHR or prior authorization system makes, plus onboarding and testing steps, see the [Prior Auth Integration Guide](integration-guide.md).
